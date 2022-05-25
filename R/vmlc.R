@@ -88,6 +88,43 @@ prune_ctx_tree <- function(tree, alpha = 0.05, verbose = FALSE) {
   }
 }
 
+local_loglikelihood <- function(counts) {
+  probs <- counts / sum(counts)
+  sum(counts * ifelse(probs > 0, log(probs), 0))
+}
+
+rec_loglikelihood <- function(tree) {
+  if (is.null(tree$f_by)) {
+    # place holder list
+    0
+  } else if (is.null(tree$children)) {
+    ## simple leaf case
+    local_loglikelihood(tree$f_by)
+  } else {
+    ## recursive case
+    sub_ll <- sum(sapply(tree$children, rec_loglikelihood))
+    ## is the node a valid context
+    nst <- nb_sub_tree(tree)
+    if (nst < length(tree$f_by)) {
+      ## let us add the local contribution
+      sub_trees <- sapply(tree$children, function(x) !is.null(x$f_by))
+      sub_counts <- rowSums(sapply(tree$children[sub_trees], function(x) x$f_by))
+      loc_counts <- tree$f_by - sub_counts
+      sub_ll <- sub_ll + local_loglikelihood(loc_counts)
+    }
+    sub_ll
+  }
+}
+
+#' @export
+logLik.ctx_tree <- function(object, ...) {
+  ll <- rec_loglikelihood(object)
+  attr(ll, "df") <- object$nb_ctx * (length(object$vals) - 1)
+  attr(ll, "nobs") <- sum(object$f_by)
+  class(ll) <- "logLik"
+  ll
+}
+
 #' Fit a Variable Length Markov Chain (VLMC)
 #'
 #' This function fits a  Variable Length Markov Chain (VLMC) to a discrete time series.
