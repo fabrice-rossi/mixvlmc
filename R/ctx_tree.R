@@ -152,37 +152,6 @@ context_number <- function(ct) {
   }
 }
 
-rec_draw_depth_first <-
-  function(prefix, ct, vals, terminals, probs) {
-    ## check for pruned leaf
-    if (length(ct) > 0) {
-      for (v in seq_along(ct$children)) {
-        rec_draw(
-          paste0(prefix, vals[v]),
-          ct$children[[v]],
-          vals,
-          terminals,
-          probs
-        )
-      }
-      if (!terminals || is.null(ct$children)) {
-        cat(prefix)
-        if (!is.null(ct$f_by)) {
-          if (probs) {
-            cat(paste0("\t", paste(
-              ct$f_by / sum(ct$f_by),
-              collapse = " "
-            )), "\n")
-          } else {
-            cat(paste0("\t", paste(ct$f_by, collapse = " ")), "\n")
-          }
-        } else {
-          cat("\n")
-        }
-      }
-    }
-  }
-
 rec_draw <-
   function(prefix,
            rank,
