@@ -8,20 +8,20 @@ nb_sub_tree <- function(ct) {
 }
 
 rec_stats_ctx_tree <- function(ct) {
-  if(is.null(ct$children)) {
+  if (is.null(ct$children)) {
     ## this is a leaf
     ## depth = 0
     ## if there is a f_by, then this is a context
-    if(is.null(ct$f_by)) {
+    if (is.null(ct$f_by)) {
       c(0, 0)
     } else {
       c(0, 1)
     }
   } else {
     subresults <- sapply(ct$children, rec_stats_ctx_tree)
-    dp <- 1 + max(subresults[1,])
-    nb <- sum(subresults[2,])
-    if(nb_sub_tree(ct)<length(ct$children)) {
+    dp <- 1 + max(subresults[1, ])
+    nb <- sum(subresults[2, ])
+    if (nb_sub_tree(ct) < length(ct$children)) {
       ## this node is also a context
       nb <- nb + 1
     }
@@ -37,8 +37,8 @@ new_ctx_tree <- function(vals, root = NULL, compute_stats = TRUE) {
     root$vals <- vals
   }
   preres <- structure(root, class = "ctx_tree")
-  if(!is.null(root)) {
-    if(compute_stats) {
+  if (!is.null(root)) {
+    if (compute_stats) {
       stats <- rec_stats_ctx_tree(root)
       preres$depth <- stats[1]
       preres$nb_ctx <- stats[2]
@@ -68,11 +68,11 @@ print.ctx_tree <- function(x, ...) {
     "Context tree on",
     paste(x$vals, collapse = ", ")
   ), "\n")
-  if(!is.null(x$depth)) {
-    cat(paste(" Maximum context length:", x$depth,"\n"))
+  if (!is.null(x$depth)) {
+    cat(paste(" Maximum context length:", x$depth, "\n"))
   }
-  if(!is.null(x$nb_ctx)) {
-    cat(paste(" Numberf of contexts:", x$nb_ctx,"\n"))
+  if (!is.null(x$nb_ctx)) {
+    cat(paste(" Numberf of contexts:", x$nb_ctx, "\n"))
   }
   invisible(x)
 }
@@ -109,7 +109,7 @@ rec_depth <- function(ct) {
 #' @export
 depth <- function(ct) {
   assertthat::assert_that(is_ctx_tree(ct))
-  if(!is.null(ct$depth)) {
+  if (!is.null(ct$depth)) {
     ct$depth
   } else {
     rec_depth(ct)
@@ -117,17 +117,17 @@ depth <- function(ct) {
 }
 
 rec_context_number <- function(ct) {
-  if(is.null(ct$children)) {
+  if (is.null(ct$children)) {
     ## this is a leaf
     ## if there is a f_by, then this is a context
-    if(is.null(ct$f_by)) {
+    if (is.null(ct$f_by)) {
       0
     } else {
       1
     }
   } else {
     nb <- sum(sapply(ct$children, rec_context_number))
-    if(nb_sub_tree(ct)<length(ct$children)) {
+    if (nb_sub_tree(ct) < length(ct$children)) {
       ## this node is also a context
       nb <- nb + 1
     }
@@ -145,7 +145,7 @@ rec_context_number <- function(ct) {
 #' @export
 context_number <- function(ct) {
   assertthat::assert_that(is_ctx_tree(ct))
-  if(!is.null(ct$nb_ctx)) {
+  if (!is.null(ct$nb_ctx)) {
     ct$nb_ctx
   } else {
     rec_context_number(ct)
