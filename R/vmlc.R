@@ -32,7 +32,7 @@ grow_ctx_tree <- function(x, vals, min_size, max_depth, covsize = 0, keep_match 
     }
   }
   pre_res <- recurse_ctx_tree(x, length(vals), 0, NULL, table(x))
-  new_ctx_tree(vals, pre_res)
+  new_ctx_tree(vals, pre_res, compute_stats = FALSE)
 }
 
 kl_div <- function(p, q) {
@@ -83,7 +83,8 @@ prune_ctx_tree <- function(tree, alpha = 0.05, verbose = FALSE) {
     pre_res$f_by <- tree$f_by
     pre_res
   } else {
-    pre_res
+    ## compute stats
+    new_ctx_tree(pre_res$vals, pre_res)
   }
 }
 
