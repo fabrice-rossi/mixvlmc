@@ -2,6 +2,7 @@
 
 S3method(print,ctx_tree)
 export(context_number)
+export(contexts)
 export(depth)
 export(draw)
 export(is_ctx_tree)

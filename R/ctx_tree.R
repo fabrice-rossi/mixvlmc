@@ -214,3 +214,45 @@ draw <- function(ct,
   rec_draw("", 0, length(ct$vals), ct, ct$vals, terminals, probs)
   invisible(ct)
 }
+
+rec_contexts <- function(path, ct, vals) {
+  if (is.null(ct$children)) {
+    ## this is a leaf
+    ## if there is a f_by, then this is a context
+    if (is.null(ct$f_by)) {
+      NULL
+    } else {
+      list(path)
+    }
+  } else {
+    all_ctx <- list()
+    for (v in seq_along(ct$children)) {
+      sub_ctx <- rec_contexts(c(path, vals[v]), ct$children[[v]], vals)
+      if (!is.null(sub_ctx)) {
+        all_ctx <- c(all_ctx, sub_ctx)
+      }
+    }
+    if (nb_sub_tree(ct) < length(vals)) {
+      all_ctx <- c(all_ctx, list(path))
+    }
+    all_ctx
+  }
+}
+
+#' Contexts of a context tree
+#'
+#' This function extracts from a context tree the list of all its contexts.
+#'
+#' @param ct a context tree
+#'
+#' @return the list of the contexts represented in this tree.
+#' @export
+contexts <- function(ct) {
+  assertthat::assert_that(is_ctx_tree(ct))
+  preres <- rec_contexts(c(), ct, ct$vals)
+  if (is.null(preres[[length(preres)]])) {
+    ## root context
+    preres[[length(preres)]] <- list()
+  }
+  preres
+}
