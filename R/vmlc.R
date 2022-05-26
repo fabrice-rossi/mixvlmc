@@ -140,18 +140,12 @@ logLik.ctx_tree <- function(object, ...) {
 #' @export
 vlmc <- function(x, alpha = 0.05, min_size = 2, max_depth = 100) {
   # data conversion
-  if (is.character(x) || is.numeric(x)) {
-    fx <- as.factor(x)
-  } else if (is.factor(x)) {
-    fx <- x
-  } else {
-    stop(paste("x is not character, numeric or factor, but", class(x)))
-  }
-  vals <- levels(fx)
+  nx <- to_dts(x)
+  ix <- nx$ix
+  vals <- nx$vals
   if (length(vals) > max(10, 0.05 * length(x))) {
     warning(paste0("x as numerous unique values (", length(vals), ")"))
   }
-  ix <- as.numeric(fx) - 1
   ctx_tree <- grow_ctx_tree(ix, vals, min_size = min_size, max_depth = max_depth)
   pruned_tree <- prune_ctx_tree(ctx_tree, alpha = alpha)
   pruned_tree
