@@ -35,6 +35,28 @@ grow_ctx_tree <- function(x, vals, min_size, max_depth, covsize = 0, keep_match 
   new_ctx_tree(vals, pre_res, compute_stats = FALSE)
 }
 
+dispatch_in_ctx_tree <- function(tree, x) {
+  recurse_dispatch <- function(tree, x, nb_vals, d, from, f_by) {
+    if (is.null(tree$children)) {
+      list(f_by = f_by)
+    } else {
+      fmatch <- forward_match_all_ctx_counts(x, nb_vals, d, from)
+      children <- vector(mode = "list", nb_vals)
+      for (v in 1:nb_vals) {
+        if (length(tree$children[[v]]) > 0) {
+          children[[v]] <- recurse_dispatch(tree$children[[v]], x, nb_vals, d + 1, fmatch$positions[[v]], fmatch$counts[v, ])
+        } else {
+          children[[v]] <- list()
+        }
+      }
+      result <- list(children = children)
+      result$f_by <- f_by
+      result
+    }
+  }
+  recurse_dispatch(tree, x, length(tree$vals), 0, NULL, table(x))
+}
+
 kl_div <- function(p, q) {
   pratio <- p / q
   pratio <- ifelse(p == q, 1, pratio) ## handles p=q=0
@@ -149,4 +171,27 @@ vlmc <- function(x, alpha = 0.05, min_size = 2, max_depth = 100) {
   ctx_tree <- grow_ctx_tree(ix, vals, min_size = min_size, max_depth = max_depth)
   pruned_tree <- prune_ctx_tree(ctx_tree, alpha = alpha)
   pruned_tree
+}
+
+#' Log-Likelihood of a VLMC
+#'
+#' This function evaluates the log-likelihood of a VLMC fitted on a discrete time series.
+#' When the optional argument \code{x} is provided, the function evaluates instead the
+#' log-likelihood for this (new) discrete time series.
+#'
+#' @param vlmc the vlmc representation
+#' @param x an optional discrete time series
+#'
+#' @return the log-likelihood of the VLMC
+#' @seealso [stats::logLik]
+#' @export
+loglikelihood <- function(vlmc, x = NULL) {
+  assertthat::assert_that(is_ctx_tree(vlmc))
+  if (is.null(x)) {
+    rec_loglikelihood(vlmc)
+  } else {
+    nx <- to_dts(x, vlmc$val)
+    nvlmc <- dispatch_in_ctx_tree(vlmc, nx$ix)
+    rec_loglikelihood(nvlmc)
+  }
 }
