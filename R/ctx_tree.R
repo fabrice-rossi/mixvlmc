@@ -246,3 +246,24 @@ contexts <- function(ct) {
   }
   preres
 }
+
+rec_match_context <- function(tree, d, ctx) {
+  if (length(ctx) == 0) {
+    list(tree = tree, depth = d)
+  } else {
+    if (is.null(tree$children)) {
+      list(tree = tree, depth = d)
+    } else {
+      cand <- tree$children[[ctx[1]]]
+      if (length(cand) > 0) {
+        rec_match_context(cand, d + 1, ctx[-1])
+      } else {
+        list(tree = tree, depth = d)
+      }
+    }
+  }
+}
+
+match_context <- function(tree, ctx) {
+  rec_match_context(tree, 0, ctx)
+}

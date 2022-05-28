@@ -76,15 +76,15 @@ dispatch_in_ctx_tree <- function(tree, x) {
       children <- vector(mode = "list", nb_vals)
       nb_children <- 0
       for (v in 1:nb_vals) {
-        if (length(fmatch$positions[[v]])>0 && length(tree$children[[v]]) > 0) {
+        if (length(fmatch$positions[[v]]) > 0 && length(tree$children[[v]]) > 0) {
           children[[v]] <- recurse_dispatch(tree$children[[v]], x, nb_vals, d + 1, fmatch$positions[[v]], fmatch$counts[v, ])
           nb_children <- nb_children + 1
         } else {
           children[[v]] <- list()
         }
       }
-      if(nb_children>0) {
-      result <- list(children = children)
+      if (nb_children > 0) {
+        result <- list(children = children)
       } else {
         result <- list()
       }
@@ -150,7 +150,7 @@ prune_ctx_tree <- function(tree, alpha = 0.05, verbose = FALSE) {
 
 local_loglikelihood <- function(counts) {
   sc <- sum(counts)
-  if(sc>0) {
+  if (sc > 0) {
     probs <- counts / sum(counts)
     sum(counts * ifelse(probs > 0, log(probs), 0))
   } else {
@@ -237,4 +237,25 @@ loglikelihood <- function(vlmc, x = NULL) {
     nvlmc <- dispatch_in_ctx_tree(vlmc, nx$ix)
     rec_loglikelihood(nvlmc)
   }
+}
+
+#' @export
+simulate.vlmc <- function(object, nsim = 1, seed = NULL, ...) {
+  if (!is.null(seed)) {
+    stop("Non NULL seed are not supported")
+  }
+  int_vals <- seq_along(object$vals)
+  ctx <- c()
+  pre_res <- rep(0, nsim)
+  max_depth <- depth(object)
+  for (i in 1:nsim) {
+    subtree <- match_context(object, ctx)
+    pre_res[i] <- sample(int_vals, 1, prob = subtree$tree$f_by)
+    if (length(ctx) < max_depth) {
+      ctx <- c(pre_res[i], ctx)
+    } else {
+      ctx <- c(pre_res[i], ctx[1:(max_depth - 1)])
+    }
+  }
+  factor(pre_res, levels = int_vals, labels = object$vals)
 }
