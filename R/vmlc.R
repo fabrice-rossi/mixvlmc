@@ -14,6 +14,23 @@ assertthat::on_failure(is_vlmc) <- function(call, env) {
   paste0(deparse(call$x), " is not a vlmc")
 }
 
+draw_vlmc_node <- function(node, probs = FALSE) {
+  if (probs) {
+    paste(node$f_by / sum(node$f_by), collapse = ", ")
+  } else {
+    paste(node$f_by, collapse = ", ")
+  }
+}
+
+#' @export
+draw.vlmc <- function(ct, node2txt = NULL, ...) {
+  if (is.null(node2txt)) {
+    NextMethod(node2txt = draw_vlmc_node, ...)
+  } else {
+    NextMethod(node2txt = node2txt, ...)
+  }
+  invisible(ct)
+}
 
 grow_ctx_tree <- function(x, vals, min_size, max_depth, covsize = 0, keep_match = FALSE, all_children = FALSE) {
   recurse_ctx_tree <- function(x, nb_vals, d, from, f_by) {
@@ -47,7 +64,7 @@ grow_ctx_tree <- function(x, vals, min_size, max_depth, covsize = 0, keep_match 
     }
   }
   pre_res <- recurse_ctx_tree(x, length(vals), 0, NULL, table(x))
-  new_ctx_tree(vals, pre_res, compute_stats = FALSE, class="vlmc")
+  new_ctx_tree(vals, pre_res, compute_stats = FALSE, class = "vlmc")
 }
 
 dispatch_in_ctx_tree <- function(tree, x) {
@@ -116,12 +133,12 @@ prune_ctx_tree <- function(tree, alpha = 0.05, verbose = FALSE) {
   pre_res <- recurse_prune_kl_ctx_tree(tree, tree$f_by / sum(tree$f_by), c(), K)
   if (!is.null(pre_res$kl)) {
     # empty result
-    pre_res <- new_ctx_tree(tree$vals, class="vlmc")
+    pre_res <- new_ctx_tree(tree$vals, class = "vlmc")
     pre_res$f_by <- tree$f_by
     pre_res
   } else {
     ## compute stats
-    new_ctx_tree(pre_res$vals, pre_res, class="vlmc")
+    new_ctx_tree(pre_res$vals, pre_res, class = "vlmc")
   }
 }
 

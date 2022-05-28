@@ -4,14 +4,14 @@
 \alias{draw}
 \title{Text based representation of a context tree}
 \usage{
-draw(ct, terminals = FALSE, probs = FALSE)
+draw(ct, node2txt = NULL, ...)
 }
 \arguments{
 \item{ct}{a context tree.}
 
-\item{terminals}{not used}
+\item{node2txt}{an optional function called on each node to render it to a text representation}
 
-\item{probs}{logical; if \code{TRUE}, display the next state distribution rather than the data counts}
+\item{...}{additional arguments for node2txt}
 }
 \value{
 the context tree (invisibly)

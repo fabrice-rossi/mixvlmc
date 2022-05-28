@@ -152,66 +152,56 @@ context_number <- function(ct) {
   }
 }
 
-rec_draw <-
-  function(prefix,
-           rank,
-           nst,
-           ct,
-           vals,
-           terminals,
-           probs) {
-    ## check for pruned leaf
-    if (length(ct) > 0) {
-      # first print the current content
-      if (rank > 0) {
-        if (nst > 1 & rank == 1) {
-          local_prefix <- "+ "
-        } else {
-          local_prefix <- "' "
-        }
-        local_prefix <- paste0(local_prefix, vals[rank])
+rec_draw <- function(prefix, rank, nst, ct, vals, node2txt, ...) {
+  ## check for pruned leaf
+  if (length(ct) > 0) {
+    # first print the current content
+    if (rank > 0) {
+      if (nst > 1 & rank == 1) {
+        local_prefix <- "+ "
       } else {
-        local_prefix <- ""
+        local_prefix <- "' "
       }
-      cat(paste0(prefix, local_prefix))
-      if (!is.null(ct$f_by)) {
-        if (probs) {
-          cat(paste0(" (", paste(ct$f_by / sum(ct$f_by), collapse = ", "), ")"), "\n")
-        } else {
-          cat(paste0(" (", paste(ct$f_by, collapse = ", "), ")"), "\n")
-        }
-      } else {
-        cat("\n")
-      }
-      # then go down the tree
-      nst <- nb_sub_tree(ct)
-      if (nst > 1) {
-        prefix <- paste0(prefix, "| ")
-      } else {
-        prefix <- paste0(prefix, "  ")
-      }
-      for (v in seq_along(ct$children)) {
-        rec_draw(prefix, v, nst, ct$children[[v]], vals, terminals, probs)
-      }
+      local_prefix <- paste0(local_prefix, vals[rank])
+    } else {
+      local_prefix <- ""
+    }
+    cat(paste0(prefix, local_prefix))
+    if (!is.null(node2txt)) {
+      cat(" (", node2txt(ct, ...), ")")
+    }
+    cat("\n")
+    # then go down the tree
+    nst <- nb_sub_tree(ct)
+    if (nst > 1) {
+      prefix <- paste0(prefix, "| ")
+    } else {
+      prefix <- paste0(prefix, "  ")
+    }
+    for (v in seq_along(ct$children)) {
+      rec_draw(prefix, v, nst, ct$children[[v]], vals, node2txt, ...)
     }
   }
-
+}
 
 #' Text based representation of a context tree
 #'
 #' This function 'draws' a context tree as a text.
 #'
 #' @param ct a context tree.
-#' @param terminals not used
-#' @param probs logical; if \code{TRUE}, display the next state distribution rather than the data counts
+#' @param node2txt an optional function called on each node to render it to a text representation
+#' @param ... additional arguments for node2txt
 #' @return the context tree (invisibly)
 #'
 #' @export
-draw <- function(ct,
-                 terminals = FALSE,
-                 probs = FALSE) {
-  assertthat::assert_that(is_ctx_tree(ct))
-  rec_draw("", 0, length(ct$vals), ct, ct$vals, terminals, probs)
+draw <- function(ct, node2txt = NULL, ...) {
+  UseMethod("draw")
+  invisible(ct)
+}
+
+#' @export
+draw.ctx_tree <- function(ct, node2txt = NULL, ...) {
+  rec_draw("", 0, length(ct$vals), ct, ct$vals, node2txt, ...)
   invisible(ct)
 }
 
