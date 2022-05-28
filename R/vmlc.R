@@ -74,14 +74,20 @@ dispatch_in_ctx_tree <- function(tree, x) {
     } else {
       fmatch <- forward_match_all_ctx_counts(x, nb_vals, d, from)
       children <- vector(mode = "list", nb_vals)
+      nb_children <- 0
       for (v in 1:nb_vals) {
-        if (length(tree$children[[v]]) > 0) {
+        if (length(fmatch$positions[[v]])>0 && length(tree$children[[v]]) > 0) {
           children[[v]] <- recurse_dispatch(tree$children[[v]], x, nb_vals, d + 1, fmatch$positions[[v]], fmatch$counts[v, ])
+          nb_children <- nb_children + 1
         } else {
           children[[v]] <- list()
         }
       }
+      if(nb_children>0) {
       result <- list(children = children)
+      } else {
+        result <- list()
+      }
       result$f_by <- f_by
       result
     }
@@ -143,8 +149,13 @@ prune_ctx_tree <- function(tree, alpha = 0.05, verbose = FALSE) {
 }
 
 local_loglikelihood <- function(counts) {
-  probs <- counts / sum(counts)
-  sum(counts * ifelse(probs > 0, log(probs), 0))
+  sc <- sum(counts)
+  if(sc>0) {
+    probs <- counts / sum(counts)
+    sum(counts * ifelse(probs > 0, log(probs), 0))
+  } else {
+    0
+  }
 }
 
 rec_loglikelihood <- function(tree) {
@@ -222,7 +233,7 @@ loglikelihood <- function(vlmc, x = NULL) {
   if (is.null(x)) {
     rec_loglikelihood(vlmc)
   } else {
-    nx <- to_dts(x, vlmc$val)
+    nx <- to_dts(x, vlmc$vals)
     nvlmc <- dispatch_in_ctx_tree(vlmc, nx$ix)
     rec_loglikelihood(nvlmc)
   }
