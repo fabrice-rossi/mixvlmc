@@ -29,14 +29,14 @@ rec_stats_ctx_tree <- function(ct) {
   }
 }
 
-new_ctx_tree <- function(vals, root = NULL, compute_stats = TRUE) {
+new_ctx_tree <- function(vals, root = NULL, compute_stats = TRUE, ..., class = character()) {
   if (is.null(root)) {
     root <- list(vals = vals)
   } else {
     assertthat::assert_that(is.list(root))
     root$vals <- vals
   }
-  preres <- structure(root, class = "ctx_tree")
+  preres <- structure(root, ..., class = c(class, "ctx_tree"))
   if (!is.null(root)) {
     if (compute_stats) {
       stats <- rec_stats_ctx_tree(root)

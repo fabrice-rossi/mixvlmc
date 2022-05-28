@@ -1,4 +1,19 @@
 
+#' Test if the object is a vlmc model
+#'
+#' This function returns \code{TRUE} for VLMC models and \code{FALSE} for other objects.
+#'
+#' @param x an R object.
+#' @return \code{TRUE} for VLMC models
+#' @export
+is_vlmc <- function(x) {
+  inherits(x, "vlmc")
+}
+
+assertthat::on_failure(is_vlmc) <- function(call, env) {
+  paste0(deparse(call$x), " is not a vlmc")
+}
+
 
 grow_ctx_tree <- function(x, vals, min_size, max_depth, covsize = 0, keep_match = FALSE, all_children = FALSE) {
   recurse_ctx_tree <- function(x, nb_vals, d, from, f_by) {
@@ -32,7 +47,7 @@ grow_ctx_tree <- function(x, vals, min_size, max_depth, covsize = 0, keep_match 
     }
   }
   pre_res <- recurse_ctx_tree(x, length(vals), 0, NULL, table(x))
-  new_ctx_tree(vals, pre_res, compute_stats = FALSE)
+  new_ctx_tree(vals, pre_res, compute_stats = FALSE, class="vlmc")
 }
 
 dispatch_in_ctx_tree <- function(tree, x) {
@@ -101,12 +116,12 @@ prune_ctx_tree <- function(tree, alpha = 0.05, verbose = FALSE) {
   pre_res <- recurse_prune_kl_ctx_tree(tree, tree$f_by / sum(tree$f_by), c(), K)
   if (!is.null(pre_res$kl)) {
     # empty result
-    pre_res <- new_ctx_tree(tree$vals)
+    pre_res <- new_ctx_tree(tree$vals, class="vlmc")
     pre_res$f_by <- tree$f_by
     pre_res
   } else {
     ## compute stats
-    new_ctx_tree(pre_res$vals, pre_res)
+    new_ctx_tree(pre_res$vals, pre_res, class="vlmc")
   }
 }
 
@@ -139,7 +154,7 @@ rec_loglikelihood <- function(tree) {
 }
 
 #' @export
-logLik.ctx_tree <- function(object, ...) {
+logLik.vlmc <- function(object, ...) {
   ll <- rec_loglikelihood(object)
   attr(ll, "df") <- object$nb_ctx * (length(object$vals) - 1)
   attr(ll, "nobs") <- sum(object$f_by)
@@ -157,7 +172,7 @@ logLik.ctx_tree <- function(object, ...) {
 #'  a context in the growing phase of the context tree.
 #' @param max_depth integer >= 1 (default: 100). Longest context considered in
 #'  growing phase of the context tree.
-#' @return a fitted context tree
+#' @return a fitted vlmc model
 #'
 #' @export
 vlmc <- function(x, alpha = 0.05, min_size = 2, max_depth = 100) {
@@ -186,7 +201,7 @@ vlmc <- function(x, alpha = 0.05, min_size = 2, max_depth = 100) {
 #' @seealso [stats::logLik]
 #' @export
 loglikelihood <- function(vlmc, x = NULL) {
-  assertthat::assert_that(is_ctx_tree(vlmc))
+  assertthat::assert_that(is_vlmc(vlmc))
   if (is.null(x)) {
     rec_loglikelihood(vlmc)
   } else {

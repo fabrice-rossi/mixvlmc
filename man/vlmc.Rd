@@ -18,7 +18,7 @@ a context in the growing phase of the context tree.}
 growing phase of the context tree.}
 }
 \value{
-a fitted context tree
+a fitted vlmc model
 }
 \description{
 This function fits a  Variable Length Markov Chain (VLMC) to a discrete time series.
