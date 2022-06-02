@@ -3,7 +3,7 @@ prepare_covariate <- function(covariate, ctx_match, d, ...) {
 }
 
 #' @exportS3Method
-prepare_covariate.matrix <- function(covariate, ctx_match, d, with_intercept = TRUE, ...) {
+prepare_covariate.matrix <- function(covariate, ctx_match, d, with_intercept = FALSE, ...) {
   ncols <- ncol(covariate) * d
   if (with_intercept) {
     ncols <- ncols + 1
@@ -40,5 +40,5 @@ prepare_glm <- function(covariate, ctx_match, d, y) {
   local_mm <- prepare_covariate(covariate, ctx_match, d)
   target <- y[ctx_match + d + 1]
   to_keep <- !is.na(target)
-  list(local_mm = local_mm[to_keep, ], target = target[to_keep])
+  list(local_mm = local_mm[to_keep, , drop = FALSE], target = target[to_keep])
 }
