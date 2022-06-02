@@ -11,8 +11,8 @@ rec_stats_ctx_tree <- function(ct) {
   if (is.null(ct$children)) {
     ## this is a leaf
     ## depth = 0
-    ## if there is a f_by, then this is a context
-    if (is.null(ct$f_by)) {
+    ## if there is some local information, then this is a context
+    if (length(ct) == 0) {
       c(0, 0)
     } else {
       c(0, 1)
