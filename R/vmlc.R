@@ -32,7 +32,8 @@ draw.vlmc <- function(ct, node2txt = NULL, ...) {
   invisible(ct)
 }
 
-grow_ctx_tree <- function(x, vals, min_size, max_depth, covsize = 0, keep_match = FALSE, all_children = FALSE) {
+grow_ctx_tree <- function(x, vals, min_size, max_depth, covsize = 0, keep_match = FALSE, all_children = FALSE,
+                          compute_stats = FALSE) {
   recurse_ctx_tree <- function(x, nb_vals, d, from, f_by) {
     if (d < max_depth) {
       fmatch <- forward_match_all_ctx_counts(x, nb_vals, d, from)
@@ -64,7 +65,7 @@ grow_ctx_tree <- function(x, vals, min_size, max_depth, covsize = 0, keep_match 
     }
   }
   pre_res <- recurse_ctx_tree(x, length(vals), 0, NULL, table(x))
-  new_ctx_tree(vals, pre_res, compute_stats = FALSE, class = "vlmc")
+  new_ctx_tree(vals, pre_res, compute_stats = compute_stats, class = "vlmc")
 }
 
 dispatch_in_ctx_tree <- function(tree, x) {
@@ -198,6 +199,28 @@ prune_ctx_tree <- function(tree, alpha = 0.05, cutoff = NULL, verbose = FALSE) {
   }
 }
 
+#' Prune a Variable Length Markov Chain (VLMC)
+#'
+#' This function prunes a VLMC
+#'
+#' @param vlmc a fitted VLMC model
+#' @param alpha number in (0,1) (default: 0.05) cutoff value in quantile scale for pruning
+#' @param cutoff positive number: cutoff value in native (likelihood ratio) scale for pruning.
+#'   Defaults to the value obtained from \code{alpha}. Takes precedence over \code{alpha} is specified.
+#' @param ... additional arguments for the prune function
+#'
+#' @return a pruned VLMC
+#' @export
+prune <- function(vlmc, alpha = 0.05, cutoff = NULL, ...) {
+  UseMethod("prune")
+}
+
+#' @export
+prune.vlmc <- function(vlmc, alpha = 0.05, cutoff = NULL, ...) {
+  assertthat::assert_that(is_vlmc(vlmc))
+  prune_ctx_tree(vlmc, alpha = alpha, cutoff = cutoff)
+}
+
 local_loglikelihood <- function(counts) {
   sc <- sum(counts)
   if (sc > 0) {
@@ -252,10 +275,11 @@ logLik.vlmc <- function(object, ...) {
 #'  a context in the growing phase of the context tree.
 #' @param max_depth integer >= 1 (default: 100). Longest context considered in
 #'  growing phase of the context tree.
+#' @param prune logical: specified whether the context tree should be pruned (default behavior).
 #' @return a fitted vlmc model
 #'
 #' @export
-vlmc <- function(x, alpha = 0.05, cutoff = NULL, min_size = 2, max_depth = 100) {
+vlmc <- function(x, alpha = 0.05, cutoff = NULL, min_size = 2, max_depth = 100, prune = TRUE) {
   # data conversion
   nx <- to_dts(x)
   ix <- nx$ix
@@ -263,9 +287,13 @@ vlmc <- function(x, alpha = 0.05, cutoff = NULL, min_size = 2, max_depth = 100) 
   if (length(vals) > max(10, 0.05 * length(x))) {
     warning(paste0("x as numerous unique values (", length(vals), ")"))
   }
-  ctx_tree <- grow_ctx_tree(ix, vals, min_size = min_size, max_depth = max_depth)
-  pruned_tree <- prune_ctx_tree(ctx_tree, alpha = alpha, cutoff = cutoff)
-  pruned_tree
+  ctx_tree <- grow_ctx_tree(ix, vals, min_size = min_size, max_depth = max_depth, compute_stats = !prune)
+  if (prune) {
+    pruned_tree <- prune_ctx_tree(ctx_tree, alpha = alpha, cutoff = cutoff)
+    pruned_tree
+  } else {
+    ctx_tree
+  }
 }
 
 #' Log-Likelihood of a VLMC

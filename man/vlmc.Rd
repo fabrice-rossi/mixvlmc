@@ -4,7 +4,14 @@
 \alias{vlmc}
 \title{Fit a Variable Length Markov Chain (VLMC)}
 \usage{
-vlmc(x, alpha = 0.05, cutoff = NULL, min_size = 2, max_depth = 100)
+vlmc(
+  x,
+  alpha = 0.05,
+  cutoff = NULL,
+  min_size = 2,
+  max_depth = 100,
+  prune = TRUE
+)
 }
 \arguments{
 \item{x}{a discrete time series; can be numeric, character or factor.}
@@ -19,6 +26,8 @@ a context in the growing phase of the context tree.}
 
 \item{max_depth}{integer >= 1 (default: 100). Longest context considered in
 growing phase of the context tree.}
+
+\item{prune}{logical: specified whether the context tree should be pruned (default behavior).}
 }
 \value{
 a fitted vlmc model
