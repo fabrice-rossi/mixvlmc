@@ -101,6 +101,52 @@ kl_div <- function(p, q) {
   sum(p * ifelse(pratio > 0, log(pratio), 0))
 }
 
+#' Cutoff values for pruning the context tree of a VLMC
+#'
+#' This function returns all the cutoff values that are guaranted to induce a
+#' pruning of the context tree of a VLMC
+#'
+#' @param vlmc a fitted VLMC model
+#' @param mode specify whether the results should be "native" likelihood ratio values
+#'  or expressed in a "quantile" scale of a chi-squared distribution
+#' @param ... additional arguments for cutoff function
+#' @return a vector of cut off values
+#'
+#' @export
+cutoff <- function(vlmc, mode = c("native", "quantile"), ...) {
+  UseMethod("cutoff")
+}
+
+#' @export
+cutoff.vlmc <- function(vlmc, mode = c("native", "quantile"), ...) {
+  mode <- match.arg(mode)
+  recurse_kl_cutoff <- function(vlmc, p_probs) {
+    c_probs <- vlmc$f_by / sum(vlmc$f_by)
+    local_kl <- kl_div(c_probs, p_probs) * sum(vlmc$f_by)
+    if (!is.null(vlmc$children)) {
+      child_kl <- c()
+      for (v in seq_along(vlmc$children)) {
+        if (length(vlmc$children[[v]]) > 0) {
+          child_kl <- c(child_kl, recurse_kl_cutoff(vlmc$children[[v]], c_probs))
+        }
+      }
+      if (local_kl > max(child_kl)) {
+        c(local_kl, child_kl)
+      } else {
+        child_kl
+      }
+    } else {
+      local_kl
+    }
+  }
+  pre_result <- unique(sort(recurse_kl_cutoff(vlmc, vlmc$f_by / sum(vlmc$f_by))))
+  if (mode == "native") {
+    pre_result
+  } else {
+    stats::pchisq(2 * pre_result, df = length(vlmc$vals) - 1, lower.tail = FALSE)
+  }
+}
+
 prune_ctx_tree <- function(tree, alpha = 0.05, verbose = FALSE) {
   recurse_prune_kl_ctx_tree <- function(tree, p_probs, ctx, K) {
     c_probs <- tree$f_by / sum(tree$f_by)
