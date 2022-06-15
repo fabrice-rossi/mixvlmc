@@ -109,7 +109,7 @@ kl_div <- function(p, q) {
 #' @param vlmc a fitted VLMC model
 #' @param mode specify whether the results should be "native" likelihood ratio values
 #'  or expressed in a "quantile" scale of a chi-squared distribution
-#' @param ... additional arguments for cutoff function
+#' @param ... additional arguments for the cutoff function
 #' @return a vector of cut off values
 #'
 #' @export

@@ -12,7 +12,7 @@ cutoff(vlmc, mode = c("native", "quantile"), ...)
 \item{mode}{specify whether the results should be "native" likelihood ratio values
 or expressed in a "quantile" scale of a chi-squared distribution}
 
-\item{...}{additional arguments for cutoff function}
+\item{...}{additional arguments for the cutoff function}
 }
 \value{
 a vector of cut off values
