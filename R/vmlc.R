@@ -147,7 +147,7 @@ cutoff.vlmc <- function(vlmc, mode = c("native", "quantile"), ...) {
   }
 }
 
-prune_ctx_tree <- function(tree, alpha = 0.05, verbose = FALSE) {
+prune_ctx_tree <- function(tree, alpha = 0.05, cutoff = NULL, verbose = FALSE) {
   recurse_prune_kl_ctx_tree <- function(tree, p_probs, ctx, K) {
     c_probs <- tree$f_by / sum(tree$f_by)
     if (!is.null(tree$children)) {
@@ -181,7 +181,11 @@ prune_ctx_tree <- function(tree, alpha = 0.05, verbose = FALSE) {
       list(kl = kl, tree = tree)
     }
   }
-  K <- stats::qchisq(alpha, df = length(tree$vals) - 1, lower.tail = FALSE) / 2
+  if (is.null(cutoff)) {
+    K <- stats::qchisq(alpha, df = length(tree$vals) - 1, lower.tail = FALSE) / 2
+  } else {
+    K <- cutoff
+  }
   pre_res <- recurse_prune_kl_ctx_tree(tree, tree$f_by / sum(tree$f_by), c(), K)
   if (!is.null(pre_res$kl)) {
     # empty result
@@ -241,7 +245,9 @@ logLik.vlmc <- function(object, ...) {
 #' This function fits a  Variable Length Markov Chain (VLMC) to a discrete time series.
 #'
 #' @param x a discrete time series; can be numeric, character or factor.
-#' @param alpha number in (0,1) (default: 0.05) cut off value in the pruning phase.
+#' @param alpha number in (0,1) (default: 0.05) cutoff value in quantile scale in the pruning phase.
+#' @param cutoff positive number: cutoff value in native (likelihood ratio) scale in the pruning phase.
+#'   Defaults to the value obtained from \code{alpha}. Takes precedence over \code{alpha} is specified.
 #' @param min_size integer >= 1 (default: 2). Minimum number of observations for
 #'  a context in the growing phase of the context tree.
 #' @param max_depth integer >= 1 (default: 100). Longest context considered in
@@ -249,7 +255,7 @@ logLik.vlmc <- function(object, ...) {
 #' @return a fitted vlmc model
 #'
 #' @export
-vlmc <- function(x, alpha = 0.05, min_size = 2, max_depth = 100) {
+vlmc <- function(x, alpha = 0.05, cutoff = NULL, min_size = 2, max_depth = 100) {
   # data conversion
   nx <- to_dts(x)
   ix <- nx$ix
@@ -258,7 +264,7 @@ vlmc <- function(x, alpha = 0.05, min_size = 2, max_depth = 100) {
     warning(paste0("x as numerous unique values (", length(vals), ")"))
   }
   ctx_tree <- grow_ctx_tree(ix, vals, min_size = min_size, max_depth = max_depth)
-  pruned_tree <- prune_ctx_tree(ctx_tree, alpha = alpha)
+  pruned_tree <- prune_ctx_tree(ctx_tree, alpha = alpha, cutoff = cutoff)
   pruned_tree
 }
 

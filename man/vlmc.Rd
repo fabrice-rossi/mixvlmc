@@ -4,12 +4,15 @@
 \alias{vlmc}
 \title{Fit a Variable Length Markov Chain (VLMC)}
 \usage{
-vlmc(x, alpha = 0.05, min_size = 2, max_depth = 100)
+vlmc(x, alpha = 0.05, cutoff = NULL, min_size = 2, max_depth = 100)
 }
 \arguments{
 \item{x}{a discrete time series; can be numeric, character or factor.}
 
-\item{alpha}{number in (0,1) (default: 0.05) cut off value in the pruning phase.}
+\item{alpha}{number in (0,1) (default: 0.05) cutoff value in quantile scale in the pruning phase.}
+
+\item{cutoff}{positive number: cutoff value in native (likelihood ratio) scale in the pruning phase.
+Defaults to the value obtained from \code{alpha}. Takes precedence over \code{alpha} is specified.}
 
 \item{min_size}{integer >= 1 (default: 2). Minimum number of observations for
 a context in the growing phase of the context tree.}
