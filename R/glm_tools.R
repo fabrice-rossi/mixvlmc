@@ -42,3 +42,49 @@ prepare_glm <- function(covariate, ctx_match, d, y) {
   to_keep <- !is.na(target)
   list(local_mm = local_mm[to_keep, , drop = FALSE], target = target[to_keep])
 }
+
+fit_glm <- function(target, mm, nb_vals) {
+  assertthat::assert_that(nrow(mm) > 0)
+  if (nb_vals == 2) {
+    if (ncol(mm) > 0) {
+      suppressWarnings(result <-
+        stats::glm(target ~ .,
+          data = mm, family = stats::binomial(),
+          method = spaMM::spaMM_glm.fit, x = FALSE, y = FALSE,
+          model = FALSE
+        ))
+    } else {
+      suppressWarnings(result <-
+        stats::glm(target ~ 1,
+          family = stats::binomial(),
+          method = spaMM::spaMM_glm.fit, x = FALSE, y = FALSE,
+          model = FALSE
+        ))
+    }
+  } else {
+    if (ncol(mm) > 0) {
+      suppressWarnings(result <-
+        VGAM::vglm(target ~ .,
+          data = mm, family = VGAM::multinomial(),
+          x.arg = FALSE, y.arg = FALSE, model = FALSE
+        ))
+    } else {
+      suppressWarnings(result <-
+        VGAM::vglm(target ~ 1,
+          data = mm, family = VGAM::multinomial(),
+          x.arg = FALSE, y.arg = FALSE, model = FALSE
+        ))
+    }
+  }
+  result
+}
+
+glm_likelihood <- function(model, mm, target) {
+  if(inherits(model, "vglm")) {
+    probs <- VGAM::predictvglm(model, mm, type = "response")
+    sum(log(probs) * stats::model.matrix(~ target - 1))
+  } else {
+    probs <- stats::predict(model, mm, type = "response")
+    sum(log(probs) * target + log(1 - probs) * (1 - target))
+  }
+}

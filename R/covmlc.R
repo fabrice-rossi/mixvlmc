@@ -3,36 +3,8 @@ node_fit_glm <- function(tree, d, y, covariate, alpha, nb_vals, return_all = FAL
   local_mm <- glmdata$local_mm
   target <- glmdata$target
   h0mm <- local_mm[, -seq(ncol(local_mm), by = -1, length.out = ncol(covariate)), drop = FALSE]
-  if (nb_vals == 2) {
-    suppressWarnings(local_glm <-
-      stats::glm(target ~ .,
-        data = local_mm, family = stats::binomial(), method = spaMM::spaMM_glm.fit,
-        x = FALSE, y = FALSE, model = FALSE
-      ))
-    if (ncol(h0mm) > 0) {
-      suppressWarnings(H0_local_glm <-
-        stats::glm(target ~ .,
-          data = h0mm, family = stats::binomial(), method = spaMM::spaMM_glm.fit,
-          x = FALSE, y = FALSE, model = FALSE
-        ))
-    } else {
-      suppressWarnings(H0_local_glm <-
-        stats::glm(target ~ 1,
-          family = stats::binomial(), method = spaMM::spaMM_glm.fit,
-          x = FALSE, y = FALSE, model = FALSE
-        ))
-    }
-  } else {
-    suppressWarnings(local_glm <-
-      VGAM::vglm(target ~ ., data = local_mm, family = VGAM::multinomial(), x.arg = FALSE, y.arg = FALSE, model = FALSE))
-    if (ncol(h0mm) > 0) {
-      suppressWarnings(H0_local_glm <-
-        VGAM::vglm(target ~ ., data = h0mm, family = VGAM::multinomial(), x.arg = FALSE, y.arg = FALSE, model = FALSE))
-    } else {
-      suppressWarnings(H0_local_glm <-
-        VGAM::vglm(target ~ 1, data = h0mm, family = VGAM::multinomial(), x.arg = FALSE, y.arg = FALSE, model = FALSE))
-    }
-  }
+  local_glm <- fit_glm(target, local_mm, nb_vals)
+  H0_local_glm <- fit_glm(target, h0mm, nb_vals)
   lambda <- 2 * (stats::logLik(local_glm) - stats::logLik(H0_local_glm))
   p_value <-
     1 - stats::pchisq(as.numeric(lambda), df = ncol(covariate) * (nb_vals - 1))
@@ -80,26 +52,9 @@ node_prune_model <- function(model, cov_dim, nb_vals, alpha) {
     current_model <- NULL
     for (k in 1:nb) {
       h0mm <- local_mm[, -seq(ncol(local_mm), by = -1, length.out = cov_dim * k), drop = FALSE]
-      if (nb_vals == 2) {
-        if (ncol(h0mm) > 0) {
-          suppressWarnings(H0_local_glm <-
-            stats::glm(target ~ ., data = h0mm, family = stats::binomial(), method = spaMM::spaMM_glm.fit, x = FALSE, y = FALSE, model = FALSE))
-        } else {
-          suppressWarnings(H0_local_glm <-
-            stats::glm(target ~ 1, family = stats::binomial(), method = spaMM::spaMM_glm.fit, x = FALSE, y = FALSE, model = FALSE))
-        }
-      } else {
-        if (ncol(h0mm) > 0) {
-          suppressWarnings(H0_local_glm <-
-            VGAM::vglm(target ~ ., data = h0mm, family = VGAM::multinomial(), x.arg = FALSE, y.arg = FALSE, model = FALSE))
-        } else {
-          suppressWarnings(H0_local_glm <-
-            VGAM::vglm(target ~ 1, data = h0mm, family = VGAM::multinomial(), x.arg = FALSE, y.arg = FALSE, model = FALSE))
-        }
-      }
+      H0_local_glm <- fit_glm(target, h0mm, nb_vals)
       lambda <- 2 * (current_like - stats::logLik(H0_local_glm))
-      p_value <- 1 - stats::pchisq(as.numeric(lambda), df = cov_dim * (nb_vals -
-        1))
+      p_value <- 1 - stats::pchisq(as.numeric(lambda), df = cov_dim * (nb_vals - 1))
       if (p_value > alpha) {
         ## H0 is not rejected
         current_like <- as.numeric(stats::logLik(H0_local_glm))
@@ -125,20 +80,6 @@ node_prune_model <- function(model, cov_dim, nb_vals, alpha) {
     model$data <- NULL
     model
   }
-}
-
-logistic <- function(x) {
-  1 / (1 + exp(-x))
-}
-
-likelihood <- function(model, mm, target) {
-  probs <- stats::predict(model, mm, type = "response")
-  sum(log(probs) * target + log(1 - probs) * (1 - target))
-}
-
-likelihood_vglm <- function(model, mm, target) {
-  probs <- VGAM::predictvglm(model, mm, type = "response")
-  sum(log(probs) * stats::model.matrix(~ target - 1))
 }
 
 ctx_tree_fit_glm <- function(tree, y, covariate, alpha, all_models = FALSE, aggressive_pruning = FALSE, verbose = FALSE) {
@@ -192,21 +133,12 @@ ctx_tree_fit_glm <- function(tree, y, covariate, alpha, all_models = FALSE, aggr
             ## we need to evaluate the likelihood of model on the data used by the submodels
             ll_model_H0 <- 0
             for (v in seq_along(tree$children)) {
-              if (nb_vals == 2) {
-                ll_model_H0 <- ll_model_H0 +
-                  likelihood(
-                    model$H1_model$model,
-                    submodels[[v]][["model"]]$data$local_mm,
-                    submodels[[v]][["model"]]$data$target
-                  )
-              } else {
-                ll_model_H0 <- ll_model_H0 +
-                  likelihood_vglm(
-                    model$H1_model$model,
-                    submodels[[v]][["model"]]$data$local_mm,
-                    submodels[[v]][["model"]]$data$target
-                  )
-              }
+              ll_model_H0 <- ll_model_H0 +
+                glm_likelihood(
+                  model$H1_model$model,
+                  submodels[[v]][["model"]]$data$local_mm,
+                  submodels[[v]][["model"]]$data$target
+                )
             }
             lambda <- 2 * (ll_H0 - ll_model_H0)
             ## the df is specific to nb_vals == 2
