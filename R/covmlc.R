@@ -1,41 +1,45 @@
 node_fit_glm <- function(tree, d, y, covariate, alpha, nb_vals, return_all = FALSE) {
   glmdata <- prepare_glm(covariate, tree$match, d, y)
   local_mm <- glmdata$local_mm
-  target <- glmdata$target
-  h0mm <- local_mm[, -seq(ncol(local_mm), by = -1, length.out = ncol(covariate)), drop = FALSE]
-  local_glm <- fit_glm(target, local_mm, nb_vals)
-  H0_local_glm <- fit_glm(target, h0mm, nb_vals)
-  lambda <- 2 * (stats::logLik(local_glm) - stats::logLik(H0_local_glm))
-  p_value <-
-    1 - stats::pchisq(as.numeric(lambda), df = ncol(covariate) * (nb_vals - 1))
-  H0_model <- list(
-    H0 = TRUE,
-    coefficients = stats::coefficients(H0_local_glm),
-    likelihood = as.numeric(stats::logLik(H0_local_glm)),
-    data = list(local_mm = h0mm, target = target),
-    model = H0_local_glm
-  )
-  H1_model <- list(
-    H0 = FALSE,
-    coefficients = stats::coefficients(local_glm),
-    likelihood = as.numeric(stats::logLik(local_glm)),
-    data = glmdata,
-    model = local_glm
-  )
-  if (return_all) {
-    list(
-      p_value = p_value,
-      H0_model = H0_model,
-      H1_model = H1_model
+  if (nrow(local_mm) > 0) {
+    target <- glmdata$target
+    h0mm <- local_mm[, -seq(ncol(local_mm), by = -1, length.out = ncol(covariate)), drop = FALSE]
+    local_glm <- fit_glm(target, local_mm, nb_vals)
+    H0_local_glm <- fit_glm(target, h0mm, nb_vals)
+    lambda <- 2 * (stats::logLik(local_glm) - stats::logLik(H0_local_glm))
+    p_value <-
+      1 - stats::pchisq(as.numeric(lambda), df = ncol(covariate) * (nb_vals - 1))
+    H0_model <- list(
+      H0 = TRUE,
+      coefficients = stats::coefficients(H0_local_glm),
+      likelihood = as.numeric(stats::logLik(H0_local_glm)),
+      data = list(local_mm = h0mm, target = target),
+      model = H0_local_glm
     )
-  } else {
-    if (p_value > alpha) {
-      results <- H0_model
+    H1_model <- list(
+      H0 = FALSE,
+      coefficients = stats::coefficients(local_glm),
+      likelihood = as.numeric(stats::logLik(local_glm)),
+      data = glmdata,
+      model = local_glm
+    )
+    if (return_all) {
+      list(
+        p_value = p_value,
+        H0_model = H0_model,
+        H1_model = H1_model
+      )
     } else {
-      results <- H1_model
+      if (p_value > alpha) {
+        results <- H0_model
+      } else {
+        results <- H1_model
+      }
+      results$p_value <- p_value
+      results
     }
-    results$p_value <- p_value
-    results
+  } else {
+    NULL
   }
 }
 
@@ -163,7 +167,7 @@ ctx_tree_fit_glm <- function(tree, y, covariate, alpha, all_models = FALSE, aggr
             }
           }
         }
-        if (nb_children < nb_vals) {
+        if (all_models || nb_children < nb_vals) {
           result[["model"]] <- node_fit_glm(tree, d, y, covariate, alpha, nb_vals)
         }
         if (nb_models > 0 & !pruned) {
