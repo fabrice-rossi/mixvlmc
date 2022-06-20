@@ -145,17 +145,15 @@ ctx_tree_fit_glm <- function(tree, y, covariate, alpha, all_models = FALSE, aggr
                 )
             }
             lambda <- 2 * (ll_H0 - ll_model_H0)
-            ## the df is specific to nb_vals == 2
-            p_value <- 1 - stats::pchisq(as.numeric(lambda),
-              df = (1 + ncol(covariate) * d)
-            )
+            p_value <- stats::pchisq(as.numeric(lambda),
+              df = (1 + ncol(covariate) * d)*((nb_vals-1)^2) , lower.tail = FALSE)
             if (verbose) {
               print(paste(lambda, p_value))
             }
             if (p_value > alpha) {
               ## we remove the children all together
               if (verbose) {
-                print("pruning the tree")
+                print("pruning the subtree")
               }
               pruned <- TRUE
               ## and preparing for the recursive call
