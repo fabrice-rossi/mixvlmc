@@ -8,7 +8,7 @@ node_fit_glm <- function(tree, d, y, covariate, alpha, nb_vals, return_all = FAL
     H0_local_glm <- fit_glm(target, h0mm, nb_vals)
     lambda <- 2 * (stats::logLik(local_glm) - stats::logLik(H0_local_glm))
     p_value <-
-      1 - stats::pchisq(as.numeric(lambda), df = ncol(covariate) * (nb_vals - 1))
+      stats::pchisq(as.numeric(lambda), df = ncol(covariate) * (nb_vals - 1), lower.tail = FALSE)
     H0_model <- list(
       H0 = TRUE,
       coefficients = stats::coefficients(H0_local_glm),
@@ -58,7 +58,7 @@ node_prune_model <- function(model, cov_dim, nb_vals, alpha) {
       h0mm <- local_mm[, -seq(ncol(local_mm), by = -1, length.out = cov_dim * k), drop = FALSE]
       H0_local_glm <- fit_glm(target, h0mm, nb_vals)
       lambda <- 2 * (current_like - stats::logLik(H0_local_glm))
-      p_value <- 1 - stats::pchisq(as.numeric(lambda), df = cov_dim * (nb_vals - 1))
+      p_value <- stats::pchisq(as.numeric(lambda), df = cov_dim * (nb_vals - 1), lower.tail = FALSE)
       if (p_value > alpha) {
         ## H0 is not rejected
         current_like <- as.numeric(stats::logLik(H0_local_glm))
