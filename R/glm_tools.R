@@ -11,14 +11,12 @@ prepare_covariate.matrix <- function(covariate, ctx_match, d, with_intercept = F
   mm <- matrix(0, nrow = length(ctx_match), ncol = ncols)
   if (with_intercept) {
     mm[, 1] <- 1
-    tcol <- 2
-  } else {
-    tcol <- 1
   }
+  tcol <- ncols
   for (step in 1:d) {
-    for (p in 1:ncol(covariate)) {
+    for (p in ncol(covariate):1) {
       mm[, tcol] <- covariate[ctx_match + step, p]
-      tcol <- tcol + 1
+      tcol <- tcol - 1
     }
   }
   mm
@@ -30,7 +28,7 @@ prepare_covariate.data.frame <- function(covariate, ctx_match, d, ...) {
   the_names <- names(covariate)
   for (step in 1:d) {
     for (p in 1:ncol(covariate)) {
-      res[[paste0(the_names[p], "_", step)]] <- covariate[ctx_match + step, p]
+      res[[paste0(the_names[p], "_", step)]] <- covariate[ctx_match + d - step + 1, p]
     }
   }
   list2DF(res)
