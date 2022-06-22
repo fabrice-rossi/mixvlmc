@@ -27,7 +27,8 @@ node_fit_glm <- function(tree, d, y, covariate, alpha, nb_vals, return_all = FAL
       list(
         p_value = p_value,
         H0_model = H0_model,
-        H1_model = H1_model
+        H1_model = H1_model,
+        lambda = lambda
       )
     } else {
       if (p_value > alpha) {
@@ -36,6 +37,7 @@ node_fit_glm <- function(tree, d, y, covariate, alpha, nb_vals, return_all = FAL
         results <- H1_model
       }
       results$p_value <- p_value
+      results$lambda <- lambda
       results
     }
   } else {
@@ -77,7 +79,8 @@ node_prune_model <- function(model, cov_dim, nb_vals, alpha) {
         H0 = FALSE,
         coefficients = stats::coefficients(current_model),
         likelihood = current_like,
-        model = current_model
+        model = current_model,
+        p_value = p_value
       )
     }
   } else {
