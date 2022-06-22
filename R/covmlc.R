@@ -1,14 +1,11 @@
-node_fit_glm <- function(tree, d, y, covariate, alpha, nb_vals, return_all = FALSE) {
-  glmdata <- prepare_glm(covariate, tree$match, d, y)
-  local_mm <- glmdata$local_mm
+node_fit_glm_internal <- function(local_mm, target, dim_cov, alpha, nb_vals, return_all = FALSE) {
   if (nrow(local_mm) > 0) {
-    target <- glmdata$target
-    h0mm <- local_mm[, -seq(ncol(local_mm), by = -1, length.out = ncol(covariate)), drop = FALSE]
+    h0mm <- local_mm[, -seq(ncol(local_mm), by = -1, length.out = dim_cov), drop = FALSE]
     local_glm <- fit_glm(target, local_mm, nb_vals)
     H0_local_glm <- fit_glm(target, h0mm, nb_vals)
     lambda <- 2 * (stats::logLik(local_glm) - stats::logLik(H0_local_glm))
     p_value <-
-      stats::pchisq(as.numeric(lambda), df = ncol(covariate) * (nb_vals - 1), lower.tail = FALSE)
+      stats::pchisq(as.numeric(lambda), df = dim_cov * (nb_vals - 1), lower.tail = FALSE)
     H0_model <- list(
       H0 = TRUE,
       coefficients = stats::coefficients(H0_local_glm),
@@ -20,7 +17,7 @@ node_fit_glm <- function(tree, d, y, covariate, alpha, nb_vals, return_all = FAL
       H0 = FALSE,
       coefficients = stats::coefficients(local_glm),
       likelihood = as.numeric(stats::logLik(local_glm)),
-      data = glmdata,
+      data = list(local_mm = local_mm, target = target),
       model = local_glm
     )
     if (return_all) {
@@ -43,6 +40,12 @@ node_fit_glm <- function(tree, d, y, covariate, alpha, nb_vals, return_all = FAL
   } else {
     NULL
   }
+}
+
+
+node_fit_glm <- function(tree, d, y, covariate, alpha, nb_vals, return_all = FALSE) {
+  glmdata <- prepare_glm(covariate, tree$match, d, y)
+  node_fit_glm_internal(glmdata$local_mm, glmdata$target, ncol(covariate), alpha, nb_vals, return_all)
 }
 
 ctx_tree_exists <- function(tree) {
