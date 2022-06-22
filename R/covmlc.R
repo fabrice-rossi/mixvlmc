@@ -92,7 +92,7 @@ node_prune_model <- function(model, cov_dim, nb_vals, alpha) {
   }
 }
 
-ctx_tree_fit_glm <- function(tree, y, covariate, alpha, all_models = FALSE, aggressive_pruning = FALSE, verbose = FALSE) {
+ctx_tree_fit_glm <- function(tree, y, covariate, alpha, all_models = FALSE, verbose = FALSE) {
   nb_vals <- length(tree$vals)
   recurse_ctx_tree_fit_glm <-
     function(tree, d, y, covariate) {
@@ -101,7 +101,8 @@ ctx_tree_fit_glm <- function(tree, y, covariate, alpha, all_models = FALSE, aggr
         list()
       } else if (is.null(tree[["children"]])) {
         ## let's compute the local model and return it
-        list(model = node_fit_glm(tree, d, y, covariate, alpha, nb_vals))
+        ## prunable is true as there is no sub tree
+        list(model = node_fit_glm(tree, d, y, covariate, alpha, nb_vals), prunable = TRUE)
       } else {
         ## the recursive part
         ## let's get the models
@@ -109,6 +110,10 @@ ctx_tree_fit_glm <- function(tree, y, covariate, alpha, all_models = FALSE, aggr
           vector(mode = "list", length = length(tree$children))
         nb_models <- 0
         nb_children <- 0
+        nb_rejected <- 0
+        nb_prunable <- 0
+        pr_candidates <- c()
+        ll_H0 <- 0
         for (v in seq_along(tree$children)) {
           if (ctx_tree_exists(tree$children[[v]])) {
             nb_children <- nb_children + 1
@@ -116,93 +121,160 @@ ctx_tree_fit_glm <- function(tree, y, covariate, alpha, all_models = FALSE, aggr
               recurse_ctx_tree_fit_glm(tree$children[[v]], d + 1, y, covariate)
             if (!is.null(submodels[[v]][["model"]])) {
               nb_models <- nb_models + 1
-            }
-          }
-        }
-        pruned <- FALSE
-        result <- list()
-        if (nb_models == nb_vals) {
-          ## pruning is possible
-          ll_H0 <- 0
-          nb_rejected <- 0
-          for (v in seq_along(tree$children)) {
-            if (!submodels[[v]][["model"]]$H0) {
-              nb_rejected <- nb_rejected + 1
-            } else {
-              ll_H0 <- ll_H0 + submodels[[v]][["model"]]$likelihood
-            }
-          }
-          if (nb_rejected == 0) {
-            ## Let's try to remove all the children
-            ## we need a local model
-            if (verbose) {
-              print("fitting a local model")
-            }
-            model <- node_fit_glm(tree, d, y, covariate, alpha, nb_vals, return_all = TRUE)
-            ## we try to remove all children
-            ## we need to evaluate the likelihood of model on the data used by the submodels
-            ll_model_H0 <- 0
-            for (v in seq_along(tree$children)) {
-              ll_model_H0 <- ll_model_H0 +
-                glm_likelihood(
-                  model$H1_model$model,
-                  submodels[[v]][["model"]]$data$local_mm,
-                  submodels[[v]][["model"]]$data$target
-                )
-            }
-            lambda <- 2 * (ll_H0 - ll_model_H0)
-            p_value <- stats::pchisq(as.numeric(lambda),
-              df = (1 + ncol(covariate) * d)*((nb_vals-1)^2) , lower.tail = FALSE)
-            if (verbose) {
-              print(paste(lambda, p_value))
-            }
-            if (p_value > alpha) {
-              ## we remove the children all together
-              if (verbose) {
-                print("pruning the subtree")
-              }
-              pruned <- TRUE
-              ## and preparing for the recursive call
-              if (model$p_value > alpha) {
-                result[["model"]] <- model$H0_model
-              } else {
-                result[["model"]] <- model$H1_model
-              }
-            }
-          }
-        }
-        if (all_models || nb_children < nb_vals) {
-          result[["model"]] <- node_fit_glm(tree, d, y, covariate, alpha, nb_vals)
-        }
-        if (nb_models > 0 & !pruned) {
-          ## Let's try to prune the models
-          if (nb_children < nb_vals & aggressive_pruning) {
-            for (v in seq_along(submodels)) {
-              if (!is.null(submodels[[v]][["model"]])) {
-                if (submodels[[v]][["model"]]$H0) {
-                  pruned <- TRUE
-                }
-              }
-            }
-          } else {
-            for (v in seq_along(submodels)) {
-              if (!is.null(submodels[[v]][["model"]])) {
-                if (submodels[[v]][["model"]]$H0) {
-                  ## post prune
-                  if (verbose) {
-                    print("Trying to prune covariables")
-                  }
-                  submodels[[v]][["model"]] <-
-                    node_prune_model(submodels[[v]][["model"]], ncol(covariate), nb_vals, alpha)
+              prunable <- submodels[[v]][["prunable"]]
+              if (!is.null(prunable) && prunable) {
+                if (!submodels[[v]][["model"]]$H0) {
+                  nb_rejected <- nb_rejected + 1
                 } else {
-                  submodels[[v]][["model"]]$data <- NULL
+                  pr_candidates <- c(pr_candidates, v)
+                  nb_prunable <- nb_prunable + 1
+                  ll_H0 <- ll_H0 + submodels[[v]][["model"]]$likelihood
                 }
               }
             }
           }
         }
-        if (!pruned) {
-          result[["children"]] <- submodels
+        if (verbose) {
+          print(paste(
+            "children:", nb_children, "models:", nb_models,
+            "prunable:", nb_prunable, "rejected:", nb_rejected
+          ))
+        }
+        ## we have several different possible situations, based on the assumption
+        ## that the tree is full
+        ## 1) at least one H0 is rejected
+        ##    - we cannot prune the corresponding submodel
+        ##    - the current node is not prunable
+        ##    - the non rejected H0 submodels could be merged if we have at least 2 of them,
+        ##      this is possible only if nb_vals > 2
+        ##    - all remaining prunable submodels can be back pruned
+        ## 2) no H0 is rejected
+        ##    - we can try to prune all submodels at once if they are all prunable
+        ##    - if some submodels are not prunable, we can merge the prunable ones
+        ##      (if we have at least 2 of them)
+        ##    - the current node will be prunable if this is done
+
+        result <- list()
+        ## do we need a local/merged model
+        if (nb_rejected > 0) {
+          need_local_model <- FALSE
+          need_merged_model <- nb_prunable >= 2
+        } else {
+          if (nb_prunable == nb_vals) {
+            need_local_model <- TRUE
+            need_merged_model <- FALSE
+          } else {
+            need_local_model <- FALSE
+            need_merged_model <- nb_prunable >= 2
+          }
+        }
+        local_model <- NULL
+        if (need_local_model) {
+          ## we need a local model
+          if (verbose) {
+            print("fitting a local model")
+          }
+          local_model <- node_fit_glm(tree, d, y, covariate, alpha, nb_vals, return_all = TRUE)
+          chisq_df <- (1 + ncol(covariate) * d) * ((nb_vals - 1)^2)
+        }
+        if (need_merged_model) {
+          ## we need a merged model
+          if (verbose) {
+            print(paste("fitting a merged model for:", paste(pr_candidates, collapse = " ")))
+          }
+          ## prepare the data set
+          local_mm <- submodels[[pr_candidates[1]]][["model"]]$data$local_mm
+          target <- submodels[[pr_candidates[1]]][["model"]]$data$target
+          for(v in pr_candidates[-1]) {
+            local_mm <- rbind(local_mm, submodels[[pr_candidates[v]]][["model"]]$data$local_mm)
+            target <- c(target, submodels[[pr_candidates[v]]][["model"]]$data$target)
+          }
+          local_model <- node_fit_glm_internal(local_mm, target, ncol(covariate), alpha, nb_vals, return_all = TRUE)
+          chisq_df <- (1 + ncol(covariate) * d) * ((nb_vals - 1) * length(pr_candidates))
+        }
+        if (!is.null(local_model)) {
+          ## let us compute the likelihood of the new model on the data used by the ones to merge/remove
+          ll_model_H0 <- 0
+          ll_H0 <- 0
+          for (v in pr_candidates) {
+            ll_model_H0 <- ll_model_H0 +
+              glm_likelihood(
+                local_model$H1_model$model,
+                submodels[[v]][["model"]]$data$local_mm,
+                submodels[[v]][["model"]]$data$target
+              )
+            ll_H0 <- ll_H0 + submodels[[v]][["model"]]$likelihood
+          }
+          lambda <- 2 * (ll_H0 - ll_model_H0)
+          p_value <- stats::pchisq(as.numeric(lambda),
+            df = chisq_df,
+            lower.tail = FALSE
+          )
+          if (verbose) {
+            print(paste(lambda, p_value))
+          }
+        }
+        ## let prepare first the children to keep
+        if (need_local_model) {
+          if (p_value > alpha) {
+            ## we remove the prunable subtrees all together
+            if (verbose) {
+              print("pruning the subtree")
+            }
+            if (local_model$p_value > alpha) {
+              result$model <- local_model$H0_model
+            } else {
+              result$model <- local_model$H1_model
+            }
+            result$prunable <- TRUE
+          } else {
+            ## we throw away the local model and keep the children
+            result$children <- submodels
+            result$prunable <- FALSE
+          }
+        } else if (need_merged_model) {
+          result$prunable <- FALSE
+          if (p_value > alpha) {
+            ## we merge the models
+            if (verbose) {
+              print("merging sub models")
+            }
+            for (v in pr_candidates) {
+              submodels[[v]][["model"]] <- NULL
+            }
+            result$children <- submodels
+            if (local_model$p_value > alpha) {
+              result$merged_model <- local_model$H0_model
+            } else {
+              result$merged_model <- local_model$H1_model
+            }
+            result$merged <- pr_candidates
+          } else {
+            ## we throw away the local model and keep the children
+            result$children <- submodels
+          }
+        } else {
+          result$children <- submodels
+          result$prunable <- FALSE
+        }
+        ## then we need to back prune each model
+        if (is.null(result$merged_model)) {
+          if (!is.null(result$children)) {
+            if (verbose) {
+              print("Trying to prune covariables")
+            }
+            for (v in pr_candidates) {
+              result$children[[v]][["model"]] <-
+                node_prune_model(result$children[[v]][["model"]], ncol(covariate), nb_vals, alpha)
+            }
+          }
+        } else {
+          if (result$merged_model$H0) {
+            if (verbose) {
+              print("Trying to prune the merged model covariables")
+            }
+            result$merged_model <- node_prune_model(result$merged_model, ncol(covariate), nb_vals, alpha)
+          }
         }
         result
       }
@@ -242,13 +314,14 @@ covlmc <- function(x, covariate, alpha = 0.05, min_size = 15, max_depth = 100) {
   if (length(vals) > max(10, 0.05 * length(x))) {
     warning(paste0("x as numerous unique values (", length(vals), ")"))
   }
+  ## we enforce a full context tree (with all_children=TRUE)
   ctx_tree <- grow_ctx_tree(ix, vals,
     min_size = min_size, max_depth = max_depth,
-    covsize = ncol(covariate), keep_match = TRUE, all_children = FALSE
+    covsize = ncol(covariate), keep_match = TRUE, all_children = TRUE
   )
   pruned_tree <- ctx_tree_fit_glm(ctx_tree, x, covariate,
     alpha = alpha, all_models = TRUE,
-    aggressive_pruning = TRUE
+    verbose = FALSE
   )
   new_ctx_tree(pruned_tree$vals, pruned_tree, class = "covlmc")
 }
