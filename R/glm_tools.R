@@ -78,7 +78,7 @@ fit_glm <- function(target, mm, nb_vals) {
 }
 
 glm_likelihood <- function(model, mm, target) {
-  if(inherits(model, "vglm")) {
+  if (inherits(model, "vglm")) {
     probs <- VGAM::predictvglm(model, mm, type = "response")
     sum(log(probs) * stats::model.matrix(~ target - 1))
   } else {

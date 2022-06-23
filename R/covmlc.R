@@ -185,7 +185,7 @@ ctx_tree_fit_glm <- function(tree, y, covariate, alpha, all_models = FALSE, verb
           ## prepare the data set
           local_mm <- submodels[[pr_candidates[1]]][["model"]]$data$local_mm
           target <- submodels[[pr_candidates[1]]][["model"]]$data$target
-          for(v in pr_candidates[-1]) {
+          for (v in pr_candidates[-1]) {
             local_mm <- rbind(local_mm, submodels[[pr_candidates[v]]][["model"]]$data$local_mm)
             target <- c(target, submodels[[pr_candidates[v]]][["model"]]$data$target)
           }
