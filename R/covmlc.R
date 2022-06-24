@@ -326,6 +326,45 @@ covlmc <- function(x, covariate, alpha = 0.05, min_size = 15, max_depth = 100) {
   new_ctx_tree(pruned_tree$vals, pruned_tree, class = "covlmc")
 }
 
+rec_covlmc_contexts <- function(path, ct, vals) {
+  if (is.null(ct$children)) {
+    ## this is a leaf
+    ## if there is model, then this is a context
+    if (is.null(ct$model)) {
+      NULL
+    } else {
+      list(path)
+    }
+  } else {
+    all_ctx <- list()
+    for (v in seq_along(ct$children)) {
+      sub_ctx <- rec_covlmc_contexts(c(path, vals[v]), ct$children[[v]], vals)
+      if (!is.null(sub_ctx)) {
+        all_ctx <- c(all_ctx, sub_ctx)
+      }
+    }
+    ## we may have merged model which corresponds to multiple contexts at once
+    if (!is.null(ct$merged_model)) {
+      for (v in ct$merged) {
+        all_ctx <- c(all_ctx, list(c(path, vals[v])))
+      }
+    }
+    all_ctx
+  }
+}
+
+
+#' @export
+contexts.covlmc <- function(ct) {
+  preres <- rec_covlmc_contexts(c(), ct, ct$vals)
+  if (is.null(preres[[length(preres)]])) {
+    ## root context
+    preres[[length(preres)]] <- list()
+  }
+  preres
+}
+
+
 draw_covlmc_node <- function(node, ...) {
   if (!is.null(node$model)) {
     paste(node$model$p_value, "[", paste(round(node$model$coefficients, 2), collapse = " "), "]")
@@ -368,7 +407,7 @@ rec_draw_covlmc <- function(prefix, rank, ival, nst, ct, vals, node2txt, merged_
     } else {
       prefix <- paste0(prefix, "  ")
     }
-    if(is.null(ct[["merged_model"]])) {
+    if (is.null(ct[["merged_model"]])) {
       active_children <- seq_along(ct$children)
     } else {
       active_children <- setdiff(seq_along(ct$children), ct$merged)
@@ -376,9 +415,9 @@ rec_draw_covlmc <- function(prefix, rank, ival, nst, ct, vals, node2txt, merged_
     for (v in seq_along(active_children)) {
       rec_draw_covlmc(prefix, v, active_children[v], nst, ct$children[[active_children[v]]], vals, node2txt, merged_node2txt, ...)
     }
-    if(!is.null(ct[["merged_model"]])) {
+    if (!is.null(ct[["merged_model"]])) {
       cat(paste0(prefix, "' "))
-      cat(paste(vals[ct$merged], collapse=", "))
+      cat(paste(vals[ct$merged], collapse = ", "))
       if (!is.null(merged_node2txt)) {
         cat(" (", merged_node2txt(ct, ...), ")")
       }
@@ -389,6 +428,6 @@ rec_draw_covlmc <- function(prefix, rank, ival, nst, ct, vals, node2txt, merged_
 
 #' @export
 draw.covlmc <- function(ct, node2txt = draw_covlmc_node, ...) {
-  rec_draw_covlmc("", 0, 1, length(ct$vals), ct, ct$vals, node2txt, draw_covlmc_merged , ...)
+  rec_draw_covlmc("", 0, 1, length(ct$vals), ct, ct$vals, node2txt, draw_covlmc_merged, ...)
   invisible(ct)
 }

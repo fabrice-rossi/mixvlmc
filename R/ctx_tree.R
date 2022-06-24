@@ -238,7 +238,11 @@ rec_contexts <- function(path, ct, vals) {
 #' @return the list of the contexts represented in this tree.
 #' @export
 contexts <- function(ct) {
-  assertthat::assert_that(is_ctx_tree(ct))
+  UseMethod("contexts")
+}
+
+#' @export
+contexts.ctx_tree <- function(ct) {
   preres <- rec_contexts(c(), ct, ct$vals)
   if (is.null(preres[[length(preres)]])) {
     ## root context
