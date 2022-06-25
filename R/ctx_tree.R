@@ -7,29 +7,21 @@ nb_sub_tree <- function(ct) {
   }
 }
 
-rec_stats_ctx_tree <- function(ct) {
+rec_stats_ctx_tree <- function(ct, count_context = count_local_context) {
   if (is.null(ct$children)) {
     ## this is a leaf
     ## depth = 0
-    ## if there is some local information, then this is a context
-    if (length(ct) == 0) {
-      c(0, 0)
-    } else {
-      c(0, 1)
-    }
+    c(0, count_context(ct))
   } else {
-    subresults <- sapply(ct$children, rec_stats_ctx_tree)
+    subresults <- sapply(ct$children, rec_stats_ctx_tree, count_context)
     dp <- 1 + max(subresults[1, ])
-    nb <- sum(subresults[2, ])
-    if (nb_sub_tree(ct) < length(ct$children)) {
-      ## this node is also a context
-      nb <- nb + 1
-    }
+    nb <- sum(subresults[2, ]) + count_context(ct)
     c(dp, nb)
   }
 }
 
-new_ctx_tree <- function(vals, root = NULL, compute_stats = TRUE, ..., class = character()) {
+new_ctx_tree <- function(vals, root = NULL, compute_stats = TRUE,
+                         count_context = count_local_context, ..., class = character()) {
   if (is.null(root)) {
     root <- list(vals = vals)
   } else {
@@ -39,7 +31,7 @@ new_ctx_tree <- function(vals, root = NULL, compute_stats = TRUE, ..., class = c
   preres <- structure(root, ..., class = c(class, "ctx_tree"))
   if (!is.null(root)) {
     if (compute_stats) {
-      stats <- rec_stats_ctx_tree(root)
+      stats <- rec_stats_ctx_tree(root, count_context)
       preres$depth <- stats[1]
       preres$nb_ctx <- stats[2]
     }
@@ -116,23 +108,28 @@ depth <- function(ct) {
   }
 }
 
-rec_context_number <- function(ct) {
-  if (is.null(ct$children)) {
-    ## this is a leaf
-    ## if there is a f_by, then this is a context
-    if (is.null(ct$f_by)) {
+count_local_context <- function(node) {
+  if (is.null(node$children)) {
+    if (is.null(node[["f_by"]])) {
       0
     } else {
       1
     }
   } else {
-    nb <- sum(sapply(ct$children, rec_context_number))
-    if (nb_sub_tree(ct) < length(ct$children)) {
-      ## this node is also a context
-      nb <- nb + 1
+    if (nb_sub_tree(node) < length(node$children)) {
+      1
+    } else {
+      0
     }
-    nb
   }
+}
+
+rec_context_number <- function(ct, count_context = count_local_context) {
+  nb <- count_context(ct)
+  if (!is.null(ct$children)) {
+    nb <- nb + sum(sapply(ct$children, rec_context_number, count_context))
+  }
+  nb
 }
 
 #' Number of contexts of a context tree
@@ -144,7 +141,11 @@ rec_context_number <- function(ct) {
 #' @return the number of contexts of the tree
 #' @export
 context_number <- function(ct) {
-  assertthat::assert_that(is_ctx_tree(ct))
+  UseMethod("context_number")
+}
+
+#' @export
+context_number.ctx_tree <- function(ct) {
   if (!is.null(ct$nb_ctx)) {
     ct$nb_ctx
   } else {

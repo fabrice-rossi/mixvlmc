@@ -284,6 +284,20 @@ ctx_tree_fit_glm <- function(tree, y, covariate, alpha, all_models = FALSE, verb
   result
 }
 
+count_colvmc_local_context <- function(node) {
+  if (is.null(node$children)) {
+    if (is.null(node[["model"]])) {
+      0
+    } else {
+      1
+    }
+  } else if (is.null(node[["merged_model"]])) {
+    0
+  } else {
+    length(node$merged)
+  }
+}
+
 #' Fit a Variable Length Markov Chain with Covariates (coVLMC)
 #'
 #' This function fits a  Variable Length Markov Chain with covariates (coVLMC)
@@ -323,7 +337,17 @@ covlmc <- function(x, covariate, alpha = 0.05, min_size = 15, max_depth = 100) {
     alpha = alpha, all_models = TRUE,
     verbose = FALSE
   )
-  new_ctx_tree(pruned_tree$vals, pruned_tree, class = "covlmc")
+  new_ctx_tree(pruned_tree$vals, pruned_tree, count_context = count_colvmc_local_context, class = "covlmc")
+}
+
+
+#' @export
+context_number.covlmc <- function(ct) {
+  if (!is.null(ct$nb_ctx)) {
+    ct$nb_ctx
+  } else {
+    rec_context_number(ct, count_colvmc_local_context)
+  }
 }
 
 rec_covlmc_contexts <- function(path, ct, vals) {
