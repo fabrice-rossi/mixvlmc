@@ -52,7 +52,7 @@ ctx_tree_exists <- function(tree) {
   length(tree) > 0
 }
 
-node_prune_model <- function(model, cov_dim, nb_vals, alpha) {
+node_prune_model <- function(model, cov_dim, nb_vals, alpha, keep_data = FALSE, verbose = FALSE) {
   local_mm <- model$data$local_mm
   target <- model$data$target
   if (ncol(local_mm) > 1) {
@@ -60,6 +60,9 @@ node_prune_model <- function(model, cov_dim, nb_vals, alpha) {
     current_like <- model$likelihood
     current_model <- NULL
     for (k in 1:nb) {
+      if (verbose) {
+        print(k)
+      }
       h0mm <- local_mm[, -seq(ncol(local_mm), by = -1, length.out = cov_dim * k), drop = FALSE]
       H0_local_glm <- fit_glm(target, h0mm, nb_vals)
       lambda <- 2 * (current_like - stats::logLik(H0_local_glm))
@@ -70,12 +73,17 @@ node_prune_model <- function(model, cov_dim, nb_vals, alpha) {
         current_model <- H0_local_glm
       } else {
         ## H0 is rejected, we break the loop
+        if (verbose) {
+          print("rejecting H0")
+        }
         break
       }
     }
     if (is.null(current_model)) {
       ## we keep the original model
-      model$data <- NULL
+      if (!keep_data) {
+        model$data <- NULL
+      }
       model
     } else {
       list(
@@ -87,12 +95,14 @@ node_prune_model <- function(model, cov_dim, nb_vals, alpha) {
       )
     }
   } else {
-    model$data <- NULL
+    if (!keep_data) {
+      model$data <- NULL
+    }
     model
   }
 }
 
-ctx_tree_fit_glm <- function(tree, y, covariate, alpha, all_models = FALSE, verbose = FALSE) {
+ctx_tree_fit_glm <- function(tree, y, covariate, alpha, keep_data = FALSE, verbose = FALSE) {
   nb_vals <- length(tree$vals)
   recurse_ctx_tree_fit_glm <-
     function(tree, d, y, covariate) {
@@ -122,7 +132,7 @@ ctx_tree_fit_glm <- function(tree, y, covariate, alpha, all_models = FALSE, verb
             if (!is.null(submodels[[v]][["model"]])) {
               nb_models <- nb_models + 1
               prunable <- submodels[[v]][["prunable"]]
-              if (!is.null(prunable) && prunable) {
+              if (isTRUE(prunable)) {
                 if (!submodels[[v]][["model"]]$H0) {
                   nb_rejected <- nb_rejected + 1
                 } else {
@@ -261,11 +271,11 @@ ctx_tree_fit_glm <- function(tree, y, covariate, alpha, all_models = FALSE, verb
         if (is.null(result$merged_model)) {
           if (!is.null(result$children)) {
             if (verbose) {
-              print("Trying to prune covariables")
+              print(paste("Trying to prune covariables", paste(pr_candidates, collapse = " ")))
             }
             for (v in pr_candidates) {
               result$children[[v]][["model"]] <-
-                node_prune_model(result$children[[v]][["model"]], ncol(covariate), nb_vals, alpha)
+                node_prune_model(result$children[[v]][["model"]], ncol(covariate), nb_vals, alpha, keep_data)
             }
           }
         } else {
@@ -273,7 +283,7 @@ ctx_tree_fit_glm <- function(tree, y, covariate, alpha, all_models = FALSE, verb
             if (verbose) {
               print("Trying to prune the merged model covariables")
             }
-            result$merged_model <- node_prune_model(result$merged_model, ncol(covariate), nb_vals, alpha)
+            result$merged_model <- node_prune_model(result$merged_model, ncol(covariate), nb_vals, alpha, keep_data)
           }
         }
         result
@@ -284,7 +294,7 @@ ctx_tree_fit_glm <- function(tree, y, covariate, alpha, all_models = FALSE, verb
   result
 }
 
-count_colvmc_local_context <- function(node) {
+count_covlmc_local_context <- function(node) {
   if (is.null(node$children)) {
     if (is.null(node[["model"]])) {
       0
@@ -334,10 +344,9 @@ covlmc <- function(x, covariate, alpha = 0.05, min_size = 15, max_depth = 100) {
     covsize = ncol(covariate), keep_match = TRUE, all_children = TRUE
   )
   pruned_tree <- ctx_tree_fit_glm(ctx_tree, x, covariate,
-    alpha = alpha, all_models = TRUE,
-    verbose = FALSE
+    alpha = alpha, verbose = FALSE
   )
-  new_ctx_tree(pruned_tree$vals, pruned_tree, count_context = count_colvmc_local_context, class = "covlmc")
+  new_ctx_tree(pruned_tree$vals, pruned_tree, count_context = count_covlmc_local_context, class = "covlmc")
 }
 
 
@@ -346,7 +355,7 @@ context_number.covlmc <- function(ct) {
   if (!is.null(ct$nb_ctx)) {
     ct$nb_ctx
   } else {
-    rec_context_number(ct, count_colvmc_local_context)
+    rec_context_number(ct, count_covlmc_local_context)
   }
 }
 
