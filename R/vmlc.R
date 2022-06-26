@@ -14,24 +14,6 @@ assertthat::on_failure(is_vlmc) <- function(call, env) {
   paste0(deparse(call$x), " is not a vlmc")
 }
 
-draw_vlmc_node <- function(node, probs = FALSE) {
-  if (probs) {
-    paste(node$f_by / sum(node$f_by), collapse = ", ")
-  } else {
-    paste(node$f_by, collapse = ", ")
-  }
-}
-
-#' @export
-draw.vlmc <- function(ct, node2txt = NULL, ...) {
-  if (is.null(node2txt)) {
-    NextMethod(node2txt = draw_vlmc_node, ...)
-  } else {
-    NextMethod(node2txt = node2txt, ...)
-  }
-  invisible(ct)
-}
-
 grow_ctx_tree <- function(x, vals, min_size, max_depth, covsize = 0, keep_match = FALSE, all_children = FALSE,
                           compute_stats = FALSE) {
   recurse_ctx_tree <- function(x, nb_vals, d, from, f_by) {
