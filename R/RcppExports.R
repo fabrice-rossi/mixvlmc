@@ -31,6 +31,7 @@
 #' @param nv_from starting positions for the search
 #'
 #' @return a list described above
+#' @noRd
 forward_match_all_ctx_counts <- function(x, nb_vals, depth = 0L, nv_from = NULL) {
     .Call('_mixvlmc_forward_match_all_ctx_counts', PACKAGE = 'mixvlmc', x, nb_vals, depth, nv_from)
 }

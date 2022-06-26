@@ -31,6 +31,7 @@ using namespace Rcpp;
 //' @param nv_from starting positions for the search
 //'
 //' @return a list described above
+//' @noRd
 //[[Rcpp::export]]
 List forward_match_all_ctx_counts(NumericVector x, int nb_vals, int depth=0, Nullable<NumericVector> nv_from=R_NilValue) {
   int nx = x.size();
