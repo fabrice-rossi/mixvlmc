@@ -1,51 +1,106 @@
-node_fit_glm_internal <- function(local_mm, target, dim_cov, alpha, nb_vals, return_all = FALSE) {
+## fit a glm guaranteed to be of full rank by removing older covariates if needed
+node_fit_glm_full_rank <- function(index, y, covariate, nb_vals, d) {
+  glmdata <- prepare_glm(covariate, index, d, y)
+  node_fit_glm_full_rank_with_data(glmdata$local_mm, d, glmdata$target, ncol(covariate), nb_vals)
+}
+
+## implementation of node_fit_glm_full_rank
+node_fit_glm_full_rank_with_data <- function(local_mm, d, target, dim_cov, nb_vals) {
   if (nrow(local_mm) > 0) {
-    h0mm <- local_mm[, -seq(ncol(local_mm), by = -1, length.out = dim_cov), drop = FALSE]
     local_glm <- fit_glm(target, local_mm, nb_vals)
-    H0_local_glm <- fit_glm(target, h0mm, nb_vals)
-    lambda <- 2 * (stats::logLik(local_glm) - stats::logLik(H0_local_glm))
-    p_value <-
-      stats::pchisq(as.numeric(lambda), df = dim_cov * (nb_vals - 1), lower.tail = FALSE)
-    H0_model <- list(
-      H0 = TRUE,
-      coefficients = stats::coefficients(H0_local_glm),
-      likelihood = as.numeric(stats::logLik(H0_local_glm)),
-      data = list(local_mm = h0mm, target = target),
-      model = H0_local_glm
-    )
-    H1_model <- list(
-      H0 = FALSE,
+    while (is_glm_low_rank(local_glm)) {
+      d <- d - 1
+      local_mm <- local_mm[, -seq(ncol(local_mm), by = -1, length.out = dim_cov), drop = FALSE]
+      local_glm <- fit_glm(target, local_mm, nb_vals)
+    }
+    list(
       coefficients = stats::coefficients(local_glm),
       likelihood = as.numeric(stats::logLik(local_glm)),
       data = list(local_mm = local_mm, target = target),
-      model = local_glm
+      model = local_glm,
+      hsize = d
     )
-    if (return_all) {
-      list(
-        p_value = p_value,
-        H0_model = H0_model,
-        H1_model = H1_model,
-        lambda = lambda
-      )
-    } else {
-      if (p_value > alpha) {
-        results <- H0_model
-      } else {
-        results <- H1_model
-      }
-      results$p_value <- p_value
-      results$lambda <- lambda
-      results
-    }
   } else {
     NULL
   }
 }
 
+## fit a glm model using a history of size <= d
+## if the model with size=d is not of full rank, a full rank model with size < d
+## is constructed
+## if the model with size=d is of full rank, it is compared to a model of size=d-1 (H0)
+## according to a likelihood ratio test. If the difference in performances is significative
+## the size=d model is returned (H0 is rejected). If it is not, the size=d-1 model
+## is returned (H0 is not rejected)
+## if return_all is true, both models are returned when this makes sense
+node_fit_glm <- function(index, d, y, covariate, alpha, nb_vals, return_all = FALSE) {
+  ## prepare the data
+  glmdata <- prepare_glm(covariate, index, d, y)
+  node_fit_glm_with_data(glmdata$local_mm, d, glmdata$target, ncol(covariate), alpha, nb_vals, return_all)
+}
 
-node_fit_glm <- function(tree, d, y, covariate, alpha, nb_vals, return_all = FALSE) {
-  glmdata <- prepare_glm(covariate, tree$match, d, y)
-  node_fit_glm_internal(glmdata$local_mm, glmdata$target, ncol(covariate), alpha, nb_vals, return_all)
+## implementation of node_fit_glm
+node_fit_glm_with_data <- function(local_mm, d, target, dim_cov, alpha, nb_vals, return_all = FALSE) {
+  ## compute the full rank "H1" model
+  full_rank_model <- node_fit_glm_full_rank_with_data(
+    local_mm,
+    d,
+    target,
+    dim_cov, nb_vals
+  )
+  if (!is.null(full_rank_model)) {
+    if (full_rank_model$hsize < d || d==1) {
+      ## if the full rank model does not use a size d history
+      ## we do not need to build another model, backtracking will be done
+      ## elsewhere (if needed)
+      full_rank_model$H0 <- TRUE
+      full_rank_model$p_value <- NA
+      if(return_all) {
+        list(
+          p_value = NA,
+          H0_model = full_rank_model,
+          H1_model = full_rank_model,
+          lambda = NA
+        )
+      } else {
+        full_rank_model
+      }
+    } else {
+      ## in the other case we need to look for a simpler model
+      h0mm <- local_mm[, -seq(ncol(local_mm), by = -1, length.out = dim_cov), drop = FALSE]
+      H0_full_rank_model <- node_fit_glm_full_rank_with_data(
+        h0mm,
+        d - 1, target,
+        dim_cov, nb_vals
+      )
+      full_rank_model$H0 <- FALSE
+      H0_full_rank_model$H0 <- TRUE
+      lambda <- 2 * (full_rank_model$likelihood - H0_full_rank_model$likelihood)
+      df <- (full_rank_model$hsize - H0_full_rank_model$hsize) * dim_cov * (nb_vals - 1)
+      p_value <-
+        stats::pchisq(as.numeric(lambda), df = df, lower.tail = FALSE)
+      if (return_all) {
+        list(
+          p_value = p_value,
+          H0_model = H0_full_rank_model,
+          H1_model = full_rank_model,
+          lambda = lambda
+        )
+      } else {
+        if (p_value > alpha) {
+          results <- H0_full_rank_model
+        } else {
+          results <- full_rank_model
+        }
+        results$p_value <- p_value
+        results$lambda <- lambda
+        results
+      }
+    }
+  } else {
+    ## should not happen
+    NULL
+  }
 }
 
 ctx_tree_exists <- function(tree) {
@@ -58,19 +113,28 @@ node_prune_model <- function(model, cov_dim, nb_vals, alpha, keep_data = FALSE, 
   if (ncol(local_mm) > 1) {
     nb <- ncol(local_mm) %/% cov_dim
     current_like <- model$likelihood
+    previous_model <- model$model
     current_model <- NULL
+    current_data <- NULL
+    hsize <- model$hsize
     for (k in 1:nb) {
       if (verbose) {
         print(k)
       }
       h0mm <- local_mm[, -seq(ncol(local_mm), by = -1, length.out = cov_dim * k), drop = FALSE]
       H0_local_glm <- fit_glm(target, h0mm, nb_vals)
+      assertthat::assert_that(!is_glm_low_rank(H0_local_glm))
       lambda <- 2 * (current_like - stats::logLik(H0_local_glm))
       p_value <- stats::pchisq(as.numeric(lambda), df = cov_dim * (nb_vals - 1), lower.tail = FALSE)
       if (p_value > alpha) {
         ## H0 is not rejected
         current_like <- as.numeric(stats::logLik(H0_local_glm))
         current_model <- H0_local_glm
+        previous_model <- H0_local_glm
+        if (keep_data) {
+          current_data <- list(local_mm = h0mm, target = target)
+        }
+        hsize <- hsize - 1
       } else {
         ## H0 is rejected, we break the loop
         if (verbose) {
@@ -91,7 +155,9 @@ node_prune_model <- function(model, cov_dim, nb_vals, alpha, keep_data = FALSE, 
         coefficients = stats::coefficients(current_model),
         likelihood = current_like,
         model = current_model,
-        p_value = p_value
+        p_value = p_value,
+        hsize = hsize,
+        data = current_data
       )
     }
   } else {
@@ -105,14 +171,27 @@ node_prune_model <- function(model, cov_dim, nb_vals, alpha, keep_data = FALSE, 
 ctx_tree_fit_glm <- function(tree, y, covariate, alpha, keep_data = FALSE, verbose = FALSE) {
   nb_vals <- length(tree$vals)
   recurse_ctx_tree_fit_glm <-
-    function(tree, d, y, covariate) {
+    function(tree, ctx, d, y, covariate) {
       if (length(tree) == 0) {
         ## dead end marker, nothing to do (should not happen)
         list()
       } else if (is.null(tree[["children"]])) {
         ## let's compute the local model and return it
         ## prunable is true as there is no sub tree
-        list(model = node_fit_glm(tree, d, y, covariate, alpha, nb_vals), prunable = TRUE, f_by = tree$f_by)
+        if (verbose) {
+          print(paste(ctx, collapse = " "))
+          print(paste("call to glm with d=", d, sep = ""))
+        }
+        res <- list(
+          model = node_fit_glm(tree$match, d, y, covariate, alpha, nb_vals),
+          match = tree$match,
+          f_by = tree$f_by
+        )
+        res$prunable <- TRUE
+        if (verbose) {
+          print(res$model$hsize)
+        }
+        res
       } else {
         ## the recursive part
         ## let's get the models
@@ -128,7 +207,7 @@ ctx_tree_fit_glm <- function(tree, y, covariate, alpha, keep_data = FALSE, verbo
           if (ctx_tree_exists(tree$children[[v]])) {
             nb_children <- nb_children + 1
             submodels[[v]] <-
-              recurse_ctx_tree_fit_glm(tree$children[[v]], d + 1, y, covariate)
+              recurse_ctx_tree_fit_glm(tree$children[[v]], c(ctx, v), d + 1, y, covariate)
             if (!is.null(submodels[[v]][["model"]])) {
               nb_models <- nb_models + 1
               prunable <- submodels[[v]][["prunable"]]
@@ -164,7 +243,7 @@ ctx_tree_fit_glm <- function(tree, y, covariate, alpha, keep_data = FALSE, verbo
         ##      (if we have at least 2 of them)
         ##    - the current node will be prunable if this is done
 
-        result <- list(f_by = tree$f_by)
+        result <- list(f_by = tree$f_by, match = tree$match)
         ## do we need a local/merged model
         if (nb_rejected > 0) {
           need_local_model <- FALSE
@@ -182,10 +261,12 @@ ctx_tree_fit_glm <- function(tree, y, covariate, alpha, keep_data = FALSE, verbo
         if (need_local_model) {
           ## we need a local model
           if (verbose) {
-            print("fitting a local model")
+            print(paste("fitting a local model (of full rank) with", d, "covariates"))
           }
-          local_model <- node_fit_glm(tree, d, y, covariate, alpha, nb_vals, return_all = TRUE)
-          chisq_df <- (1 + ncol(covariate) * d) * ((nb_vals - 1)^2)
+          local_model <- node_fit_glm(tree$match, d, y, covariate, alpha, nb_vals, return_all = TRUE)
+          if(verbose) {
+            print(paste(local_model$H1_model$H0, local_model$H1_model$hsize))
+          }
         }
         if (need_merged_model) {
           ## we need a merged model
@@ -193,31 +274,52 @@ ctx_tree_fit_glm <- function(tree, y, covariate, alpha, keep_data = FALSE, verbo
             print(paste("fitting a merged model for:", paste(pr_candidates, collapse = " ")))
           }
           ## prepare the data set
-          local_mm <- submodels[[pr_candidates[1]]][["model"]]$data$local_mm
-          target <- submodels[[pr_candidates[1]]][["model"]]$data$target
-          for (v in pr_candidates[-1]) {
-            local_mm <- rbind(local_mm, submodels[[pr_candidates[v]]][["model"]]$data$local_mm)
-            target <- c(target, submodels[[pr_candidates[v]]][["model"]]$data$target)
+          ## we need to reextract the data as models can use different history sizes
+          ## shift the index by one to account for the reduce history
+          full_index <- 1 + unlist(lapply(submodels[pr_candidates], function(x) x$match))
+          if (verbose) {
+            print(paste("call to glm with d=", d, sep = ""))
           }
-          local_model <- node_fit_glm_internal(local_mm, target, ncol(covariate), alpha, nb_vals, return_all = TRUE)
-          chisq_df <- (1 + ncol(covariate) * d) * ((nb_vals - 1) * length(pr_candidates))
+          local_model <- node_fit_glm(full_index, d, y, covariate, alpha, nb_vals, return_all = TRUE)
         }
         if (!is.null(local_model)) {
-          ## let us compute the likelihood of the new model on the data used by the ones to merge/remove
+          ## to compute the likelihood of the new model on the data used by
+          ## the ones to merge/remove we need to reextract the data if the models
+          ## have a shorter history than the one used be the local model
           ll_model_H0 <- 0
           ll_H0 <- 0
+          local_df <- (1 + ncol(covariate) * local_model$H1_model$hsize) * (nb_vals - 1)
+          sub_df <- 0
           for (v in pr_candidates) {
+            sub_df <- sub_df + (1 + ncol(covariate) * submodels[[v]][["model"]]$hsize) * (nb_vals - 1)
+            if(verbose) {
+              print(paste(v, submodels[[v]][["model"]]$hsize, local_model$H1_model$hsize))
+            }
+            if( submodels[[v]][["model"]]$hsize == local_model$H1_model$hsize) {
+              local_data <- submodels[[v]][["model"]]$data
+              mm <- submodels[[v]][["model"]]$data$local_mm
+              target <- submodels[[v]][["model"]]$data$target
+            } else {
+              local_data <- prepare_glm(covariate, submodels[[v]]$match, d, y)
+              if(verbose) {
+                print("preparing local data")
+                # print(head(local_data$local_mm))
+              }
+            }
             ll_model_H0 <- ll_model_H0 +
               glm_likelihood(
                 local_model$H1_model$model,
-                submodels[[v]][["model"]]$data$local_mm,
-                submodels[[v]][["model"]]$data$target
+                local_data$local_mm,
+                local_data$target
               )
             ll_H0 <- ll_H0 + submodels[[v]][["model"]]$likelihood
           }
+          if(verbose) {
+            print(paste("# of parameters", local_df, sub_df))
+          }
           lambda <- 2 * (ll_H0 - ll_model_H0)
           p_value <- stats::pchisq(as.numeric(lambda),
-            df = chisq_df,
+            df = sub_df-local_df,
             lower.tail = FALSE
           )
           if (verbose) {
@@ -231,12 +333,17 @@ ctx_tree_fit_glm <- function(tree, y, covariate, alpha, keep_data = FALSE, verbo
             if (verbose) {
               print("pruning the subtree")
             }
-            if (local_model$p_value > alpha) {
+            if(is.na(local_model$p_value)) {
+              result$model <- local_model$H0_model
+            } else if (local_model$p_value > alpha) {
               result$model <- local_model$H0_model
             } else {
               result$model <- local_model$H1_model
             }
             result$prunable <- TRUE
+            if(verbose) {
+              print(result$model$model)
+            }
           } else {
             ## we throw away the local model and keep the children
             result$children <- submodels
@@ -289,7 +396,7 @@ ctx_tree_fit_glm <- function(tree, y, covariate, alpha, keep_data = FALSE, verbo
         result
       }
     }
-  result <- recurse_ctx_tree_fit_glm(tree, 0, y, covariate)
+  result <- recurse_ctx_tree_fit_glm(tree, c(), 0, y, covariate)
   result$vals <- tree$vals
   result
 }
@@ -343,8 +450,12 @@ covlmc <- function(x, covariate, alpha = 0.05, min_size = 15, max_depth = 100) {
     min_size = min_size, max_depth = max_depth,
     covsize = ncol(covariate), keep_match = TRUE, all_children = TRUE
   )
+  if (length(vals) > 2) {
+    x <- nx$fx
+  }
+  ctx_tree$match <- 1:length(x)
   pruned_tree <- ctx_tree_fit_glm(ctx_tree, x, covariate,
-    alpha = alpha, verbose = FALSE
+    alpha = alpha, verbose = FALSE, keep_data = TRUE
   )
   new_ctx_tree(pruned_tree$vals, pruned_tree, count_context = count_covlmc_local_context, class = "covlmc")
 }
@@ -394,4 +505,3 @@ contexts.covlmc <- function(ct) {
   }
   preres
 }
-

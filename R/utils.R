@@ -12,5 +12,5 @@ to_dts <- function(x, vals = NULL) {
     fx <- factor(x, levels = vals)
     assertthat::assert_that(assertthat::noNA(fx), msg = "x contains unknown states")
   }
-  list(ix = as.numeric(fx) - 1, vals = vals)
+  list(ix = as.numeric(fx) - 1, fx = fx, vals = vals)
 }

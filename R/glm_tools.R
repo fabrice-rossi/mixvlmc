@@ -86,3 +86,10 @@ glm_likelihood <- function(model, mm, target) {
     sum(log(probs) * target + log(1 - probs) * (1 - target))
   }
 }
+
+is_glm_low_rank <- function(model) {
+  if (inherits(model, "vglm")) {
+    model@rank < length(model@coefficients)
+  } else {
+    model$rank < length(model$coefficients)
+  }
