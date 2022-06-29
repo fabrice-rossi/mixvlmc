@@ -49,13 +49,13 @@ node_fit_glm_with_data <- function(local_mm, d, target, dim_cov, alpha, nb_vals,
     dim_cov, nb_vals
   )
   if (!is.null(full_rank_model)) {
-    if (full_rank_model$hsize < d || d==1) {
+    if (full_rank_model$hsize < d || d == 1) {
       ## if the full rank model does not use a size d history
       ## we do not need to build another model, backtracking will be done
       ## elsewhere (if needed)
       full_rank_model$H0 <- TRUE
       full_rank_model$p_value <- NA
-      if(return_all) {
+      if (return_all) {
         list(
           p_value = NA,
           H0_model = full_rank_model,
@@ -264,7 +264,7 @@ ctx_tree_fit_glm <- function(tree, y, covariate, alpha, keep_data = FALSE, verbo
             print(paste("fitting a local model (of full rank) with", d, "covariates"))
           }
           local_model <- node_fit_glm(tree$match, d, y, covariate, alpha, nb_vals, return_all = TRUE)
-          if(verbose) {
+          if (verbose) {
             print(paste(local_model$H1_model$H0, local_model$H1_model$hsize))
           }
         }
@@ -292,16 +292,16 @@ ctx_tree_fit_glm <- function(tree, y, covariate, alpha, keep_data = FALSE, verbo
           sub_df <- 0
           for (v in pr_candidates) {
             sub_df <- sub_df + (1 + ncol(covariate) * submodels[[v]][["model"]]$hsize) * (nb_vals - 1)
-            if(verbose) {
+            if (verbose) {
               print(paste(v, submodels[[v]][["model"]]$hsize, local_model$H1_model$hsize))
             }
-            if( submodels[[v]][["model"]]$hsize == local_model$H1_model$hsize) {
+            if (submodels[[v]][["model"]]$hsize == local_model$H1_model$hsize) {
               local_data <- submodels[[v]][["model"]]$data
               mm <- submodels[[v]][["model"]]$data$local_mm
               target <- submodels[[v]][["model"]]$data$target
             } else {
               local_data <- prepare_glm(covariate, submodels[[v]]$match, d, y)
-              if(verbose) {
+              if (verbose) {
                 print("preparing local data")
                 # print(head(local_data$local_mm))
               }
@@ -314,12 +314,12 @@ ctx_tree_fit_glm <- function(tree, y, covariate, alpha, keep_data = FALSE, verbo
               )
             ll_H0 <- ll_H0 + submodels[[v]][["model"]]$likelihood
           }
-          if(verbose) {
+          if (verbose) {
             print(paste("# of parameters", local_df, sub_df))
           }
           lambda <- 2 * (ll_H0 - ll_model_H0)
           p_value <- stats::pchisq(as.numeric(lambda),
-            df = sub_df-local_df,
+            df = sub_df - local_df,
             lower.tail = FALSE
           )
           if (verbose) {
@@ -333,7 +333,7 @@ ctx_tree_fit_glm <- function(tree, y, covariate, alpha, keep_data = FALSE, verbo
             if (verbose) {
               print("pruning the subtree")
             }
-            if(is.na(local_model$p_value)) {
+            if (is.na(local_model$p_value)) {
               result$model <- local_model$H0_model
             } else if (local_model$p_value > alpha) {
               result$model <- local_model$H0_model
@@ -341,7 +341,7 @@ ctx_tree_fit_glm <- function(tree, y, covariate, alpha, keep_data = FALSE, verbo
               result$model <- local_model$H1_model
             }
             result$prunable <- TRUE
-            if(verbose) {
+            if (verbose) {
               print(result$model$model)
             }
           } else {
