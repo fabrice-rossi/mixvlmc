@@ -1,42 +1,50 @@
-prepare_covariate <- function(covariate, ctx_match, d, ...) {
+prepare_covariate <- function(covariate, ctx_match, d, from, ...) {
   UseMethod("prepare_covariate")
 }
 
 #' @exportS3Method
-prepare_covariate.matrix <- function(covariate, ctx_match, d, with_intercept = FALSE, ...) {
-  ncols <- ncol(covariate) * d
-  if (with_intercept) {
-    ncols <- ncols + 1
-  }
-  mm <- matrix(0, nrow = length(ctx_match), ncol = ncols)
-  if (with_intercept) {
-    mm[, 1] <- 1
-  }
-  tcol <- ncols
-  for (step in 1:d) {
-    for (p in ncol(covariate):1) {
-      mm[, tcol] <- covariate[ctx_match + step, p]
-      tcol <- tcol - 1
+prepare_covariate.matrix <- function(covariate, ctx_match, d, from, with_intercept = FALSE, ...) {
+  if (d > 0) {
+    ncols <- ncol(covariate) * d
+    if (with_intercept) {
+      ncols <- ncols + 1
     }
+    mm <- matrix(0, nrow = length(ctx_match), ncol = ncols)
+    if (with_intercept) {
+      mm[, 1] <- 1
+    }
+    tcol <- ncols
+    for (step in 1:d) {
+      for (p in ncol(covariate):1) {
+        mm[, tcol] <- covariate[ctx_match + from + step, p]
+        tcol <- tcol - 1
+      }
+    }
+    mm
+  } else {
+    matrix(double(), ncol = 0, nrow = 1)
   }
-  mm
 }
 
 #' @exportS3Method
-prepare_covariate.data.frame <- function(covariate, ctx_match, d, ...) {
-  res <- list()
-  the_names <- names(covariate)
-  for (step in 1:d) {
-    for (p in 1:ncol(covariate)) {
-      res[[paste0(the_names[p], "_", step)]] <- covariate[ctx_match + d - step + 1, p]
+prepare_covariate.data.frame <- function(covariate, ctx_match, d, from, ...) {
+  if (d > 0) {
+    res <- list()
+    the_names <- names(covariate)
+    for (step in 1:d) {
+      for (p in 1:ncol(covariate)) {
+        res[[paste0(the_names[p], "_", step)]] <- covariate[ctx_match + from + d - step + 1, p]
+      }
     }
+    list2DF(res)
+  } else {
+    as.data.frame(matrix(double(), ncol = 0, nrow = 1))
   }
-  list2DF(res)
 }
 
-prepare_glm <- function(covariate, ctx_match, d, y) {
-  local_mm <- prepare_covariate(covariate, ctx_match, d)
-  target <- y[ctx_match + d + 1]
+prepare_glm <- function(covariate, ctx_match, d, y, from = 0) {
+  local_mm <- prepare_covariate(covariate, ctx_match, d, from)
+  target <- y[ctx_match + from + d + 1]
   to_keep <- !is.na(target)
   list(local_mm = local_mm[to_keep, , drop = FALSE], target = target[to_keep])
 }
@@ -93,3 +101,4 @@ is_glm_low_rank <- function(model) {
   } else {
     model$rank < length(model$coefficients)
   }
+}
