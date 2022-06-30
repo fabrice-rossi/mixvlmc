@@ -4,19 +4,21 @@
 \alias{loglikelihood}
 \title{Log-Likelihood of a VLMC}
 \usage{
-loglikelihood(vlmc, x = NULL)
+loglikelihood(vlmc, newdata, ...)
 }
 \arguments{
 \item{vlmc}{the vlmc representation}
 
-\item{x}{an optional discrete time series}
+\item{newdata}{an optional discrete time series}
+
+\item{...}{additional parameters for loglikelihood}
 }
 \value{
-the log-likelihood of the VLMC
+the log-likelihood of the VLMC with a nobs attribute that accounts for the number of data included in the likelihood calculation
 }
 \description{
 This function evaluates the log-likelihood of a VLMC fitted on a discrete time series.
-When the optional argument \code{x} is provided, the function evaluates instead the
+When the optional argument \code{newdata} is provided, the function evaluates instead the
 log-likelihood for this (new) discrete time series.
 }
 \seealso{

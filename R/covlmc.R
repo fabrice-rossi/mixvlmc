@@ -459,7 +459,9 @@ covlmc <- function(x, covariate, alpha = 0.05, min_size = 15, max_depth = 100) {
   pruned_tree <- ctx_tree_fit_glm(ctx_tree, x, covariate,
     alpha = alpha, verbose = FALSE, keep_data = TRUE
   )
-  new_ctx_tree(pruned_tree$vals, pruned_tree, count_context = count_covlmc_local_context, class = "covlmc")
+  pre_result <- new_ctx_tree(pruned_tree$vals, pruned_tree, count_context = count_covlmc_local_context, class = "covlmc")
+  pre_result$cov_names <- names(covariate)
+  pre_result
 }
 
 #' @export

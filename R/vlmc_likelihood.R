@@ -52,22 +52,30 @@ logLik.vlmc <- function(object, ...) {
 #' Log-Likelihood of a VLMC
 #'
 #' This function evaluates the log-likelihood of a VLMC fitted on a discrete time series.
-#' When the optional argument \code{x} is provided, the function evaluates instead the
+#' When the optional argument \code{newdata} is provided, the function evaluates instead the
 #' log-likelihood for this (new) discrete time series.
 #'
 #' @param vlmc the vlmc representation
-#' @param x an optional discrete time series
+#' @param newdata an optional discrete time series
+#' @param ... additional parameters for loglikelihood
 #'
-#' @return the log-likelihood of the VLMC
+#' @return the log-likelihood of the VLMC with a nobs attribute that accounts for the number of data included in the likelihood calculation
 #' @seealso [stats::logLik]
 #' @export
-loglikelihood <- function(vlmc, x = NULL) {
-  assertthat::assert_that(is_vlmc(vlmc))
-  if (is.null(x)) {
-    rec_loglikelihood_vlmc(vlmc)
+loglikelihood <- function(vlmc, newdata, ...) {
+  UseMethod("loglikelihood")
+}
+
+#' @export
+loglikelihood.vlmc <- function(vlmc, newdata, ...) {
+  if (missing(newdata)) {
+    pre_res <- rec_loglikelihood_vlmc(vlmc)
+    attr(pre_res, "nobs") <- sum(vlmc$f_by)
   } else {
-    nx <- to_dts(x, vlmc$vals)
+    nx <- to_dts(newdata, vlmc$vals)
     nvlmc <- match_ctx(vlmc, nx$ix)
-    rec_loglikelihood_vlmc(nvlmc)
+    pre_res <- rec_loglikelihood_vlmc(nvlmc)
+    attr(pre_res, "nobs") <- length(newdata)
   }
+  pre_res
 }

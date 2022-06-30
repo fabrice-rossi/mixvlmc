@@ -30,7 +30,7 @@ rec_loglikelihood_covlmc <- function(tree) {
   }
 }
 
-rec_loglikelihood_covlmc_newdata <- function(tree, d, nb_vals, y, cov, verbose=FALSE) {
+rec_loglikelihood_covlmc_newdata <- function(tree, d, nb_vals, y, cov, verbose = FALSE) {
   if (is.null(tree)) {
     list(ll = 0, nobs = 0L)
   } else if (is.null(tree$children)) {
@@ -43,15 +43,15 @@ rec_loglikelihood_covlmc_newdata <- function(tree, d, nb_vals, y, cov, verbose=F
         ll = glm_likelihood(tree$model$model, glmdata$local_mm, glmdata$target),
         nobs = nrow(glmdata$local_mm)
       )
-      if(verbose) {
+      if (verbose) {
         print(all.equal(glmdata$target, tree$model$data$target))
-        print(head(stats::predict(tree$model$model, glmdata$local_mm, type = "response")))
-        print(head(stats::predict(tree$model$model, type = "response")[, 1]))
-        print(logLik(tree$model$model))
+        print(utils::head(stats::predict(tree$model$model, glmdata$local_mm, type = "response")))
+        print(utils::head(stats::predict(tree$model$model, type = "response")[, 1]))
+        print(stats::logLik(tree$model$model))
         print(paste(res$ll, tree$model$likelihood))
         if (tree$model$hsize > 0) {
-          print(head(tree$model$data))
-          print(head(glmdata$local_mm))
+          print(utils::head(tree$model$data))
+          print(utils::head(glmdata$local_mm))
         }
       }
       res
@@ -71,23 +71,23 @@ rec_loglikelihood_covlmc_newdata <- function(tree, d, nb_vals, y, cov, verbose=F
       ## we need to find the matched data
       mm_match <- tree$match
       non_merged <- setdiff(seq_along(tree$children), tree$merged)
-      if(verbose) {
+      if (verbose) {
         print(paste("Removing", non_merged))
       }
-      for(v in non_merged) {
-        if(verbose) {
+      for (v in non_merged) {
+        if (verbose) {
           print(tree$children[[v]]$match)
         }
-        mm_match <- setdiff(mm_match, 1+tree$children[[v]]$match)
+        mm_match <- setdiff(mm_match, 1 + tree$children[[v]]$match)
       }
-      if(verbose) {
+      if (verbose) {
         print(mm_match)
       }
       ## prepare the data
       glmdata <- prepare_glm(cov, mm_match, tree$merged_model$hsize, y, from = d - tree$merged_model$hsize)
-      if(verbose) {
-        print(head(glmdata$local_mm))
-        print(head(tree$merged_model$data$local_mm))
+      if (verbose) {
+        print(utils::head(glmdata$local_mm))
+        print(utils::head(tree$merged_model$data$local_mm))
         print(length(mm_match))
         print(nrow(tree$merged_model$data$local_mm))
       }
@@ -110,13 +110,34 @@ logLik.covlmc <- function(object, ...) {
   ll
 }
 
-
-loglikelihood_covlmc <- function(covlmc, x = NULL, cov = NULL) {
-  if (is.null(x)) {
-    rec_loglikelihood_covlmc(covlmc)
+#' Log-Likelihood of a VLMC with covariates
+#'
+#' This function evaluates the log-likelihood of a VLMC with covariates fitted on a discrete time series.
+#' When the optional arguments \code{newdata} is  provided, the function evaluates instead the
+#' log-likelihood for this (new) discrete time series on the new covariates which must be provided through a newcov parameter
+#'
+#' @param vlmc the vlmc representation
+#' @param newdata an optional discrete time series
+#' @param ... additional parameters for loglikelihood
+#'
+#' @return the log-likelihood of the VLMC with a nobs attribute that accounts for the number of data included in the likelihood calculation
+#' @seealso [stats::logLik]
+#' @export
+loglikelihood.covlmc <- function(vlmc, newdata, ...) {
+  if (missing(newdata)) {
+    pre_res <- rec_loglikelihood_covlmc(vlmc)
   } else {
-    nx <- to_dts(x, covlmc$vals)
-    ncovlmc <- match_ctx(covlmc, nx$ix, keep_match = TRUE)
-    rec_loglikelihood_covlmc_newdata(ncovlmc, 0, length(covlmc$vals), x, cov)
+    params <- list(...)
+    assertthat::assert_that(!is.null(params$newcov))
+    newcov <- params$newcov
+    assertthat::assert_that(is.data.frame(newcov))
+    assertthat::assert_that(nrow(newcov) == length(newdata))
+    assertthat::assert_that(assertthat::has_name(newcov, vlmc$cov_names))
+    nx <- to_dts(newdata, vlmc$vals)
+    ncovlmc <- match_ctx(vlmc, nx$ix, keep_match = TRUE)
+    pre_res <- rec_loglikelihood_covlmc_newdata(ncovlmc, 0, length(vlmc$vals), newdata, newcov)
   }
+  res <- pre_res$ll
+  attr(res, "nobs") <- pre_res$nobs
+  res
 }
