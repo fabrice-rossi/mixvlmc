@@ -30,6 +30,76 @@ rec_loglikelihood_covlmc <- function(tree) {
   }
 }
 
+rec_loglikelihood_covlmc_newdata <- function(tree, d, nb_vals, y, cov, verbose=FALSE) {
+  if (is.null(tree)) {
+    list(ll = 0, nobs = 0L)
+  } else if (is.null(tree$children)) {
+    if (is.null(tree$model)) {
+      list(ll = 0, nobs = 0L)
+    } else {
+      ## we have a true model
+      glmdata <- prepare_glm(cov, tree$match, tree$model$hsize, y, from = d - tree$model$hsize)
+      res <- list(
+        ll = glm_likelihood(tree$model$model, glmdata$local_mm, glmdata$target),
+        nobs = nrow(glmdata$local_mm)
+      )
+      if(verbose) {
+        print(all.equal(glmdata$target, tree$model$data$target))
+        print(head(stats::predict(tree$model$model, glmdata$local_mm, type = "response")))
+        print(head(stats::predict(tree$model$model, type = "response")[, 1]))
+        print(logLik(tree$model$model))
+        print(paste(res$ll, tree$model$likelihood))
+        if (tree$model$hsize > 0) {
+          print(head(tree$model$data))
+          print(head(glmdata$local_mm))
+        }
+      }
+      res
+    }
+  } else {
+    ## recursive call
+    sub_ll <- list(ll = 0, nobs = 0L)
+    for (v in seq_along(tree$children)) {
+      ch_ll <- rec_loglikelihood_covlmc_newdata(tree$children[[v]], d + 1, nb_vals, y, cov)
+      sub_ll$ll <- sub_ll$ll + ch_ll$ll
+      sub_ll$nobs <- sub_ll$nobs + ch_ll$nobs
+    }
+    ## take care of the merged model if there is one
+    if (is.null(tree[["merged_model"]])) {
+      sub_ll
+    } else {
+      ## we need to find the matched data
+      mm_match <- tree$match
+      non_merged <- setdiff(seq_along(tree$children), tree$merged)
+      if(verbose) {
+        print(paste("Removing", non_merged))
+      }
+      for(v in non_merged) {
+        if(verbose) {
+          print(tree$children[[v]]$match)
+        }
+        mm_match <- setdiff(mm_match, 1+tree$children[[v]]$match)
+      }
+      if(verbose) {
+        print(mm_match)
+      }
+      ## prepare the data
+      glmdata <- prepare_glm(cov, mm_match, tree$merged_model$hsize, y, from = d - tree$merged_model$hsize)
+      if(verbose) {
+        print(head(glmdata$local_mm))
+        print(head(tree$merged_model$data$local_mm))
+        print(length(mm_match))
+        print(nrow(tree$merged_model$data$local_mm))
+      }
+      ## update the values
+      sub_ll$ll <- sub_ll$ll + glm_likelihood(tree$merged_model$model, glmdata$local_mm, glmdata$target)
+      sub_ll$nobs <- sub_ll$nobs + nrow(glmdata$local_mm)
+      sub_ll
+    }
+  }
+}
+
+
 #' @export
 logLik.covlmc <- function(object, ...) {
   pre_res <- rec_loglikelihood_covlmc(object)
@@ -38,4 +108,15 @@ logLik.covlmc <- function(object, ...) {
   attr(ll, "nobs") <- pre_res$nobs
   class(ll) <- "logLik"
   ll
+}
+
+
+loglikelihood_covlmc <- function(covlmc, x = NULL, cov = NULL) {
+  if (is.null(x)) {
+    rec_loglikelihood_covlmc(covlmc)
+  } else {
+    nx <- to_dts(x, covlmc$vals)
+    ncovlmc <- match_ctx(covlmc, nx$ix, keep_match = TRUE)
+    rec_loglikelihood_covlmc_newdata(ncovlmc, 0, length(covlmc$vals), x, cov)
+  }
 }
