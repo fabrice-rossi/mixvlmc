@@ -6,3 +6,15 @@ test_that("the constructor keeps the state space", {
 test_that("the empty constructor returns a zero depth tree", {
   expect_identical(depth(new_ctx_tree(c(0, 1))), 0)
 })
+
+test_that("the depth is calculated correctly", {
+  expect_identical(depth(build_demo_tree(1:3, 4)), 4)
+  expect_identical(depth(build_demo_tree(1:4, 2)), 2)
+  expect_identical(depth(build_demo_tree(c("a", "b"), 3)), 3)
+})
+
+test_that("the context number is calculted correctly", {
+  expect_identical(context_number(build_demo_tree(1:3, 4)), 3^4)
+  expect_identical(context_number(build_demo_tree(1:4, 2)), 4^2)
+  expect_identical(context_number(build_demo_tree(c("a", "b"), 3)), 2^3)
+})

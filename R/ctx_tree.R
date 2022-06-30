@@ -157,7 +157,7 @@ rec_contexts <- function(path, ct, vals) {
   if (is.null(ct$children)) {
     ## this is a leaf
     ## if there is a f_by, then this is a context
-    if (is.null(ct$f_by)) {
+    if (is.null(ct[["f_by"]])) {
       NULL
     } else {
       list(path)
