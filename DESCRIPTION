@@ -11,6 +11,7 @@ Encoding: UTF-8
 LazyData: true
 Imports: 
     assertthat,
+    nnet,
     Rcpp (>= 1.0.8.3),
     spaMM,
     VGAM

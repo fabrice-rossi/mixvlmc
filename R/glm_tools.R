@@ -51,54 +51,79 @@ prepare_glm <- function(covariate, ctx_match, d, y, from = 0) {
 
 fit_glm <- function(target, mm, nb_vals) {
   assertthat::assert_that(nrow(mm) > 0)
-  if (nb_vals == 2) {
-    if (ncol(mm) > 0) {
-      suppressWarnings(result <-
-        stats::glm(target ~ .,
-          data = mm, family = stats::binomial(),
-          method = spaMM::spaMM_glm.fit, x = FALSE, y = FALSE,
-          model = FALSE
-        ))
+  engine <- options()[["mixvlmc.predictive"]]
+  assertthat::assert_that(engine %in% c("glm", "multinom"))
+  if (engine == "glm") {
+    if (nb_vals == 2) {
+      if (ncol(mm) > 0) {
+        suppressWarnings(result <-
+          stats::glm(target ~ .,
+            data = mm, family = stats::binomial(),
+            method = spaMM::spaMM_glm.fit, x = FALSE, y = FALSE,
+            model = FALSE
+          ))
+      } else {
+        suppressWarnings(result <-
+          stats::glm(target ~ 1,
+            family = stats::binomial(),
+            method = spaMM::spaMM_glm.fit, x = FALSE, y = FALSE,
+            model = FALSE
+          ))
+      }
     } else {
-      suppressWarnings(result <-
-        stats::glm(target ~ 1,
-          family = stats::binomial(),
-          method = spaMM::spaMM_glm.fit, x = FALSE, y = FALSE,
-          model = FALSE
-        ))
+      if (ncol(mm) > 0) {
+        suppressWarnings(result <-
+          VGAM::vglm(target ~ .,
+            data = mm, family = VGAM::multinomial(),
+            x.arg = FALSE, y.arg = FALSE, model = FALSE
+          ))
+      } else {
+        suppressWarnings(result <-
+          VGAM::vglm(target ~ 1,
+            data = mm, family = VGAM::multinomial(),
+            x.arg = FALSE, y.arg = FALSE, model = FALSE
+          ))
+      }
     }
-  } else {
+    result
+  } else if (engine == "multinom") {
     if (ncol(mm) > 0) {
-      suppressWarnings(result <-
-        VGAM::vglm(target ~ .,
-          data = mm, family = VGAM::multinomial(),
-          x.arg = FALSE, y.arg = FALSE, model = FALSE
-        ))
+      result <- nnet::multinom(target ~ ., data = mm, trace = FALSE)
     } else {
-      suppressWarnings(result <-
-        VGAM::vglm(target ~ 1,
-          data = mm, family = VGAM::multinomial(),
-          x.arg = FALSE, y.arg = FALSE, model = FALSE
-        ))
+      result <- nnet::multinom(target ~ 1, trace = FALSE)
     }
+    result$rank <- length(result$wts)
+    return(result)
   }
-  result
+  NULL
 }
 
 glm_likelihood <- function(model, mm, target) {
-  if (inherits(model, "vglm")) {
-    probs <- VGAM::predictvglm(model, mm, type = "response")
-    sum(log(probs) * stats::model.matrix(~ target - 1))
-  } else {
-    probs <- stats::predict(model, mm, type = "response")
-    sum(log(probs) * target + log(1 - probs) * (1 - target))
-  }
+  UseMethod("glm_likelihood")
+}
+
+#' @exportS3Method
+glm_likelihood.glm <- function(model, mm, target) {
+  probs <- stats::predict(model, mm, type = "response")
+  sum(log(probs) * target + log(1 - probs) * (1 - target))
+}
+
+#' @exportS3Method
+glm_likelihood.vglm <- function(model, mm, target) {
+  probs <- VGAM::predictvglm(model, mm, type = "response")
+  sum(log(probs) * stats::model.matrix(~ target - 1))
+}
+
+#' @exportS3Method
+glm_likelihood.multinom <- function(model, mm, target) {
+  probs <- stats::predict(model, mm, type = "probs")
+  sum(log(probs) * stats::model.matrix(~ target - 1))
 }
 
 is_glm_low_rank <- function(model) {
   if (inherits(model, "vglm")) {
-    model@rank < length(model@coefficients)
+    model@rank < length(stats::coefficients(model))
   } else {
-    model$rank < length(model$coefficients)
+    model$rank < length(stats::coefficients(model))
   }
 }
