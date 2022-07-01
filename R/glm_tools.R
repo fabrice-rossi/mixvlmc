@@ -93,9 +93,10 @@ fit_glm <- function(target, mm, nb_vals) {
       result <- nnet::multinom(target ~ 1, trace = FALSE)
     }
     result$rank <- length(result$wts)
-    return(result)
+    result
+  } else {
+    NULL
   }
-  NULL
 }
 
 glm_likelihood <- function(model, mm, target) {
