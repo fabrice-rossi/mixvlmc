@@ -1,0 +1,10 @@
+test_that("vlmc estimation works on super simple case", {
+  x <- rep(c(0, 1), 1000)
+  x_vlmc <- vlmc(x)
+  expect_identical(depth(x_vlmc), 1)
+  expect_identical(context_number(x_vlmc), 2)
+  x_vlmc_ctx <- contexts(x_vlmc)
+  expect_identical(length(x_vlmc_ctx), 2L)
+  expect_identical(x_vlmc_ctx[[1]], "0")
+  expect_identical(x_vlmc_ctx[[2]], "1")
+})
