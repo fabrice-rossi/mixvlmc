@@ -122,9 +122,15 @@ glm_likelihood.multinom <- function(model, mm, target) {
 }
 
 is_glm_low_rank <- function(model) {
-  if (inherits(model, "vglm")) {
-    model@rank < length(stats::coefficients(model))
-  } else {
-    model$rank < length(stats::coefficients(model))
-  }
+  UseMethod("is_glm_low_rank")
+}
+
+#' @exportS3Method
+is_glm_low_rank.vglm <- function(model) {
+  model@rank < length(stats::coefficients(model))
+}
+
+#' @exportS3Method
+is_glm_low_rank.default <- function(model) {
+  model$rank < length(stats::coefficients(model))
 }
