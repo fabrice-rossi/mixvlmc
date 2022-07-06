@@ -111,7 +111,12 @@ glm_likelihood.glm <- function(model, mm, target) {
 
 #' @exportS3Method
 glm_likelihood.vglm <- function(model, mm, target) {
-  probs <- VGAM::predictvglm(model, mm, type = "response")
+  if (ncol(mm) == 0) {
+    one_prob <- VGAM::predictvglm(model, type = "response")[1, ]
+    probs <- matrix(one_prob, nrow = nrow(mm), ncol = length(one_prob), byrow = TRUE)
+  } else {
+    probs <- VGAM::predictvglm(model, mm, type = "response")
+  }
   sum(log(probs) * stats::model.matrix(~ target - 1))
 }
 
