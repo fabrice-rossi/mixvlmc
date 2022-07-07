@@ -147,3 +147,19 @@ is_glm_low_rank.vglm <- function(model) {
 is_glm_low_rank.default <- function(model) {
   model$rank < length(stats::coefficients(model))
 }
+
+glm_coef <- function(model) {
+  UseMethod("glm_coef")
+}
+
+#' @exportS3Method
+glm_coef.default <- function(model) {
+  stats::coef(model)
+}
+
+#' @exportS3Method
+glm_coef.vglm <- function(model) {
+  nb_columns <- sum(sapply(model@assign, length))
+  nb_rows <- length(stats::coef(model)) %/% nb_columns
+  matrix(stats::coef(model), nrow=nb_rows)
+}
