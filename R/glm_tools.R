@@ -80,13 +80,13 @@ fit_glm <- function(target, mm, nb_vals) {
         if (ncol(mm) > 0) {
           suppressWarnings(result <-
             VGAM::vglm(target ~ .,
-              data = mm, family = VGAM::multinomial(),
+              data = mm, family = VGAM::multinomial(refLevel = 1),
               x.arg = FALSE, y.arg = FALSE, model = FALSE
             ))
         } else {
           suppressWarnings(result <-
             VGAM::vglm(target ~ 1,
-              data = mm, family = VGAM::multinomial(),
+              data = mm, family = VGAM::multinomial(refLevel = 1),
               x.arg = FALSE, y.arg = FALSE, model = FALSE
             ))
         }
