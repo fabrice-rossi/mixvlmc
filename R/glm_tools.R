@@ -98,7 +98,7 @@ fit_glm <- function(target, mm, nb_vals) {
       } else {
         result <- nnet::multinom(target ~ 1, trace = FALSE)
       }
-      result$rank <- length(result$wts)
+      result$rank <- length(stats::coef(result))
       result
     } else {
       ## should not happen
