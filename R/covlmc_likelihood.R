@@ -45,9 +45,8 @@ rec_loglikelihood_covlmc_newdata <- function(tree, d, nb_vals, y, cov, verbose =
       )
       if (verbose) {
         print(all.equal(glmdata$target, tree$model$data$target))
-        print(utils::head(stats::predict(tree$model$model, glmdata$local_mm, type = "response")))
-        print(utils::head(stats::predict(tree$model$model, type = "response")[, 1]))
         print(stats::logLik(tree$model$model))
+        print(res$nobs)
         print(paste(res$ll, tree$model$likelihood))
         if (tree$model$hsize > 0) {
           print(utils::head(tree$model$data))
@@ -60,7 +59,7 @@ rec_loglikelihood_covlmc_newdata <- function(tree, d, nb_vals, y, cov, verbose =
     ## recursive call
     sub_ll <- list(ll = 0, nobs = 0L)
     for (v in seq_along(tree$children)) {
-      ch_ll <- rec_loglikelihood_covlmc_newdata(tree$children[[v]], d + 1, nb_vals, y, cov)
+      ch_ll <- rec_loglikelihood_covlmc_newdata(tree$children[[v]], d + 1, nb_vals, y, cov, verbose)
       sub_ll$ll <- sub_ll$ll + ch_ll$ll
       sub_ll$nobs <- sub_ll$nobs + ch_ll$nobs
     }
@@ -135,6 +134,9 @@ loglikelihood.covlmc <- function(vlmc, newdata, ...) {
     assertthat::assert_that(assertthat::has_name(newcov, vlmc$cov_names))
     nx <- to_dts(newdata, vlmc$vals)
     ncovlmc <- match_ctx(vlmc, nx$ix, keep_match = TRUE)
+    if (length(vlmc$vals) > 2) {
+      newdata <- nx$fx
+    }
     pre_res <- rec_loglikelihood_covlmc_newdata(ncovlmc, 0, length(vlmc$vals), newdata, newcov)
   }
   res <- pre_res$ll
