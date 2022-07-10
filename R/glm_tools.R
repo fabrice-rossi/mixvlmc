@@ -161,5 +161,5 @@ glm_coef.default <- function(model) {
 glm_coef.vglm <- function(model) {
   nb_columns <- sum(sapply(model@assign, length))
   nb_rows <- length(stats::coef(model)) %/% nb_columns
-  matrix(stats::coef(model), nrow=nb_rows)
+  matrix(stats::coef(model), nrow = nb_rows)
 }

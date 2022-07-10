@@ -68,3 +68,12 @@ glm_likelihood.constant_model <- function(model, mm, target) {
     sum(log(probs) * stats::model.matrix(~ target - 1))
   }
 }
+
+#' @exportS3Method
+glm_coef.constant_model <- function(model) {
+  if (model$rank > 1) {
+    matrix(model$coefficients, nrow = model$rank)
+  } else {
+    model$coefficients
+  }
+}
