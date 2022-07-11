@@ -348,6 +348,7 @@ ctx_tree_fit_glm <- function(tree, y, covariate, alpha, keep_data = FALSE, verbo
             ## we throw away the local model and keep the children
             result$children <- submodels
             result$prunable <- FALSE
+            result$p_value <- p_value
           }
         } else if (need_merged_model) {
           result$prunable <- FALSE
