@@ -1,7 +1,7 @@
 #' @export
 simulate.vlmc <- function(object, nsim = 1, seed = NULL, ...) {
   if (!is.null(seed)) {
-    stop("Non NULL seed are not supported")
+    withr::local_seed(seed)
   }
   int_vals <- seq_along(object$vals)
   ctx <- c()
