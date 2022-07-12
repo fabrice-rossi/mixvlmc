@@ -376,10 +376,13 @@ ctx_tree_fit_glm <- function(tree, y, covariate, alpha, keep_data = FALSE, verbo
             result$children <- submodels
             if (is.na(local_model$p_value)) {
               result$merged_model <- local_model$H0_model
-            } else if (local_model$p_value > alpha) {
-              result$merged_model <- local_model$H0_model
             } else {
-              result$merged_model <- local_model$H1_model
+              if (local_model$p_value > alpha) {
+                result$merged_model <- local_model$H0_model
+              } else {
+                result$merged_model <- local_model$H1_model
+              }
+              result$merged_model$p_value <- local_model$p_value
             }
             result$merged <- pr_candidates
           } else {
