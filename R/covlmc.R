@@ -113,7 +113,7 @@ ctx_tree_exists <- function(tree) {
 node_prune_model <- function(model, cov_dim, nb_vals, alpha, keep_data = FALSE, verbose = FALSE) {
   local_mm <- model$data$local_mm
   target <- model$data$target
-  if (ncol(local_mm) > 1) {
+  if (ncol(local_mm) >= 1) {
     nb <- ncol(local_mm) %/% cov_dim
     current_like <- model$likelihood
     previous_model <- model$model
