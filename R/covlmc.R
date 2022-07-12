@@ -79,6 +79,9 @@ node_fit_glm_with_data <- function(local_mm, d, target, dim_cov, alpha, nb_vals,
       df <- (full_rank_model$hsize - H0_full_rank_model$hsize) * dim_cov * (nb_vals - 1)
       p_value <-
         stats::pchisq(as.numeric(lambda), df = df, lower.tail = FALSE)
+      if (is.na(p_value)) {
+        print(paste(p_value, lambda))
+      }
       if (return_all) {
         list(
           p_value = p_value,
@@ -116,16 +119,20 @@ node_prune_model <- function(model, cov_dim, nb_vals, alpha, keep_data = FALSE, 
     previous_model <- model$model
     current_model <- NULL
     current_data <- NULL
+    p_value <- NA
     hsize <- model$hsize
     for (k in 1:nb) {
       if (verbose) {
-        print(k)
+        print(paste("node_prune_model", k))
       }
       h0mm <- local_mm[, -seq(ncol(local_mm), by = -1, length.out = cov_dim * k), drop = FALSE]
       H0_local_glm <- fit_glm(target, h0mm, nb_vals)
       assertthat::assert_that(!is_glm_low_rank(H0_local_glm))
       lambda <- 2 * (current_like - stats::logLik(H0_local_glm))
       p_value <- stats::pchisq(as.numeric(lambda), df = cov_dim * (nb_vals - 1), lower.tail = FALSE)
+      if (is.na(p_value)) {
+        print(paste(p_value, lambda))
+      }
       if (p_value > alpha) {
         ## H0 is not rejected
         current_like <- as.numeric(stats::logLik(H0_local_glm))
@@ -147,6 +154,9 @@ node_prune_model <- function(model, cov_dim, nb_vals, alpha, keep_data = FALSE, 
       ## we keep the original model
       if (!keep_data) {
         model$data <- NULL
+      }
+      if (is.null(model$p_value) || is.na(model$p_value)) {
+        model$p_value <- p_value
       }
       model
     } else {
