@@ -28,3 +28,10 @@ test_that("covlmc is robust to degenerate cases with more than 2 states", {
     expect_identical(x_covlmc_ctx[[3]], "2")
   }
 })
+
+test_that("covlmc reports p-values correctly", {
+  data_set <- build_data_set(1000, seed = 0)
+  model <- covlmc(data_set$x, data_set$covariate, alpha = 0.1)
+  p_values <- extract_p_value(model)
+  expect_false(anyNA(p_values$p_value[p_values$nb_coeffs > 1]))
+})
