@@ -13,3 +13,34 @@ build_data_set <- function(n, seed = 0) {
   }
   list(x = x, covariate = covariate)
 }
+
+extract_p_value <- function(tree) {
+  recurse_extract_p_value <- function(tree) {
+    if (is.null(tree[["children"]])) {
+      if (is.null(tree[["model"]])) {
+        # nothing there (should not happen)
+        NULL
+      } else {
+        p_value <- NA
+        if (!is.null(tree$model[["p_value"]])) {
+          p_value <- tree$model[["p_value"]]
+        }
+        data.frame(p_value = p_value, nb_coeffs = length(tree$model[["coefficients"]]))
+      }
+    } else {
+      df <- NULL
+      for (v in seq_along(tree[["children"]])) {
+        sub_p <- recurse_extract_p_value(tree$children[[v]])
+        if (!is.null(sub_p)) {
+          if (is.null(df)) {
+            df <- sub_p
+          } else {
+            df <- rbind(df, sub_p)
+          }
+        }
+      }
+      df
+    }
+  }
+  recurse_extract_p_value(tree)
+}
