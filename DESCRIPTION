@@ -1,12 +1,14 @@
 Package: mixvlmc
 Type: Package
-Title: Mixture of Variable Length Markov Chains
+Title: Variable Length Markov Chains
 Version: 0.1.0
 Author: Fabrice Rossi
 Maintainer: Fabrice Rossi <Fabrice.Rossi@apiacoa.org>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
+Description: An implementation of Variable Length Markov Chains and of their 
+    extension to models with covariates.
 License: GPL (>= 3)
+URL: https://github.com/fabrice-rossi/mixvlmc
+BugReports: https://github.com/fabrice-rossi/mixvlmc/issues
 Encoding: UTF-8
 LazyData: true
 Imports: 
