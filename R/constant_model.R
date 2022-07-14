@@ -22,7 +22,7 @@ constant_model <- function(target, mm, nb_vals, fake_obs = 1) {
     attr(ll, "df") <- nb_coeffs
     attr(ll, "nobs") <- nb_1 + nb_0
     class(ll) <- "logLik"
-    structure(list(coefficients = coeffs, ll = ll, rank = 1), class = "constant_model")
+    structure(list(coefficients = coeffs, ll = ll, rank = 1, target = ifelse(nb_0 == 0, 1, 0)), class = "constant_model")
   } else {
     target_dist <- table(target)
     f_target_dist <- target_dist
@@ -33,7 +33,7 @@ constant_model <- function(target, mm, nb_vals, fake_obs = 1) {
     attr(ll, "df") <- nb_coeffs
     attr(ll, "nobs") <- sum(target_dist)
     class(ll) <- "logLik"
-    structure(list(coefficients = coeffs, ll = ll, rank = nb_vals - 1), class = "constant_model")
+    structure(list(coefficients = coeffs, ll = ll, rank = nb_vals - 1, target = which(target_dist > 0) - 1), class = "constant_model")
   }
 }
 
@@ -76,4 +76,9 @@ glm_coef.constant_model <- function(model) {
   } else {
     model$coefficients
   }
+}
+
+#' @exportS3Method
+glm_sample_one.constant_model <- function(model, newdata) {
+  model$target
 }
