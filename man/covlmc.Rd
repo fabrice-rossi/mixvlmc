@@ -4,7 +4,15 @@
 \alias{covlmc}
 \title{Fit a Variable Length Markov Chain with Covariates (coVLMC)}
 \usage{
-covlmc(x, covariate, alpha = 0.05, min_size = 15, max_depth = 100)
+covlmc(
+  x,
+  covariate,
+  alpha = 0.05,
+  min_size = 15,
+  max_depth = 100,
+  control = covlmc_control(...),
+  ...
+)
 }
 \arguments{
 \item{x}{a discrete time series; can be numeric, character or factor.}
@@ -18,6 +26,10 @@ a context in the growing phase of the context tree (see below for details)}
 
 \item{max_depth}{integer >= 1 (default: 100). Longest context considered in
 growing phase of the context tree.}
+
+\item{control}{a list with control parameters, see \code{\link{covlmc_control}}}
+
+\item{...}{arguments passed to \code{\link{covlmc_control}}}
 }
 \value{
 a fitted covlmc model
@@ -30,4 +42,6 @@ to a discrete time series coupled with a time series of covariates
 The \code{min_size} parameter is used to compute the actual number of observations per
 context in the growing phase of the tree. It is computed as \code{min_size*(1+ncol(covariate)*(d+1))}
 where \code{d} is the length of the context (a.k.a. the depth in the tree).
+
+Parameters specified by \code{control} are used to fine tune the behavior of the algorithm.
 }

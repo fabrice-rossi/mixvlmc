@@ -1,17 +1,17 @@
 ## fit a glm guaranteed to be of full rank by removing older covariates if needed
-node_fit_glm_full_rank <- function(index, y, covariate, nb_vals, d) {
+node_fit_glm_full_rank <- function(index, y, covariate, nb_vals, d, control) {
   glmdata <- prepare_glm(covariate, index, d, y)
-  node_fit_glm_full_rank_with_data(glmdata$local_mm, d, glmdata$target, ncol(covariate), nb_vals)
+  node_fit_glm_full_rank_with_data(glmdata$local_mm, d, glmdata$target, ncol(covariate), nb_vals, control)
 }
 
 ## implementation of node_fit_glm_full_rank
-node_fit_glm_full_rank_with_data <- function(local_mm, d, target, dim_cov, nb_vals) {
+node_fit_glm_full_rank_with_data <- function(local_mm, d, target, dim_cov, nb_vals, control) {
   if (nrow(local_mm) > 0) {
-    local_glm <- fit_glm(target, local_mm, nb_vals)
+    local_glm <- fit_glm(target, local_mm, nb_vals, control)
     while (is_glm_low_rank(local_glm)) {
       d <- d - 1
       local_mm <- local_mm[, -seq(ncol(local_mm), by = -1, length.out = dim_cov), drop = FALSE]
-      local_glm <- fit_glm(target, local_mm, nb_vals)
+      local_glm <- fit_glm(target, local_mm, nb_vals, control)
     }
     list(
       coefficients = glm_coef(local_glm),
@@ -33,20 +33,20 @@ node_fit_glm_full_rank_with_data <- function(local_mm, d, target, dim_cov, nb_va
 ## the size=d model is returned (H0 is rejected). If it is not, the size=d-1 model
 ## is returned (H0 is not rejected)
 ## if return_all is true, both models are returned when this makes sense
-node_fit_glm <- function(index, d, y, covariate, alpha, nb_vals, return_all = FALSE) {
+node_fit_glm <- function(index, d, y, covariate, alpha, nb_vals, return_all = FALSE, control) {
   ## prepare the data
   glmdata <- prepare_glm(covariate, index, d, y)
-  node_fit_glm_with_data(glmdata$local_mm, d, glmdata$target, ncol(covariate), alpha, nb_vals, return_all)
+  node_fit_glm_with_data(glmdata$local_mm, d, glmdata$target, ncol(covariate), alpha, nb_vals, return_all, control)
 }
 
 ## implementation of node_fit_glm
-node_fit_glm_with_data <- function(local_mm, d, target, dim_cov, alpha, nb_vals, return_all = FALSE) {
+node_fit_glm_with_data <- function(local_mm, d, target, dim_cov, alpha, nb_vals, return_all = FALSE, control) {
   ## compute the full rank "H1" model
   full_rank_model <- node_fit_glm_full_rank_with_data(
     local_mm,
     d,
     target,
-    dim_cov, nb_vals
+    dim_cov, nb_vals, control
   )
   if (!is.null(full_rank_model)) {
     if (full_rank_model$hsize < d || d <= 1) {
@@ -71,7 +71,7 @@ node_fit_glm_with_data <- function(local_mm, d, target, dim_cov, alpha, nb_vals,
       H0_full_rank_model <- node_fit_glm_full_rank_with_data(
         h0mm,
         d - 1, target,
-        dim_cov, nb_vals
+        dim_cov, nb_vals, control
       )
       full_rank_model$H0 <- FALSE
       H0_full_rank_model$H0 <- TRUE
@@ -110,7 +110,7 @@ ctx_tree_exists <- function(tree) {
   length(tree) > 0
 }
 
-node_prune_model <- function(model, cov_dim, nb_vals, alpha, keep_data = FALSE, verbose = FALSE) {
+node_prune_model <- function(model, cov_dim, nb_vals, alpha, keep_data = FALSE, control, verbose = FALSE) {
   local_mm <- model$data$local_mm
   target <- model$data$target
   if (ncol(local_mm) >= 1) {
@@ -126,7 +126,7 @@ node_prune_model <- function(model, cov_dim, nb_vals, alpha, keep_data = FALSE, 
         print(paste("node_prune_model", k))
       }
       h0mm <- local_mm[, -seq(ncol(local_mm), by = -1, length.out = cov_dim * k), drop = FALSE]
-      H0_local_glm <- fit_glm(target, h0mm, nb_vals)
+      H0_local_glm <- fit_glm(target, h0mm, nb_vals, control)
       assertthat::assert_that(!is_glm_low_rank(H0_local_glm))
       lambda <- 2 * (current_like - stats::logLik(H0_local_glm))
       p_value <- stats::pchisq(as.numeric(lambda), df = cov_dim * (nb_vals - 1), lower.tail = FALSE)
@@ -178,7 +178,7 @@ node_prune_model <- function(model, cov_dim, nb_vals, alpha, keep_data = FALSE, 
   }
 }
 
-ctx_tree_fit_glm <- function(tree, y, covariate, alpha, keep_data = FALSE, verbose = FALSE) {
+ctx_tree_fit_glm <- function(tree, y, covariate, alpha, keep_data = FALSE, verbose = FALSE, control) {
   nb_vals <- length(tree$vals)
   recurse_ctx_tree_fit_glm <-
     function(tree, ctx, d, y, covariate) {
@@ -193,7 +193,7 @@ ctx_tree_fit_glm <- function(tree, y, covariate, alpha, keep_data = FALSE, verbo
           print(paste("call to glm with d=", d, sep = ""))
         }
         res <- list(
-          model = node_fit_glm(tree$match, d, y, covariate, alpha, nb_vals),
+          model = node_fit_glm(tree$match, d, y, covariate, alpha, nb_vals, control = control),
           match = tree$match,
           f_by = tree$f_by
         )
@@ -273,7 +273,7 @@ ctx_tree_fit_glm <- function(tree, y, covariate, alpha, keep_data = FALSE, verbo
           if (verbose) {
             print(paste("fitting a local model (of full rank) with", d, "covariates"))
           }
-          local_model <- node_fit_glm(tree$match, d, y, covariate, alpha, nb_vals, return_all = TRUE)
+          local_model <- node_fit_glm(tree$match, d, y, covariate, alpha, nb_vals, return_all = TRUE, control)
           if (verbose) {
             print(paste(local_model$H1_model$H0, local_model$H1_model$hsize))
           }
@@ -290,7 +290,7 @@ ctx_tree_fit_glm <- function(tree, y, covariate, alpha, keep_data = FALSE, verbo
           if (verbose) {
             print(paste("call to glm with d=", d, sep = ""))
           }
-          local_model <- node_fit_glm(full_index, d, y, covariate, alpha, nb_vals, return_all = TRUE)
+          local_model <- node_fit_glm(full_index, d, y, covariate, alpha, nb_vals, return_all = TRUE, control)
         }
         if (!is.null(local_model)) {
           ## to compute the likelihood of the new model on the data used by
@@ -401,7 +401,7 @@ ctx_tree_fit_glm <- function(tree, y, covariate, alpha, keep_data = FALSE, verbo
             }
             for (v in pr_candidates) {
               result$children[[v]][["model"]] <-
-                node_prune_model(result$children[[v]][["model"]], ncol(covariate), nb_vals, alpha, keep_data)
+                node_prune_model(result$children[[v]][["model"]], ncol(covariate), nb_vals, alpha, keep_data, control)
             }
           }
         } else {
@@ -409,7 +409,7 @@ ctx_tree_fit_glm <- function(tree, y, covariate, alpha, keep_data = FALSE, verbo
             if (verbose) {
               print("Trying to prune the merged model covariables")
             }
-            result$merged_model <- node_prune_model(result$merged_model, ncol(covariate), nb_vals, alpha, keep_data)
+            result$merged_model <- node_prune_model(result$merged_model, ncol(covariate), nb_vals, alpha, keep_data, control)
           }
         }
         result
@@ -434,6 +434,26 @@ count_covlmc_local_context <- function(node) {
   }
 }
 
+#' Control for coVLMC fitting
+#'
+#' This function creates a list with parameters used to fine tune the coVLMC
+#' fitting algorithm.
+#'
+#' \code{pseudo_obs} is used to regularize the probability estimations when a
+#' context is only observed followed by always the same state. Transition
+#' probabilities are computed after adding \code{pseudo_obs} pseudo observations
+#' of each of the states (including the observed one). This corresponds to a
+#' Bayesian posterior mean estimation with a Dirichlet prior.
+#'
+#' @param pseudo_obs number of fake observations of each state to add to the
+#'   observed ones.
+#'
+#' @return a list.
+#' @export
+covlmc_control <- function(pseudo_obs = 1) {
+  list(pseudo_obs = pseudo_obs)
+}
+
 #' Fit a Variable Length Markov Chain with Covariates (coVLMC)
 #'
 #' This function fits a  Variable Length Markov Chain with covariates (coVLMC)
@@ -446,6 +466,8 @@ count_covlmc_local_context <- function(node) {
 #'  a context in the growing phase of the context tree (see below for details)
 #' @param max_depth integer >= 1 (default: 100). Longest context considered in
 #'  growing phase of the context tree.
+#' @param control a list with control parameters, see \code{\link{covlmc_control}}
+#' @param ... arguments passed to \code{\link{covlmc_control}}
 #' @return a fitted covlmc model
 #'
 #' @details
@@ -453,8 +475,10 @@ count_covlmc_local_context <- function(node) {
 #' context in the growing phase of the tree. It is computed as \code{min_size*(1+ncol(covariate)*(d+1))}
 #' where \code{d} is the length of the context (a.k.a. the depth in the tree).
 #'
+#' Parameters specified by \code{control} are used to fine tune the behavior of the algorithm.
+#'
 #' @export
-covlmc <- function(x, covariate, alpha = 0.05, min_size = 15, max_depth = 100) {
+covlmc <- function(x, covariate, alpha = 0.05, min_size = 15, max_depth = 100, control = covlmc_control(...), ...) {
   assertthat::assert_that(is.data.frame(covariate))
   assertthat::assert_that(nrow(covariate) == length(x))
   # data conversion
@@ -474,7 +498,7 @@ covlmc <- function(x, covariate, alpha = 0.05, min_size = 15, max_depth = 100) {
   }
   ctx_tree$match <- 1:length(x)
   pruned_tree <- ctx_tree_fit_glm(ctx_tree, x, covariate,
-    alpha = alpha, verbose = FALSE, keep_data = TRUE
+    alpha = alpha, verbose = FALSE, keep_data = TRUE, control = control
   )
   pre_result <- new_ctx_tree(pruned_tree$vals, pruned_tree, count_context = count_covlmc_local_context, class = "covlmc")
   pre_result$cov_names <- names(covariate)

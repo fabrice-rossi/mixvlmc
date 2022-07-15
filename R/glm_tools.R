@@ -49,7 +49,7 @@ prepare_glm <- function(covariate, ctx_match, d, y, from = 0) {
   list(local_mm = local_mm[to_keep, , drop = FALSE], target = target[to_keep])
 }
 
-fit_glm <- function(target, mm, nb_vals) {
+fit_glm <- function(target, mm, nb_vals, control) {
   assertthat::assert_that(nrow(mm) > 0)
   engine <- options()[["mixvlmc.predictive"]]
   assertthat::assert_that(engine %in% c("glm", "multinom"))
@@ -57,7 +57,7 @@ fit_glm <- function(target, mm, nb_vals) {
   target_dist <- target_dist[target_dist > 0]
   if (length(target_dist) == 1) {
     ## degenerate case
-    constant_model(target, mm, nb_vals)
+    constant_model(target, mm, nb_vals, control$pseudo_obs)
   } else {
     if (engine == "glm") {
       if (nb_vals == 2) {
