@@ -1,4 +1,5 @@
 test_that("the likelihood calculation is valid", {
+  withr::local_seed(0)
   x <- sample(c("A", "B", "C"), 1000, replace = TRUE)
   y <- ifelse(runif(length(x)) > 0.5, c(x[-1], sample(c("A", "B", "C"), 1)), c(x[-c(1, 2)], sample(c("A", "B", "C"), 2, replace = TRUE)))
   y <- as.factor(ifelse(runif(length(x)) > 0.2, y, sample(c("A", "B", "C"), 1000, replace = TRUE)))
