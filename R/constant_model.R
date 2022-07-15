@@ -1,4 +1,4 @@
-constant_model <- function(target, mm, nb_vals, fake_obs = 1) {
+constant_model <- function(target, mm, nb_vals, pseudo_obs = 1) {
   if (ncol(mm) > 0) {
     nb_coeffs <- (ncol(stats::model.matrix(target ~ ., data = mm))) * (nb_vals - 1)
   } else {
@@ -9,13 +9,8 @@ constant_model <- function(target, mm, nb_vals, fake_obs = 1) {
     ## logistic regression case
     nb_0 <- sum(target == 0)
     nb_1 <- length(target) - nb_0
-    f_nb_0 <- nb_0
-    f_nb_1 <- nb_1
-    if (nb_0 == 0) {
-      f_nb_0 <- nb_0 + fake_obs
-    } else {
-      f_nb_1 <- nb_1 + fake_obs
-    }
+    f_nb_0 <- nb_0 + pseudo_obs
+    f_nb_1 <- nb_1 + pseudo_obs
     prob_1 <- f_nb_1 / (f_nb_1 + f_nb_0)
     coeffs[1] <- stats::binomial()$linkfun(prob_1)
     ll <- log(prob_1) * nb_1 + log(1 - prob_1) * nb_0
@@ -25,8 +20,7 @@ constant_model <- function(target, mm, nb_vals, fake_obs = 1) {
     structure(list(coefficients = coeffs, ll = ll, rank = 1, target = ifelse(nb_0 == 0, 1, 0)), class = "constant_model")
   } else {
     target_dist <- table(target)
-    f_target_dist <- target_dist
-    f_target_dist[target_dist == 0] <- fake_obs
+    f_target_dist <- target_dist + pseudo_obs
     coeffs[1:(nb_vals - 1)] <- VGAM::multilogitlink(matrix(f_target_dist, nrow = 1))
     probs <- f_target_dist / sum(f_target_dist)
     ll <- sum(target_dist * log(probs))
