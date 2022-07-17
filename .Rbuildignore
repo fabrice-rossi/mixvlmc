@@ -3,3 +3,4 @@
 devutils
 ^LICENSE\.md$
 ^\.github$
+^data-raw$
