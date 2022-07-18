@@ -7,6 +7,22 @@ nb_sub_tree <- function(ct) {
   }
 }
 
+count_local_context <- function(node) {
+  if (is.null(node$children)) {
+    if (is.null(node[["f_by"]])) {
+      0
+    } else {
+      1
+    }
+  } else {
+    if (nb_sub_tree(node) < length(node$children)) {
+      1
+    } else {
+      0
+    }
+  }
+}
+
 rec_stats_ctx_tree <- function(ct, count_context = count_local_context) {
   if (is.null(ct$children)) {
     ## this is a leaf
@@ -37,6 +53,42 @@ new_ctx_tree <- function(vals, root = NULL, compute_stats = TRUE,
     }
   }
   preres
+}
+
+grow_ctx_tree <- function(x, vals, min_size, max_depth, covsize = 0, keep_match = FALSE, all_children = FALSE,
+                          compute_stats = FALSE) {
+  recurse_ctx_tree <- function(x, nb_vals, d, from, f_by) {
+    if (d < max_depth) {
+      fmatch <- forward_match_all_ctx_counts(x, nb_vals, d, from)
+      children <- vector(mode = "list", nb_vals)
+      nb_children <- 0
+      for (v in 1:nb_vals) {
+        if (length(fmatch$positions[[v]]) >= min_size * (1 + covsize * (d + 1))) {
+          children[[v]] <- recurse_ctx_tree(x, nb_vals, d + 1, fmatch$positions[[v]], fmatch$counts[v, ])
+          nb_children <- nb_children + 1
+        } else {
+          children[[v]] <- list()
+        }
+      }
+      result <- list()
+      if (nb_children == nb_vals | (!all_children & nb_children > 0)) {
+        result$children <- children
+      }
+      result$f_by <- f_by
+      if (keep_match) {
+        result$match <- from
+      }
+      result
+    } else {
+      result <- list(f_by = f_by)
+      if (keep_match) {
+        result$match <- from
+      }
+      result
+    }
+  }
+  pre_res <- recurse_ctx_tree(x, length(vals), 0, NULL, table(x))
+  new_ctx_tree(vals, pre_res, compute_stats = compute_stats, class = "vlmc")
 }
 
 #' Build a context tree for a discrete time series
@@ -142,22 +194,6 @@ depth <- function(ct) {
   }
 }
 
-count_local_context <- function(node) {
-  if (is.null(node$children)) {
-    if (is.null(node[["f_by"]])) {
-      0
-    } else {
-      1
-    }
-  } else {
-    if (nb_sub_tree(node) < length(node$children)) {
-      1
-    } else {
-      0
-    }
-  }
-}
-
 rec_context_number <- function(ct, count_context = count_local_context) {
   nb <- count_context(ct)
   if (!is.null(ct$children)) {
@@ -185,71 +221,4 @@ context_number.ctx_tree <- function(ct) {
   } else {
     rec_context_number(ct)
   }
-}
-
-rec_contexts <- function(path, ct, vals) {
-  if (is.null(ct$children)) {
-    ## this is a leaf
-    ## if there is a f_by, then this is a context
-    if (is.null(ct[["f_by"]])) {
-      NULL
-    } else {
-      list(path)
-    }
-  } else {
-    all_ctx <- list()
-    for (v in seq_along(ct$children)) {
-      sub_ctx <- rec_contexts(c(path, vals[v]), ct$children[[v]], vals)
-      if (!is.null(sub_ctx)) {
-        all_ctx <- c(all_ctx, sub_ctx)
-      }
-    }
-    if (nb_sub_tree(ct) < length(vals)) {
-      all_ctx <- c(all_ctx, list(path))
-    }
-    all_ctx
-  }
-}
-
-#' Contexts of a context tree
-#'
-#' This function extracts from a context tree the list of all its contexts.
-#'
-#' @param ct a context tree
-#'
-#' @return the list of the contexts represented in this tree.
-#' @export
-contexts <- function(ct) {
-  UseMethod("contexts")
-}
-
-#' @export
-contexts.ctx_tree <- function(ct) {
-  preres <- rec_contexts(c(), ct, ct$vals)
-  if (is.null(preres[[length(preres)]])) {
-    ## root context
-    preres[[length(preres)]] <- list()
-  }
-  preres
-}
-
-rec_match_context <- function(tree, d, ctx) {
-  if (length(ctx) == 0) {
-    list(tree = tree, depth = d)
-  } else {
-    if (is.null(tree$children)) {
-      list(tree = tree, depth = d)
-    } else {
-      cand <- tree$children[[ctx[1]]]
-      if (length(cand) > 0) {
-        rec_match_context(cand, d + 1, ctx[-1])
-      } else {
-        list(tree = tree, depth = d)
-      }
-    }
-  }
-}
-
-match_context <- function(tree, ctx) {
-  rec_match_context(tree, 0, ctx)
 }

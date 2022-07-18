@@ -14,42 +14,6 @@ assertthat::on_failure(is_vlmc) <- function(call, env) {
   paste0(deparse(call$x), " is not a vlmc")
 }
 
-grow_ctx_tree <- function(x, vals, min_size, max_depth, covsize = 0, keep_match = FALSE, all_children = FALSE,
-                          compute_stats = FALSE) {
-  recurse_ctx_tree <- function(x, nb_vals, d, from, f_by) {
-    if (d < max_depth) {
-      fmatch <- forward_match_all_ctx_counts(x, nb_vals, d, from)
-      children <- vector(mode = "list", nb_vals)
-      nb_children <- 0
-      for (v in 1:nb_vals) {
-        if (length(fmatch$positions[[v]]) >= min_size * (1 + covsize * (d + 1))) {
-          children[[v]] <- recurse_ctx_tree(x, nb_vals, d + 1, fmatch$positions[[v]], fmatch$counts[v, ])
-          nb_children <- nb_children + 1
-        } else {
-          children[[v]] <- list()
-        }
-      }
-      result <- list()
-      if (nb_children == nb_vals | (!all_children & nb_children > 0)) {
-        result$children <- children
-      }
-      result$f_by <- f_by
-      if (keep_match) {
-        result$match <- from
-      }
-      result
-    } else {
-      result <- list(f_by = f_by)
-      if (keep_match) {
-        result$match <- from
-      }
-      result
-    }
-  }
-  pre_res <- recurse_ctx_tree(x, length(vals), 0, NULL, table(x))
-  new_ctx_tree(vals, pre_res, compute_stats = compute_stats, class = "vlmc")
-}
-
 kl_div <- function(p, q) {
   pratio <- p / q
   pratio <- ifelse(p == q, 1, pratio) ## handles p=q=0
