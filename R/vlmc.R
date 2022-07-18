@@ -164,10 +164,30 @@ vlmc <- function(x, alpha = 0.05, cutoff = NULL, min_size = 2, max_depth = 100, 
     warning(paste0("x as numerous unique values (", length(vals), ")"))
   }
   ctx_tree <- grow_ctx_tree(ix, vals, min_size = min_size, max_depth = max_depth, compute_stats = !prune)
+  result <- ctx_tree
   if (prune) {
-    pruned_tree <- prune_ctx_tree(ctx_tree, alpha = alpha, cutoff = cutoff)
-    pruned_tree
-  } else {
-    ctx_tree
+    result <- prune_ctx_tree(ctx_tree, alpha = alpha, cutoff = cutoff)
   }
+  result$alpha <- alpha
+  if (is.null(cutoff)) {
+    cutoff <- stats::qchisq(alpha, df = length(vals) - 1, lower.tail = FALSE) / 2
+  }
+  result$cutoff <- cutoff
+  result
+}
+
+#' @export
+print.vlmc <- function(x, ...) {
+  cat(paste(
+    "VLMC context tree on",
+    paste(x$vals, collapse = ", ")
+  ), "\n")
+  cat(paste(" cutoff: ", signif(x$cutoff, 4), " (quantile: ", x$alpha, ")\n", sep = ""))
+  if (!is.null(x$depth)) {
+    cat(paste(" Maximum context length:", x$depth, "\n"))
+  }
+  if (!is.null(x$nb_ctx)) {
+    cat(paste(" Number of contexts:", x$nb_ctx, "\n"))
+  }
+  invisible(x)
 }
