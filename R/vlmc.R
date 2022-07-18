@@ -27,17 +27,17 @@ kl_div <- function(p, q) {
 #'
 #' @param vlmc a fitted VLMC model
 #' @param mode specify whether the results should be "native" likelihood ratio values
-#'  or expressed in a "quantile" scale of a chi-squared distribution
+#'  or expressed in a "quantile" scale of a chi-squared distribution (detaults to "quantile").
 #' @param ... additional arguments for the cutoff function
 #' @return a vector of cut off values
 #'
 #' @export
-cutoff <- function(vlmc, mode = c("native", "quantile"), ...) {
+cutoff <- function(vlmc, mode = c("quantile", "native"), ...) {
   UseMethod("cutoff")
 }
 
 #' @export
-cutoff.vlmc <- function(vlmc, mode = c("native", "quantile"), ...) {
+cutoff.vlmc <- function(vlmc, mode = c("quantile", "native"), ...) {
   mode <- match.arg(mode)
   recurse_kl_cutoff <- function(vlmc, p_probs) {
     c_probs <- vlmc$f_by / sum(vlmc$f_by)
