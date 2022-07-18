@@ -18,3 +18,10 @@ test_that("the context number is calculted correctly", {
   expect_identical(context_number(build_demo_tree(1:4, 2)), 4^2)
   expect_identical(context_number(build_demo_tree(c("a", "b"), 3)), 2^3)
 })
+
+test_that("the context tree construction finds the specified contexts", {
+  dts <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 0)
+  dts_ctree <- ctx_tree(dts, min_size = 1, max_depth = 2)
+  contexts <- list(c("0", "0"), c("0", "1"), c("1", "0"), c("1", "1"))
+  expect_identical(contexts(dts_ctree), contexts)
+})
