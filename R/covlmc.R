@@ -147,6 +147,10 @@ node_prune_model <- function(model, cov_dim, nb_vals, alpha, keep_data = FALSE, 
         if (verbose) {
           print("rejecting H0")
         }
+        ## we need to propagate the p-value
+        if(is.null(current_model)) {
+          model$p_value <- p_value
+        }
         break
       }
     }
@@ -155,7 +159,10 @@ node_prune_model <- function(model, cov_dim, nb_vals, alpha, keep_data = FALSE, 
       if (!keep_data) {
         model$data <- NULL
       }
+      ## make sure we have a p_value
+      ## should not happen
       if (is.null(model$p_value) || is.na(model$p_value)) {
+        warning("Model with no p_value in node_prune_model")
         model$p_value <- p_value
       }
       model

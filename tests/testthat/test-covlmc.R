@@ -31,7 +31,9 @@ test_that("covlmc is robust to degenerate cases with more than 2 states", {
 
 test_that("covlmc reports p-values correctly", {
   data_set <- build_data_set(1000, seed = 0)
-  model <- covlmc(data_set$x, data_set$covariate, alpha = 0.1)
+  alpha <- 0.1
+  model <- covlmc(data_set$x, data_set$covariate, alpha = alpha)
   p_values <- extract_p_value(model)
   expect_false(anyNA(p_values$p_value[p_values$nb_coeffs > 1]))
+  expect_false(any(p_values$p_value[p_values$nb_coeffs > 1] > alpha))
 })
