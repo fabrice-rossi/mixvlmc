@@ -10,7 +10,7 @@ cutoff(vlmc, mode = c("quantile", "native"), ...)
 \item{vlmc}{a fitted VLMC model}
 
 \item{mode}{specify whether the results should be "native" likelihood ratio values
-or expressed in a "quantile" scale of a chi-squared distribution (detaults to "quantile").}
+or expressed in a "quantile" scale of a chi-squared distribution (defaults to "quantile").}
 
 \item{...}{additional arguments for the cutoff function}
 }
@@ -18,6 +18,6 @@ or expressed in a "quantile" scale of a chi-squared distribution (detaults to "q
 a vector of cut off values
 }
 \description{
-This function returns all the cutoff values that are guaranted to induce a
+This function returns all the cutoff values that are guaranteed to induce a
 pruning of the context tree of a VLMC
 }
