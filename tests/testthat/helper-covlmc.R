@@ -39,6 +39,30 @@ extract_p_value <- function(tree) {
           }
         }
       }
+      if (!is.null(tree[["merged_model"]])) {
+        if (!is.na(tree[["merged_model"]]$p_value)) {
+          sub_p <- data.frame(
+            p_value = tree[["merged_model"]]$p_value,
+            nb_coeffs = length(tree[["merged_model"]]$coefficients)
+          )
+          if (is.null(df)) {
+            df <- sub_p
+          } else {
+            df <- rbind(df, sub_p)
+          }
+        }
+      }
+      if (!is.null(tree$p_value)) {
+        sub_p <- data.frame(
+          p_value = tree$p_value,
+          nb_coeffs = NA
+        )
+        if (is.null(df)) {
+          df <- sub_p
+        } else {
+          df <- rbind(df, sub_p)
+        }
+      }
       df
     }
   }

@@ -532,9 +532,10 @@ covlmc <- function(x, covariate, alpha = 0.05, min_size = 15, max_depth = 100, c
 #' dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1))))
 #' m_nocovariate <- vlmc(dts)
 #' draw(m_nocovariate)
-#' dts_cov <- data.frame(day_night = (pc$hour>=7 & pc$hour<=17))
+#' dts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
 #' m_cov <- covlmc(dts, dts_cov, min_size = 5)
 #' draw(m_cov)
+#' cutoff(m_cov)
 #' @export
 cutoff.covlmc <- function(vlmc, mode = c("quantile", "native"), ...) {
   mode <- match.arg(mode)
@@ -547,11 +548,11 @@ cutoff.covlmc <- function(vlmc, mode = c("quantile", "native"), ...) {
         # nothing there (should not happen)
         NULL
       } else {
-        p_value <- NA
+        p_value <- NULL
         if (!is.null(tree$model[["p_value"]])) {
           p_value <- tree$model[["p_value"]]
           if (length(tree$model[["coefficients"]]) == 1 && p_value > vlmc$alpha) {
-            p_value <- NA
+            p_value <- NULL
           }
         }
         p_value
@@ -560,15 +561,14 @@ cutoff.covlmc <- function(vlmc, mode = c("quantile", "native"), ...) {
       df <- NULL
       for (v in seq_along(tree[["children"]])) {
         sub_p <- recurse_cutoff(tree$children[[v]])
-        if (!is.null(sub_p)) {
-          if (is.null(df)) {
-            df <- sub_p
-          } else {
-            df <- c(df, sub_p)
-          }
+        df <- c(df, sub_p)
+      }
+      if (!is.null(tree[["merged_model"]])) {
+        if (!is.na(tree[["merged_model"]]$p_value)) {
+          df <- c(df, tree[["merged_model"]]$p_value)
         }
       }
-      df
+      c(df, tree$p_value)
     }
   }
   unique(sort(recurse_cutoff(vlmc), decreasing = TRUE))
