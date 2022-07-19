@@ -502,6 +502,8 @@ covlmc <- function(x, covariate, alpha = 0.05, min_size = 15, max_depth = 100, c
   )
   if (length(vals) > 2) {
     x <- nx$fx
+  } else {
+    x <- ix
   }
   ctx_tree$match <- 1:length(x)
   pruned_tree <- ctx_tree_fit_glm(ctx_tree, x, covariate,
