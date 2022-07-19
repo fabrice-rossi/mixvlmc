@@ -148,7 +148,7 @@ node_prune_model <- function(model, cov_dim, nb_vals, alpha, keep_data = FALSE, 
           print("rejecting H0")
         }
         ## we need to propagate the p-value
-        if(is.null(current_model)) {
+        if (is.null(current_model)) {
           model$p_value <- p_value
         }
         break
@@ -511,5 +511,65 @@ covlmc <- function(x, covariate, alpha = 0.05, min_size = 15, max_depth = 100, c
   )
   pre_result <- new_ctx_tree(pruned_tree$vals, pruned_tree, count_context = count_covlmc_local_context, class = "covlmc")
   pre_result$cov_names <- names(covariate)
+  pre_result$alpha <- alpha
   pre_result
+}
+
+#' Cutoff values for pruning the context tree of a VLMC with covariates
+#'
+#' This function returns all the cutoff values that are guaranteed to induce a
+#' pruning of the context tree of a VLMC with covariates
+#'
+#' @param vlmc a fitted covlmc model
+#' @param mode specify whether the results should be "native" likelihood ratio
+#'   values or expressed in a "quantile" scale of a chi-squared distribution.
+#'   For covlmc, only the quantile scale is supported.
+#' @param ... additional arguments for the cutoff function
+#' @return a vector of cut off values
+#'
+#' @examples
+#' pc <- powerconsumption[powerconsumption$week == 5, ]
+#' dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1))))
+#' m_nocovariate <- vlmc(dts)
+#' draw(m_nocovariate)
+#' dts_cov <- data.frame(day_night = (pc$hour>=7 & pc$hour<=17))
+#' m_cov <- covlmc(dts, dts_cov, min_size = 5)
+#' draw(m_cov)
+#' @export
+cutoff.covlmc <- function(vlmc, mode = c("quantile", "native"), ...) {
+  mode <- match.arg(mode)
+  if (mode == "native") {
+    stop("native mode is not supported by covlmc objects")
+  }
+  recurse_cutoff <- function(tree) {
+    if (is.null(tree[["children"]])) {
+      if (is.null(tree[["model"]])) {
+        # nothing there (should not happen)
+        NULL
+      } else {
+        p_value <- NA
+        if (!is.null(tree$model[["p_value"]])) {
+          p_value <- tree$model[["p_value"]]
+          if (length(tree$model[["coefficients"]]) == 1 && p_value > vlmc$alpha) {
+            p_value <- NA
+          }
+        }
+        p_value
+      }
+    } else {
+      df <- NULL
+      for (v in seq_along(tree[["children"]])) {
+        sub_p <- recurse_cutoff(tree$children[[v]])
+        if (!is.null(sub_p)) {
+          if (is.null(df)) {
+            df <- sub_p
+          } else {
+            df <- c(df, sub_p)
+          }
+        }
+      }
+      df
+    }
+  }
+  unique(sort(recurse_cutoff(vlmc), decreasing = TRUE))
 }
