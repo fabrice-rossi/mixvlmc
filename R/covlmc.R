@@ -345,7 +345,7 @@ ctx_tree_fit_glm <- function(tree, y, covariate, alpha, keep_data = FALSE, verbo
         }
         ## let prepare first the children to keep
         if (need_local_model) {
-          if (p_value > alpha) {
+          if (!is.na(p_value) && p_value > alpha) {
             ## we remove the prunable subtrees all together
             if (verbose) {
               print("pruning the subtree")
