@@ -168,7 +168,7 @@ node_prune_model <- function(model, cov_dim, nb_vals, alpha, keep_data = FALSE, 
       model
     } else {
       list(
-        H0 = FALSE,
+        H0 = FALSE, ## is this the correct return value?
         coefficients = glm_coef(current_model),
         likelihood = current_like,
         model = current_model,
@@ -185,7 +185,7 @@ node_prune_model <- function(model, cov_dim, nb_vals, alpha, keep_data = FALSE, 
   }
 }
 
-ctx_tree_fit_glm <- function(tree, y, covariate, alpha, keep_data = FALSE, verbose = FALSE, control) {
+ctx_tree_fit_glm <- function(tree, y, covariate, alpha, control, assume_model = FALSE, keep_local_data = FALSE, verbose = FALSE) {
   nb_vals <- length(tree$vals)
   recurse_ctx_tree_fit_glm <-
     function(tree, ctx, d, y, covariate) {
@@ -193,22 +193,27 @@ ctx_tree_fit_glm <- function(tree, y, covariate, alpha, keep_data = FALSE, verbo
         ## dead end marker, nothing to do (should not happen)
         list()
       } else if (is.null(tree[["children"]])) {
-        ## let's compute the local model and return it
-        ## prunable is true as there is no sub tree
-        if (verbose) {
-          print(paste(ctx, collapse = " "))
-          print(paste("call to glm with d=", d, sep = ""))
+        if (assume_model) {
+          tree$prunable <- TRUE
+          tree
+        } else {
+          ## let's compute the local model and return it
+          ## prunable is true as there is no sub tree
+          if (verbose) {
+            print(paste(ctx, collapse = " "))
+            print(paste("call to glm with d=", d, sep = ""))
+          }
+          res <- list(
+            model = node_fit_glm(tree$match, d, y, covariate, alpha, nb_vals, control = control),
+            match = tree$match,
+            f_by = tree$f_by
+          )
+          res$prunable <- TRUE
+          if (verbose) {
+            print(res$model$hsize)
+          }
+          res
         }
-        res <- list(
-          model = node_fit_glm(tree$match, d, y, covariate, alpha, nb_vals, control = control),
-          match = tree$match,
-          f_by = tree$f_by
-        )
-        res$prunable <- TRUE
-        if (verbose) {
-          print(res$model$hsize)
-        }
-        res
       } else {
         ## the recursive part
         ## let's get the models
@@ -229,12 +234,24 @@ ctx_tree_fit_glm <- function(tree, y, covariate, alpha, keep_data = FALSE, verbo
               nb_models <- nb_models + 1
               prunable <- submodels[[v]][["prunable"]]
               if (isTRUE(prunable)) {
-                if (!submodels[[v]][["model"]]$H0) {
-                  nb_rejected <- nb_rejected + 1
+                if (assume_model) {
+                  if (submodels[[v]][["model"]]$hsize == d + 1) {
+                    nb_rejected <- nb_rejected + 1
+                  } else {
+                    pr_candidates <- c(pr_candidates, v)
+                    nb_prunable <- nb_prunable + 1
+                    ll_H0 <-
+                      ll_H0 + submodels[[v]][["model"]]$likelihood
+                  }
                 } else {
-                  pr_candidates <- c(pr_candidates, v)
-                  nb_prunable <- nb_prunable + 1
-                  ll_H0 <- ll_H0 + submodels[[v]][["model"]]$likelihood
+                  if (!submodels[[v]][["model"]]$H0) {
+                    nb_rejected <- nb_rejected + 1
+                  } else {
+                    pr_candidates <- c(pr_candidates, v)
+                    nb_prunable <- nb_prunable + 1
+                    ll_H0 <-
+                      ll_H0 + submodels[[v]][["model"]]$likelihood
+                  }
                 }
               }
             }
@@ -410,7 +427,7 @@ ctx_tree_fit_glm <- function(tree, y, covariate, alpha, keep_data = FALSE, verbo
             }
             for (v in pr_candidates) {
               result$children[[v]][["model"]] <-
-                node_prune_model(result$children[[v]][["model"]], ncol(covariate), nb_vals, alpha, keep_data, control)
+                node_prune_model(result$children[[v]][["model"]], ncol(covariate), nb_vals, alpha, keep_local_data, control)
             }
           }
         } else {
@@ -418,7 +435,7 @@ ctx_tree_fit_glm <- function(tree, y, covariate, alpha, keep_data = FALSE, verbo
             if (verbose) {
               print("Trying to prune the merged model covariables")
             }
-            result$merged_model <- node_prune_model(result$merged_model, ncol(covariate), nb_vals, alpha, keep_data, control)
+            result$merged_model <- node_prune_model(result$merged_model, ncol(covariate), nb_vals, alpha, keep_local_data, control)
           }
         }
         result
@@ -470,24 +487,31 @@ covlmc_control <- function(pseudo_obs = 1) {
 #'
 #' @param x a discrete time series; can be numeric, character or factor.
 #' @param covariate a data frame of covariates
-#' @param alpha number in (0,1) (default: 0.05) cut off value in the pruning phase.
-#' @param min_size integer >= 1 (default: 15). Tune the minimum number of observations for
-#'  a context in the growing phase of the context tree (see below for details)
+#' @param alpha number in (0,1) (default: 0.05) cut off value in the pruning
+#'   phase.
+#' @param min_size integer >= 1 (default: 15). Tune the minimum number of
+#'   observations for a context in the growing phase of the context tree (see
+#'   below for details)
 #' @param max_depth integer >= 1 (default: 100). Longest context considered in
-#'  growing phase of the context tree.
-#' @param control a list with control parameters, see \code{\link{covlmc_control}}
+#'   growing phase of the context tree.
+#' @param keep_data logical (defaults to \code{TRUE}). If \code{TRUE}, the
+#'   original data are stored in the resulting object to enable post pruring
+#'   (see \code{\link{prune.covlmc}}).
+#' @param control a list with control parameters, see
+#'   \code{\link{covlmc_control}}
 #' @param ... arguments passed to \code{\link{covlmc_control}}
 #' @return a fitted covlmc model
 #'
-#' @details
-#' The \code{min_size} parameter is used to compute the actual number of observations per
-#' context in the growing phase of the tree. It is computed as \code{min_size*(1+ncol(covariate)*(d+1))}
-#' where \code{d} is the length of the context (a.k.a. the depth in the tree).
+#' @details The \code{min_size} parameter is used to compute the actual number
+#' of observations per context in the growing phase of the tree. It is computed
+#' as \code{min_size*(1+ncol(covariate)*(d+1))} where \code{d} is the length of
+#' the context (a.k.a. the depth in the tree).
 #'
-#' Parameters specified by \code{control} are used to fine tune the behavior of the algorithm.
+#' Parameters specified by \code{control} are used to fine tune the behavior of
+#' the algorithm.
 #'
 #' @export
-covlmc <- function(x, covariate, alpha = 0.05, min_size = 15, max_depth = 100, control = covlmc_control(...), ...) {
+covlmc <- function(x, covariate, alpha = 0.05, min_size = 15, max_depth = 100, keep_data = TRUE, control = covlmc_control(...), ...) {
   assertthat::assert_that(is.data.frame(covariate))
   assertthat::assert_that(nrow(covariate) == length(x))
   # data conversion
@@ -509,11 +533,17 @@ covlmc <- function(x, covariate, alpha = 0.05, min_size = 15, max_depth = 100, c
   }
   ctx_tree$match <- 1:length(x)
   pruned_tree <- ctx_tree_fit_glm(ctx_tree, x, covariate,
-    alpha = alpha, verbose = FALSE, keep_data = TRUE, control = control
+    alpha = alpha, control = control, assume_model = FALSE,
+    keep_local_data = TRUE, verbose = FALSE
   )
   pre_result <- new_ctx_tree(pruned_tree$vals, pruned_tree, count_context = count_covlmc_local_context, class = "covlmc")
   pre_result$cov_names <- names(covariate)
   pre_result$alpha <- alpha
+  pre_result$control <- control
+  if (keep_data) {
+    pre_result$x <- x
+    pre_result$covariate <- covariate
+  }
   pre_result
 }
 
@@ -574,4 +604,44 @@ cutoff.covlmc <- function(vlmc, mode = c("quantile", "native"), ...) {
     }
   }
   unique(sort(recurse_cutoff(vlmc), decreasing = TRUE))
+}
+
+#' Prune a Variable Length Markov Chain with covariates
+#'
+#' This function prunes a vlmc with covariates. This model must have been
+#' estimated with keep_data=TRUE to enable the pruning.
+#'
+#' @param vlmc a fitted VLMC model with covariates.
+#' @param alpha number in (0,1) (default: 0.05) cutoff value in quantile scale
+#'   for pruning
+#' @param cutoff not supported by the vlmc with covariates.
+#' @param ... additional arguments for the prune function
+#'
+#' @return a pruned covlmc
+#' @examples
+#' pc <- powerconsumption[powerconsumption$week == 5, ]
+#' dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1))))
+#' dts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
+#' m_cov <- covlmc(dts, dts_cov, min_size = 5, keep_data = TRUE)
+#' draw(m_cov)
+#' m_cov_cuts <- cutoff(m_cov)
+#' p_cov <- prune(m_cov, m_cov_cuts[1] - 2 * .Machine$double.eps)
+#' draw(p_cov)
+#' @export
+prune.covlmc <- function(vlmc, alpha = 0.05, cutoff = NULL, ...) {
+  if (is.null(vlmc$x) || is.null(vlmc$covariate)) {
+    stop("covlmc must be called with keep_data=TRUE to enable post pruning")
+  }
+  assertthat::assert_that(is.null(cutoff))
+  pruned_tree <- ctx_tree_fit_glm(vlmc, vlmc$x, vlmc$covariate,
+    alpha = alpha, control = vlmc$control, assume_model = TRUE,
+    keep_local_data = TRUE, verbose = FALSE
+  )
+  pre_result <- new_ctx_tree(vlmc$vals, pruned_tree, count_context = count_covlmc_local_context, class = "covlmc")
+  pre_result$cov_names <- vlmc$cov_names
+  pre_result$alpha <- alpha
+  pre_result$x <- vlmc$x
+  pre_result$covariate <- vlmc$covariate
+  pre_result$control <- vlmc$control
+  pre_result
 }

@@ -122,9 +122,11 @@ prune_ctx_tree <- function(tree, alpha = 0.05, cutoff = NULL, verbose = FALSE) {
 #' This function prunes a VLMC
 #'
 #' @param vlmc a fitted VLMC model
-#' @param alpha number in (0,1) (default: 0.05) cutoff value in quantile scale for pruning
-#' @param cutoff positive number: cutoff value in native (likelihood ratio) scale for pruning.
-#'   Defaults to the value obtained from \code{alpha}. Takes precedence over \code{alpha} is specified.
+#' @param alpha number in (0,1) (default: 0.05) cutoff value in quantile scale
+#'   for pruning
+#' @param cutoff positive number: cutoff value in native (likelihood ratio)
+#'   scale for pruning. Defaults to the value obtained from \code{alpha}. Takes
+#'   precedence over \code{alpha} if specified.
 #' @param ... additional arguments for the prune function
 #'
 #' @return a pruned VLMC
@@ -135,7 +137,6 @@ prune <- function(vlmc, alpha = 0.05, cutoff = NULL, ...) {
 
 #' @export
 prune.vlmc <- function(vlmc, alpha = 0.05, cutoff = NULL, ...) {
-  assertthat::assert_that(is_vlmc(vlmc))
   prune_ctx_tree(vlmc, alpha = alpha, cutoff = cutoff)
 }
 

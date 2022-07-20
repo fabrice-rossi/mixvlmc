@@ -10,6 +10,7 @@ covlmc(
   alpha = 0.05,
   min_size = 15,
   max_depth = 100,
+  keep_data = TRUE,
   control = covlmc_control(...),
   ...
 )
@@ -19,15 +20,22 @@ covlmc(
 
 \item{covariate}{a data frame of covariates}
 
-\item{alpha}{number in (0,1) (default: 0.05) cut off value in the pruning phase.}
+\item{alpha}{number in (0,1) (default: 0.05) cut off value in the pruning
+phase.}
 
-\item{min_size}{integer >= 1 (default: 15). Tune the minimum number of observations for
-a context in the growing phase of the context tree (see below for details)}
+\item{min_size}{integer >= 1 (default: 15). Tune the minimum number of
+observations for a context in the growing phase of the context tree (see
+below for details)}
 
 \item{max_depth}{integer >= 1 (default: 100). Longest context considered in
 growing phase of the context tree.}
 
-\item{control}{a list with control parameters, see \code{\link{covlmc_control}}}
+\item{keep_data}{logical (defaults to \code{TRUE}). If \code{TRUE}, the
+original data are stored in the resulting object to enable post pruring
+(see \code{\link{prune.covlmc}}).}
+
+\item{control}{a list with control parameters, see
+\code{\link{covlmc_control}}}
 
 \item{...}{arguments passed to \code{\link{covlmc_control}}}
 }
@@ -39,9 +47,11 @@ This function fits a  Variable Length Markov Chain with covariates (coVLMC)
 to a discrete time series coupled with a time series of covariates
 }
 \details{
-The \code{min_size} parameter is used to compute the actual number of observations per
-context in the growing phase of the tree. It is computed as \code{min_size*(1+ncol(covariate)*(d+1))}
-where \code{d} is the length of the context (a.k.a. the depth in the tree).
+The \code{min_size} parameter is used to compute the actual number
+of observations per context in the growing phase of the tree. It is computed
+as \code{min_size*(1+ncol(covariate)*(d+1))} where \code{d} is the length of
+the context (a.k.a. the depth in the tree).
 
-Parameters specified by \code{control} are used to fine tune the behavior of the algorithm.
+Parameters specified by \code{control} are used to fine tune the behavior of
+the algorithm.
 }
