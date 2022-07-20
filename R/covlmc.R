@@ -372,7 +372,7 @@ ctx_tree_fit_glm <- function(tree, y, covariate, alpha, keep_data = FALSE, verbo
           }
         } else if (need_merged_model) {
           result$prunable <- FALSE
-          if (p_value > alpha) {
+          if (!is.na(p_value) && p_value > alpha) {
             ## we merge the models
             if (verbose) {
               print("merging sub models")
@@ -394,6 +394,8 @@ ctx_tree_fit_glm <- function(tree, y, covariate, alpha, keep_data = FALSE, verbo
             result$merged <- pr_candidates
           } else {
             ## we throw away the local model and keep the children
+            result$merged_p_value <- p_value
+            result$merged_candidates <- pr_candidates
             result$children <- submodels
           }
         } else {
@@ -568,7 +570,7 @@ cutoff.covlmc <- function(vlmc, mode = c("quantile", "native"), ...) {
           df <- c(df, tree[["merged_model"]]$p_value)
         }
       }
-      c(df, tree$p_value)
+      c(df, tree$p_value, tree$merged_p_value)
     }
   }
   unique(sort(recurse_cutoff(vlmc), decreasing = TRUE))

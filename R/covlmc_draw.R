@@ -31,7 +31,12 @@ draw_covlmc_node <- function(node, ...) {
   if (!is.null(node$model)) {
     draw_covlmc_model(node$model$coefficients, node$model$p_value, digits)
   } else if (!is.null(node$p_value)) {
-    stringr::str_c("merging:", signif(node$p_value, digits), sep = " ")
+    stringr::str_c("collapsing:", signif(node$p_value, digits), sep = " ")
+  } else if (!is.null(node$merged_p_value)) {
+    stringr::str_c(
+      "merging (", stringr::str_c(node$merged_candidates, collapse = " "), "): ",
+      signif(node$merged_p_value, digits)
+    )
   } else {
     ""
   }
