@@ -194,26 +194,30 @@ ctx_tree_fit_glm <- function(tree, y, covariate, alpha, control, assume_model = 
         list()
       } else if (is.null(tree[["children"]])) {
         if (assume_model) {
-          tree$prunable <- TRUE
-          tree
-        } else {
-          ## let's compute the local model and return it
-          ## prunable is true as there is no sub tree
-          if (verbose) {
-            print(paste(ctx, collapse = " "))
-            print(paste("call to glm with d=", d, sep = ""))
+          if (tree$model$hsize < d || tree$model$p_value <= alpha) {
+            tree$prunable <- TRUE
+            return(tree)
           }
-          res <- list(
-            model = node_fit_glm(tree$match, d, y, covariate, alpha, nb_vals, control = control),
-            match = tree$match,
-            f_by = tree$f_by
-          )
-          res$prunable <- TRUE
           if (verbose) {
-            print(res$model$hsize)
+            print("model recomputation is needed")
           }
-          res
         }
+        ## let's compute the local model and return it
+        ## prunable is true as there is no sub tree
+        if (verbose) {
+          print(paste(ctx, collapse = " "))
+          print(paste("call to glm with d=", d, sep = ""))
+        }
+        res <- list(
+          model = node_fit_glm(tree$match, d, y, covariate, alpha, nb_vals, control = control),
+          match = tree$match,
+          f_by = tree$f_by
+        )
+        res$prunable <- TRUE
+        if (verbose) {
+          print(res$model$hsize)
+        }
+        res
       } else {
         ## the recursive part
         ## let's get the models
