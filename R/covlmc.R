@@ -49,7 +49,7 @@ node_fit_glm_with_data <- function(local_mm, d, target, dim_cov, alpha, nb_vals,
     dim_cov, nb_vals, control
   )
   if (!is.null(full_rank_model)) {
-    if (full_rank_model$hsize < d || d <= 1) {
+    if (full_rank_model$hsize < d || d < 1) {
       ## if the full rank model does not use a size d history
       ## we do not need to build another model, backtracking will be done
       ## elsewhere (if needed)

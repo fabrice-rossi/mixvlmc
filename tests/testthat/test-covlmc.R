@@ -37,3 +37,17 @@ test_that("covlmc reports p-values correctly", {
   expect_false(anyNA(p_values$p_value[p_values$nb_coeffs > 1]))
   expect_false(any(p_values$p_value[p_values$nb_coeffs > 1] > alpha))
 })
+
+test_that("covlmc prunes preserve p-values", {
+  pc <- powerconsumption[powerconsumption$week == 5, ]
+  dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1))))
+  dts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
+  m_cov <- covlmc(dts, dts_cov, min_size = 5, keep_data = TRUE)
+  p_values_m <- extract_p_value(m_cov)
+  m_cov_cuts <- cutoff(m_cov)
+  alpha <- m_cov_cuts[1] - 2 * .Machine$double.eps
+  p_cov <- prune(m_cov, alpha)
+  p_values <- extract_p_value(p_cov)
+  expect_false(anyNA(p_values$p_value[is.na(p_values$nb_coeffs) | p_values$nb_coeffs > 1]))
+  expect_false(any(p_values$p_value[is.na(p_values$nb_coeffs) | p_values$nb_coeffs > 1] > alpha))
+})
