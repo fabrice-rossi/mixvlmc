@@ -38,7 +38,7 @@ test_that("covlmc reports p-values correctly", {
   expect_false(any(p_values$p_value[p_values$nb_coeffs > 1] > alpha))
 })
 
-test_that("covlmc prunes preserve p-values", {
+test_that("covlmc prune preserves p-values", {
   pc <- powerconsumption[powerconsumption$week == 5, ]
   dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1))))
   dts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
