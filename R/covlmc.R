@@ -653,3 +653,19 @@ prune.covlmc <- function(vlmc, alpha = 0.05, cutoff = NULL, ...) {
   pre_result$control <- vlmc$control
   pre_result
 }
+
+#' @export
+print.covlmc <- function(x, ...) {
+  cat(paste(
+    "VLMC with covariate context tree on",
+    paste(x$vals, collapse = ", ")
+  ), "\n")
+  cat(paste(" cutoff in quantile scale: ", signif(x$alpha, 4), "\n", sep = ""))
+  if (!is.null(x$depth)) {
+    cat(paste(" Maximum context length:", x$depth, "\n"))
+  }
+  if (!is.null(x$nb_ctx)) {
+    cat(paste(" Number of contexts:", x$nb_ctx, "\n"))
+  }
+  invisible(x)
+}
