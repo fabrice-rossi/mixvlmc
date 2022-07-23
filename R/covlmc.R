@@ -194,9 +194,13 @@ ctx_tree_fit_glm <- function(tree, y, covariate, alpha, control, assume_model = 
         list()
       } else if (is.null(tree[["children"]])) {
         if (assume_model) {
-          if (tree$model$hsize < d || tree$model$p_value <= alpha) {
-            tree$prunable <- TRUE
-            return(tree)
+          if (!is.null(tree[["model"]])) {
+            if (tree$model$hsize < d || tree$model$p_value <= alpha) {
+              tree$prunable <- TRUE
+              return(tree)
+            }
+          } else if (nb_vals == 2) {
+            stop("internal error in ctx_free_fit_glm: missing model with assume_mode = TRUE")
           }
           if (verbose) {
             print("model recomputation is needed")
