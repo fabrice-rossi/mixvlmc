@@ -63,3 +63,56 @@ extract_p_value <- function(tree) {
   }
   recurse_extract_p_value(tree)
 }
+
+compare_covlmc_node <- function(n1, n2) {
+  for (what in c("f_by", "match", "prunable", "vals", "depth", "nb_ctx", "cov_names", "alpha", "merged")) {
+    if (!identical(n1[[what]], n2[[what]])) {
+      return(FALSE)
+    }
+  }
+  if (!is.null(n1[["model"]])) {
+    if (is.null(n2[["model"]])) {
+      return(FALSE)
+    }
+    if (!identical(n1[["model"]][["coefficents"]], n2[["model"]][["coefficents"]])) {
+      return(FALSE)
+    }
+  }
+  if (!is.null(n1[["merged_model"]])) {
+    if (is.null(n2[["merged_model"]])) {
+      return(FALSE)
+    }
+    if (!identical(n1[["merged_model"]][["coefficents"]], n2[["merged_model"]][["coefficents"]])) {
+      return(FALSE)
+    }
+  }
+  TRUE
+}
+
+compare_covlmc <- function(m1, m2) {
+  rec_compare_covlmc <- function(m1, m2) {
+    if (!compare_covlmc_node(m1, m2)) {
+      return(FALSE)
+    }
+    if (is.null(m1[["children"]])) {
+      if (!is.null(m2[["children"]])) {
+        return(FALSE)
+      }
+      return(TRUE)
+    } else {
+      if (is.null(m2[["children"]])) {
+        return(FALSE)
+      }
+      if (length(m1[["children"]]) != length(m2[["children"]])) {
+        return(FALSE)
+      }
+      for (v in seq_along(m1[["children"]])) {
+        if (!rec_compare_covlmc(m1[["children"]][[v]], m2[["children"]][[v]])) {
+          return(FALSE)
+        }
+      }
+      return(TRUE)
+    }
+  }
+  rec_compare_covlmc(m1, m2)
+}
