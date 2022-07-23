@@ -132,6 +132,11 @@ ctx_tree <- function(x, min_size = 2, max_depth = 10, keep_position = FALSE) {
 #' @param x an R object.
 #' @return \code{TRUE} for context trees.
 #' @export
+#' @examples
+#' dts <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 0)
+#' dts_ctree <- ctx_tree(dts, min_size = 1, max_depth = 2)
+#' is_ctx_tree(dts_ctree)
+#' is_ctx_tree(dts)
 is_ctx_tree <- function(x) {
   inherits(x, "ctx_tree")
 }
@@ -163,6 +168,11 @@ print.ctx_tree <- function(x, ...) {
 #' @return the context space of the tree.
 #'
 #' @export
+#' @examples
+#' dts <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 0)
+#' dts_ctree <- ctx_tree(dts, min_size = 1, max_depth = 2)
+#' ## should be c("0", "1")
+#' states(dts_ctree)
 states <- function(ct) {
   assertthat::assert_that(is_ctx_tree(ct))
   ct$vals
@@ -185,6 +195,11 @@ rec_depth <- function(ct) {
 #' @return the depth of the tree.
 #'
 #' @export
+#' @examples
+#' dts <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 0)
+#' dts_ctree <- ctx_tree(dts, min_size = 1, max_depth = 3)
+#' # should be 3
+#' depth(dts_ctree)
 depth <- function(ct) {
   assertthat::assert_that(is_ctx_tree(ct))
   if (!is.null(ct$depth)) {
@@ -210,6 +225,11 @@ rec_context_number <- function(ct, count_context = count_local_context) {
 #'
 #' @return the number of contexts of the tree
 #' @export
+#' @examples
+#' dts <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 0)
+#' dts_ctree <- ctx_tree(dts, min_size = 1, max_depth = 3)
+#' # should be 8
+#' context_number(dts_ctree)
 context_number <- function(ct) {
   UseMethod("context_number")
 }

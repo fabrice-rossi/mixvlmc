@@ -15,3 +15,9 @@ the number of contexts of the tree
 \description{
 This function returns the number of distinct contexts in a context tree
 }
+\examples{
+dts <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 0)
+dts_ctree <- ctx_tree(dts, min_size = 1, max_depth = 3)
+# should be 8
+context_number(dts_ctree)
+}
