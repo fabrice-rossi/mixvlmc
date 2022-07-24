@@ -1,9 +1,24 @@
+#' Contexts number of a VLMC with covariates
+#'
+#' This function returns the total number of contexts of a VLMC with covariates.
+#'
+#' @param vlmc a fitted covlmc model
+#' @return the number of contexts present in the VLMC with covariates.
+#'
+#' @examples
+#' pc <- powerconsumption[powerconsumption$week == 5, ]
+#' dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1))))
+#' m_nocovariate <- vlmc(dts)
+#' dts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
+#' m_cov <- covlmc(dts, dts_cov, min_size = 5)
+#' # should be 5
+#' context_number(m_cov)
 #' @export
-context_number.covlmc <- function(ct) {
-  if (!is.null(ct$nb_ctx)) {
-    ct$nb_ctx
+context_number.covlmc <- function(vlmc) {
+  if (!is.null(vlmc$nb_ctx)) {
+    vlmc$nb_ctx
   } else {
-    rec_context_number(ct, count_covlmc_local_context)
+    rec_context_number(vlmc, count_covlmc_local_context)
   }
 }
 
