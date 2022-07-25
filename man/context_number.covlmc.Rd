@@ -4,10 +4,10 @@
 \alias{context_number.covlmc}
 \title{Contexts number of a VLMC with covariates}
 \usage{
-\method{context_number}{covlmc}(vlmc)
+\method{context_number}{covlmc}(ct)
 }
 \arguments{
-\item{vlmc}{a fitted covlmc model}
+\item{ct}{a fitted covlmc model.}
 }
 \value{
 the number of contexts present in the VLMC with covariates.
@@ -20,7 +20,7 @@ pc <- powerconsumption[powerconsumption$week == 5, ]
 dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1))))
 m_nocovariate <- vlmc(dts)
 dts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
-m_cov <- covlmc(dts, dts_cov, min_size = 5)
-# should be 5
+m_cov <- covlmc(dts, dts_cov, min_size = 10)
+# should be 4
 context_number(m_cov)
 }
