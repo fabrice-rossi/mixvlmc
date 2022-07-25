@@ -591,7 +591,7 @@ cutoff.covlmc <- function(vlmc, mode = c("quantile", "native"), ...) {
         p_value <- NULL
         if (!is.null(tree$model[["p_value"]])) {
           p_value <- tree$model[["p_value"]]
-          if (length(tree$model[["coefficients"]]) == 1 && p_value > vlmc$alpha) {
+          if (is.na(p_value) || (length(tree$model[["coefficients"]]) == 1 && p_value > vlmc$alpha)) {
             p_value <- NULL
           }
         }
