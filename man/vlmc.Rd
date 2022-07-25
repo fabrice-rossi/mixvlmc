@@ -30,7 +30,7 @@ growing phase of the context tree.}
 \item{prune}{logical: specified whether the context tree should be pruned (default behavior).}
 }
 \value{
-a fitted vlmc model
+a fitted vlmc model.
 }
 \description{
 This function fits a  Variable Length Markov Chain (VLMC) to a discrete time series.

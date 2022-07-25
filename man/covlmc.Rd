@@ -18,14 +18,14 @@ covlmc(
 \arguments{
 \item{x}{a discrete time series; can be numeric, character or factor.}
 
-\item{covariate}{a data frame of covariates}
+\item{covariate}{a data frame of covariates.}
 
 \item{alpha}{number in (0,1) (default: 0.05) cut off value in the pruning
 phase.}
 
 \item{min_size}{integer >= 1 (default: 15). Tune the minimum number of
 observations for a context in the growing phase of the context tree (see
-below for details)}
+below for details).}
 
 \item{max_depth}{integer >= 1 (default: 100). Longest context considered in
 growing phase of the context tree.}
@@ -35,16 +35,16 @@ original data are stored in the resulting object to enable post pruring
 (see \code{\link{prune.covlmc}}).}
 
 \item{control}{a list with control parameters, see
-\code{\link{covlmc_control}}}
+\code{\link{covlmc_control}}.}
 
-\item{...}{arguments passed to \code{\link{covlmc_control}}}
+\item{...}{arguments passed to \code{\link{covlmc_control}}.}
 }
 \value{
-a fitted covlmc model
+a fitted covlmc model.
 }
 \description{
 This function fits a  Variable Length Markov Chain with covariates (coVLMC)
-to a discrete time series coupled with a time series of covariates
+to a discrete time series coupled with a time series of covariates.
 }
 \details{
 The \code{min_size} parameter is used to compute the actual number

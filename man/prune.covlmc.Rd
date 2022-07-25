@@ -10,14 +10,14 @@
 \item{vlmc}{a fitted VLMC model with covariates.}
 
 \item{alpha}{number in (0,1) (default: 0.05) cutoff value in quantile scale
-for pruning}
+for pruning.}
 
 \item{cutoff}{not supported by the vlmc with covariates.}
 
-\item{...}{additional arguments for the prune function}
+\item{...}{additional arguments for the prune function.}
 }
 \value{
-a pruned covlmc
+a pruned covlmc.
 }
 \description{
 This function prunes a vlmc with covariates. This model must have been

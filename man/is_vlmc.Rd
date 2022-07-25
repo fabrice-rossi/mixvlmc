@@ -10,7 +10,7 @@ is_vlmc(x)
 \item{x}{an R object.}
 }
 \value{
-\code{TRUE} for VLMC models
+\code{TRUE} for VLMC models.
 }
 \description{
 This function returns \code{TRUE} for VLMC models and \code{FALSE} for other objects.

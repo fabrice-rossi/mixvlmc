@@ -113,13 +113,13 @@ logLik.covlmc <- function(object, ...) {
 #'
 #' This function evaluates the log-likelihood of a VLMC with covariates fitted on a discrete time series.
 #' When the optional arguments \code{newdata} is  provided, the function evaluates instead the
-#' log-likelihood for this (new) discrete time series on the new covariates which must be provided through a newcov parameter
+#' log-likelihood for this (new) discrete time series on the new covariates which must be provided through a newcov parameter.
 #'
-#' @param vlmc the vlmc representation
-#' @param newdata an optional discrete time series
-#' @param ... additional parameters for loglikelihood
+#' @param vlmc the vlmc representation.
+#' @param newdata an optional discrete time series.
+#' @param ... additional parameters for loglikelihood.
 #'
-#' @return the log-likelihood of the VLMC with a nobs attribute that accounts for the number of data included in the likelihood calculation
+#' @return the log-likelihood of the VLMC with a nobs attribute that accounts for the number of data included in the likelihood calculation.
 #' @seealso [stats::logLik]
 #' @export
 loglikelihood.covlmc <- function(vlmc, newdata, ...) {

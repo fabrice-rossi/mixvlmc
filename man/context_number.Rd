@@ -7,13 +7,13 @@
 context_number(ct)
 }
 \arguments{
-\item{ct}{a context tree}
+\item{ct}{a context tree.}
 }
 \value{
-the number of contexts of the tree
+the number of contexts of the tree.
 }
 \description{
-This function returns the number of distinct contexts in a context tree
+This function returns the number of distinct contexts in a context tree.
 }
 \examples{
 dts <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 0)

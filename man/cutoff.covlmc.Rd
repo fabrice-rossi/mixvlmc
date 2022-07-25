@@ -7,20 +7,20 @@
 \method{cutoff}{covlmc}(vlmc, mode = c("quantile", "native"), ...)
 }
 \arguments{
-\item{vlmc}{a fitted covlmc model}
+\item{vlmc}{a fitted covlmc model.}
 
 \item{mode}{specify whether the results should be "native" likelihood ratio
 values or expressed in a "quantile" scale of a chi-squared distribution.
 For covlmc, only the quantile scale is supported.}
 
-\item{...}{additional arguments for the cutoff function}
+\item{...}{additional arguments for the cutoff function.}
 }
 \value{
-a vector of cut off values
+a vector of cut off values.
 }
 \description{
 This function returns all the cutoff values that are guaranteed to induce a
-pruning of the context tree of a VLMC with covariates
+pruning of the context tree of a VLMC with covariates.
 }
 \examples{
 pc <- powerconsumption[powerconsumption$week == 5, ]

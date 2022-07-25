@@ -107,7 +107,7 @@ grow_ctx_tree <- function(x, vals, min_size, max_depth, covsize = 0, keep_match 
 #' @param keep_position logical (default: TRUE). Should the context tree keep
 #'   the position of the contexts.
 #'
-#' @return a context tree (of class \code{ctx_tree})
+#' @return a context tree (of class \code{ctx_tree}).
 #' @export
 #'
 #' @examples
@@ -219,11 +219,11 @@ rec_context_number <- function(ct, count_context = count_local_context) {
 
 #' Number of contexts of a context tree
 #'
-#' This function returns the number of distinct contexts in a context tree
+#' This function returns the number of distinct contexts in a context tree.
 #'
-#' @param ct a context tree
+#' @param ct a context tree.
 #'
-#' @return the number of contexts of the tree
+#' @return the number of contexts of the tree.
 #' @export
 #' @examples
 #' dts <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 0)

@@ -123,9 +123,9 @@ rec_draw_covlmc <- function(prefix, rank, ival, nst, ct, vals, node2txt, merged_
 #' The number of significant digits can be specified using a `digits` parameter.
 #'
 #' @param ct a fitted covlmc model.
-#' @param node2txt an optional function called on each node to render it to a text representation
-#' @param ... additional arguments for node2txt (see details)
-#' @return the covlmc model (invisibly)
+#' @param node2txt an optional function called on each node to render it to a text representation.
+#' @param ... additional arguments for node2txt (see details).
+#' @return the covlmc model (invisibly).
 #'
 #' @export
 draw.covlmc <- function(ct, node2txt = draw_covlmc_node, ...) {

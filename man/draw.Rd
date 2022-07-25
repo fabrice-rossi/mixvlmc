@@ -9,12 +9,12 @@ draw(ct, node2txt = NULL, ...)
 \arguments{
 \item{ct}{a context tree.}
 
-\item{node2txt}{an optional function called on each node to render it to a text representation}
+\item{node2txt}{an optional function called on each node to render it to a text representation.}
 
-\item{...}{additional arguments for node2txt}
+\item{...}{additional arguments for node2txt.}
 }
 \value{
-the context tree (invisibly)
+the context tree (invisibly).
 }
 \description{
 This function 'draws' a context tree as a text.

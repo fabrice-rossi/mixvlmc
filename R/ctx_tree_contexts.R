@@ -26,7 +26,7 @@ rec_contexts <- function(path, ct, vals) {
 #'
 #' This function extracts from a context tree the list of all its contexts.
 #'
-#' @param ct a context tree
+#' @param ct a context tree.
 #'
 #' @return the list of the contexts represented in this tree.
 #' @export

@@ -12,7 +12,7 @@ using namespace Rcpp;
 //' 2) \code{counts}: a matrix of size nb_vals times nb_vals. Entry [k, l] gives the number of
 //'    times k-1 is followed by l-1 in \code{x}
 //'
-//' The function operates in two modes.
+//' The function operates in two modes:
 //' 1) if nv_from is NULL (default case), the function reports the positions and the counts exactly
 //'    as described above. The \code{depth} parameter is not used.
 //' 2) if ny_from is not NULL, it contains reference positions for the search.
@@ -25,12 +25,12 @@ using namespace Rcpp;
 //'    an occurence of k, but with a shift of depth+1. In the previous example, if depth=1,
 //'    we consider positions c(3, 5) and therefore counts[2,2]=2 (all other values are 0).
 //'
-//' @param x the vector in which contexts are searched for
-//' @param nb_vals defines the interval of expected values from 0 to \code{nb_vals}-1
-//' @param depth shift in the occurence counts
-//' @param nv_from starting positions for the search
+//' @param x the vector in which contexts are searched for.
+//' @param nb_vals defines the interval of expected values from 0 to \code{nb_vals}-1.
+//' @param depth shift in the occurence counts.
+//' @param nv_from starting positions for the search.
 //'
-//' @return a list described above
+//' @return a list described above.
 //' @noRd
 //[[Rcpp::export]]
 List forward_match_all_ctx_counts(NumericVector x, int nb_vals, int depth=0, Nullable<NumericVector> nv_from=R_NilValue) {
