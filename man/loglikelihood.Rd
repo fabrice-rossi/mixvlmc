@@ -7,14 +7,14 @@
 loglikelihood(vlmc, newdata, ...)
 }
 \arguments{
-\item{vlmc}{the vlmc representation}
+\item{vlmc}{the vlmc representation.}
 
-\item{newdata}{an optional discrete time series}
+\item{newdata}{an optional discrete time series.}
 
-\item{...}{additional parameters for loglikelihood}
+\item{...}{additional parameters for loglikelihood.}
 }
 \value{
-the log-likelihood of the VLMC with a nobs attribute that accounts for the number of data included in the likelihood calculation
+the log-likelihood of the VLMC with a nobs attribute that accounts for the number of data included in the likelihood calculation.
 }
 \description{
 This function evaluates the log-likelihood of a VLMC fitted on a discrete time series.

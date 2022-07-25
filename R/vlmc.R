@@ -4,7 +4,7 @@
 #' This function returns \code{TRUE} for VLMC models and \code{FALSE} for other objects.
 #'
 #' @param x an R object.
-#' @return \code{TRUE} for VLMC models
+#' @return \code{TRUE} for VLMC models.
 #' @export
 is_vlmc <- function(x) {
   inherits(x, "vlmc")
@@ -23,13 +23,13 @@ kl_div <- function(p, q) {
 #' Cutoff values for pruning the context tree of a VLMC
 #'
 #' This function returns all the cutoff values that are guaranteed to induce a
-#' pruning of the context tree of a VLMC
+#' pruning of the context tree of a VLMC.
 #'
-#' @param vlmc a fitted VLMC model
+#' @param vlmc a fitted VLMC model.
 #' @param mode specify whether the results should be "native" likelihood ratio values
 #'  or expressed in a "quantile" scale of a chi-squared distribution (defaults to "quantile").
-#' @param ... additional arguments for the cutoff function
-#' @return a vector of cut off values
+#' @param ... additional arguments for the cutoff function.
+#' @return a vector of cut off values.
 #'
 #' @export
 cutoff <- function(vlmc, mode = c("quantile", "native"), ...) {
@@ -119,15 +119,15 @@ prune_ctx_tree <- function(tree, alpha = 0.05, cutoff = NULL, verbose = FALSE) {
 
 #' Prune a Variable Length Markov Chain (VLMC)
 #'
-#' This function prunes a VLMC
+#' This function prunes a VLMC.
 #'
-#' @param vlmc a fitted VLMC model
+#' @param vlmc a fitted VLMC model.
 #' @param alpha number in (0,1) (default: 0.05) cutoff value in quantile scale
-#'   for pruning
+#'   for pruning.
 #' @param cutoff positive number: cutoff value in native (likelihood ratio)
 #'   scale for pruning. Defaults to the value obtained from \code{alpha}. Takes
 #'   precedence over \code{alpha} if specified.
-#' @param ... additional arguments for the prune function
+#' @param ... additional arguments for the prune function.
 #'
 #' @return a pruned VLMC
 #' @export
@@ -153,7 +153,7 @@ prune.vlmc <- function(vlmc, alpha = 0.05, cutoff = NULL, ...) {
 #' @param max_depth integer >= 1 (default: 100). Longest context considered in
 #'  growing phase of the context tree.
 #' @param prune logical: specified whether the context tree should be pruned (default behavior).
-#' @return a fitted vlmc model
+#' @return a fitted vlmc model.
 #'
 #' @export
 vlmc <- function(x, alpha = 0.05, cutoff = NULL, min_size = 2, max_depth = 100, prune = TRUE) {

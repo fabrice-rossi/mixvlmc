@@ -37,10 +37,10 @@ match_context_co <- function(tree, ctx) {
 #' probabilities. The covariates must be submitted as a data frame using the
 #' named `covariate` argument.
 #'
-#' @param object a fitted covlmc object
-#' @param nsim length of the simulated time series (defaults to 1)
-#' @param seed an optional random seed
-#' @param ... additional arguments (see details)
+#' @param object a fitted covlmc object.
+#' @param nsim length of the simulated time series (defaults to 1).
+#' @param seed an optional random seed.
+#' @param ... additional arguments (see details).
 #'
 #' @export
 simulate.covlmc <- function(object, nsim = 1, seed = NULL, ...) {

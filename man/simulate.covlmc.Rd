@@ -7,13 +7,13 @@
 \method{simulate}{covlmc}(object, nsim = 1, seed = NULL, ...)
 }
 \arguments{
-\item{object}{a fitted covlmc object}
+\item{object}{a fitted covlmc object.}
 
-\item{nsim}{length of the simulated time series (defaults to 1)}
+\item{nsim}{length of the simulated time series (defaults to 1).}
 
-\item{seed}{an optional random seed}
+\item{seed}{an optional random seed.}
 
-\item{...}{additional arguments (see details)}
+\item{...}{additional arguments (see details).}
 }
 \description{
 This function simulates a time series from the distribution estimated by the

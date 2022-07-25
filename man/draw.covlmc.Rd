@@ -9,12 +9,12 @@
 \arguments{
 \item{ct}{a fitted covlmc model.}
 
-\item{node2txt}{an optional function called on each node to render it to a text representation}
+\item{node2txt}{an optional function called on each node to render it to a text representation.}
 
-\item{...}{additional arguments for node2txt (see details)}
+\item{...}{additional arguments for node2txt (see details).}
 }
 \value{
-the covlmc model (invisibly)
+the covlmc model (invisibly).
 }
 \description{
 This function 'draws' a covlmc model as a text.

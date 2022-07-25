@@ -2,11 +2,11 @@
 #'
 #' This is an internal function.
 #'
-#' @param tree a context tree
-#' @param x a discrete time series in its low level representation
-#' @param keep_match whether to keep the match position
+#' @param tree a context tree.
+#' @param x a discrete time series in its low level representation.
+#' @param keep_match whether to keep the match position.
 #'
-#' @return a context tree supplemented with the matching information
+#' @return a context tree supplemented with the matching information.
 #'
 #' @noRd
 match_ctx <- function(tree, x, keep_match = FALSE) {

@@ -491,24 +491,24 @@ covlmc_control <- function(pseudo_obs = 1) {
 #' Fit a Variable Length Markov Chain with Covariates (coVLMC)
 #'
 #' This function fits a  Variable Length Markov Chain with covariates (coVLMC)
-#' to a discrete time series coupled with a time series of covariates
+#' to a discrete time series coupled with a time series of covariates.
 #'
 #' @param x a discrete time series; can be numeric, character or factor.
-#' @param covariate a data frame of covariates
+#' @param covariate a data frame of covariates.
 #' @param alpha number in (0,1) (default: 0.05) cut off value in the pruning
 #'   phase.
 #' @param min_size integer >= 1 (default: 15). Tune the minimum number of
 #'   observations for a context in the growing phase of the context tree (see
-#'   below for details)
+#'   below for details).
 #' @param max_depth integer >= 1 (default: 100). Longest context considered in
 #'   growing phase of the context tree.
 #' @param keep_data logical (defaults to \code{TRUE}). If \code{TRUE}, the
 #'   original data are stored in the resulting object to enable post pruring
 #'   (see \code{\link{prune.covlmc}}).
 #' @param control a list with control parameters, see
-#'   \code{\link{covlmc_control}}
-#' @param ... arguments passed to \code{\link{covlmc_control}}
-#' @return a fitted covlmc model
+#'   \code{\link{covlmc_control}}.
+#' @param ... arguments passed to \code{\link{covlmc_control}}.
+#' @return a fitted covlmc model.
 #'
 #' @details The \code{min_size} parameter is used to compute the actual number
 #' of observations per context in the growing phase of the tree. It is computed
@@ -558,14 +558,14 @@ covlmc <- function(x, covariate, alpha = 0.05, min_size = 15, max_depth = 100, k
 #' Cutoff values for pruning the context tree of a VLMC with covariates
 #'
 #' This function returns all the cutoff values that are guaranteed to induce a
-#' pruning of the context tree of a VLMC with covariates
+#' pruning of the context tree of a VLMC with covariates.
 #'
-#' @param vlmc a fitted covlmc model
+#' @param vlmc a fitted covlmc model.
 #' @param mode specify whether the results should be "native" likelihood ratio
 #'   values or expressed in a "quantile" scale of a chi-squared distribution.
 #'   For covlmc, only the quantile scale is supported.
-#' @param ... additional arguments for the cutoff function
-#' @return a vector of cut off values
+#' @param ... additional arguments for the cutoff function.
+#' @return a vector of cut off values.
 #'
 #' @examples
 #' pc <- powerconsumption[powerconsumption$week == 5, ]
@@ -621,11 +621,11 @@ cutoff.covlmc <- function(vlmc, mode = c("quantile", "native"), ...) {
 #'
 #' @param vlmc a fitted VLMC model with covariates.
 #' @param alpha number in (0,1) (default: 0.05) cutoff value in quantile scale
-#'   for pruning
+#'   for pruning.
 #' @param cutoff not supported by the vlmc with covariates.
-#' @param ... additional arguments for the prune function
+#' @param ... additional arguments for the prune function.
 #'
-#' @return a pruned covlmc
+#' @return a pruned covlmc.
 #' @examples
 #' pc <- powerconsumption[powerconsumption$week == 5, ]
 #' dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1))))

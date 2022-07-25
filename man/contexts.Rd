@@ -7,7 +7,7 @@
 contexts(ct)
 }
 \arguments{
-\item{ct}{a context tree}
+\item{ct}{a context tree.}
 }
 \value{
 the list of the contexts represented in this tree.

@@ -35,9 +35,9 @@ rec_draw <- function(prefix, rank, nst, ct, vals, node2txt, ...) {
 #' This function 'draws' a context tree as a text.
 #'
 #' @param ct a context tree.
-#' @param node2txt an optional function called on each node to render it to a text representation
-#' @param ... additional arguments for node2txt
-#' @return the context tree (invisibly)
+#' @param node2txt an optional function called on each node to render it to a text representation.
+#' @param ... additional arguments for node2txt.
+#' @return the context tree (invisibly).
 #'
 #' @export
 draw <- function(ct, node2txt = NULL, ...) {

@@ -55,11 +55,11 @@ logLik.vlmc <- function(object, ...) {
 #' When the optional argument \code{newdata} is provided, the function evaluates instead the
 #' log-likelihood for this (new) discrete time series.
 #'
-#' @param vlmc the vlmc representation
-#' @param newdata an optional discrete time series
-#' @param ... additional parameters for loglikelihood
+#' @param vlmc the vlmc representation.
+#' @param newdata an optional discrete time series.
+#' @param ... additional parameters for loglikelihood.
 #'
-#' @return the log-likelihood of the VLMC with a nobs attribute that accounts for the number of data included in the likelihood calculation
+#' @return the log-likelihood of the VLMC with a nobs attribute that accounts for the number of data included in the likelihood calculation.
 #' @seealso [stats::logLik]
 #' @export
 loglikelihood <- function(vlmc, newdata, ...) {

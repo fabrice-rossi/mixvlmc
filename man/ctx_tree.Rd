@@ -19,7 +19,7 @@ be included in the tree.}
 the position of the contexts.}
 }
 \value{
-a context tree (of class \code{ctx_tree})
+a context tree (of class \code{ctx_tree}).
 }
 \description{
 This function builds a context tree for a time series. The tree represents
