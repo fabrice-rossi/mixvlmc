@@ -1,3 +1,18 @@
+#' Contexts number of a VLMC with covariates
+#'
+#' This function returns the total number of contexts of a VLMC with covariates.
+#'
+#' @param ct a fitted covlmc model.
+#' @return the number of contexts present in the VLMC with covariates.
+#'
+#' @examples
+#' pc <- powerconsumption[powerconsumption$week == 5, ]
+#' dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1))))
+#' m_nocovariate <- vlmc(dts)
+#' dts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
+#' m_cov <- covlmc(dts, dts_cov, min_size = 10)
+#' # should be 4
+#' context_number(m_cov)
 #' @export
 context_number.covlmc <- function(ct) {
   if (!is.null(ct$nb_ctx)) {
@@ -34,6 +49,23 @@ rec_covlmc_contexts <- function(path, ct, vals) {
   }
 }
 
+#' Contexts of a VLMC with covariates
+#'
+#' This function returns the different contexts present in a VLMC with covariates. Contexts' individual
+#' states are given from the most recent to the least.
+#'
+#' @param ct a fitted covlmc model.
+#' @return the different contexts present in the VLMC with covariates.
+#'
+#' @examples
+#' pc <- powerconsumption[powerconsumption$week == 5, ]
+#' breaks <- c(0, median(pc$active_power), max(pc$active_power))
+#' labels <- c(0, 1)
+#' dts <- cut(pc$active_power, breaks = breaks, labels = labels)
+#' m_nocovariate <- vlmc(dts)
+#' dts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
+#' m_cov <- covlmc(dts, dts_cov, min_size = 5)
+#' contexts(m_cov)
 #' @export
 contexts.covlmc <- function(ct) {
   preres <- rec_covlmc_contexts(c(), ct, ct$vals)
