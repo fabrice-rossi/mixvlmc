@@ -2,8 +2,15 @@ Package: mixvlmc
 Type: Package
 Title: Variable Length Markov Chains
 Version: 0.1.0
-Author: Fabrice Rossi
-Maintainer: Fabrice Rossi <Fabrice.Rossi@apiacoa.org>
+Authors@R: 
+    c(person(given = "Fabrice",
+             family = "Rossi",
+             role = c("aut", "cre"),
+             email = "Fabrice.Rossi@apiacoa.org",
+             comment = c(ORCID = "0000-0003-4638-1286")),
+      person(given = "Hugo",
+             family = "Le Picard",
+             role = "ctb"))
 Description: An implementation of Variable Length Markov Chains and of their 
     extension to models with covariates.
 License: GPL (>= 3)
