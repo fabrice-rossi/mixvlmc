@@ -88,7 +88,7 @@ grow_ctx_tree <- function(x, vals, min_size, max_depth, covsize = 0, keep_match 
     }
   }
   pre_res <- recurse_ctx_tree(x, length(vals), 0, NULL, table(x))
-  new_ctx_tree(vals, pre_res, compute_stats = compute_stats, class = "vlmc")
+  new_ctx_tree(vals, pre_res, compute_stats = compute_stats)
 }
 
 #' Build a context tree for a discrete time series
