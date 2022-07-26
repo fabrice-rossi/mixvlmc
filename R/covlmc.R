@@ -185,7 +185,8 @@ node_prune_model <- function(model, cov_dim, nb_vals, alpha, keep_data = FALSE, 
   }
 }
 
-ctx_tree_fit_glm <- function(tree, y, covariate, alpha, control, assume_model = FALSE, keep_local_data = FALSE, verbose = FALSE) {
+ctx_tree_fit_glm <- function(tree, y, covariate, alpha, control, assume_model = FALSE, keep_local_data = FALSE, keep_model = FALSE,
+                             verbose = FALSE) {
   nb_vals <- length(tree$vals)
   recurse_ctx_tree_fit_glm <-
     function(tree, ctx, d, y, covariate) {
@@ -300,31 +301,48 @@ ctx_tree_fit_glm <- function(tree, y, covariate, alpha, control, assume_model = 
           }
         }
         local_model <- NULL
+        p_value <- NULL
         if (need_local_model) {
           ## we need a local model
-          if (verbose) {
-            print(paste("fitting a local model (of full rank) with", d, "covariates"))
-          }
-          local_model <- node_fit_glm(tree$match, d, y, covariate, alpha, nb_vals, return_all = TRUE, control)
-          if (verbose) {
-            print(paste(local_model$H1_model$H0, local_model$H1_model$hsize))
+          if (!is.null(tree[["cache"]]) && !is.null(tree[["cache"]][["model"]])) {
+            local_model <- tree[["cache"]][["model"]]
+            p_value <- tree[["cache"]][["p_value"]]
+            if (verbose) {
+              print("Reusing cached model")
+            }
+          } else {
+            if (verbose) {
+              print(paste("fitting a local model (of full rank) with", d, "covariates"))
+            }
+            local_model <- node_fit_glm(tree$match, d, y, covariate, alpha, nb_vals, return_all = TRUE, control)
+            if (verbose) {
+              print(paste(local_model$H1_model$H0, local_model$H1_model$hsize))
+            }
           }
         }
         if (need_merged_model) {
           ## we need a merged model
-          if (verbose) {
-            print(paste("fitting a merged model for:", paste(pr_candidates, collapse = " ")))
+          if (!is.null(tree[["cache"]]) && !is.null(tree[["cache"]][["merged_model"]])) {
+            local_model <- tree[["cache"]][["merged_model"]]
+            p_value <- tree[["cache"]][["p_value"]]
+            if (verbose) {
+              print("Reusing cached model")
+            }
+          } else {
+            if (verbose) {
+              print(paste("fitting a merged model for:", paste(pr_candidates, collapse = " ")))
+            }
+            ## prepare the data set
+            ## we need to reextract the data as models can use different history sizes
+            ## shift the index by one to account for the reduce history
+            full_index <- 1 + unlist(lapply(submodels[pr_candidates], function(x) x$match))
+            if (verbose) {
+              print(paste("call to glm with d=", d, sep = ""))
+            }
+            local_model <- node_fit_glm(full_index, d, y, covariate, alpha, nb_vals, return_all = TRUE, control)
           }
-          ## prepare the data set
-          ## we need to reextract the data as models can use different history sizes
-          ## shift the index by one to account for the reduce history
-          full_index <- 1 + unlist(lapply(submodels[pr_candidates], function(x) x$match))
-          if (verbose) {
-            print(paste("call to glm with d=", d, sep = ""))
-          }
-          local_model <- node_fit_glm(full_index, d, y, covariate, alpha, nb_vals, return_all = TRUE, control)
         }
-        if (!is.null(local_model)) {
+        if (!is.null(local_model) && is.null(p_value)) {
           ## to compute the likelihood of the new model on the data used by
           ## the ones to merge/remove we need to reextract the data if the models
           ## have a shorter history than the one used be the local model
@@ -364,6 +382,10 @@ ctx_tree_fit_glm <- function(tree, y, covariate, alpha, control, assume_model = 
             df = sub_df - local_df,
             lower.tail = FALSE
           )
+          if (is.na(p_value)) {
+            print(paste(lambda, sub_df, local_df))
+            print(local_model$H1_model$model)
+          }
           if (verbose) {
             print(paste(lambda, p_value))
           }
@@ -394,6 +416,9 @@ ctx_tree_fit_glm <- function(tree, y, covariate, alpha, control, assume_model = 
             result$children <- submodels
             result$prunable <- FALSE
             result$p_value <- p_value
+            if (keep_model) {
+              result$cache <- list(model = local_model, p_value = p_value)
+            }
           }
         } else if (need_merged_model) {
           result$prunable <- FALSE
@@ -422,6 +447,9 @@ ctx_tree_fit_glm <- function(tree, y, covariate, alpha, control, assume_model = 
             result$merged_p_value <- p_value
             result$merged_candidates <- pr_candidates
             result$children <- submodels
+            if (keep_model) {
+              result$cache <- list(merged_model = local_model)
+            }
           }
         } else {
           result$children <- submodels
@@ -542,7 +570,7 @@ covlmc <- function(x, covariate, alpha = 0.05, min_size = 15, max_depth = 100, k
   ctx_tree$match <- 1:length(x)
   pruned_tree <- ctx_tree_fit_glm(ctx_tree, x, covariate,
     alpha = alpha, control = control, assume_model = FALSE,
-    keep_local_data = TRUE, verbose = FALSE
+    keep_local_data = TRUE, keep_model = keep_data, verbose = FALSE
   )
   pre_result <- new_ctx_tree(pruned_tree$vals, pruned_tree, count_context = count_covlmc_local_context, class = "covlmc")
   pre_result$cov_names <- names(covariate)
@@ -557,8 +585,14 @@ covlmc <- function(x, covariate, alpha = 0.05, min_size = 15, max_depth = 100, k
 
 #' Cutoff values for pruning the context tree of a VLMC with covariates
 #'
-#' This function returns all the cutoff values that are guaranteed to induce a
-#' pruning of the context tree of a VLMC with covariates.
+#' This function returns all the cutoff values that should induce a pruning of
+#' the context tree of a VLMC with covariates.
+#'
+#' Notice that the list of cutoff values returned by the function is not as
+#' complete as the one computed for a VLMC without covariates. Indeed, pruning
+#' the coVLMC tree creates new pruning opportunities that are not evaluated
+#' during the construction of the initial model, while all pruning opportunities
+#' are computed during the construction of a VLMC context tree.
 #'
 #' @param vlmc a fitted covlmc model.
 #' @param mode specify whether the results should be "native" likelihood ratio
@@ -643,7 +677,7 @@ prune.covlmc <- function(vlmc, alpha = 0.05, cutoff = NULL, ...) {
   assertthat::assert_that(is.null(cutoff))
   pruned_tree <- ctx_tree_fit_glm(vlmc, vlmc$x, vlmc$covariate,
     alpha = alpha, control = vlmc$control, assume_model = TRUE,
-    keep_local_data = TRUE, verbose = FALSE
+    keep_local_data = TRUE, keep_model = TRUE, verbose = FALSE
   )
   pre_result <- new_ctx_tree(vlmc$vals, pruned_tree, count_context = count_covlmc_local_context, class = "covlmc")
   pre_result$cov_names <- vlmc$cov_names

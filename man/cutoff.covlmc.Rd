@@ -19,8 +19,15 @@ For covlmc, only the quantile scale is supported.}
 a vector of cut off values.
 }
 \description{
-This function returns all the cutoff values that are guaranteed to induce a
-pruning of the context tree of a VLMC with covariates.
+This function returns all the cutoff values that should induce a pruning of
+the context tree of a VLMC with covariates.
+}
+\details{
+Notice that the list of cutoff values returned by the function is not as
+complete as the one computed for a VLMC without covariates. Indeed, pruning
+the coVLMC tree creates new pruning opportunities that are not evaluated
+during the construction of the initial model, while all pruning opportunities
+are computed during the construction of a VLMC context tree.
 }
 \examples{
 pc <- powerconsumption[powerconsumption$week == 5, ]
