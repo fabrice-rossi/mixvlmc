@@ -42,7 +42,7 @@ contexts.ctx_tree <- function(ct) {
   preres <- rec_contexts(NULL, ct, ct$vals)
   if (is.null(preres[[length(preres)]])) {
     ## root context
-    preres[[length(preres)]] <- list()
+    preres[[length(preres)]] <- ct$vals[0]
   }
   preres
 }
