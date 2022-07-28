@@ -62,8 +62,8 @@ logLik.vlmc <- function(object, ...) {
 #' @return the log-likelihood of the VLMC with a nobs attribute that accounts for the number of data included in the likelihood calculation.
 #' @seealso [stats::logLik]
 #'
-#' @example
-# Likelihood for a fitted VLMC.
+#' @examples
+#' Likelihood for a fitted VLMC.
 #' pc <- powerconsumption[powerconsumption$week == 5, ]
 #' breaks <- c(0,
 #'             median(powerconsumption$active_power, na.rm = TRUE),
