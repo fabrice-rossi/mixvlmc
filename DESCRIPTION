@@ -23,6 +23,7 @@ Imports:
     nnet,
     Rcpp (>= 1.0.8.3),
     spaMM,
+    stats,
     stringr,
     VGAM,
     withr
