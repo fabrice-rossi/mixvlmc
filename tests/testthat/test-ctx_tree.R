@@ -25,13 +25,6 @@ test_that("the context tree has the correct class", {
   expect_s3_class(dts_ctree, "ctx_tree", exact = TRUE)
 })
 
-test_that("the context tree construction finds the specified contexts", {
-  dts <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 0)
-  dts_ctree <- ctx_tree(dts, min_size = 1, max_depth = 2)
-  contexts <- list(c(0, 0), c(0, 1), c(1, 0), c(1, 1))
-  expect_identical(contexts(dts_ctree), contexts)
-})
-
 test_that("a warning is given when the state space is large", {
   dts <- rep(1:20, 2)
   expect_warning({

@@ -4,17 +4,23 @@
 \alias{contexts.covlmc}
 \title{Contexts of a VLMC with covariates}
 \usage{
-\method{contexts}{covlmc}(ct)
+\method{contexts}{covlmc}(ct, type = c("list", "data.frame"), reverse = FALSE, ...)
 }
 \arguments{
 \item{ct}{a fitted covlmc model.}
+
+\item{type}{result type (see details).}
+
+\item{reverse}{logical (defaults to FALSE). See details.}
+
+\item{...}{additional arguments for the contexts function.}
 }
 \value{
-the different contexts present in the VLMC with covariates.
+the list of the contexts represented in this tree or a data.frame
+  with more content.
 }
 \description{
-This function returns the different contexts present in a VLMC with covariates. Contexts' individual
-states are given from the most recent to the least.
+This function returns the different contexts present in a VLMC with covariates.
 }
 \examples{
 pc <- powerconsumption[powerconsumption$week == 5, ]

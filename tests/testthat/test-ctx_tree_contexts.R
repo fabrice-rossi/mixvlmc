@@ -17,3 +17,10 @@ test_that("contexts keep the original type of the dts", {
   expect_s3_class(dts_contexts[[1]], "factor", exact = TRUE)
   expect_equal(levels(dts_contexts[[1]]), levels(dts))
 })
+
+test_that("the context tree construction finds the specified contexts", {
+  dts <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 0)
+  dts_ctree <- ctx_tree(dts, min_size = 1, max_depth = 2)
+  contexts <- list(c(0, 0), c(0, 1), c(1, 0), c(1, 1))
+  expect_identical(contexts(dts_ctree, reverse = TRUE), contexts)
+})

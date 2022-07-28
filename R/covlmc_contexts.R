@@ -51,11 +51,16 @@ rec_covlmc_contexts <- function(path, ct, vals) {
 
 #' Contexts of a VLMC with covariates
 #'
-#' This function returns the different contexts present in a VLMC with covariates. Contexts' individual
-#' states are given from the most recent to the least.
+#' This function returns the different contexts present in a VLMC with covariates.
+#'
 #'
 #' @param ct a fitted covlmc model.
-#' @return the different contexts present in the VLMC with covariates.
+#' @param type result type (see details).
+#' @param reverse logical (defaults to FALSE). See details.
+#' @param ... additional arguments for the contexts function.
+#'
+#' @return the list of the contexts represented in this tree or a data.frame
+#'   with more content.
 #'
 #' @examples
 #' pc <- powerconsumption[powerconsumption$week == 5, ]
@@ -67,11 +72,19 @@ rec_covlmc_contexts <- function(path, ct, vals) {
 #' m_cov <- covlmc(dts, dts_cov, min_size = 5)
 #' contexts(m_cov)
 #' @export
-contexts.covlmc <- function(ct) {
+contexts.covlmc <- function(ct, type = c("list", "data.frame"), reverse = FALSE, ...) {
+  type <- match.arg(type)
   preres <- rec_covlmc_contexts(c(), ct, ct$vals)
+  if (reverse) {
+    preres <- lapply(preres, rev)
+  }
   if (is.null(preres[[length(preres)]])) {
     ## root context
-    preres[[length(preres)]] <- list()
+    preres[[length(preres)]] <- ct$vals[0]
   }
-  preres
+  if (type == "list") {
+    preres
+  } else {
+    data.frame(contexts = I(preres))
+  }
 }

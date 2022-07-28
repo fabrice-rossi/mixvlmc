@@ -29,22 +29,50 @@ rec_contexts <- function(path, ct, vals) {
 #'
 #' This function extracts from a context tree the list of all its contexts.
 #'
-#' @param ct a context tree.
+#' The default behavior consists in returnin a list of all the contexts
+#' contained in the tree (with \code{type="list"}). When
+#' \code{type="data.frame"}, the method returns a data.frame whose first column
+#' contains the contexts. Other columns contain context specific values which
+#' depend on the actual class of the tree.
 #'
-#' @return the list of the contexts represented in this tree.
+#' Notice that contexts are given by default in their left to right reading
+#' order. For instance, the context c(0, 1) is reported if the sequence 0, then
+#' 1, is registered in the context tree. Set reverse to \code{TRUE} for the
+#' reverse convention.
+#'
+#' @param ct a context tree.
+#' @param type result type (see details).
+#' @param reverse logical (defaults to FALSE). See details.
+#' @param ... additional arguments for the contexts function.
+#'
+#' @return the list of the contexts represented in this tree or a data.frame
+#'   with more content.
+#' @examples
+#' dts <- sample(as.factor(c("A", "B", "C")), 100, replace = TRUE)
+#' dts_tree <- ctx_tree(dts, max_depth = 3, min_size = 5)
+#' contexts(dts_tree)
+#' contexts(dts_tree, "data.frame", TRUE)
 #' @export
-contexts <- function(ct) {
+contexts <- function(ct, type = c("list", "data.frame"), reverse = FALSE, ...) {
   UseMethod("contexts")
 }
 
 #' @export
-contexts.ctx_tree <- function(ct) {
+contexts.ctx_tree <- function(ct, type = c("list", "data.frame"), reverse = FALSE, ...) {
+  type <- match.arg(type)
   preres <- rec_contexts(NULL, ct, ct$vals)
+  if (reverse) {
+    preres <- lapply(preres, rev)
+  }
   if (is.null(preres[[length(preres)]])) {
     ## root context
     preres[[length(preres)]] <- ct$vals[0]
   }
-  preres
+  if (type == "list") {
+    preres
+  } else {
+    data.frame(contexts = I(preres))
+  }
 }
 
 rec_match_context <- function(tree, d, ctx) {
