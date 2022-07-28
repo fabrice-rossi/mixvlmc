@@ -22,7 +22,7 @@ When the optional argument \code{newdata} is provided, the function evaluates in
 log-likelihood for this (new) discrete time series.
 }
 \examples{
-Likelihood for a fitted VLMC.
+# Likelihood for a fitted VLMC.
 pc <- powerconsumption[powerconsumption$week == 5, ]
 breaks <- c(0,
             median(powerconsumption$active_power, na.rm = TRUE),
