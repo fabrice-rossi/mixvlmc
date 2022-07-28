@@ -63,7 +63,7 @@ logLik.vlmc <- function(object, ...) {
 #' @seealso [stats::logLik]
 #'
 #' @examples
-#' Likelihood for a fitted VLMC.
+#' # Likelihood for a fitted VLMC.
 #' pc <- powerconsumption[powerconsumption$week == 5, ]
 #' breaks <- c(0,
 #'             median(powerconsumption$active_power, na.rm = TRUE),
