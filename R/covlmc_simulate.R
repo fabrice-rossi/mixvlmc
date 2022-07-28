@@ -81,5 +81,5 @@ simulate.covlmc <- function(object, nsim = 1, seed = NULL, ...) {
       }
     }
   }
-  factor(pre_res, levels = int_vals, labels = object$vals)
+  object$vals[pre_res]
 }

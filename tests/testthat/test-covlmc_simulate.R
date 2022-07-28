@@ -5,7 +5,7 @@ test_that("covlmc simulation generates a consistent sample", {
     model <- covlmc(data_set$x, data_set$covariate, alpha = 0.2)
     xs <- simulate(model, 250, covariate = data_set$covariate[1:250, , drop = FALSE], seed = 1)
     expect_equal(length(xs), 250)
-    expect_identical(levels(xs), states(model))
+    expect_identical(sort(unique(xs)), states(model))
   }
   withr::local_seed(0)
   x <- sample(c("A", "B", "C"), 500, replace = TRUE)
@@ -17,7 +17,7 @@ test_that("covlmc simulation generates a consistent sample", {
     model <- covlmc(x, df_y, alpha = 1e-8)
     xs <- simulate(model, 250, covariate = new_cov, seed = 1)
     expect_equal(length(xs), 250)
-    expect_identical(levels(xs), states(model))
+    expect_identical(sort(unique(xs)), states(model))
   }
 })
 

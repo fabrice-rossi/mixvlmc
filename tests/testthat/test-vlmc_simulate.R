@@ -4,7 +4,7 @@ test_that("vlmc simulation generates a consistent sample", {
     x_vlmc <- vlmc(data_set$x)
     xs <- simulate(x_vlmc, 50, seed = 2 * k + 1)
     expect_equal(length(xs), 50)
-    expect_identical(levels(xs), states(x_vlmc))
+    expect_identical(sort(unique(xs)), states(x_vlmc))
   }
 })
 

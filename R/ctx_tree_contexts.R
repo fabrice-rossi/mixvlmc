@@ -10,10 +10,13 @@ rec_contexts <- function(path, ct, vals) {
   } else {
     all_ctx <- list()
     for (v in seq_along(ct$children)) {
-      sub_ctx <- rec_contexts(c(path, vals[v]), ct$children[[v]], vals)
-      if (!is.null(sub_ctx)) {
-        all_ctx <- c(all_ctx, sub_ctx)
+      if (is.null(path)) {
+        sub_path <- vals[v]
+      } else {
+        sub_path <- c(path, vals[v])
       }
+      sub_ctx <- rec_contexts(sub_path, ct$children[[v]], vals)
+      all_ctx <- c(all_ctx, sub_ctx)
     }
     if (nb_sub_tree(ct) < length(vals)) {
       all_ctx <- c(all_ctx, list(path))
@@ -36,7 +39,7 @@ contexts <- function(ct) {
 
 #' @export
 contexts.ctx_tree <- function(ct) {
-  preres <- rec_contexts(c(), ct, ct$vals)
+  preres <- rec_contexts(NULL, ct, ct$vals)
   if (is.null(preres[[length(preres)]])) {
     ## root context
     preres[[length(preres)]] <- list()

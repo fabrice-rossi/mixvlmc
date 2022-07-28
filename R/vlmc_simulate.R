@@ -16,5 +16,5 @@ simulate.vlmc <- function(object, nsim = 1, seed = NULL, ...) {
       ctx <- c(pre_res[i], ctx[1:(max_depth - 1)])
     }
   }
-  factor(pre_res, levels = int_vals, labels = object$vals)
+  object$vals[pre_res]
 }
