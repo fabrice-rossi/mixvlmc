@@ -645,7 +645,7 @@ cutoff.covlmc <- function(vlmc, mode = c("quantile", "native"), ...) {
       c(df, tree$p_value, tree$merged_p_value)
     }
   }
-  unique(sort(recurse_cutoff(vlmc), decreasing = TRUE))
+  before(unique(sort(recurse_cutoff(vlmc), decreasing = TRUE)))
 }
 
 #' Prune a Variable Length Markov Chain with covariates
