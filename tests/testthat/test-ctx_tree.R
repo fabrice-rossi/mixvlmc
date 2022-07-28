@@ -38,3 +38,9 @@ test_that("a warning is given when the state space is large", {
     dts_ctree <- ctx_tree(dts, min_size = 1, max_depth = 2)
   })
 })
+
+test_that("printing", {
+  dts <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 0)
+  dts_ctree <- ctx_tree(dts, min_size = 1, max_depth = 2)
+  expect_snapshot_output(print(dts_ctree))
+})
