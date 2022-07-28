@@ -13,7 +13,7 @@ rec_contexts <- function(path, ct, vals) {
       if (is.null(path)) {
         sub_path <- vals[v]
       } else {
-        sub_path <- c(path, vals[v])
+        sub_path <- c(vals[v], path)
       }
       sub_ctx <- rec_contexts(sub_path, ct$children[[v]], vals)
       all_ctx <- c(all_ctx, sub_ctx)
