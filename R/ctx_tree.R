@@ -171,7 +171,7 @@ print.ctx_tree <- function(x, ...) {
 #' @examples
 #' dts <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 0)
 #' dts_ctree <- ctx_tree(dts, min_size = 1, max_depth = 2)
-#' ## should be c("0", "1")
+#' # should be c(0, 1)
 #' states(dts_ctree)
 states <- function(ct) {
   assertthat::assert_that(is_ctx_tree(ct))
