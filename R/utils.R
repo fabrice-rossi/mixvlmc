@@ -1,5 +1,4 @@
 to_dts <- function(x, vals = NULL) {
-  original <- NULL
   if (is.null(vals)) {
     if (is.character(x) || is.numeric(x)) {
       vals <- sort(unique(x))
@@ -13,7 +12,6 @@ to_dts <- function(x, vals = NULL) {
   } else {
     fx <- factor(x, levels = vals)
     assertthat::assert_that(assertthat::noNA(fx), msg = "x contains unknown states")
-    original <- "factor"
     vals <- factor(levels(fx), levels(fx))
   }
   list(ix = as.numeric(fx) - 1, fx = fx, vals = vals)

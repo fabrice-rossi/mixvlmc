@@ -60,7 +60,7 @@ rec_draw_covlmc <- function(prefix, rank, ival, nst, ct, vals, node2txt, merged_
   if (length(ct) > 0) {
     # first print the current content
     if (rank > 0) {
-      if (nst > 1 & rank == 1) {
+      if (nst > 1 && rank == 1) {
         local_prefix <- "+ "
       } else {
         local_prefix <- "' "

@@ -3,7 +3,7 @@ rec_draw <- function(prefix, rank, nst, ct, vals, node2txt, ...) {
   if (length(ct) > 0) {
     # first print the current content
     if (rank > 0) {
-      if (nst > 1 & rank == 1) {
+      if (nst > 1 && rank == 1) {
         local_prefix <- "+ "
       } else {
         local_prefix <- "' "

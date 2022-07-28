@@ -71,7 +71,7 @@ grow_ctx_tree <- function(x, vals, min_size, max_depth, covsize = 0, keep_match 
         }
       }
       result <- list()
-      if (nb_children == nb_vals | (!all_children & nb_children > 0)) {
+      if (nb_children == nb_vals || (!all_children && nb_children > 0)) {
         result$children <- children
       }
       result$f_by <- f_by
