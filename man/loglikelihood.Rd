@@ -21,6 +21,27 @@ This function evaluates the log-likelihood of a VLMC fitted on a discrete time s
 When the optional argument \code{newdata} is provided, the function evaluates instead the
 log-likelihood for this (new) discrete time series.
 }
+\examples{
+# Likelihood for a fitted VLMC.
+pc <- powerconsumption[powerconsumption$week == 5, ]
+breaks <- c(0,
+            median(powerconsumption$active_power, na.rm = TRUE),
+            max(powerconsumption$active_power, na.rm = TRUE))
+labels <- c(0, 1)
+dts <- cut(pc$active_power, breaks = breaks, labels = labels)
+m_nocovariate <- vlmc(dts)
+ll <- loglikelihood(m_nocovariate)
+ll
+attr(ll, "nobs")
+
+# Likelihood for a new time series with previously fitted VLMC.
+pc_new <- powerconsumption[powerconsumption$week == 11, ]
+dts_new <- cut(pc_new$active_power, breaks = breaks, labels = labels)
+ll_new <- loglikelihood(m_nocovariate, newdata = dts_new)
+ll_new
+attributes(ll_new)
+
+}
 \seealso{
 [stats::logLik]
 }
