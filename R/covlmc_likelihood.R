@@ -7,7 +7,7 @@ rec_loglikelihood_covlmc <- function(tree) {
     } else {
       list(
         ll = tree$model$likelihood, df = length(tree$model$coefficients),
-        nobs = sum(tree$f_by)
+        nobs = as.integer(sum(tree$f_by))
       )
     }
   } else {
@@ -143,6 +143,8 @@ loglikelihood.covlmc <- function(vlmc, newdata, newcov, ...) {
     ncovlmc <- match_ctx(vlmc, nx$ix, keep_match = TRUE)
     if (length(vlmc$vals) > 2) {
       newdata <- nx$fx
+    } else {
+      newdata <- nx$ix
     }
     pre_res <- rec_loglikelihood_covlmc_newdata(ncovlmc, 0, length(vlmc$vals), newdata, newcov)
   }

@@ -11,3 +11,11 @@ test_that("the likelihood calculation is valid", {
     expect_equal(loglikelihood(x_covlmc, x, newcov = df_y), loglikelihood(x_covlmc))
   }
 })
+
+test_that("likelihood calculation on real data", {
+  pc <- powerconsumption[powerconsumption$week == 5, ]
+  dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1))))
+  dts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
+  m_cov <- covlmc(dts, dts_cov, min_size = 5)
+  expect_identical(loglikelihood(m_cov, dts, dts_cov), loglikelihood(m_cov))
+})
