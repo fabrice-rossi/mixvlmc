@@ -65,9 +65,11 @@ logLik.vlmc <- function(object, ...) {
 #' @examples
 #' # Likelihood for a fitted VLMC.
 #' pc <- powerconsumption[powerconsumption$week == 5, ]
-#' breaks <- c(0,
-#'             median(powerconsumption$active_power, na.rm = TRUE),
-#'             max(powerconsumption$active_power, na.rm = TRUE))
+#' breaks <- c(
+#'   0,
+#'   median(powerconsumption$active_power, na.rm = TRUE),
+#'   max(powerconsumption$active_power, na.rm = TRUE)
+#' )
 #' labels <- c(0, 1)
 #' dts <- cut(pc$active_power, breaks = breaks, labels = labels)
 #' m_nocovariate <- vlmc(dts)

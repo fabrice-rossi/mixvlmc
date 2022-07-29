@@ -4,22 +4,27 @@
 \alias{loglikelihood.covlmc}
 \title{Log-Likelihood of a VLMC with covariates}
 \usage{
-\method{loglikelihood}{covlmc}(vlmc, newdata, ...)
+\method{loglikelihood}{covlmc}(vlmc, newdata, newcov, ...)
 }
 \arguments{
 \item{vlmc}{the vlmc representation.}
 
 \item{newdata}{an optional discrete time series.}
 
+\item{newcov}{an optional data frame with the new values for the covariates.}
+
 \item{...}{additional parameters for loglikelihood.}
 }
 \value{
-the log-likelihood of the VLMC with a nobs attribute that accounts for the number of data included in the likelihood calculation.
+the log-likelihood of the VLMC with a nobs attribute that accounts
+  for the number of data included in the likelihood calculation.
 }
 \description{
-This function evaluates the log-likelihood of a VLMC with covariates fitted on a discrete time series.
-When the optional arguments \code{newdata} is  provided, the function evaluates instead the
-log-likelihood for this (new) discrete time series on the new covariates which must be provided through a newcov parameter.
+This function evaluates the log-likelihood of a VLMC with covariates fitted
+on a discrete time series. When the optional arguments \code{newdata} is
+provided, the function evaluates instead the log-likelihood for this (new)
+discrete time series on the new covariates which must be provided through the
+newcov parameter.
 }
 \seealso{
 [stats::logLik]

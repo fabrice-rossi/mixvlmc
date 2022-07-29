@@ -111,24 +111,31 @@ logLik.covlmc <- function(object, ...) {
 
 #' Log-Likelihood of a VLMC with covariates
 #'
-#' This function evaluates the log-likelihood of a VLMC with covariates fitted on a discrete time series.
-#' When the optional arguments \code{newdata} is  provided, the function evaluates instead the
-#' log-likelihood for this (new) discrete time series on the new covariates which must be provided through a newcov parameter.
+#' This function evaluates the log-likelihood of a VLMC with covariates fitted
+#' on a discrete time series. When the optional arguments \code{newdata} is
+#' provided, the function evaluates instead the log-likelihood for this (new)
+#' discrete time series on the new covariates which must be provided through the
+#' newcov parameter.
 #'
 #' @param vlmc the vlmc representation.
 #' @param newdata an optional discrete time series.
+#' @param newcov an optional data frame with the new values for the covariates.
 #' @param ... additional parameters for loglikelihood.
 #'
-#' @return the log-likelihood of the VLMC with a nobs attribute that accounts for the number of data included in the likelihood calculation.
+#' @return the log-likelihood of the VLMC with a nobs attribute that accounts
+#'   for the number of data included in the likelihood calculation.
 #' @seealso [stats::logLik]
 #' @export
-loglikelihood.covlmc <- function(vlmc, newdata, ...) {
+loglikelihood.covlmc <- function(vlmc, newdata, newcov, ...) {
   if (missing(newdata)) {
+    assertthat::assert_that(missing(newcov),
+      msg = "Cannot specify new covariate values (newcov) without new data (newdata)"
+    )
     pre_res <- rec_loglikelihood_covlmc(vlmc)
   } else {
-    params <- list(...)
-    assertthat::assert_that(!is.null(params$newcov))
-    newcov <- params$newcov
+    assertthat::assert_that(!missing(newcov),
+      msg = "Need new covariate values (newcov) with new data (newdata)"
+    )
     assertthat::assert_that(is.data.frame(newcov))
     assertthat::assert_that(nrow(newcov) == length(newdata))
     assertthat::assert_that(assertthat::has_name(newcov, vlmc$cov_names))
