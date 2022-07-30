@@ -5,7 +5,7 @@
 #'
 #' This function returns a vector of values that are the "just before" the ones
 #' given in input: a is just before b is a is the largest double strictly smaller
-#' than b. This is implement with the \code{nextafter} C++ function.
+#' than b. This is implement with the `nextafter` C++ function.
 #'
 #' @param x vector of values
 #' @return vector of just before values
@@ -18,17 +18,17 @@ before <- function(x) {
 #' Find values in a vector
 #'
 #' This function counts and reports all the positions of the accepted values in a vector.
-#' The vector must contain only integers from 0 to \code{nb_vals}-1. The output of the function
+#' The vector must contain only integers from 0 to `nb_vals`-1. The output of the function
 #' is a list with two components:
 #'
-#' 1) \code{positions}: a list of nb_vals vectors. Component k of the list contains
-#'     the positions of all the k-1 in \code{x} (using C++ convention, positions start at 0)
-#' 2) \code{counts}: a matrix of size nb_vals times nb_vals. Entry [k, l] gives the number of
-#'    times k-1 is followed by l-1 in \code{x}
+#' 1) `positions`: a list of nb_vals vectors. Component k of the list contains
+#'     the positions of all the k-1 in `x` (using C++ convention, positions start at 0)
+#' 2) `counts`: a matrix of size nb_vals times nb_vals. Entry [k, l] gives the number of
+#'    times k-1 is followed by l-1 in `x`
 #'
 #' The function operates in two modes:
 #' 1) if nv_from is NULL (default case), the function reports the positions and the counts exactly
-#'    as described above. The \code{depth} parameter is not used.
+#'    as described above. The `depth` parameter is not used.
 #' 2) if ny_from is not NULL, it contains reference positions for the search.
 #'    The reported positions correspond to occurences of the values just before a position
 #'    in nv_from. For instance if nv_from = c(2, 4) (c++ indexing from 0) and
@@ -40,7 +40,7 @@ before <- function(x) {
 #'    we consider positions c(3, 5) and therefore counts[2,2]=2 (all other values are 0).
 #'
 #' @param x the vector in which contexts are searched for.
-#' @param nb_vals defines the interval of expected values from 0 to \code{nb_vals}-1.
+#' @param nb_vals defines the interval of expected values from 0 to `nb_vals`-1.
 #' @param depth shift in the occurence counts.
 #' @param nv_from starting positions for the search.
 #'

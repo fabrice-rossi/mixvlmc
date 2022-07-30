@@ -22,5 +22,5 @@ given covlmc object.
 \details{
 A VLMC with covariates model needs covariates to compute its transition
 probabilities. The covariates must be submitted as a data frame using the
-named `covariate` argument.
+named \code{covariate} argument.
 }

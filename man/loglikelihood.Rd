@@ -52,5 +52,5 @@ attributes(ll_new)
 
 }
 \seealso{
-[stats::logLik]
+\link[stats:logLik]{stats::logLik}
 }

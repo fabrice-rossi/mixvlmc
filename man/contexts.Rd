@@ -17,7 +17,7 @@ contexts(ct, type = c("list", "data.frame"), reverse = FALSE, ...)
 }
 \value{
 the list of the contexts represented in this tree or a data.frame
-  with more content.
+with more content.
 }
 \description{
 This function extracts from a context tree the list of all its contexts.

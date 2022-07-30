@@ -30,14 +30,14 @@ rec_contexts <- function(path, ct, vals) {
 #' This function extracts from a context tree the list of all its contexts.
 #'
 #' The default behavior consists in returnin a list of all the contexts
-#' contained in the tree (with \code{type="list"}). When
-#' \code{type="data.frame"}, the method returns a data.frame whose first column
+#' contained in the tree (with `type="list"`). When
+#' `type="data.frame"`, the method returns a data.frame whose first column
 #' contains the contexts. Other columns contain context specific values which
 #' depend on the actual class of the tree.
 #'
 #' Notice that contexts are given by default in their left to right reading
 #' order. For instance, the context c(0, 1) is reported if the sequence 0, then
-#' 1, is registered in the context tree. Set reverse to \code{TRUE} for the
+#' 1, is registered in the context tree. Set reverse to `TRUE` for the
 #' reverse convention.
 #'
 #' @param ct a context tree.

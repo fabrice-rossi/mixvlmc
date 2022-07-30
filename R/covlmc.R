@@ -501,9 +501,9 @@ count_covlmc_local_context <- function(node) {
 #' This function creates a list with parameters used to fine tune the coVLMC
 #' fitting algorithm.
 #'
-#' \code{pseudo_obs} is used to regularize the probability estimations when a
+#' `pseudo_obs` is used to regularize the probability estimations when a
 #' context is only observed followed by always the same state. Transition
-#' probabilities are computed after adding \code{pseudo_obs} pseudo observations
+#' probabilities are computed after adding `pseudo_obs` pseudo observations
 #' of each of the states (including the observed one). This corresponds to a
 #' Bayesian posterior mean estimation with a Dirichlet prior.
 #'
@@ -530,20 +530,20 @@ covlmc_control <- function(pseudo_obs = 1) {
 #'   below for details).
 #' @param max_depth integer >= 1 (default: 100). Longest context considered in
 #'   growing phase of the context tree.
-#' @param keep_data logical (defaults to \code{TRUE}). If \code{TRUE}, the
+#' @param keep_data logical (defaults to `TRUE`). If `TRUE`, the
 #'   original data are stored in the resulting object to enable post pruring
-#'   (see \code{\link{prune.covlmc}}).
+#'   (see [prune.covlmc()]).
 #' @param control a list with control parameters, see
-#'   \code{\link{covlmc_control}}.
-#' @param ... arguments passed to \code{\link{covlmc_control}}.
+#'   [covlmc_control()].
+#' @param ... arguments passed to [covlmc_control()].
 #' @return a fitted covlmc model.
 #'
-#' @details The \code{min_size} parameter is used to compute the actual number
+#' @details The `min_size` parameter is used to compute the actual number
 #' of observations per context in the growing phase of the tree. It is computed
-#' as \code{min_size*(1+ncol(covariate)*(d+1))} where \code{d} is the length of
+#' as `min_size*(1+ncol(covariate)*(d+1))` where `d` is the length of
 #' the context (a.k.a. the depth in the tree).
 #'
-#' Parameters specified by \code{control} are used to fine tune the behavior of
+#' Parameters specified by `control` are used to fine tune the behavior of
 #' the algorithm.
 #'
 #' @export
