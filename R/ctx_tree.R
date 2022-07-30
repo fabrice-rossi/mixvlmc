@@ -94,8 +94,8 @@ grow_ctx_tree <- function(x, vals, min_size, max_depth, covsize = 0, keep_match 
 #' Build a context tree for a discrete time series
 #'
 #' This function builds a context tree for a time series. The tree represents
-#' all the sequences of symbols/states of length smaller than \code{max_depth}
-#' that appear at least \code{min_size} times in the time series and stores the
+#' all the sequences of symbols/states of length smaller than `max_depth`
+#' that appear at least `min_size` times in the time series and stores the
 #' frequencies of the states that follow each context. Optionally, the positions
 #' of the contexts in the time series can be stored in the tree.
 #'
@@ -107,7 +107,7 @@ grow_ctx_tree <- function(x, vals, min_size, max_depth, covsize = 0, keep_match 
 #' @param keep_position logical (default: TRUE). Should the context tree keep
 #'   the position of the contexts.
 #'
-#' @return a context tree (of class \code{ctx_tree}).
+#' @return a context tree (of class `ctx_tree`).
 #' @export
 #'
 #' @examples
@@ -127,10 +127,10 @@ ctx_tree <- function(x, min_size = 2, max_depth = 10, keep_position = FALSE) {
 
 #' Test if the object is a context tree
 #'
-#' This function returns \code{TRUE} for context trees and \code{FALSE} for other objects.
+#' This function returns `TRUE` for context trees and `FALSE` for other objects.
 #'
 #' @param x an R object.
-#' @return \code{TRUE} for context trees.
+#' @return `TRUE` for context trees.
 #' @export
 #' @examples
 #' dts <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 0)

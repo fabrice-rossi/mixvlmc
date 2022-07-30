@@ -17,7 +17,7 @@
 }
 \value{
 the list of the contexts represented in this tree or a data.frame
-  with more content.
+with more content.
 }
 \description{
 This function returns the different contexts present in a VLMC with covariates.

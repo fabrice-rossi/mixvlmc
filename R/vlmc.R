@@ -1,10 +1,10 @@
 
 #' Test if the object is a vlmc model
 #'
-#' This function returns \code{TRUE} for VLMC models and \code{FALSE} for other objects.
+#' This function returns `TRUE` for VLMC models and `FALSE` for other objects.
 #'
 #' @param x an R object.
-#' @return \code{TRUE} for VLMC models.
+#' @return `TRUE` for VLMC models.
 #' @export
 is_vlmc <- function(x) {
   inherits(x, "vlmc")
@@ -125,8 +125,8 @@ prune_ctx_tree <- function(tree, alpha = 0.05, cutoff = NULL, verbose = FALSE) {
 #' @param alpha number in (0,1) (default: 0.05) cutoff value in quantile scale
 #'   for pruning.
 #' @param cutoff positive number: cutoff value in native (likelihood ratio)
-#'   scale for pruning. Defaults to the value obtained from \code{alpha}. Takes
-#'   precedence over \code{alpha} if specified.
+#'   scale for pruning. Defaults to the value obtained from `alpha`. Takes
+#'   precedence over `alpha` if specified.
 #' @param ... additional arguments for the prune function.
 #'
 #' @return a pruned VLMC
@@ -147,7 +147,7 @@ prune.vlmc <- function(vlmc, alpha = 0.05, cutoff = NULL, ...) {
 #' @param x a discrete time series; can be numeric, character or factor.
 #' @param alpha number in (0,1) (default: 0.05) cutoff value in quantile scale in the pruning phase.
 #' @param cutoff positive number: cutoff value in native (likelihood ratio) scale in the pruning phase.
-#'   Defaults to the value obtained from \code{alpha}. Takes precedence over \code{alpha} is specified.
+#'   Defaults to the value obtained from `alpha`. Takes precedence over `alpha` is specified.
 #' @param min_size integer >= 1 (default: 2). Minimum number of observations for
 #'  a context in the growing phase of the context tree.
 #' @param max_depth integer >= 1 (default: 100). Longest context considered in

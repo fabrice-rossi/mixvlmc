@@ -20,6 +20,6 @@ the covlmc model (invisibly).
 This function 'draws' a covlmc model as a text.
 }
 \details{
-Numerical parameters and p-values are represented using the [base::signif] function.
-The number of significant digits can be specified using a `digits` parameter.
+Numerical parameters and p-values are represented using the \link[base:Round]{base::signif} function.
+The number of significant digits can be specified using a \code{digits} parameter.
 }

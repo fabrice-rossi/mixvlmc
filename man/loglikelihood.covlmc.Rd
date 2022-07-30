@@ -17,7 +17,7 @@
 }
 \value{
 the log-likelihood of the VLMC with a nobs attribute that accounts
-  for the number of data included in the likelihood calculation.
+for the number of data included in the likelihood calculation.
 }
 \description{
 This function evaluates the log-likelihood of a VLMC with covariates fitted
@@ -55,5 +55,5 @@ attributes(ll_new)
 
 }
 \seealso{
-[stats::logLik]
+\link[stats:logLik]{stats::logLik}
 }
