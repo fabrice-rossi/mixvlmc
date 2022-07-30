@@ -29,7 +29,7 @@ into all the possible states.}
 }
 \value{
 the list of the contexts represented in this tree or a data.frame
-  with more content.
+with more content.
 }
 \description{
 This function extracts from a context tree a description of all of its
@@ -37,22 +37,22 @@ contexts.
 }
 \details{
 The default result for \code{type="list"} and \code{frequency=NULL}
-  is the list of all contexts.
+is the list of all contexts.
 
-  Other results are obtained only with \code{type="data.frame"}. In this case
-  the resulting \code{data.frame} has a \code{context} column storing the
-  contexts. If \code{frequency="total"}, an additional column named
-  \code{freq} gives the number of occurrences of each context in the series
-  used to build the tree. If \code{frequency="detailed"}, one additional
-  column is added per state in the context space. Each column records the
-  number of times a given context is followed by the corresponding value in
-  the original series.
+Other results are obtained only with \code{type="data.frame"}. In this case
+the resulting \code{data.frame} has a \code{context} column storing the
+contexts. If \code{frequency="total"}, an additional column named
+\code{freq} gives the number of occurrences of each context in the series
+used to build the tree. If \code{frequency="detailed"}, one additional
+column is added per state in the context space. Each column records the
+number of times a given context is followed by the corresponding value in
+the original series.
 }
 \section{State order in a context}{
  Notice that contexts are given by default
-  in their left to right reading order. For instance, the context c(0, 1) is
-  reported if the sequence 0, then 1, is registered in the context tree. Set
-  reverse to \code{TRUE} for the reverse convention.
+in their left to right reading order. For instance, the context \code{c(0, 1)} is
+reported if the sequence 0, then 1, is registered in the context tree. Set
+reverse to \code{TRUE} for the reverse convention.
 }
 
 \examples{

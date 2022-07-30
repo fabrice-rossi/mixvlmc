@@ -17,7 +17,7 @@ contexts(ct, type = c("list", "data.frame"), reverse = FALSE, ...)
 }
 \value{
 the list of the contexts represented in this tree or a data.frame
-  with more content.
+with more content.
 }
 \description{
 This function extracts from a context tree a description of all of its
@@ -33,9 +33,9 @@ additional parameters.
 }
 \section{State order in a context}{
  Notice that contexts are given by default
-  in their left to right reading order. For instance, the context c(0, 1) is
-  reported if the sequence 0, then 1, is registered in the context tree. Set
-  reverse to \code{TRUE} for the reverse convention.
+in their left to right reading order. For instance, the context \code{c(0, 1)} is
+reported if the sequence 0, then 1, is registered in the context tree. Set
+reverse to \code{TRUE} for the reverse convention.
 }
 
 \examples{

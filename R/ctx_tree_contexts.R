@@ -75,16 +75,16 @@ ctx_context_extractor <- function(ctx, control) {
 #' contexts.
 #'
 #' The default behavior consists in returning a list of all the contexts
-#' contained in the tree (with \code{type="list"}). When
-#' \code{type="data.frame"}, the method returns a data.frame whose first column,
-#' named \code{context}, contains the contexts. Other columns contain context
+#' contained in the tree (with `type="list"`). When
+#' `type="data.frame"`, the method returns a data.frame whose first column,
+#' named `context`, contains the contexts. Other columns contain context
 #' specific values which depend on the actual class of the tree and on
 #' additional parameters.
 #'
 #' @section State order in a context: Notice that contexts are given by default
-#'   in their left to right reading order. For instance, the context c(0, 1) is
+#'   in their left to right reading order. For instance, the context `c(0, 1)` is
 #'   reported if the sequence 0, then 1, is registered in the context tree. Set
-#'   reverse to \code{TRUE} for the reverse convention.
+#'   reverse to `TRUE` for the reverse convention.
 #'
 #' @param ct a context tree.
 #' @param type result type (see details).
@@ -105,18 +105,18 @@ contexts <- function(ct, type = c("list", "data.frame"), reverse = FALSE, ...) {
 
 #' @inherit contexts
 #' @param frequency specify the counts to be included in the result data.frame.
-#'   The default value of \code{NULL} does not include anything. \code{"total"}
+#'   The default value of `NULL` does not include anything. `"total"`
 #'   gives the number of occurrences of each context in the original sequence.
-#'   \code{"detailed"} includes in addition the break down of these occurrences
+#'   `"detailed"` includes in addition the break down of these occurrences
 #'   into all the possible states.
-#' @details The default result for \code{type="list"} and \code{frequency=NULL}
+#' @details The default result for `type="list"` and `frequency=NULL`
 #'   is the list of all contexts.
 #'
-#'   Other results are obtained only with \code{type="data.frame"}. In this case
-#'   the resulting \code{data.frame} has a \code{context} column storing the
-#'   contexts. If \code{frequency="total"}, an additional column named
-#'   \code{freq} gives the number of occurrences of each context in the series
-#'   used to build the tree. If \code{frequency="detailed"}, one additional
+#'   Other results are obtained only with `type="data.frame"`. In this case
+#'   the resulting `data.frame` has a `context` column storing the
+#'   contexts. If `frequency="total"`, an additional column named
+#'   `freq` gives the number of occurrences of each context in the series
+#'   used to build the tree. If `frequency="detailed"`, one additional
 #'   column is added per state in the context space. Each column records the
 #'   number of times a given context is followed by the corresponding value in
 #'   the original series.

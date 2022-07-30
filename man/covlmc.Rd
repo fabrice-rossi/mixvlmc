@@ -32,12 +32,12 @@ growing phase of the context tree.}
 
 \item{keep_data}{logical (defaults to \code{TRUE}). If \code{TRUE}, the
 original data are stored in the resulting object to enable post pruring
-(see \code{\link{prune.covlmc}}).}
+(see \code{\link[=prune.covlmc]{prune.covlmc()}}).}
 
 \item{control}{a list with control parameters, see
-\code{\link{covlmc_control}}.}
+\code{\link[=covlmc_control]{covlmc_control()}}.}
 
-\item{...}{arguments passed to \code{\link{covlmc_control}}.}
+\item{...}{arguments passed to \code{\link[=covlmc_control]{covlmc_control()}}.}
 }
 \value{
 a fitted covlmc model.

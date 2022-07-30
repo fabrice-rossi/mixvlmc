@@ -2,9 +2,12 @@
 % Please edit documentation in R/vlmc_likelihood.R
 \name{loglikelihood}
 \alias{loglikelihood}
+\alias{loglikelihood.vlmc}
 \title{Log-Likelihood of a VLMC}
 \usage{
 loglikelihood(vlmc, newdata, ...)
+
+\method{loglikelihood}{vlmc}(vlmc, newdata, ...)
 }
 \arguments{
 \item{vlmc}{the vlmc representation.}
@@ -20,6 +23,10 @@ the log-likelihood of the VLMC with a nobs attribute that accounts for the numbe
 This function evaluates the log-likelihood of a VLMC fitted on a discrete time series.
 When the optional argument \code{newdata} is provided, the function evaluates instead the
 log-likelihood for this (new) discrete time series.
+}
+\details{
+For VLMC objects, the method \code{loglikelihood.vlmc} will be used. For VLMC with covariables, \code{loglikelihood.covlmc}
+will instead be called. For more informations on \code{loglikelihood} methods, use \code{methods(loglikelihood)} and their associated documentation.
 }
 \examples{
 # Likelihood for a fitted VLMC.
@@ -45,5 +52,5 @@ attributes(ll_new)
 
 }
 \seealso{
-[stats::logLik]
+\link[stats:logLik]{stats::logLik}
 }
