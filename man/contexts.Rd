@@ -20,20 +20,24 @@ the list of the contexts represented in this tree or a data.frame
   with more content.
 }
 \description{
-This function extracts from a context tree the list of all its contexts.
+This function extracts from a context tree a description of all of its
+contexts.
 }
 \details{
-The default behavior consists in returnin a list of all the contexts
+The default behavior consists in returning a list of all the contexts
 contained in the tree (with \code{type="list"}). When
-\code{type="data.frame"}, the method returns a data.frame whose first column
-contains the contexts. Other columns contain context specific values which
-depend on the actual class of the tree.
-
-Notice that contexts are given by default in their left to right reading
-order. For instance, the context c(0, 1) is reported if the sequence 0, then
-1, is registered in the context tree. Set reverse to \code{TRUE} for the
-reverse convention.
+\code{type="data.frame"}, the method returns a data.frame whose first column,
+named \code{context}, contains the contexts. Other columns contain context
+specific values which depend on the actual class of the tree and on
+additional parameters.
 }
+\section{State order in a context}{
+ Notice that contexts are given by default
+  in their left to right reading order. For instance, the context c(0, 1) is
+  reported if the sequence 0, then 1, is registered in the context tree. Set
+  reverse to \code{TRUE} for the reverse convention.
+}
+
 \examples{
 dts <- sample(as.factor(c("A", "B", "C")), 100, replace = TRUE)
 dts_tree <- ctx_tree(dts, max_depth = 3, min_size = 5)
