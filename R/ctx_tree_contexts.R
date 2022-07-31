@@ -1,15 +1,19 @@
-ctx_context_extractor <- function(ctx, vals, control, is_leaf) {
-  res <- data.frame(freq = sum(ctx[["f_by"]]))
-  if (isTRUE(control$detailed)) {
-    freq_by_val <- as.list(ctx[["f_by"]])
-    names(freq_by_val) <- as.character(vals)
-    res <- cbind(res, data.frame(freq_by_val))
+ctx_context_extractor <- function(ctx, vals, control, is_leaf, p_summary) {
+  if (!is.null(control[["frequency"]])) {
+    res <- data.frame(freq = sum(ctx[["f_by"]]))
+    if (control$frequency == "detailed") {
+      freq_by_val <- as.list(ctx[["f_by"]])
+      names(freq_by_val) <- as.character(vals)
+      res <- cbind(res, data.frame(freq_by_val))
+    }
+    res
+  } else {
+    NULL
   }
-  res
 }
 
 #' @inherit contexts
-#' @param frequency specify the counts to be included in the result data.frame.
+#' @param frequency specifies the counts to be included in the result data.frame.
 #'   The default value of `NULL` does not include anything. `"total"`
 #'   gives the number of occurrences of each context in the original sequence.
 #'   `"detailed"` includes in addition the break down of these occurrences
@@ -44,7 +48,7 @@ contexts.ctx_tree <- function(ct, type = c("list", "data.frame"), reverse = FALS
   } else {
     assertthat::assert_that(type == "data.frame")
     assertthat::assert_that(frequency %in% c("total", "detailed"))
-    control <- list(detailed = frequency == "detailed")
+    control <- list(frequency = frequency)
     preres <- contexts_extractor(ct, FALSE, reverse, ctx_context_extractor, control)
     preres
   }

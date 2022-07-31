@@ -1,0 +1,22 @@
+test_that("context format is consistent", {
+  dts <- sample(c("A", "B", "C"), 100, replace = TRUE)
+  model <- vlmc(dts, alpha = 0.5)
+  raw_ctx <- contexts(model, type = "data.frame")
+  expect_named(raw_ctx, c("context"))
+  freq_ctx <- contexts(model, type = "data.frame", frequency = "total")
+  expect_named(freq_ctx, c("context", "freq"))
+  full_ctx <- contexts(model, type = "data.frame", frequency = "detailed")
+  expect_named(full_ctx, c("context", "freq", "A", "B", "C"))
+  full_ctx_co <- contexts(model, type = "data.frame", frequency = "detailed", cutoff = "native")
+  expect_named(full_ctx_co, c("context", "freq", "A", "B", "C", "cutoff"))
+  ctx_co <- contexts(model, type = "data.frame", cutoff = "quantile")
+  expect_named(ctx_co, c("context", "cutoff"))
+})
+
+test_that("context cut off are consistent", {
+  dts <- sample(c("A", "B", "C"), 100, replace = TRUE)
+  model <- vlmc(dts, alpha = 0.5)
+  ctx_co_native <- contexts(model, type = "data.frame", frequency = "detailed", cutoff = "native")
+  ctx_co_quantile <- contexts(model, type = "data.frame", cutoff = "quantile")
+  expect_equal(ctx_co_quantile$cutoff, stats::pchisq(2 * ctx_co_native$cutoff, df = 2, lower.tail = FALSE))
+})

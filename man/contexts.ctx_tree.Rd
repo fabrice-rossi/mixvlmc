@@ -19,7 +19,7 @@
 
 \item{reverse}{logical (defaults to FALSE). See details.}
 
-\item{frequency}{specify the counts to be included in the result data.frame.
+\item{frequency}{specifies the counts to be included in the result data.frame.
 The default value of \code{NULL} does not include anything. \code{"total"}
 gives the number of occurrences of each context in the original sequence.
 \code{"detailed"} includes in addition the break down of these occurrences

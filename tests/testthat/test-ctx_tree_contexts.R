@@ -43,7 +43,7 @@ test_that("contexts reversing reverses", {
   }
 })
 
-test_that("format consistency", {
+test_that("context format is consistent", {
   dts <- sample(c("A", "B", "C"), 100, replace = TRUE)
   dts_tree <- ctx_tree(dts, max_depth = 4)
   raw_ctx <- contexts(dts_tree, type = "data.frame")
