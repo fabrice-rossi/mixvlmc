@@ -1,30 +1,3 @@
-rec_contexts <- function(path, ct, vals) {
-  if (is.null(ct$children)) {
-    ## this is a leaf
-    ## if there is a f_by, then this is a context
-    if (is.null(ct[["f_by"]])) {
-      NULL
-    } else {
-      list(path)
-    }
-  } else {
-    all_ctx <- list()
-    for (v in seq_along(ct$children)) {
-      if (is.null(path)) {
-        sub_path <- vals[v]
-      } else {
-        sub_path <- c(vals[v], path)
-      }
-      sub_ctx <- rec_contexts(sub_path, ct$children[[v]], vals)
-      all_ctx <- c(all_ctx, sub_ctx)
-    }
-    if (nb_sub_tree(ct) < length(vals)) {
-      all_ctx <- c(all_ctx, list(path))
-    }
-    all_ctx
-  }
-}
-
 rec_contexts_extractor <- function(path, ct, vals, extractor, control) {
   if (is.null(ct$children)) {
     ## this is a leaf
@@ -32,8 +5,12 @@ rec_contexts_extractor <- function(path, ct, vals, extractor, control) {
     if (is.null(ct[["f_by"]])) {
       NULL
     } else {
-      content <- extractor(ct, control)
-      cbind(data.frame(context = I(list(path))), content)
+      if (is.null(extractor)) {
+        list(path)
+      } else {
+        content <- extractor(ct, vals, control, TRUE)
+        cbind(data.frame(context = I(list(path))), content)
+      }
     }
   } else {
     all_ctx <- NULL
@@ -44,18 +21,46 @@ rec_contexts_extractor <- function(path, ct, vals, extractor, control) {
         sub_path <- c(vals[v], path)
       }
       sub_ctx <- rec_contexts_extractor(sub_path, ct$children[[v]], vals, extractor, control)
-      all_ctx <- rbind(all_ctx, sub_ctx)
+      if (is.null(extractor)) {
+        all_ctx <- c(all_ctx, sub_ctx)
+      } else {
+        all_ctx <- rbind(all_ctx, sub_ctx)
+      }
     }
+    ## missing context children indicates that the current node is also a context
     if (nb_sub_tree(ct) < length(vals)) {
-      all_ctx <- rbind(
-        all_ctx,
-        data.frame(
-          context = I(list(path)),
-          extractor(ct, control)
+      if (is.null(extractor)) {
+        all_ctx <- c(all_ctx, list(path))
+      } else {
+        all_ctx <- rbind(
+          all_ctx,
+          data.frame(
+            context = I(list(path)),
+            extractor(ct, vals, control, FALSE)
+          )
         )
-      )
+      }
     }
     all_ctx
+  }
+}
+
+contexts_extractor <- function(ct, is_list, reverse, extractor, control) {
+  if (is_list) {
+    preres <- rec_contexts_extractor(NULL, ct, ct$vals, NULL, NULL)
+    if (reverse) {
+      lapply(preres, rev)
+    } else {
+      preres
+    }
+  } else {
+    preres <-
+      rec_contexts_extractor(NULL, ct, ct$vals, extractor, control)
+    if (reverse) {
+      new_res <- data.frame(context = I(lapply(preres$context, rev)))
+      preres <- cbind(new_res, preres[2:ncol(preres)])
+    }
+    preres
   }
 }
 

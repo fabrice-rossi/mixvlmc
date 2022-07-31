@@ -1,8 +1,8 @@
-ctx_context_extractor <- function(ctx, control) {
+ctx_context_extractor <- function(ctx, vals, control, is_leaf) {
   res <- data.frame(freq = sum(ctx[["f_by"]]))
-  if (!is.null(control[["vals"]])) {
+  if (isTRUE(control$detailed)) {
     freq_by_val <- as.list(ctx[["f_by"]])
-    names(freq_by_val) <- as.character(control[["vals"]])
+    names(freq_by_val) <- as.character(vals)
     res <- cbind(res, data.frame(freq_by_val))
   }
   res
@@ -35,14 +35,7 @@ ctx_context_extractor <- function(ctx, control) {
 contexts.ctx_tree <- function(ct, type = c("list", "data.frame"), reverse = FALSE, frequency = NULL, ...) {
   type <- match.arg(type)
   if (missing(frequency)) {
-    preres <- rec_contexts(NULL, ct, ct$vals)
-    if (reverse) {
-      preres <- lapply(preres, rev)
-    }
-    if (is.null(preres[[length(preres)]])) {
-      ## root context
-      preres[[length(preres)]] <- ct$vals[0]
-    }
+    preres <- contexts_extractor(ct, TRUE, reverse, NULL, NULL)
     if (type == "list") {
       preres
     } else {
@@ -51,15 +44,8 @@ contexts.ctx_tree <- function(ct, type = c("list", "data.frame"), reverse = FALS
   } else {
     assertthat::assert_that(type == "data.frame")
     assertthat::assert_that(frequency %in% c("total", "detailed"))
-    control <- NULL
-    if (frequency == "detailed") {
-      control <- list(vals = ct$vals)
-    }
-    preres <- rec_contexts_extractor(NULL, ct, ct$vals, ctx_context_extractor, control)
-    if (reverse) {
-      new_res <- data.frame(context = I(lapply(preres$context, rev)))
-      preres <- cbind(new_res, preres[2:ncol(preres)])
-    }
+    control <- list(detailed = frequency == "detailed")
+    preres <- contexts_extractor(ct, FALSE, reverse, ctx_context_extractor, control)
     preres
   }
 }
