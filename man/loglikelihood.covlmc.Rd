@@ -34,9 +34,11 @@ will instead be called. For more informations on \code{loglikelihood} methods, u
 
 # Likelihood for a fitted VLMC with covariates.
 pc <- powerconsumption[powerconsumption$week == 5, ]
-breaks <- c(0,
-            median(powerconsumption$active_power, na.rm = TRUE),
-            max(powerconsumption$active_power, na.rm = TRUE))
+breaks <- c(
+  0,
+  median(powerconsumption$active_power, na.rm = TRUE),
+  max(powerconsumption$active_power, na.rm = TRUE)
+)
 labels <- c(0, 1)
 dts <- cut(pc$active_power, breaks = breaks, labels = labels)
 dts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
