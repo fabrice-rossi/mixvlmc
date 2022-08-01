@@ -4,7 +4,7 @@
 \alias{contexts}
 \title{Contexts of a context tree}
 \usage{
-contexts(ct, type = c("list", "data.frame"), reverse = FALSE, ...)
+contexts(ct, type = c("list", "data.frame"), reverse = TRUE, ...)
 }
 \arguments{
 \item{ct}{a context tree.}
@@ -25,17 +25,17 @@ contexts.
 }
 \details{
 The default behavior consists in returning a list of all the contexts
-contained in the tree (with \code{type="list"}). When
-\code{type="data.frame"}, the method returns a data.frame whose first column,
-named \code{context}, contains the contexts. Other columns contain context
-specific values which depend on the actual class of the tree and on
-additional parameters.
+contained in the tree (with \code{type="list"}). When \code{type="data.frame"}, the
+method returns a data.frame whose first column, named \code{context}, contains the
+contexts. Other columns contain context specific values which depend on the
+actual class of the tree and on additional parameters.
 }
 \section{State order in a context}{
  Notice that contexts are given by default
-in their left to right reading order. For instance, the context \code{c(0, 1)} is
-reported if the sequence 0, then 1, is registered in the context tree. Set
-reverse to \code{TRUE} for the reverse convention.
+in the "reverse" order used by the VLMC papers: older values are on the
+right. For instance, the context \code{c(0, 1)} is reported if the sequence 1,
+then 0 appeared in the time series used to build the context tree. Set
+reverse to \code{FALSE} for the reverse convention.
 }
 
 \examples{

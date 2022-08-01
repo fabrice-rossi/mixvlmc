@@ -36,7 +36,7 @@ test_that("contexts reversing reverses", {
   dts <- sample(c("A", "B", "C"), 100, replace = TRUE)
   dts_tree <- ctx_tree(dts, max_depth = 4)
   def_ctx <- contexts(dts_tree)
-  rev_ctx <- contexts(dts_tree, reverse = TRUE)
+  rev_ctx <- contexts(dts_tree, reverse = FALSE)
   expect_length(rev_ctx, length(def_ctx))
   for (k in seq_along(def_ctx)) {
     expect_identical(rev_ctx[[k]], rev(def_ctx[[k]]))

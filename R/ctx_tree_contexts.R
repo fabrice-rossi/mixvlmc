@@ -46,7 +46,7 @@ frequency_context_extractor <-
 #' contexts(dts_tree, "data.frame", frequency = "total")
 #' contexts(dts_tree, "data.frame", frequency = "detailed")
 #' @export
-contexts.ctx_tree <- function(ct, type = c("list", "data.frame"), reverse = FALSE, frequency = NULL, ...) {
+contexts.ctx_tree <- function(ct, type = c("list", "data.frame"), reverse = TRUE, frequency = NULL, ...) {
   type <- match.arg(type)
   if (missing(frequency)) {
     basic_extractor <- switch(type,

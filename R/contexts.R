@@ -79,7 +79,7 @@ rec_contexts_extractor <- function(path, ct, vals, extractor, control, summarize
       if (is.null(path)) {
         sub_path <- vals[v]
       } else {
-        sub_path <- c(vals[v], path)
+        sub_path <- c(path, vals[v])
       }
       sub_ctx <- rec_contexts_extractor(
         sub_path, ct$children[[v]], vals,
@@ -96,7 +96,7 @@ rec_contexts_extractor <- function(path, ct, vals, extractor, control, summarize
 contexts_extractor <- function(ct, reverse, extractor, control, summarize = no_summary) {
   preres <- rec_contexts_extractor(NULL, ct, ct$vals, extractor, control, summarize, summarize(ct))
   if (is.data.frame(preres)) {
-    if (reverse) {
+    if (!reverse) {
       new_res <- data.frame(context = I(lapply(preres$context, rev)))
       if (ncol(preres) > 1) {
         preres <- cbind(new_res, preres[2:ncol(preres)])
@@ -109,7 +109,7 @@ contexts_extractor <- function(ct, reverse, extractor, control, summarize = no_s
     }
     preres
   } else {
-    if (reverse) {
+    if (!reverse) {
       preres <- lapply(preres, rev)
     }
     if (is.null(preres[[length(preres)]])) {
@@ -125,16 +125,16 @@ contexts_extractor <- function(ct, reverse, extractor, control, summarize = no_s
 #' contexts.
 #'
 #' The default behavior consists in returning a list of all the contexts
-#' contained in the tree (with `type="list"`). When
-#' `type="data.frame"`, the method returns a data.frame whose first column,
-#' named `context`, contains the contexts. Other columns contain context
-#' specific values which depend on the actual class of the tree and on
-#' additional parameters.
+#' contained in the tree (with `type="list"`). When `type="data.frame"`, the
+#' method returns a data.frame whose first column, named `context`, contains the
+#' contexts. Other columns contain context specific values which depend on the
+#' actual class of the tree and on additional parameters.
 #'
 #' @section State order in a context: Notice that contexts are given by default
-#'   in their left to right reading order. For instance, the context `c(0, 1)` is
-#'   reported if the sequence 0, then 1, is registered in the context tree. Set
-#'   reverse to `TRUE` for the reverse convention.
+#'   in the "reverse" order used by the VLMC papers: older values are on the
+#'   right. For instance, the context `c(0, 1)` is reported if the sequence 1,
+#'   then 0 appeared in the time series used to build the context tree. Set
+#'   reverse to `FALSE` for the reverse convention.
 #'
 #' @param ct a context tree.
 #' @param type result type (see details).
@@ -150,6 +150,6 @@ contexts_extractor <- function(ct, reverse, extractor, control, summarize = no_s
 #' contexts(dts_tree, "data.frame", TRUE)
 #' @seealso [contexts.ctx_tree()], [contexts.vlmc()], [contexts.covlmc()].
 #' @export
-contexts <- function(ct, type = c("list", "data.frame"), reverse = FALSE, ...) {
+contexts <- function(ct, type = c("list", "data.frame"), reverse = TRUE, ...) {
   UseMethod("contexts")
 }

@@ -100,7 +100,7 @@ covlmc_context_extractor <- function(path, ct, vals, control, is_leaf, p_summary
 #' m_cov <- covlmc(dts, dts_cov, min_size = 5)
 #' contexts(m_cov, type = "data.frame", model = "coef")
 #' @export
-contexts.covlmc <- function(ct, type = c("list", "data.frame"), reverse = FALSE, frequency = NULL, model = NULL, ...) {
+contexts.covlmc <- function(ct, type = c("list", "data.frame"), reverse = TRUE, frequency = NULL, model = NULL, ...) {
   type <- match.arg(type)
   if (missing(model)) {
     NextMethod()

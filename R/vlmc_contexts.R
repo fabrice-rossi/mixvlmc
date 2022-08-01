@@ -56,7 +56,7 @@ vlmc_context_extractor <-
 #' contexts(model, "data.frame", frequency = "total")
 #' contexts(model, "data.frame", cutoff = "quantile")
 #' @export
-contexts.vlmc <- function(ct, type = c("list", "data.frame"), reverse = FALSE, frequency = NULL, cutoff = NULL, ...) {
+contexts.vlmc <- function(ct, type = c("list", "data.frame"), reverse = TRUE, frequency = NULL, cutoff = NULL, ...) {
   type <- match.arg(type)
   if (missing(cutoff)) {
     NextMethod()
