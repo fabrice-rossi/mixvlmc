@@ -2,19 +2,20 @@ vlmc_parent_summary <- function(ctx) {
   ctx$f_by / sum(ctx$f_by)
 }
 
-vlmc_context_extractor <- function(ctx, vals, control, is_leaf, p_summary) {
-  res <- ctx_context_extractor(ctx, vals, control, is_leaf)
-  if (isTRUE(control$p_value)) {
-    c_probs <- ctx$f_by / sum(ctx$f_by)
-    local_kl <- kl_div(c_probs, p_summary) * sum(ctx$f_by)
+vlmc_context_extractor <-
+  function(path, ct, vals, control, is_leaf, p_summary) {
+    res <- frequency_context_extractor(path, ct, vals, control, is_leaf, p_summary)
     if (is.null(res)) {
-      res <- data.frame(cutoff = local_kl)
+      NULL
     } else {
-      res <- cbind(res, data.frame(cutoff = local_kl))
+      if (isTRUE(control$p_value)) {
+        c_probs <- ct$f_by / sum(ct$f_by)
+        local_kl <- kl_div(c_probs, p_summary) * sum(ct$f_by)
+        res <- cbind(res, data.frame(cutoff = local_kl))
+      }
+      res
     }
   }
-  res
-}
 
 #' Contexts of a VLMC
 #'
@@ -57,13 +58,8 @@ vlmc_context_extractor <- function(ctx, vals, control, is_leaf, p_summary) {
 #' @export
 contexts.vlmc <- function(ct, type = c("list", "data.frame"), reverse = FALSE, frequency = NULL, cutoff = NULL, ...) {
   type <- match.arg(type)
-  if (missing(frequency) && missing(cutoff)) {
-    preres <- contexts_extractor(ct, TRUE, reverse, NULL, NULL)
-    if (type == "list") {
-      preres
-    } else {
-      data.frame(context = I(preres))
-    }
+  if (missing(cutoff)) {
+    NextMethod()
   } else {
     assertthat::assert_that(type == "data.frame")
     if (!is.null(frequency)) {
@@ -73,7 +69,7 @@ contexts.vlmc <- function(ct, type = c("list", "data.frame"), reverse = FALSE, f
       assertthat::assert_that(cutoff %in% c("quantile", "native"))
     }
     control <- list(frequency = frequency, p_value = !is.null(cutoff))
-    preres <- contexts_extractor(ct, FALSE, reverse, vlmc_context_extractor, control, vlmc_parent_summary)
+    preres <- contexts_extractor(ct, reverse, vlmc_context_extractor, control, vlmc_parent_summary)
     if (!is.null(cutoff)) {
       if ((cutoff == "quantile")) {
         preres$cutoff <- before(stats::pchisq(2 * preres$cutoff, df = length(ct$vals) - 1, lower.tail = FALSE))

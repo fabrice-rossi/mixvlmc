@@ -1,16 +1,26 @@
-ctx_context_extractor <- function(ctx, vals, control, is_leaf, p_summary) {
-  if (!is.null(control[["frequency"]])) {
-    res <- data.frame(freq = sum(ctx[["f_by"]]))
-    if (control$frequency == "detailed") {
-      freq_by_val <- as.list(ctx[["f_by"]])
-      names(freq_by_val) <- as.character(vals)
-      res <- cbind(res, data.frame(freq_by_val))
+frequency_context_extractor <-
+  function(path, ct, vals, control, is_leaf, p_summary) {
+    if ((is_leaf && !is.null(ct[["f_by"]])) ||
+      (!is_leaf && nb_sub_tree(ct) < length(vals))) {
+      if (is.null(control[["frequency"]])) {
+        data.frame(context = I(list(path)))
+      } else {
+        res <- data.frame(
+          context = I(list(path)),
+          freq = sum(ct[["f_by"]])
+        )
+        if (control$frequency == "detailed") {
+          freq_by_val <- as.list(ct[["f_by"]])
+          names(freq_by_val) <- as.character(vals)
+          res <-
+            cbind(res, data.frame(freq_by_val, check.names = FALSE))
+        }
+        res
+      }
+    } else {
+      NULL
     }
-    res
-  } else {
-    NULL
   }
-}
 
 #' @inherit contexts
 #' @param frequency specifies the counts to be included in the result data.frame.
@@ -39,18 +49,16 @@ ctx_context_extractor <- function(ctx, vals, control, is_leaf, p_summary) {
 contexts.ctx_tree <- function(ct, type = c("list", "data.frame"), reverse = FALSE, frequency = NULL, ...) {
   type <- match.arg(type)
   if (missing(frequency)) {
-    preres <- contexts_extractor(ct, TRUE, reverse, NULL, NULL)
-    if (type == "list") {
-      preres
-    } else {
-      data.frame(context = I(preres))
-    }
+    basic_extractor <- switch(type,
+      "list" = path_list_extractor,
+      "data.frame" = path_df_extractor
+    )
+    contexts_extractor(ct, reverse, basic_extractor, NULL)
   } else {
     assertthat::assert_that(type == "data.frame")
     assertthat::assert_that(frequency %in% c("total", "detailed"))
     control <- list(frequency = frequency)
-    preres <- contexts_extractor(ct, FALSE, reverse, ctx_context_extractor, control)
-    preres
+    contexts_extractor(ct, reverse, frequency_context_extractor, control)
   }
 }
 
