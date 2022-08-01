@@ -4,7 +4,14 @@
 \alias{contexts.covlmc}
 \title{Contexts of a VLMC with covariates}
 \usage{
-\method{contexts}{covlmc}(ct, type = c("list", "data.frame"), reverse = FALSE, ...)
+\method{contexts}{covlmc}(
+  ct,
+  type = c("list", "data.frame"),
+  reverse = FALSE,
+  frequency = NULL,
+  model = NULL,
+  ...
+)
 }
 \arguments{
 \item{ct}{a fitted covlmc model.}
@@ -13,6 +20,18 @@
 
 \item{reverse}{logical (defaults to FALSE). See details.}
 
+\item{frequency}{specifies the counts to be included in the result data.frame.
+The default value of \code{NULL} does not include anything. \code{"total"}
+gives the number of occurrences of each context in the original sequence.
+\code{"detailed"} includes in addition the break down of these occurrences
+into all the possible states.}
+
+\item{model}{specifies whether to include the model associated to a each
+context. The default result with \code{model=NULL} does not include any model.
+Setting \code{model} to \code{"coef"} adds the coefficients of the models in a \code{coef}
+column, while \code{"full"} include the models themselves (as R objects) in a
+\code{model} column.}
+
 \item{...}{additional arguments for the contexts function.}
 }
 \value{
@@ -20,8 +39,25 @@ the list of the contexts represented in this tree or a data.frame
 with more content.
 }
 \description{
-This function returns the different contexts present in a VLMC with covariates.
+This function returns the different contexts present in a VLMC with
+covariates, possibly with some associated data.
 }
+\details{
+The default result for \code{type="list"}, \code{frequency=NULL} and
+\code{model=NULL} is the list of all contexts.
+
+Other results are obtained only with \code{type="data.frame"}. See
+\code{\link[=contexts.ctx_tree]{contexts.ctx_tree()}} for details about the \code{frequency} parameter. When
+\code{model} is non \code{NULL}, the resulting \code{data.frame} contains the models
+associated to each context (either the full R model or its coefficients).
+}
+\section{State order in a context}{
+ Notice that contexts are given by default
+in their left to right reading order. For instance, the context \code{c(0, 1)} is
+reported if the sequence 0, then 1, is registered in the context tree. Set
+reverse to \code{TRUE} for the reverse convention.
+}
+
 \examples{
 pc <- powerconsumption[powerconsumption$week == 5, ]
 breaks <- c(0, median(pc$active_power), max(pc$active_power))
@@ -30,5 +66,8 @@ dts <- cut(pc$active_power, breaks = breaks, labels = labels)
 m_nocovariate <- vlmc(dts)
 dts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
 m_cov <- covlmc(dts, dts_cov, min_size = 5)
-contexts(m_cov)
+contexts(m_cov, type = "data.frame", model = "coef")
+}
+\seealso{
+\code{\link[=contexts.ctx_tree]{contexts.ctx_tree()}}, \code{\link[=contexts.vlmc]{contexts.vlmc()}}, \code{\link[=contexts.covlmc]{contexts.covlmc()}}.
 }

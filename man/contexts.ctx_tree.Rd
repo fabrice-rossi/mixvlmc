@@ -28,7 +28,7 @@ into all the possible states.}
 \item{...}{additional arguments for the contexts function.}
 }
 \value{
-the list of the contexts represented in this tree or a data.frame
+The list of the contexts represented in this tree or a data.frame
 with more content.
 }
 \description{
@@ -61,4 +61,7 @@ dts_tree <- ctx_tree(dts, max_depth = 3, min_size = 5)
 contexts(dts_tree)
 contexts(dts_tree, "data.frame", frequency = "total")
 contexts(dts_tree, "data.frame", frequency = "detailed")
+}
+\seealso{
+\code{\link[=contexts.ctx_tree]{contexts.ctx_tree()}}, \code{\link[=contexts.vlmc]{contexts.vlmc()}}, \code{\link[=contexts.covlmc]{contexts.covlmc()}}.
 }

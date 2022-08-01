@@ -35,7 +35,7 @@ them in the native scale.}
 \item{...}{additional arguments for the contexts function.}
 }
 \value{
-the list of the contexts represented in this tree or a data.frame
+The list of the contexts represented in this tree or a data.frame
 with more content.
 }
 \description{
@@ -80,4 +80,7 @@ model <- vlmc(dts, alpha = 0.5)
 contexts(model)
 contexts(model, "data.frame", frequency = "total")
 contexts(model, "data.frame", cutoff = "quantile")
+}
+\seealso{
+\code{\link[=contexts.ctx_tree]{contexts.ctx_tree()}}, \code{\link[=contexts.vlmc]{contexts.vlmc()}}, \code{\link[=contexts.covlmc]{contexts.covlmc()}}.
 }

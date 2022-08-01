@@ -141,13 +141,14 @@ contexts_extractor <- function(ct, reverse, extractor, control, summarize = no_s
 #' @param reverse logical (defaults to FALSE). See details.
 #' @param ... additional arguments for the contexts function.
 #'
-#' @return the list of the contexts represented in this tree or a data.frame
+#' @return The list of the contexts represented in this tree or a data.frame
 #'   with more content.
 #' @examples
 #' dts <- sample(as.factor(c("A", "B", "C")), 100, replace = TRUE)
 #' dts_tree <- ctx_tree(dts, max_depth = 3, min_size = 5)
 #' contexts(dts_tree)
 #' contexts(dts_tree, "data.frame", TRUE)
+#' @seealso [contexts.ctx_tree()], [contexts.vlmc()], [contexts.covlmc()].
 #' @export
 contexts <- function(ct, type = c("list", "data.frame"), reverse = FALSE, ...) {
   UseMethod("contexts")
