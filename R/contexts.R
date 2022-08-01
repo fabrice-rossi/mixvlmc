@@ -46,7 +46,7 @@ rec_contexts_extractor <- function(path, ct, vals, extractor, control, p_summary
             data.frame(context = I(list(path)))
           )
         } else {
-          all_ctx <- rbind(all_ctx, data.frame(context = I(list(path)), content))
+          all_ctx <- rbind(all_ctx, cbind(data.frame(context = I(list(path))), content))
         }
       }
     }
