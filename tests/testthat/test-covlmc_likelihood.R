@@ -17,5 +17,5 @@ test_that("likelihood calculation on real data", {
   dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1))))
   dts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
   m_cov <- covlmc(dts, dts_cov, min_size = 5)
-  expect_identical(loglikelihood(m_cov, dts, dts_cov), loglikelihood(m_cov))
+  expect_identical(loglikelihood(m_cov, dts, dts_cov), loglikelihood(m_cov), tolerance = 1e-7)
 })

@@ -7,5 +7,5 @@ test_that("draw obeys its contract", {
   model <- covlmc(dts, df_y, alpha = 0.01, min_size = 5)
   expect_snapshot_output(draw(model))
   expect_snapshot_output(draw(model, node2txt = NULL))
-  expect_snapshot_output(draw(model, digits = 3))
+  expect_snapshot_output(draw(model, digits = 1))
 })
