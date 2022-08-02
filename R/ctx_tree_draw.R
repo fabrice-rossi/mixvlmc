@@ -33,20 +33,24 @@ draw_control <- function(root = "*",
   )
 }
 
+cat_with_prefix <- function(label, prefix, node_txt, control) {
+  node_txt_lines <- unlist(stringr::str_split(node_txt, "\n"))
+  cat(" ", control$open_ct, node_txt_lines[1], sep = "")
+  if (length(node_txt_lines) > 1) {
+    local_prefix <- stringr::str_pad(prefix, stringr::str_length(label) + 1 + stringr::str_length(control$open_ct), side = "right")
+    for (k in seq_along(node_txt_lines)[-1]) {
+      cat("\n", local_prefix, node_txt_lines[k], sep = "")
+    }
+  }
+  cat(control$close_ct)
+}
+
 rec_draw <- function(label, prefix, ct, vals, control, node2txt, ...) {
   cat(label)
   if (!is.null(node2txt)) {
     node_txt <- node2txt(ct, ...)
     if (!is.null(node_txt)) {
-      node_txt_lines <- unlist(stringr::str_split(node_txt, "\n"))
-      cat(" ", control$open_ct, node_txt_lines[1], sep = "")
-      if (length(node_txt_lines) > 1) {
-        local_prefix <- stringr::str_pad(prefix, stringr::str_length(label) + 1 + stringr::str_length(control$open_ct), side = "right")
-        for (k in seq_along(node_txt_lines)[-1]) {
-          cat("\n", local_prefix, node_txt_lines[k], sep = "")
-        }
-      }
-      cat(control$close_ct)
+      cat_with_prefix(label, prefix, node_txt, control)
     }
   }
   cat("\n")

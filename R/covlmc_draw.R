@@ -12,17 +12,74 @@ draw_covlmc_model <- function(coefficients, p_value, digits) {
     stringr::str_c(signif_null(p_value, digits), "[", coeffs, "]", sep = " ")
   } else {
     p_value_str <- as.character(signif_null(p_value, digits))
-    pad <- stringr::str_pad("", stringr::str_length(p_value_str) + 5)
-    coeffs[1] <- stringr::str_c("( ", p_value_str, " [ ", coeffs[1])
+    pad <- stringr::str_pad("", stringr::str_length(p_value_str) + 3)
+    coeffs[1] <- stringr::str_c(p_value_str, " [ ", coeffs[1])
     for (k in 2:length(coeffs)) {
       coeffs[k] <- stringr::str_c(pad, coeffs[k])
     }
-    coeffs[length(coeffs)] <- stringr::str_c(coeffs[length(coeffs)], " ])")
+    coeffs[length(coeffs)] <- stringr::str_c(coeffs[length(coeffs)], " ]")
     coeffs
   }
 }
 
-draw_covlmc_node <- function(node, ...) {
+rec_draw_covlmc <- function(label, prefix, ct, vals, control, node2txt, ...) {
+  cat(label)
+  if (!is.null(node2txt)) {
+    node_txt <- node2txt(ct, ...)
+    if (!is.null(node_txt)) {
+      cat_with_prefix(label, prefix, node_txt, control)
+    }
+  }
+  cat("\n")
+  if (!is.null(ct$children)) {
+    c_symbol <- control$first_node
+    idx <- 1
+    nst <- nb_sub_tree(ct)
+    if (is.null(ct[["merged_model"]])) {
+      active_children <- seq_along(ct$children)
+    } else {
+      active_children <- setdiff(seq_along(ct$children), ct$merged)
+    }
+    for (v in active_children) {
+      child <- ct$children[[v]]
+      if (length(child) > 0) {
+        c_prelabel <- stringr::str_c(c_symbol, control$hbranch, " ")
+        if (idx < nst) {
+          c_prefix <- control$vbranch
+        } else {
+          c_prefix <- stringr::str_pad("", stringr::str_length(control$vbranch))
+        }
+        c_prefix <- stringr::str_pad(c_prefix, stringr::str_length(c_prelabel), side = "right")
+        ## recursive call
+        rec_draw_covlmc(
+          stringr::str_c(prefix, c_prelabel, vals[v]),
+          stringr::str_c(prefix, c_prefix), child, vals, control, node2txt, ...
+        )
+        ## prepare for next child
+        c_symbol <- control$next_node
+        idx <- idx + 1
+      }
+    }
+    if (!is.null(ct[["merged_model"]])) {
+      the_merged_vals <- stringr::str_c(vals[ct$merged], collapse = ", ")
+      c_prelabel <- stringr::str_c(c_symbol, control$hbranch, " ")
+      c_prefix <- stringr::str_pad("", stringr::str_length(control$vbranch))
+      c_prefix <- stringr::str_pad(c_prefix, stringr::str_length(c_prelabel), side = "right")
+      c_label <- stringr::str_c(prefix, c_prelabel, the_merged_vals)
+      c_prefix <- stringr::str_c(prefix, c_prefix)
+      cat(c_label)
+      if (!is.null(node2txt)) {
+        node_txt <- node2txt(list(model = ct[["merged_model"]]), ...)
+        if (!is.null(node_txt)) {
+          cat_with_prefix(c_label, c_prefix, node_txt, control)
+        }
+      }
+      cat("\n")
+    }
+  }
+}
+
+covlmc_node2txt <- function(node, ...) {
   params <- list(...)
   digits <- params$digits
   if (is.null(digits)) {
@@ -38,97 +95,28 @@ draw_covlmc_node <- function(node, ...) {
       signif(node$merged_p_value, digits)
     )
   } else {
-    ""
-  }
-}
-
-draw_covlmc_merged <- function(node, ...) {
-  params <- list(...)
-  digits <- params$digits
-  if (is.null(digits)) {
-    digits <- 2
-  }
-  if (!is.null(node$merged_model)) {
-    draw_covlmc_model(node$merged_model$coefficients, node$merged_model$p_value, digits)
-  } else {
-    ""
-  }
-}
-
-rec_draw_covlmc <- function(prefix, rank, ival, nst, ct, vals, node2txt, merged_node2txt, ...) {
-  ## check for pruned leaf
-  if (length(ct) > 0) {
-    # first print the current content
-    if (rank > 0) {
-      if (nst > 1 && rank == 1) {
-        local_prefix <- "+ "
-      } else {
-        local_prefix <- "' "
-      }
-      local_prefix <- stringr::str_c(local_prefix, vals[ival])
-    } else {
-      local_prefix <- ""
-    }
-    cat(stringr::str_c(prefix, local_prefix))
-    if (!is.null(node2txt)) {
-      node_str <- node2txt(ct, ...)
-      local_padding <- stringr::str_pad("", stringr::str_length(local_prefix))
-      for (k in seq_along(node_str)) {
-        cat(stringr::str_c(" ", node_str[k]))
-        if (k < length(node_str)) {
-          cat(stringr::str_c("\n", prefix, local_padding))
-        }
-      }
-    }
-    cat("\n")
-    # then go down the tree
-    nst <- nb_sub_tree(ct)
-    if (nst > 1) {
-      prefix <- stringr::str_c(prefix, "| ")
-    } else {
-      prefix <- stringr::str_c(prefix, "  ")
-    }
-    if (is.null(ct[["merged_model"]])) {
-      active_children <- seq_along(ct$children)
-    } else {
-      active_children <- setdiff(seq_along(ct$children), ct$merged)
-    }
-    for (v in seq_along(active_children)) {
-      rec_draw_covlmc(prefix, v, active_children[v], nst, ct$children[[active_children[v]]], vals, node2txt, merged_node2txt, ...)
-    }
-    if (!is.null(ct[["merged_model"]])) {
-      cat(stringr::str_c(prefix, "' "))
-      the_merged_vals <- stringr::str_c(vals[ct$merged], collapse = ", ")
-      cat(the_merged_vals)
-      if (!is.null(merged_node2txt)) {
-        node_str <- merged_node2txt(ct, ...)
-        local_padding <- stringr::str_pad("", 2 + stringr::str_length(the_merged_vals))
-        for (k in seq_along(node_str)) {
-          cat(stringr::str_c(" ", node_str[k]))
-          if (k < length(node_str)) {
-            cat(stringr::str_c("\n", prefix, local_padding))
-          }
-        }
-      }
-      cat("\n")
-    }
+    NULL
   }
 }
 
 #' Text based representation of a covlmc model
 #'
-#' This function 'draws' a covlmc model as a text.
-#'
-#' Numerical parameters and p-values are represented using the [base::signif] function.
-#' The number of significant digits can be specified using a `digits` parameter.
-#'
+#' @inherit draw
 #' @param ct a fitted covlmc model.
-#' @param node2txt an optional function called on each node to render it to a text representation.
-#' @param ... additional arguments for node2txt (see details).
-#' @return the covlmc model (invisibly).
-#'
+#' @param node2txt an optional function called on each node to render it to a
+#'   text representation. Defaults to a full representation of the logistic
+#'   models associated to each context, including p-values of the likelihood
+#'   ratio tests. Numerical parameters and p-values are represented using the
+#'   [base::signif] function. The number of significant digits can be specified
+#'   using a `digits` parameter.
+#' @examples
+#' pc <- powerconsumption[powerconsumption$week == 5, ]
+#' dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1))))
+#' dts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
+#' m_cov <- covlmc(dts, dts_cov, min_size = 5)
+#' draw(m_cov, digits = 3)
 #' @export
-draw.covlmc <- function(ct, node2txt = draw_covlmc_node, ...) {
-  rec_draw_covlmc("", 0, 1, length(ct$vals), ct, ct$vals, node2txt, draw_covlmc_merged, ...)
+draw.covlmc <- function(ct, control = draw_control(), node2txt = covlmc_node2txt, ...) {
+  rec_draw_covlmc(control$root, "", ct, ct$vals, control, node2txt, ...)
   invisible(ct)
 }

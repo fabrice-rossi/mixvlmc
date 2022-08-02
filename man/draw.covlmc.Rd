@@ -4,22 +4,42 @@
 \alias{draw.covlmc}
 \title{Text based representation of a covlmc model}
 \usage{
-\method{draw}{covlmc}(ct, node2txt = draw_covlmc_node, ...)
+\method{draw}{covlmc}(ct, control = draw_control(), node2txt = covlmc_node2txt, ...)
 }
 \arguments{
 \item{ct}{a fitted covlmc model.}
 
-\item{node2txt}{an optional function called on each node to render it to a text representation.}
+\item{control}{a list of low level control parameters of the text
+representation. See details and \code{\link[=draw_control]{draw_control()}}.}
 
-\item{...}{additional arguments for node2txt (see details).}
+\item{node2txt}{an optional function called on each node to render it to a
+text representation. Defaults to a full representation of the logistic
+models associated to each context, including p-values of the likelihood
+ratio tests. Numerical parameters and p-values are represented using the
+\link[base:Round]{base::signif} function. The number of significant digits can be specified
+using a \code{digits} parameter.}
+
+\item{...}{additional arguments for node2txt.}
 }
 \value{
-the covlmc model (invisibly).
+the context tree (invisibly).
 }
 \description{
-This function 'draws' a covlmc model as a text.
+This function 'draws' a context tree as a text.
 }
 \details{
-Numerical parameters and p-values are represented using the \link[base:Round]{base::signif} function.
-The number of significant digits can be specified using a \code{digits} parameter.
+The function uses basic "ascii art" to represent the context tree. Characters
+used to represent the structure of the tree, e.g. branches, can be modified
+using \code{\link[=draw_control]{draw_control()}}.
+
+If \code{node2txt} is non \code{NULL}, it is called for each node of the tree
+(including leaves). If the result of the call is non \code{NULL}, it is included
+in the text representation.
+}
+\examples{
+pc <- powerconsumption[powerconsumption$week == 5, ]
+dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1))))
+dts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
+m_cov <- covlmc(dts, dts_cov, min_size = 5)
+draw(m_cov, digits = 3)
 }
