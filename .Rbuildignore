@@ -4,3 +4,4 @@ devutils
 ^LICENSE\.md$
 ^\.github$
 ^data-raw$
+^README\.Rmd$
