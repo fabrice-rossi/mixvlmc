@@ -94,7 +94,7 @@ rec_draw <- function(label, prefix, ct, vals, control, node2txt, ...) {
 #' in the text representation.
 #'
 #' @param ct a context tree.
-#' @param control a list of low level control parameters of the tewt
+#' @param control a list of low level control parameters of the text
 #'   representation. See details and [draw_control()].
 #' @param node2txt an optional function called on each node to render it to a
 #'   text representation.

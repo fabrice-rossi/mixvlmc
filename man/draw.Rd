@@ -9,7 +9,7 @@ draw(ct, control = draw_control(), node2txt = NULL, ...)
 \arguments{
 \item{ct}{a context tree.}
 
-\item{control}{a list of low level control parameters of the tewt
+\item{control}{a list of low level control parameters of the text
 representation. See details and \code{\link[=draw_control]{draw_control()}}.}
 
 \item{node2txt}{an optional function called on each node to render it to a
