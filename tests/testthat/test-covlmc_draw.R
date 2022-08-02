@@ -1,4 +1,4 @@
-test_that("draw obeys its contract", {
+test_that("draw obeys its contract (with vgam)", {
   withr::local_seed(0)
   dts <- sample(c("A", "B", "C"), 1000, replace = TRUE)
   y <- ifelse(runif(length(dts)) > 0.5, c(dts[-1], sample(c("A", "B", "C"), 1)), c(dts[-c(1, 2)], sample(c("A", "B", "C"), 2, replace = TRUE)))
@@ -7,5 +7,19 @@ test_that("draw obeys its contract", {
   model <- covlmc(dts, df_y, alpha = 0.01, min_size = 5)
   expect_snapshot_output(draw(model))
   expect_snapshot_output(draw(model, node2txt = NULL))
-  expect_snapshot_output(draw(model, digits = 1))
+  skip_on_ci()
+  expect_snapshot_output(draw(model, digits = 3))
+})
+
+test_that("draw obeys its contract (with nnet)", {
+  withr::local_seed(0)
+  withr::local_options(mixvlmc.predictive = "multinom")
+  dts <- sample(c("A", "B", "C"), 1000, replace = TRUE)
+  y <- ifelse(runif(length(dts)) > 0.5, c(dts[-1], sample(c("A", "B", "C"), 1)), c(dts[-c(1, 2)], sample(c("A", "B", "C"), 2, replace = TRUE)))
+  y <- as.factor(ifelse(runif(length(dts)) > 0.2, y, sample(c("A", "B", "C"), length(dts), replace = TRUE)))
+  df_y <- data.frame(y = y)
+  model <- covlmc(dts, df_y, alpha = 0.01, min_size = 5)
+  expect_snapshot_output(draw(model))
+  expect_snapshot_output(draw(model, node2txt = NULL))
+  expect_snapshot_output(draw(model, digits = 3))
 })
