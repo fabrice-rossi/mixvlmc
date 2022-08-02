@@ -5,8 +5,7 @@
 
 <!-- badges: start -->
 
-[![R build
-status](https://github.com/fabrice-rossi/mixvlmc/workflows/R-CMD-check/badge.svg)](https://github.com/fabrice-rossi/mixvlmc/actions?workflow=R-CMD-check)
+[![R-CMD-check](https://github.com/fabrice-rossi/mixvlmc/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/fabrice-rossi/mixvlmc/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 `mixvlmc` implements variable length Markov chains (VLMC) and variable
