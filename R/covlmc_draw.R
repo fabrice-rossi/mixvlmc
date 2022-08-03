@@ -6,26 +6,43 @@ draw_covlmc_coef <- function(coef, digits) {
   }
 }
 
-draw_covlmc_model <- function(coefficients, p_value, digits) {
-  coeffs <- draw_covlmc_coef(coefficients, digits)
-  if (length(coeffs) == 1) {
-    stringr::str_c(signif_null(p_value, digits), "[", coeffs, "]", sep = " ")
-  } else {
-    p_value_str <- as.character(signif_null(p_value, digits))
-    pad <- stringr::str_pad("", stringr::str_length(p_value_str) + 3)
-    coeffs[1] <- stringr::str_c(p_value_str, " [ ", coeffs[1])
-    for (k in 2:length(coeffs)) {
-      coeffs[k] <- stringr::str_c(pad, coeffs[k])
+draw_covlmc_model <- function(coefficients, p_value, params) {
+  if (params[["model"]] == "coef") {
+    coeffs <- draw_covlmc_coef(coefficients, params$digits)
+    if (length(coeffs) == 1) {
+      if (isTRUE(params$p_value)) {
+        stringr::str_c(signif_null(p_value, params$digits), "[", coeffs, "]", sep = " ")
+      } else {
+        stringr::str_c("[", coeffs, "]", sep = " ")
+      }
+    } else {
+      if (isTRUE(params$p_value)) {
+        p_value_str <- as.character(signif_null(p_value, params$digits))
+        pad <- stringr::str_pad("", stringr::str_length(p_value_str) + 2)
+        coeffs[1] <- stringr::str_c(p_value_str, "[", coeffs[1], sep = " ")
+      } else {
+        coeffs[1] <- stringr::str_c("[", coeffs[1], sep = " ")
+        pad <- " "
+      }
+      for (k in 2:length(coeffs)) {
+        coeffs[k] <- stringr::str_c(pad, coeffs[k], sep = " ")
+      }
+      coeffs[length(coeffs)] <- stringr::str_c(coeffs[length(coeffs)], "]", sep = " ")
+      coeffs
     }
-    coeffs[length(coeffs)] <- stringr::str_c(coeffs[length(coeffs)], " ]")
-    coeffs
+  } else {
+    if (isTRUE(params$p_value)) {
+      as.character(signif_null(p_value, params$digits))
+    } else {
+      NULL
+    }
   }
 }
 
-rec_draw_covlmc <- function(label, prefix, ct, vals, control, node2txt, ...) {
+rec_draw_covlmc <- function(label, prefix, ct, vals, control, node2txt, params) {
   cat(label)
   if (!is.null(node2txt)) {
-    node_txt <- node2txt(ct, ...)
+    node_txt <- node2txt(ct, params)
     if (!is.null(node_txt)) {
       cat_with_prefix(label, prefix, node_txt, control)
     }
@@ -53,7 +70,7 @@ rec_draw_covlmc <- function(label, prefix, ct, vals, control, node2txt, ...) {
         ## recursive call
         rec_draw_covlmc(
           stringr::str_c(prefix, c_prelabel, vals[v]),
-          stringr::str_c(prefix, c_prefix), child, vals, control, node2txt, ...
+          stringr::str_c(prefix, c_prefix), child, vals, control, node2txt, params
         )
         ## prepare for next child
         c_symbol <- control$next_node
@@ -69,7 +86,7 @@ rec_draw_covlmc <- function(label, prefix, ct, vals, control, node2txt, ...) {
       c_prefix <- stringr::str_c(prefix, c_prefix)
       cat(c_label)
       if (!is.null(node2txt)) {
-        node_txt <- node2txt(list(model = ct[["merged_model"]]), ...)
+        node_txt <- node2txt(list(model = ct[["merged_model"]]), params)
         if (!is.null(node_txt)) {
           cat_with_prefix(c_label, c_prefix, node_txt, control)
         }
@@ -79,20 +96,19 @@ rec_draw_covlmc <- function(label, prefix, ct, vals, control, node2txt, ...) {
   }
 }
 
-covlmc_node2txt <- function(node, ...) {
-  params <- list(...)
+covlmc_node2txt <- function(node, params) {
   digits <- params$digits
   if (is.null(digits)) {
     digits <- 2
   }
   if (!is.null(node$model)) {
-    draw_covlmc_model(node$model$coefficients, node$model$p_value, digits)
-  } else if (!is.null(node$p_value)) {
-    stringr::str_c("collapsing:", signif(node$p_value, digits), sep = " ")
-  } else if (!is.null(node$merged_p_value)) {
+    draw_covlmc_model(node$model$coefficients, node$model$p_value, params)
+  } else if (!is.null(node$p_value) && isTRUE(params$p_value)) {
+    stringr::str_c("collapsing:", signif(node$p_value, params$digits), sep = " ")
+  } else if (!is.null(node$merged_p_value) && isTRUE(params$p_value)) {
     stringr::str_c(
       "merging (", stringr::str_c(node$merged_candidates, collapse = " "), "): ",
-      signif(node$merged_p_value, digits)
+      signif(node$merged_p_value, params$digits)
     )
   } else {
     NULL
@@ -103,20 +119,28 @@ covlmc_node2txt <- function(node, ...) {
 #'
 #' @inherit draw
 #' @param ct a fitted covlmc model.
-#' @param node2txt an optional function called on each node to render it to a
-#'   text representation. Defaults to a full representation of the logistic
-#'   models associated to each context, including p-values of the likelihood
-#'   ratio tests. Numerical parameters and p-values are represented using the
-#'   [base::signif] function. The number of significant digits can be specified
-#'   using a `digits` parameter.
+#' @param model this parameter controls the display of logistic models
+#'   associated to nodes. The default `model="coef"` represents the coefficients
+#'   of the logistic models associated to each context.  Setting`model=NULL`
+#'   removes the model representations.
+#' @param p_value specifies whether the p-values of the likelihood ratio tests
+#'   conducted during the covlmc construction must be included in the
+#'   representation.
+#' @param digits numerical parameters and p-values are represented using the
+#'   [base::signif] function, using the number of signidicant digits specified with this parameter.
 #' @examples
 #' pc <- powerconsumption[powerconsumption$week == 5, ]
 #' dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1))))
 #' dts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
 #' m_cov <- covlmc(dts, dts_cov, min_size = 5)
 #' draw(m_cov, digits = 3)
+#' draw(m_cov, model = NULL)
+#' draw(m_cov, p_value = FALSE)
 #' @export
-draw.covlmc <- function(ct, control = draw_control(), node2txt = covlmc_node2txt, ...) {
-  rec_draw_covlmc(control$root, "", ct, ct$vals, control, node2txt, ...)
+draw.covlmc <- function(ct, control = draw_control(), model = "coef", p_value = TRUE, digits = 4, ...) {
+  if (is.null(model)) {
+    model <- "none"
+  }
+  rec_draw_covlmc(control$root, "", ct, ct$vals, control, covlmc_node2txt, c(list(model = model, p_value = p_value, digits = digits), list(...)))
   invisible(ct)
 }

@@ -4,7 +4,7 @@
 \alias{draw.ctx_tree}
 \title{Text based representation of a context tree}
 \usage{
-\method{draw}{ctx_tree}(ct, control = draw_control(), node2txt = ctx_tree_node2txt, ...)
+\method{draw}{ctx_tree}(ct, control = draw_control(), frequency = NULL, ...)
 }
 \arguments{
 \item{ct}{a context tree.}
@@ -12,12 +12,13 @@
 \item{control}{a list of low level control parameters of the text
 representation. See details and \code{\link[=draw_control]{draw_control()}}.}
 
-\item{node2txt}{an optional function called on each node to render it to a
-text representation. Defaults to the frequency of the context described by
-the node. Adding \code{frequency="detailed"} as an additional parameter displays
-break down of the occurences over the states that follow the context (as in \code{\link[=contexts.ctx_tree]{contexts.ctx_tree()}}).}
+\item{frequency}{this parameter controls the display of node level
+information in the tree. The default \code{NULL} value does not include
+anything. Setting \code{frequency} to \code{"total"} includes the frequency of the
+(partial) context of the node, while \code{"detailed"} includes the frequency of
+the states that follow the context (as in \code{\link[=contexts.ctx_tree]{contexts.ctx_tree()}}).}
 
-\item{...}{additional arguments for node2txt.}
+\item{...}{additional arguments for draw.}
 }
 \value{
 the context tree (invisibly).
@@ -30,15 +31,14 @@ The function uses basic "ascii art" to represent the context tree. Characters
 used to represent the structure of the tree, e.g. branches, can be modified
 using \code{\link[=draw_control]{draw_control()}}.
 
-If \code{node2txt} is non \code{NULL}, it is called for each node of the tree
-(including leaves). If the result of the call is non \code{NULL}, it is included
-in the text representation.
+In addition to the structure of the context tree, \code{draw} can represent
+information attached to the node (contexts and partial contexts). This is
+controlled by additional parameters depending on the type of the context
+tree.
 }
 \examples{
-dts <- sample(c(0, 1), 100, replace = TRUE)
-ctree <- ctx_tree(dts, min_size = 10, max_depth = 2)
-draw(ctree)
 dts_c <- sample(c("A", "B", "CD"), 100, replace = TRUE)
 ctree_c <- ctx_tree(dts_c, min_size = 10, max_depth = 2)
-draw(ctree_c, draw_control(root = "x"))
+draw(ctree_c, frequency = "total")
+draw(ctree_c, frequency = "detailed")
 }

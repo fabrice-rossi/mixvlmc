@@ -4,7 +4,7 @@
 \alias{draw.vlmc}
 \title{Text based representation of a vlmc}
 \usage{
-\method{draw}{vlmc}(ct, control = draw_control(), node2txt = vlmc_node2txt, ...)
+\method{draw}{vlmc}(ct, control = draw_control(), prob = TRUE, ...)
 }
 \arguments{
 \item{ct}{a fitted vlmc.}
@@ -12,12 +12,14 @@
 \item{control}{a list of low level control parameters of the text
 representation. See details and \code{\link[=draw_control]{draw_control()}}.}
 
-\item{node2txt}{an optional function called on each node to render it to a
-text representation. Defaults to the frequencies of the states given the
-context. Adding \code{prob=TRUE} as an additional parameter normalizes the
-frequencies to probabilities.}
+\item{prob}{this parameter controls the display of node level information in
+the tree. The default \code{prob=TRUE} represents the conditional distribution
+of the states given the (partial) context associated to the node. Setting
+\code{prob=FALSE} replaces the conditional distribution by the frequency of the
+states that follow the context as in \code{\link[=draw.ctx_tree]{draw.ctx_tree()}}. Setting\code{prob=NULL}
+removes all additional information.}
 
-\item{...}{additional arguments for node2txt.}
+\item{...}{additional arguments for draw.}
 }
 \value{
 the context tree (invisibly).
@@ -30,14 +32,15 @@ The function uses basic "ascii art" to represent the context tree. Characters
 used to represent the structure of the tree, e.g. branches, can be modified
 using \code{\link[=draw_control]{draw_control()}}.
 
-If \code{node2txt} is non \code{NULL}, it is called for each node of the tree
-(including leaves). If the result of the call is non \code{NULL}, it is included
-in the text representation.
+In addition to the structure of the context tree, \code{draw} can represent
+information attached to the node (contexts and partial contexts). This is
+controlled by additional parameters depending on the type of the context
+tree.
 }
 \examples{
 dts <- sample(c("A", "B", "C"), 500, replace = TRUE)
 model <- vlmc(dts, alpha = 0.05)
 draw(model)
-draw(model, prob = TRUE)
-draw(model, node2txt = NULL)
+draw(model, prob = FALSE)
+draw(model, prob = NULL)
 }

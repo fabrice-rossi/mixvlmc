@@ -5,11 +5,13 @@ test_that("draw obeys its contract (with vgam)", {
   y <- as.factor(ifelse(runif(length(dts)) > 0.2, y, sample(c("A", "B", "C"), length(dts), replace = TRUE)))
   df_y <- data.frame(y = y)
   model <- covlmc(dts, df_y, alpha = 0.01, min_size = 5)
-  expect_snapshot_output(draw(model, node2txt = NULL))
+  expect_snapshot_output(draw(model, model = NULL, p_value = FALSE))
   expect_snapshot_output(draw(prune(model, 0.0001)))
   skip_on_ci()
   expect_snapshot_output(draw(model))
   expect_snapshot_output(draw(model, digits = 3))
+  expect_snapshot_output(draw(model, model = NULL, digits = 2))
+  expect_snapshot_output(draw(model, p_value = FALSE, digits = 1))
 })
 
 test_that("draw obeys its contract (with nnet)", {
@@ -21,6 +23,7 @@ test_that("draw obeys its contract (with nnet)", {
   df_y <- data.frame(y = y)
   model <- covlmc(dts, df_y, alpha = 0.01, min_size = 5)
   expect_snapshot_output(draw(model))
-  expect_snapshot_output(draw(model, node2txt = NULL))
   expect_snapshot_output(draw(model, digits = 3))
+  expect_snapshot_output(draw(model, model = NULL, digits = 2))
+  expect_snapshot_output(draw(model, p_value = FALSE, digits = 1))
 })

@@ -33,7 +33,7 @@ draw_control(
 a list
 }
 \description{
-This function returns a list used to fine tune the \code{\link[=draw]{draw()}} function behavior.
+This function returns a list used to fine tune the \code{\link[=draw]{draw()}} function behaviour.
 }
 \examples{
 draw_control(open_ct = "[", close_ct = "]")

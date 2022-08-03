@@ -4,7 +4,7 @@
 \alias{draw}
 \title{Text based representation of a context tree}
 \usage{
-draw(ct, control = draw_control(), node2txt = NULL, ...)
+draw(ct, control = draw_control(), ...)
 }
 \arguments{
 \item{ct}{a context tree.}
@@ -12,10 +12,7 @@ draw(ct, control = draw_control(), node2txt = NULL, ...)
 \item{control}{a list of low level control parameters of the text
 representation. See details and \code{\link[=draw_control]{draw_control()}}.}
 
-\item{node2txt}{an optional function called on each node to render it to a
-text representation.}
-
-\item{...}{additional arguments for node2txt.}
+\item{...}{additional arguments for draw.}
 }
 \value{
 the context tree (invisibly).
@@ -28,9 +25,10 @@ The function uses basic "ascii art" to represent the context tree. Characters
 used to represent the structure of the tree, e.g. branches, can be modified
 using \code{\link[=draw_control]{draw_control()}}.
 
-If \code{node2txt} is non \code{NULL}, it is called for each node of the tree
-(including leaves). If the result of the call is non \code{NULL}, it is included
-in the text representation.
+In addition to the structure of the context tree, \code{draw} can represent
+information attached to the node (contexts and partial contexts). This is
+controlled by additional parameters depending on the type of the context
+tree.
 }
 \examples{
 dts <- sample(c(0, 1), 100, replace = TRUE)
