@@ -22,14 +22,16 @@ representation. See details and \code{\link[=draw_control]{draw_control()}}.}
 \item{model}{this parameter controls the display of logistic models
 associated to nodes. The default \code{model="coef"} represents the coefficients
 of the logistic models associated to each context.  Setting\code{model=NULL}
-removes the model representations.}
+removes the model representations. Additional parameters can be used to
+tweak model representations (see details).}
 
 \item{p_value}{specifies whether the p-values of the likelihood ratio tests
 conducted during the covlmc construction must be included in the
 representation.}
 
 \item{digits}{numerical parameters and p-values are represented using the
-\link[base:Round]{base::signif} function, using the number of signidicant digits specified with this parameter.}
+\link[base:Round]{base::signif} function, using the number of significant digits specified
+with this parameter.}
 
 \item{...}{additional arguments for draw.}
 }
@@ -49,6 +51,18 @@ information attached to the node (contexts and partial contexts). This is
 controlled by additional parameters depending on the type of the context
 tree.
 }
+\section{Tweaking model representation}{
+
+
+Model representations are affected by the following additional parameter:
+\itemize{
+\item \code{time_sep}: character(s) used to split the coefficients list by blocks
+associated to time delays in the covariate inclusion into the logistic
+model. The first block contains the intercept(s), the second block the
+covariate values a time t-1, the third block at time t-2, etc.
+}
+}
+
 \examples{
 pc <- powerconsumption[powerconsumption$week == 5, ]
 dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1))))
@@ -57,4 +71,5 @@ m_cov <- covlmc(dts, dts_cov, min_size = 5)
 draw(m_cov, digits = 3)
 draw(m_cov, model = NULL)
 draw(m_cov, p_value = FALSE)
+draw(m_cov, p_value = FALSE, time_sep = " | ")
 }
