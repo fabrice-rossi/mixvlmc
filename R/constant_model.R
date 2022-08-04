@@ -76,3 +76,8 @@ glm_coef.constant_model <- function(model) {
 glm_sample_one.constant_model <- function(model, newdata) {
   model$target
 }
+
+#' @exportS3Method
+glm_variable_names.constant_model <- function(model) {
+  "(I)"
+}
