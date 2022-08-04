@@ -591,6 +591,22 @@ covlmc <- function(x, covariate, alpha = 0.05, min_size = 15, max_depth = 100, k
   pre_result
 }
 
+#' Test if the object is a covlmc model
+#'
+#' This function returns `TRUE` for VLMC models with covariates and `FALSE` for other objects.
+#'
+#' @param x an R object.
+#' @return `TRUE` for VLMC models with covariates.
+#' @export
+is_covlmc <- function(x) {
+  inherits(x, "covlmc")
+}
+
+assertthat::on_failure(is_covlmc) <- function(call, env) {
+  paste0(deparse(call$x), " is not a covlmc")
+}
+
+
 #' Cutoff values for pruning the context tree of a VLMC with covariates
 #'
 #' This function returns all the cutoff values that should induce a pruning of
