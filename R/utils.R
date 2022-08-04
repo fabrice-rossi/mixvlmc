@@ -40,10 +40,17 @@ str_c_group <- function(txt, sep, groups) {
   }
 }
 
-pp_mat <- function(x, digits, width = NULL, sep = NULL, groups = NULL) {
+pp_mat <- function(x, digits, width = NULL, sep = NULL, groups = NULL, colnames = NULL) {
   x_s <- signif(x, digits)
   if (is.matrix(x_s)) {
     x_c <- matrix(apply(x_s, 2, as.character), ncol = ncol(x), nrow = nrow(x))
+  } else {
+    x_c <- as.character(x_s)
+  }
+  if (!is.null(colnames)) {
+    x_c <- rbind(colnames, x_c)
+  }
+  if (is.matrix(x_c)) {
     if (is.null(width)) {
       width <- apply(x_c, 2, function(x) max(stringr::str_length(x)))
     }
@@ -62,7 +69,6 @@ pp_mat <- function(x, digits, width = NULL, sep = NULL, groups = NULL) {
       x_rows <- apply(x_pad, 1, str_c_group, sep = sep, groups = groups)
     }
   } else {
-    x_c <- as.character(x_s)
     if (is.null(sep)) {
       x_rows <- stringr::str_c(x_c, collapse = " ")
     } else {
