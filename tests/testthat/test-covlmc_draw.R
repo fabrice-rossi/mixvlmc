@@ -8,12 +8,14 @@ test_that("draw obeys its contract (with vgam)", {
   expect_snapshot_output(draw(model, model = NULL, p_value = FALSE))
   expect_snapshot_output(draw(prune(model, 0.0001)))
   expect_snapshot_output(draw(prune(model, 0.0001), time_sep = " | "))
+  expect_snapshot_output(draw(prune(model, 0.0001), model = "full", time_sep = " | "))
   skip_on_ci()
   expect_snapshot_output(draw(model))
   expect_snapshot_output(draw(model, time_sep = " | "))
   expect_snapshot_output(draw(model, digits = 3))
   expect_snapshot_output(draw(model, model = NULL, digits = 2))
   expect_snapshot_output(draw(model, p_value = FALSE, digits = 1))
+  expect_snapshot_output(draw(model, model = "full", time_sep = " ~ ", digits = 1))
 })
 
 test_that("draw obeys its contract (with nnet)", {
@@ -29,4 +31,5 @@ test_that("draw obeys its contract (with nnet)", {
   expect_snapshot_output(draw(model, digits = 3))
   expect_snapshot_output(draw(model, model = NULL, digits = 2))
   expect_snapshot_output(draw(model, p_value = FALSE, digits = 1))
+  expect_snapshot_output(draw(model, model = "full", time_sep = " ^ ", digits = 1))
 })
