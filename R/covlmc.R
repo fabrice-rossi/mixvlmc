@@ -512,6 +512,14 @@ count_covlmc_local_context <- function(node) {
 #'
 #' @return a list.
 #' @export
+#' @examples
+#' dts <- rep(c(0, 1), 100)
+#' dts_cov <- data.frame(y = rep(0, length(dts)))
+#' default_model <- covlmc(dts, dts_cov)
+#' contexts(default_model, type = "data.frame", model = "coef")$coef
+#' control <- covlmc_control(pseudo_obs = 10)
+#' model <- covlmc(dts, dts_cov, control = control)
+#' contexts(model, type = "data.frame", model = "coef")$coef
 covlmc_control <- function(pseudo_obs = 1) {
   list(pseudo_obs = pseudo_obs)
 }

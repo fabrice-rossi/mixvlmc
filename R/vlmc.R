@@ -30,12 +30,20 @@ kl_div <- function(p, q) {
 #'  or expressed in a "quantile" scale of a chi-squared distribution (defaults to "quantile").
 #' @param ... additional arguments for the cutoff function.
 #' @return a vector of cut off values.
-#'
+#' @examples
+#' pc <- powerconsumption[powerconsumption$week == 5, ]
+#' dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.25, 0.5, 0.75, 1))))
+#' model <- vlmc(dts)
+#' draw(model)
+#' model_cuts <- cutoff(model)
+#' model_2 <- prune(model, model_cuts[2])
+#' draw(model_2)
 #' @export
 cutoff <- function(vlmc, mode = c("quantile", "native"), ...) {
   UseMethod("cutoff")
 }
 
+#' @inherit cutoff
 #' @export
 cutoff.vlmc <- function(vlmc, mode = c("quantile", "native"), ...) {
   mode <- match.arg(mode)

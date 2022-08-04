@@ -62,12 +62,11 @@ reverse to \code{FALSE} for the reverse convention.
 \examples{
 pc <- powerconsumption[powerconsumption$week == 5, ]
 breaks <- c(0, median(pc$active_power), max(pc$active_power))
-labels <- c(0, 1)
-dts <- cut(pc$active_power, breaks = breaks, labels = labels)
-m_nocovariate <- vlmc(dts)
+dts <- cut(pc$active_power, breaks = breaks)
 dts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
 m_cov <- covlmc(dts, dts_cov, min_size = 5)
 contexts(m_cov, type = "data.frame", model = "coef")
+contexts(m_cov, type = "data.frame", model = "full")
 }
 \seealso{
 \code{\link[=contexts.ctx_tree]{contexts.ctx_tree()}}, \code{\link[=contexts.vlmc]{contexts.vlmc()}}, \code{\link[=contexts.covlmc]{contexts.covlmc()}}.

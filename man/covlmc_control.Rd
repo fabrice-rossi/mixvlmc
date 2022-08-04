@@ -24,3 +24,12 @@ probabilities are computed after adding \code{pseudo_obs} pseudo observations
 of each of the states (including the observed one). This corresponds to a
 Bayesian posterior mean estimation with a Dirichlet prior.
 }
+\examples{
+dts <- rep(c(0, 1), 100)
+dts_cov <- data.frame(y = rep(0, length(dts)))
+default_model <- covlmc(dts, dts_cov)
+contexts(default_model, type = "data.frame", model = "coef")$coef
+control <- covlmc_control(pseudo_obs = 10)
+model <- covlmc(dts, dts_cov, control = control)
+contexts(model, type = "data.frame", model = "coef")$coef
+}
