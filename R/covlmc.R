@@ -597,8 +597,10 @@ covlmc_control <- function(pseudo_obs = 1) {
 #' dts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
 #' m_cov <- covlmc(dts, dts_cov, min_size = 15)
 #' draw(m_cov)
-#' withr::with_options(list(mixvlmc.predictive = "multinom"),
-#'                     m_cov_nnet <- covlmc(dts, dts_cov, min_size = 15))
+#' withr::with_options(
+#'   list(mixvlmc.predictive = "multinom"),
+#'   m_cov_nnet <- covlmc(dts, dts_cov, min_size = 15)
+#' )
 #' draw(m_cov_nnet)
 #' @seealso [cutoff.covlmc()] and [prune.covlmc()] for post-pruning.
 covlmc <- function(x, covariate, alpha = 0.05, min_size = 15, max_depth = 100, keep_data = TRUE, control = covlmc_control(...), ...) {

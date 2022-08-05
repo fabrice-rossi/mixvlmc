@@ -6,7 +6,7 @@
 \usage{
 \method{contexts}{vlmc}(
   ct,
-  type = c("list", "data.frame"),
+  type = c("auto", "list", "data.frame"),
   reverse = TRUE,
   frequency = NULL,
   cutoff = NULL,
@@ -20,11 +20,11 @@
 
 \item{reverse}{logical (defaults to FALSE). See details.}
 
-\item{frequency}{specifies the counts to be included in the result data.frame.
-The default value of \code{NULL} does not include anything. \code{"total"}
-gives the number of occurrences of each context in the original sequence.
-\code{"detailed"} includes in addition the break down of these occurrences
-into all the possible states.}
+\item{frequency}{specifies the counts to be included in the result
+data.frame. The default value of \code{NULL} does not include anything.
+\code{"total"} gives the number of occurrences of each context in the original
+sequence. \code{"detailed"} includes in addition the break down of these
+occurrences into all the possible states.}
 
 \item{cutoff}{specifies whether to include the cut off value associated to
 each context (see \code{\link[=cutoff]{cutoff()}} and \code{\link[=prune]{prune()}}). The default result with
@@ -43,11 +43,11 @@ This function extracts all the contexts from a fitted VLMC, possibly with
 some associated data.
 }
 \details{
-The default result for \code{type="list"}, \code{frequency=NULL} and
-\code{cutoff=NULL} is the list of all contexts.
+The default result for \code{type="auto"} (or \code{type="list"}),
+\code{frequency=NULL} and \code{cutoff=NULL} is the list of all contexts.
 
-Other results are obtained only with \code{type="data.frame"}. See
-\code{\link[=contexts.ctx_tree]{contexts.ctx_tree()}} for details about the \code{frequency} parameter. When
+Other results are obtained only with \code{type="auto"} or \code{type="data.frame"}.
+See \code{\link[=contexts.ctx_tree]{contexts.ctx_tree()}} for details about the \code{frequency} parameter. When
 \code{cutoff} is non \code{NULL}, the resulting \code{data.frame} contains a \code{cutoff}
 column with the cut off values, either in quantile or in native scale. See
 \code{\link[=cutoff]{cutoff()}} and \code{\link[=prune]{prune()}} for the definitions of cut off values and of the
@@ -57,11 +57,11 @@ two scales.
  The cut off values reported by \code{contexts.vlmc} can
 be different from the ones reported by \code{\link[=cutoff]{cutoff()}} for two reasons:
 \enumerate{
-\item \code{\link[=cutoff]{cutoff()}} reports only useful cut off values, i.e., cut off values
-that should induce a simplification of the VLMC when used in
-\code{\link[=prune]{prune()}}. This exclude cut off values associated to simple contexts
-that are smaller than the ones of their descendants in the context tree.
-Those values are reported by \code{context.vlmc}.
+\item \code{\link[=cutoff]{cutoff()}} reports only useful cut off values, i.e., cut off values that
+should induce a simplification of the VLMC when used in \code{\link[=prune]{prune()}}. This
+exclude cut off values associated to simple contexts that are smaller than
+the ones of their descendants in the context tree. Those values are
+reported by \code{context.vlmc}.
 \item \code{context.vlmc} reports only cut off values of actual contexts, while
 \code{\link[=cutoff]{cutoff()}} reports cut off values for all nodes of the context tree.
 }
@@ -79,8 +79,8 @@ reverse to \code{FALSE} for the reverse convention.
 dts <- sample(as.factor(c("A", "B", "C")), 100, replace = TRUE)
 model <- vlmc(dts, alpha = 0.5)
 contexts(model)
-contexts(model, "data.frame", frequency = "total")
-contexts(model, "data.frame", cutoff = "quantile")
+contexts(model, frequency = "total")
+contexts(model, cutoff = "quantile")
 }
 \seealso{
 \code{\link[=contexts.ctx_tree]{contexts.ctx_tree()}}, \code{\link[=contexts.vlmc]{contexts.vlmc()}}, \code{\link[=contexts.covlmc]{contexts.covlmc()}}.

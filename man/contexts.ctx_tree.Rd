@@ -6,7 +6,7 @@
 \usage{
 \method{contexts}{ctx_tree}(
   ct,
-  type = c("list", "data.frame"),
+  type = c("auto", "list", "data.frame"),
   reverse = TRUE,
   frequency = NULL,
   ...
@@ -19,11 +19,11 @@
 
 \item{reverse}{logical (defaults to FALSE). See details.}
 
-\item{frequency}{specifies the counts to be included in the result data.frame.
-The default value of \code{NULL} does not include anything. \code{"total"}
-gives the number of occurrences of each context in the original sequence.
-\code{"detailed"} includes in addition the break down of these occurrences
-into all the possible states.}
+\item{frequency}{specifies the counts to be included in the result
+data.frame. The default value of \code{NULL} does not include anything.
+\code{"total"} gives the number of occurrences of each context in the original
+sequence. \code{"detailed"} includes in addition the break down of these
+occurrences into all the possible states.}
 
 \item{...}{additional arguments for the contexts function.}
 }
@@ -36,17 +36,17 @@ This function extracts from a context tree a description of all of its
 contexts.
 }
 \details{
-The default result for \code{type="list"} and \code{frequency=NULL}
-is the list of all contexts.
+The default result for \code{type="auto"} (or \code{type="list"}) and
+\code{frequency=NULL} is the list of all contexts.
 
-Other results are obtained only with \code{type="data.frame"}. In this case
-the resulting \code{data.frame} has a \code{context} column storing the
-contexts. If \code{frequency="total"}, an additional column named
-\code{freq} gives the number of occurrences of each context in the series
-used to build the tree. If \code{frequency="detailed"}, one additional
-column is added per state in the context space. Each column records the
-number of times a given context is followed by the corresponding value in
-the original series.
+Other results are obtained only with \code{type="data.frame"} (or
+\code{type="auto"}). In this case the resulting \code{data.frame} has a \code{context}
+column storing the contexts. If \code{frequency="total"}, an additional column
+named \code{freq} gives the number of occurrences of each context in the series
+used to build the tree. If \code{frequency="detailed"}, one additional column is
+added per state in the context space. Each column records the number of
+times a given context is followed by the corresponding value in the
+original series.
 }
 \section{State order in a context}{
  Notice that contexts are given by default
@@ -60,8 +60,8 @@ reverse to \code{FALSE} for the reverse convention.
 dts <- sample(as.factor(c("A", "B", "C")), 100, replace = TRUE)
 dts_tree <- ctx_tree(dts, max_depth = 3, min_size = 5)
 contexts(dts_tree)
-contexts(dts_tree, "data.frame", frequency = "total")
-contexts(dts_tree, "data.frame", frequency = "detailed")
+contexts(dts_tree, frequency = "total")
+contexts(dts_tree, frequency = "detailed")
 }
 \seealso{
 \code{\link[=contexts.ctx_tree]{contexts.ctx_tree()}}, \code{\link[=contexts.vlmc]{contexts.vlmc()}}, \code{\link[=contexts.covlmc]{contexts.covlmc()}}.

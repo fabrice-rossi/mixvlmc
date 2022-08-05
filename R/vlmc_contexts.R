@@ -28,11 +28,11 @@ vlmc_context_extractor <-
 #'   `cutoff=NULL` does not include those values. Setting `cutoff` to `quantile`
 #'   adds the cut off values in quantile scale, while `cutoff="native"` adds
 #'   them in the native scale.
-#' @details The default result for `type="list"`, `frequency=NULL` and
-#'   `cutoff=NULL` is the list of all contexts.
+#' @details The default result for `type="auto"` (or `type="list"`),
+#'   `frequency=NULL` and `cutoff=NULL` is the list of all contexts.
 #'
-#'   Other results are obtained only with `type="data.frame"`. See
-#'   [contexts.ctx_tree()] for details about the `frequency` parameter. When
+#'   Other results are obtained only with `type="auto"` or `type="data.frame"`.
+#'   See [contexts.ctx_tree()] for details about the `frequency` parameter. When
 #'   `cutoff` is non `NULL`, the resulting `data.frame` contains a `cutoff`
 #'   column with the cut off values, either in quantile or in native scale. See
 #'   [cutoff()] and [prune()] for the definitions of cut off values and of the
@@ -40,11 +40,11 @@ vlmc_context_extractor <-
 #' @section Cut off values: The cut off values reported by `contexts.vlmc` can
 #'   be different from the ones reported by [cutoff()] for two reasons:
 #'
-#'   1. [cutoff()] reports only useful cut off values, i.e., cut off values
-#'   that should induce a simplification of the VLMC when used in
-#'   [prune()]. This exclude cut off values associated to simple contexts
-#'   that are smaller than the ones of their descendants in the context tree.
-#'   Those values are reported by `context.vlmc`.
+#'   1. [cutoff()] reports only useful cut off values, i.e., cut off values that
+#'   should induce a simplification of the VLMC when used in [prune()]. This
+#'   exclude cut off values associated to simple contexts that are smaller than
+#'   the ones of their descendants in the context tree. Those values are
+#'   reported by `context.vlmc`.
 #'
 #'   2. `context.vlmc` reports only cut off values of actual contexts, while
 #'   [cutoff()] reports cut off values for all nodes of the context tree.
@@ -53,15 +53,15 @@ vlmc_context_extractor <-
 #' dts <- sample(as.factor(c("A", "B", "C")), 100, replace = TRUE)
 #' model <- vlmc(dts, alpha = 0.5)
 #' contexts(model)
-#' contexts(model, "data.frame", frequency = "total")
-#' contexts(model, "data.frame", cutoff = "quantile")
+#' contexts(model, frequency = "total")
+#' contexts(model, cutoff = "quantile")
 #' @export
-contexts.vlmc <- function(ct, type = c("list", "data.frame"), reverse = TRUE, frequency = NULL, cutoff = NULL, ...) {
+contexts.vlmc <- function(ct, type = c("auto", "list", "data.frame"), reverse = TRUE, frequency = NULL, cutoff = NULL, ...) {
   type <- match.arg(type)
-  if (missing(cutoff)) {
+  if (is.null(cutoff)) {
     NextMethod()
   } else {
-    assertthat::assert_that(type == "data.frame")
+    assertthat::assert_that(type %in% c("auto", "data.frame"))
     if (!is.null(frequency)) {
       assertthat::assert_that(frequency %in% c("total", "detailed"))
     }

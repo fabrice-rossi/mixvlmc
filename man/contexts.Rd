@@ -4,7 +4,7 @@
 \alias{contexts}
 \title{Contexts of a context tree}
 \usage{
-contexts(ct, type = c("list", "data.frame"), reverse = TRUE, ...)
+contexts(ct, type = c("auto", "list", "data.frame"), reverse = TRUE, ...)
 }
 \arguments{
 \item{ct}{a context tree.}
@@ -25,10 +25,11 @@ contexts.
 }
 \details{
 The default behavior consists in returning a list of all the contexts
-contained in the tree (with \code{type="list"}). When \code{type="data.frame"}, the
-method returns a data.frame whose first column, named \code{context}, contains the
-contexts. Other columns contain context specific values which depend on the
-actual class of the tree and on additional parameters.
+contained in the tree (with \code{type="auto"} or \code{type="list"}). When
+\code{type="data.frame"}, the method returns a data.frame whose first column,
+named \code{context}, contains the contexts. Other columns contain context
+specific values which depend on the actual class of the tree and on
+additional parameters. An adapted return type is chosen when type="auto"`.
 }
 \section{State order in a context}{
  Notice that contexts are given by default

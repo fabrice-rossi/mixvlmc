@@ -7,13 +7,13 @@ test_that("context format is consistent", {
   model <- covlmc(dts, df_y, alpha = 0.75)
   raw_ctx <- contexts(model, type = "data.frame")
   expect_named(raw_ctx, c("context"))
-  freq_ctx <- contexts(model, type = "data.frame", frequency = "total")
+  freq_ctx <- contexts(model, frequency = "total")
   expect_named(freq_ctx, c("context", "freq"))
-  full_ctx <- contexts(model, type = "data.frame", frequency = "detailed")
+  full_ctx <- contexts(model, frequency = "detailed")
   expect_named(full_ctx, c("context", "freq", "A", "B", "C"))
-  full_ctx_model <- contexts(model, type = "data.frame", frequency = "detailed", model = "coef")
+  full_ctx_model <- contexts(model, frequency = "detailed", model = "coef")
   expect_named(full_ctx_model, c("context", "freq", "A", "B", "C", "coef"))
-  ctx_model <- contexts(model, type = "data.frame", model = "full")
+  ctx_model <- contexts(model, model = "full")
   expect_named(ctx_model, c("context", "model"))
 })
 
@@ -24,8 +24,8 @@ test_that("models are consistent", {
   for (engine in c("glm", "multinom")) {
     withr::local_options(mixvlmc.predictive = engine)
     m_cov <- covlmc(dts, dts_cov, min_size = 5, keep_data = TRUE)
-    ctx_m_cov_m <- contexts(m_cov, type = "data.frame", model = "full")
-    ctx_m_cov_c <- contexts(m_cov, type = "data.frame", model = "coef")
+    ctx_m_cov_m <- contexts(m_cov, model = "full")
+    ctx_m_cov_c <- contexts(m_cov, model = "coef")
     expect_equal(ctx_m_cov_c$coef, lapply(contexts(m_cov, type = "data.frame", model = "full")$model, coef), ignore_attr = TRUE)
   }
 })

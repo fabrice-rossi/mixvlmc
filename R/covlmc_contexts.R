@@ -83,10 +83,10 @@ covlmc_context_extractor <- function(path, ct, vals, control, is_leaf, p_summary
 #'   column, while `"full"` include the models themselves (as R objects) in a
 #'   `model` column.
 #' @param ct a fitted covlmc model.
-#' @details The default result for `type="list"`, `frequency=NULL` and
-#'   `model=NULL` is the list of all contexts.
+#' @details The default result for `type="auto"` (or `type="list"`),
+#'   `frequency=NULL` and `model=NULL` is the list of all contexts.
 #'
-#'   Other results are obtained only with `type="data.frame"`. See
+#'   Other results are obtained only with `type="data.frame"` (or `type="auto"`). See
 #'   [contexts.ctx_tree()] for details about the `frequency` parameter. When
 #'   `model` is non `NULL`, the resulting `data.frame` contains the models
 #'   associated to each context (either the full R model or its coefficients).
@@ -96,15 +96,15 @@ covlmc_context_extractor <- function(path, ct, vals, control, is_leaf, p_summary
 #' dts <- cut(pc$active_power, breaks = breaks)
 #' dts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
 #' m_cov <- covlmc(dts, dts_cov, min_size = 5)
-#' contexts(m_cov, type = "data.frame", model = "coef")
-#' contexts(m_cov, type = "data.frame", model = "full")
+#' contexts(m_cov, model = "coef")
+#' contexts(m_cov, model = "full")
 #' @export
-contexts.covlmc <- function(ct, type = c("list", "data.frame"), reverse = TRUE, frequency = NULL, model = NULL, ...) {
+contexts.covlmc <- function(ct, type = c("auto", "list", "data.frame"), reverse = TRUE, frequency = NULL, model = NULL, ...) {
   type <- match.arg(type)
-  if (missing(model)) {
+  if (is.null(model)) {
     NextMethod()
   } else {
-    assertthat::assert_that(type == "data.frame")
+    assertthat::assert_that(type %in% c("auto", "data.frame"))
     if (!is.null(frequency)) {
       assertthat::assert_that(frequency %in% c("total", "detailed"))
     }

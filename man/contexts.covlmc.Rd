@@ -6,7 +6,7 @@
 \usage{
 \method{contexts}{covlmc}(
   ct,
-  type = c("list", "data.frame"),
+  type = c("auto", "list", "data.frame"),
   reverse = TRUE,
   frequency = NULL,
   model = NULL,
@@ -20,11 +20,11 @@
 
 \item{reverse}{logical (defaults to FALSE). See details.}
 
-\item{frequency}{specifies the counts to be included in the result data.frame.
-The default value of \code{NULL} does not include anything. \code{"total"}
-gives the number of occurrences of each context in the original sequence.
-\code{"detailed"} includes in addition the break down of these occurrences
-into all the possible states.}
+\item{frequency}{specifies the counts to be included in the result
+data.frame. The default value of \code{NULL} does not include anything.
+\code{"total"} gives the number of occurrences of each context in the original
+sequence. \code{"detailed"} includes in addition the break down of these
+occurrences into all the possible states.}
 
 \item{model}{specifies whether to include the model associated to a each
 context. The default result with \code{model=NULL} does not include any model.
@@ -43,10 +43,10 @@ This function returns the different contexts present in a VLMC with
 covariates, possibly with some associated data.
 }
 \details{
-The default result for \code{type="list"}, \code{frequency=NULL} and
-\code{model=NULL} is the list of all contexts.
+The default result for \code{type="auto"} (or \code{type="list"}),
+\code{frequency=NULL} and \code{model=NULL} is the list of all contexts.
 
-Other results are obtained only with \code{type="data.frame"}. See
+Other results are obtained only with \code{type="data.frame"} (or \code{type="auto"}). See
 \code{\link[=contexts.ctx_tree]{contexts.ctx_tree()}} for details about the \code{frequency} parameter. When
 \code{model} is non \code{NULL}, the resulting \code{data.frame} contains the models
 associated to each context (either the full R model or its coefficients).
@@ -65,8 +65,8 @@ breaks <- c(0, median(pc$active_power), max(pc$active_power))
 dts <- cut(pc$active_power, breaks = breaks)
 dts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
 m_cov <- covlmc(dts, dts_cov, min_size = 5)
-contexts(m_cov, type = "data.frame", model = "coef")
-contexts(m_cov, type = "data.frame", model = "full")
+contexts(m_cov, model = "coef")
+contexts(m_cov, model = "full")
 }
 \seealso{
 \code{\link[=contexts.ctx_tree]{contexts.ctx_tree()}}, \code{\link[=contexts.vlmc]{contexts.vlmc()}}, \code{\link[=contexts.covlmc]{contexts.covlmc()}}.

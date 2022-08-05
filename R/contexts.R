@@ -125,10 +125,11 @@ contexts_extractor <- function(ct, reverse, extractor, control, summarize = no_s
 #' contexts.
 #'
 #' The default behavior consists in returning a list of all the contexts
-#' contained in the tree (with `type="list"`). When `type="data.frame"`, the
-#' method returns a data.frame whose first column, named `context`, contains the
-#' contexts. Other columns contain context specific values which depend on the
-#' actual class of the tree and on additional parameters.
+#' contained in the tree (with `type="auto"` or `type="list"`). When
+#' `type="data.frame"`, the method returns a data.frame whose first column,
+#' named `context`, contains the contexts. Other columns contain context
+#' specific values which depend on the actual class of the tree and on
+#' additional parameters. An adapted return type is chosen when type="auto"`.
 #'
 #' @section State order in a context: Notice that contexts are given by default
 #'   in the "reverse" order used by the VLMC papers: older values are on the
@@ -150,6 +151,6 @@ contexts_extractor <- function(ct, reverse, extractor, control, summarize = no_s
 #' contexts(dts_tree, "data.frame", TRUE)
 #' @seealso [contexts.ctx_tree()], [contexts.vlmc()], [contexts.covlmc()].
 #' @export
-contexts <- function(ct, type = c("list", "data.frame"), reverse = TRUE, ...) {
+contexts <- function(ct, type = c("auto", "list", "data.frame"), reverse = TRUE, ...) {
   UseMethod("contexts")
 }
