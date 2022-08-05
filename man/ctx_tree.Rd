@@ -22,11 +22,13 @@ the position of the contexts.}
 a context tree (of class \code{ctx_tree}).
 }
 \description{
-This function builds a context tree for a time series. The tree represents
-all the sequences of symbols/states of length smaller than \code{max_depth}
-that appear at least \code{min_size} times in the time series and stores the
-frequencies of the states that follow each context. Optionally, the positions
-of the contexts in the time series can be stored in the tree.
+This function builds a context tree for a time series.
+}
+\details{
+The tree represents all the sequences of symbols/states of length smaller
+than \code{max_depth} that appear at least \code{min_size} times in the time series and
+stores the frequencies of the states that follow each context. Optionally,
+the positions of the contexts in the time series can be stored in the tree.
 }
 \examples{
 dts <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 0)

@@ -6,6 +6,16 @@
 #' @param x an R object.
 #' @return `TRUE` for VLMC models.
 #' @export
+#' @examples
+#' pc <- powerconsumption[powerconsumption$week == 5, ]
+#' dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.25, 0.5, 0.75, 1))))
+#' model <- vlmc(dts)
+#' # should be true
+#' is_ctx_tree(model)
+#' # should be true
+#' is_vlmc(model)
+#' # should be false
+#' is_covlmc(model)
 is_vlmc <- function(x) {
   inherits(x, "vlmc")
 }
@@ -23,7 +33,7 @@ kl_div <- function(p, q) {
 #' Cutoff values for pruning the context tree of a VLMC
 #'
 #' This function returns all the cutoff values that are guaranteed to induce a
-#' pruning of the context tree of a VLMC.
+#' pruning of the context tree of a VLMC. Pruning is implemented by the [prune()] function.
 #'
 #' @param vlmc a fitted VLMC model.
 #' @param mode specify whether the results should be "native" likelihood ratio values
@@ -38,6 +48,7 @@ kl_div <- function(p, q) {
 #' model_cuts <- cutoff(model)
 #' model_2 <- prune(model, model_cuts[2])
 #' draw(model_2)
+#' @seealso [prune()]
 #' @export
 cutoff <- function(vlmc, mode = c("quantile", "native"), ...) {
   UseMethod("cutoff")
@@ -129,6 +140,13 @@ prune_ctx_tree <- function(tree, alpha = 0.05, cutoff = NULL, verbose = FALSE) {
 #'
 #' This function prunes a VLMC.
 #'
+#' In general, pruning a VLMC is more efficient than consrtucting two VLMC (the
+#' base one and pruned one). Up to numerical instabilities, building a VLMC with
+#' a `a` cut off and then pruning it with a `b` cut off (with `a>b`) should
+#' produce the same VLMC than building directly the VLMC with a `b` cut off.
+#' Interesting cut off values can be extracted from a VLMC using the [cutoff()]
+#' function.
+#'
 #' @param vlmc a fitted VLMC model.
 #' @param alpha number in (0,1) (default: 0.05) cutoff value in quantile scale
 #'   for pruning.
@@ -145,7 +163,7 @@ prune_ctx_tree <- function(tree, alpha = 0.05, cutoff = NULL, verbose = FALSE) {
 #' dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.25, 0.5, 0.75, 1))))
 #' base_model <- vlmc(dts, alpha = 0.1)
 #' model_cuts <- cutoff(base_model)
-#' pruned_model <- prune(model, model_cuts[3])
+#' pruned_model <- prune(base_model, model_cuts[3])
 #' draw(pruned_model)
 #' direct_simple <- vlmc(dts, alpha = model_cuts[3])
 #' draw(direct_simple)
@@ -155,6 +173,7 @@ prune <- function(vlmc, alpha = 0.05, cutoff = NULL, ...) {
   UseMethod("prune")
 }
 
+#' @inherit prune
 #' @export
 prune.vlmc <- function(vlmc, alpha = 0.05, cutoff = NULL, ...) {
   result <- prune_ctx_tree(vlmc, alpha = alpha, cutoff = cutoff)

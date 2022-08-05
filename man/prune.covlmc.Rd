@@ -21,7 +21,22 @@ a pruned covlmc.
 }
 \description{
 This function prunes a vlmc with covariates. This model must have been
-estimated with keep_data=TRUE to enable the pruning.
+estimated with \code{keep_data=TRUE} to enable the pruning.
+}
+\details{
+Post pruning a VLMC with covariates is not as straightforward as the same
+procedure applied to \code{\link[=vlmc]{vlmc()}} (see \code{\link[=cutoff.vlmc]{cutoff.vlmc()}} and \code{\link[=prune.vlmc]{prune.vlmc()}}). For
+efficiency reasons, \code{\link[=covlmc]{covlmc()}} estimates only the logistic models that are
+considered useful for a given set construction parameters. With a more
+aggressive pruning threshold, some contexts become leaves of the context tree
+and new logistic models must be estimated. Thus the pruning opportunities
+given by \code{\link[=cutoff.covlmc]{cutoff.covlmc()}} are only a subset of interesting cut offs for a
+given covlmc.
+
+Nevertheless, \code{covlmc} share with \code{\link[=vlmc]{vlmc()}} the principle that post pruning a
+covlmc should give the same model as buidling directly the covlmc, provided
+that the post pruning alpha is smaller than the alpha used to build the
+initial model.
 }
 \examples{
 pc <- powerconsumption[powerconsumption$week == 5, ]
@@ -30,6 +45,6 @@ dts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
 m_cov <- covlmc(dts, dts_cov, min_size = 5, keep_data = TRUE)
 draw(m_cov)
 m_cov_cuts <- cutoff(m_cov)
-p_cov <- prune(m_cov, m_cov_cuts[1] - 2 * .Machine$double.eps)
+p_cov <- prune(m_cov, m_cov_cuts[1])
 draw(p_cov)
 }

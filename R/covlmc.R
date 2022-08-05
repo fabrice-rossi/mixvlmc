@@ -538,23 +538,69 @@ covlmc_control <- function(pseudo_obs = 1) {
 #'   below for details).
 #' @param max_depth integer >= 1 (default: 100). Longest context considered in
 #'   growing phase of the context tree.
-#' @param keep_data logical (defaults to `TRUE`). If `TRUE`, the
-#'   original data are stored in the resulting object to enable post pruring
-#'   (see [prune.covlmc()]).
-#' @param control a list with control parameters, see
-#'   [covlmc_control()].
+#' @param keep_data logical (defaults to `TRUE`). If `TRUE`, the original data
+#'   are stored in the resulting object to enable post pruning (see
+#'   [prune.covlmc()]).
+#' @param control a list with control parameters, see [covlmc_control()].
 #' @param ... arguments passed to [covlmc_control()].
 #' @return a fitted covlmc model.
 #'
-#' @details The `min_size` parameter is used to compute the actual number
+#' @details
+#'
+#' The model is built using the algorithm described in Zanin Zambom et al. As
+#' for the [vlmc()] approach, the algorithm builds first a context tree (see
+#' [ctx_tree()]). The `min_size` parameter is used to compute the actual number
 #' of observations per context in the growing phase of the tree. It is computed
-#' as `min_size*(1+ncol(covariate)*(d+1))` where `d` is the length of
-#' the context (a.k.a. the depth in the tree).
+#' as `min_size*(1+ncol(covariate)*(d+1))` where `d` is the length of the
+#' context (a.k.a. the depth in the tree).
 #'
-#' Parameters specified by `control` are used to fine tune the behavior of
-#' the algorithm.
+#' Then logistic models are adjusted in the leaves at the tree: the goal of each
+#' logistic model is to estimate the conditional distribution of the next state
+#' of the times series given the context (the recent past of the time series)
+#' and delayed versions of the covariates. A pruning strategy is used to
+#' simplified the models (mainly to reduce the time window associated to the
+#' covariates) and the tree itself.
 #'
+#' Parameters specified by `control` are used to fine tune the behaviour of the
+#' algorithm.
+#'
+#' @section Logistic models:
+#'
+#'   By default, `covlmc` uses two different computing _engines_ for logistic
+#'   models:
+#'
+#'   - when the time series has only two states, `covlmc` uses [stats::glm()]
+#'   with a binomial link ([stats::binomial()]), with the
+#'   [spaMM::spaMM_glm.fit()] fitter;
+#'   - when the time series has at least three
+#'   states, `covlmc` use [VGAM::vglm()] with a multinomial link
+#'   ([VGAM::multinomial()]).
+#'
+#'   Both engines are able to detect degenerate cases and lead to more robust
+#'   results that using [nnet::multinom()]. It is nevertheless possible to
+#'   replace [VGAM::vglm()] with [nnet::multinom()] by setting the global option
+#'   `mixvlmc.predictive` to `"multinom"` (the default value is `"glm"`). Notice
+#'   that while results should be comparable, there is no guarantee that they
+#'   will be identical.
+#'
+#' @references
+#'
+#' - [Bühlmann, P. and Wyner, A. J. (1999), Variable length Markov chains. Ann.
+#' Statist. 27 (2) 480-513](https://dx.doi.org/10.1214/aos/1018031204)
+#' - [Zanin Zambom, A., Kim, S. and Lopes Garcia, N. (2022), Variable length Markov chain
+#' with exogenous covariates. J. Time Ser. Anal., 43 (2)
+#' 312-328](https://doi.org/10.1111/jtsa.12615)
 #' @export
+#' @examples
+#' pc <- powerconsumption[powerconsumption$week == 5, ]
+#' dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(1 / 3, 2 / 3, 1))))
+#' dts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
+#' m_cov <- covlmc(dts, dts_cov, min_size = 15)
+#' draw(m_cov)
+#' withr::with_options(list(mixvlmc.predictive = "multinom"),
+#'                     m_cov_nnet <- covlmc(dts, dts_cov, min_size = 15))
+#' draw(m_cov_nnet)
+#' @seealso [cutoff.covlmc()] and [prune.covlmc()] for post-pruning.
 covlmc <- function(x, covariate, alpha = 0.05, min_size = 15, max_depth = 100, keep_data = TRUE, control = covlmc_control(...), ...) {
   assertthat::assert_that(is.data.frame(covariate))
   assertthat::assert_that(nrow(covariate) == length(x))
@@ -598,6 +644,17 @@ covlmc <- function(x, covariate, alpha = 0.05, min_size = 15, max_depth = 100, k
 #' @param x an R object.
 #' @return `TRUE` for VLMC models with covariates.
 #' @export
+#' @examples
+#' pc <- powerconsumption[powerconsumption$week == 5, ]
+#' dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1))))
+#' dts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
+#' m_cov <- covlmc(dts, dts_cov, min_size = 5)
+#' # should be true
+#' is_ctx_tree(m_cov)
+#' # should be true
+#' is_covlmc(m_cov)
+#' # should be false
+#' is_vlmc(m_cov)
 is_covlmc <- function(x) {
   inherits(x, "covlmc")
 }
@@ -675,7 +732,21 @@ cutoff.covlmc <- function(vlmc, mode = c("quantile", "native"), ...) {
 #' Prune a Variable Length Markov Chain with covariates
 #'
 #' This function prunes a vlmc with covariates. This model must have been
-#' estimated with keep_data=TRUE to enable the pruning.
+#' estimated with `keep_data=TRUE` to enable the pruning.
+#'
+#' Post pruning a VLMC with covariates is not as straightforward as the same
+#' procedure applied to [vlmc()] (see [cutoff.vlmc()] and [prune.vlmc()]). For
+#' efficiency reasons, [covlmc()] estimates only the logistic models that are
+#' considered useful for a given set construction parameters. With a more
+#' aggressive pruning threshold, some contexts become leaves of the context tree
+#' and new logistic models must be estimated. Thus the pruning opportunities
+#' given by [cutoff.covlmc()] are only a subset of interesting cut offs for a
+#' given covlmc.
+#'
+#' Nevertheless, `covlmc` share with [vlmc()] the principle that post pruning a
+#' covlmc should give the same model as buidling directly the covlmc, provided
+#' that the post pruning alpha is smaller than the alpha used to build the
+#' initial model.
 #'
 #' @param vlmc a fitted VLMC model with covariates.
 #' @param alpha number in (0,1) (default: 0.05) cutoff value in quantile scale
@@ -691,7 +762,7 @@ cutoff.covlmc <- function(vlmc, mode = c("quantile", "native"), ...) {
 #' m_cov <- covlmc(dts, dts_cov, min_size = 5, keep_data = TRUE)
 #' draw(m_cov)
 #' m_cov_cuts <- cutoff(m_cov)
-#' p_cov <- prune(m_cov, m_cov_cuts[1] - 2 * .Machine$double.eps)
+#' p_cov <- prune(m_cov, m_cov_cuts[1])
 #' draw(p_cov)
 #' @export
 prune.covlmc <- function(vlmc, alpha = 0.05, cutoff = NULL, ...) {

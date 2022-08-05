@@ -30,12 +30,11 @@ below for details).}
 \item{max_depth}{integer >= 1 (default: 100). Longest context considered in
 growing phase of the context tree.}
 
-\item{keep_data}{logical (defaults to \code{TRUE}). If \code{TRUE}, the
-original data are stored in the resulting object to enable post pruring
-(see \code{\link[=prune.covlmc]{prune.covlmc()}}).}
+\item{keep_data}{logical (defaults to \code{TRUE}). If \code{TRUE}, the original data
+are stored in the resulting object to enable post pruning (see
+\code{\link[=prune.covlmc]{prune.covlmc()}}).}
 
-\item{control}{a list with control parameters, see
-\code{\link[=covlmc_control]{covlmc_control()}}.}
+\item{control}{a list with control parameters, see \code{\link[=covlmc_control]{covlmc_control()}}.}
 
 \item{...}{arguments passed to \code{\link[=covlmc_control]{covlmc_control()}}.}
 }
@@ -47,11 +46,61 @@ This function fits a  Variable Length Markov Chain with covariates (coVLMC)
 to a discrete time series coupled with a time series of covariates.
 }
 \details{
-The \code{min_size} parameter is used to compute the actual number
+The model is built using the algorithm described in Zanin Zambom et al. As
+for the \code{\link[=vlmc]{vlmc()}} approach, the algorithm builds first a context tree (see
+\code{\link[=ctx_tree]{ctx_tree()}}). The \code{min_size} parameter is used to compute the actual number
 of observations per context in the growing phase of the tree. It is computed
-as \code{min_size*(1+ncol(covariate)*(d+1))} where \code{d} is the length of
-the context (a.k.a. the depth in the tree).
+as \code{min_size*(1+ncol(covariate)*(d+1))} where \code{d} is the length of the
+context (a.k.a. the depth in the tree).
 
-Parameters specified by \code{control} are used to fine tune the behavior of
-the algorithm.
+Then logistic models are adjusted in the leaves at the tree: the goal of each
+logistic model is to estimate the conditional distribution of the next state
+of the times series given the context (the recent past of the time series)
+and delayed versions of the covariates. A pruning strategy is used to
+simplified the models (mainly to reduce the time window associated to the
+covariates) and the tree itself.
+
+Parameters specified by \code{control} are used to fine tune the behaviour of the
+algorithm.
+}
+\section{Logistic models}{
+
+
+By default, \code{covlmc} uses two different computing \emph{engines} for logistic
+models:
+\itemize{
+\item when the time series has only two states, \code{covlmc} uses \code{\link[stats:glm]{stats::glm()}}
+with a binomial link (\code{\link[stats:family]{stats::binomial()}}), with the
+\code{\link[spaMM:GLM.fit]{spaMM::spaMM_glm.fit()}} fitter;
+\item when the time series has at least three
+states, \code{covlmc} use \code{\link[VGAM:vglm]{VGAM::vglm()}} with a multinomial link
+(\code{\link[VGAM:multinomial]{VGAM::multinomial()}}).
+}
+
+Both engines are able to detect degenerate cases and lead to more robust
+results that using \code{\link[nnet:multinom]{nnet::multinom()}}. It is nevertheless possible to
+replace \code{\link[VGAM:vglm]{VGAM::vglm()}} with \code{\link[nnet:multinom]{nnet::multinom()}} by setting the global option
+\code{mixvlmc.predictive} to \code{"multinom"} (the default value is \code{"glm"}). Notice
+that while results should be comparable, there is no guarantee that they
+will be identical.
+}
+
+\examples{
+pc <- powerconsumption[powerconsumption$week == 5, ]
+dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(1 / 3, 2 / 3, 1))))
+dts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
+m_cov <- covlmc(dts, dts_cov, min_size = 15)
+draw(m_cov)
+withr::with_options(list(mixvlmc.predictive = "multinom"),
+                    m_cov_nnet <- covlmc(dts, dts_cov, min_size = 15))
+draw(m_cov_nnet)
+}
+\references{
+\itemize{
+\item \href{https://dx.doi.org/10.1214/aos/1018031204}{Bühlmann, P. and Wyner, A. J. (1999), Variable length Markov chains. Ann. Statist. 27 (2) 480-513}
+\item \href{https://doi.org/10.1111/jtsa.12615}{Zanin Zambom, A., Kim, S. and Lopes Garcia, N. (2022), Variable length Markov chain with exogenous covariates. J. Time Ser. Anal., 43 (2) 312-328}
+}
+}
+\seealso{
+\code{\link[=cutoff.covlmc]{cutoff.covlmc()}} and \code{\link[=prune.covlmc]{prune.covlmc()}} for post-pruning.
 }

@@ -19,7 +19,7 @@ a vector of cut off values.
 }
 \description{
 This function returns all the cutoff values that are guaranteed to induce a
-pruning of the context tree of a VLMC.
+pruning of the context tree of a VLMC. Pruning is implemented by the \code{\link[=prune]{prune()}} function.
 }
 \examples{
 pc <- powerconsumption[powerconsumption$week == 5, ]
@@ -29,4 +29,7 @@ draw(model)
 model_cuts <- cutoff(model)
 model_2 <- prune(model, model_cuts[2])
 draw(model_2)
+}
+\seealso{
+\code{\link[=prune]{prune()}}
 }

@@ -15,3 +15,14 @@ is_vlmc(x)
 \description{
 This function returns \code{TRUE} for VLMC models and \code{FALSE} for other objects.
 }
+\examples{
+pc <- powerconsumption[powerconsumption$week == 5, ]
+dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.25, 0.5, 0.75, 1))))
+model <- vlmc(dts)
+# should be true
+is_ctx_tree(model)
+# should be true
+is_vlmc(model)
+# should be false
+is_covlmc(model)
+}

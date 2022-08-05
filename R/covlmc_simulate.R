@@ -28,25 +28,31 @@ match_context_co <- function(tree, ctx) {
 }
 
 
-#' Simulate a discrete time series
+#' Simulate a discrete time series for a covlmc
 #'
 #' This function simulates a time series from the distribution estimated by the
 #' given covlmc object.
 #'
 #' A VLMC with covariates model needs covariates to compute its transition
 #' probabilities. The covariates must be submitted as a data frame using the
-#' named `covariate` argument.
+#' `covariate` argument.
 #'
 #' @param object a fitted covlmc object.
 #' @param nsim length of the simulated time series (defaults to 1).
 #' @param seed an optional random seed.
-#' @param ... additional arguments (see details).
+#' @param covariate values of the coviates
+#' @param ... additional arguments.
 #'
 #' @export
-simulate.covlmc <- function(object, nsim = 1, seed = NULL, ...) {
-  params <- list(...)
-  assertthat::assert_that(assertthat::has_name(params, "covariate"))
-  covariate <- params$covariate
+#' @examples
+#' pc <- powerconsumption[powerconsumption$week == 5, ]
+#' dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1))))
+#' dts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
+#' m_cov <- covlmc(dts, dts_cov, min_size = 5)
+#' # new week with day light from 6:00 to 18:00
+#' new_cov <- data.frame(day_night = rep(c(rep(FALSE, 59), rep(TRUE, 121), rep(FALSE, 60)), times = 7))
+#' new_dts <- simulate(m_cov, nrow(new_cov), seed = 0, covariate = new_cov)
+simulate.covlmc <- function(object, nsim = 1, seed = NULL, covariate, ...) {
   assertthat::assert_that(nrow(covariate) >= nsim)
   assertthat::assert_that(assertthat::has_name(covariate, object$cov_names))
   if (!is.null(seed)) {

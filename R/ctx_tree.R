@@ -93,11 +93,12 @@ grow_ctx_tree <- function(x, vals, min_size, max_depth, covsize = 0, keep_match 
 
 #' Build a context tree for a discrete time series
 #'
-#' This function builds a context tree for a time series. The tree represents
-#' all the sequences of symbols/states of length smaller than `max_depth`
-#' that appear at least `min_size` times in the time series and stores the
-#' frequencies of the states that follow each context. Optionally, the positions
-#' of the contexts in the time series can be stored in the tree.
+#' This function builds a context tree for a time series.
+#'
+#' The tree represents all the sequences of symbols/states of length smaller
+#' than `max_depth` that appear at least `min_size` times in the time series and
+#' stores the frequencies of the states that follow each context. Optionally,
+#' the positions of the contexts in the time series can be stored in the tree.
 #'
 #' @param x a discrete time series; can be numeric, character or factor.
 #' @param min_size integer >= 1 (default: 2). Minimum number of observations for
