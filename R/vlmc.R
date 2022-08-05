@@ -138,32 +138,87 @@ prune_ctx_tree <- function(tree, alpha = 0.05, cutoff = NULL, verbose = FALSE) {
 #' @param ... additional arguments for the prune function.
 #'
 #' @return a pruned VLMC
+#' @seealso [cutoff()]
 #' @export
+#' @examples
+#' pc <- powerconsumption[powerconsumption$week == 5, ]
+#' dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.25, 0.5, 0.75, 1))))
+#' base_model <- vlmc(dts, alpha = 0.1)
+#' model_cuts <- cutoff(base_model)
+#' pruned_model <- prune(model, model_cuts[3])
+#' draw(pruned_model)
+#' direct_simple <- vlmc(dts, alpha = model_cuts[3])
+#' draw(direct_simple)
+#' # pruned_model and direct_simple should be identical
+#' all.equal(pruned_model, direct_simple)
 prune <- function(vlmc, alpha = 0.05, cutoff = NULL, ...) {
   UseMethod("prune")
 }
 
 #' @export
 prune.vlmc <- function(vlmc, alpha = 0.05, cutoff = NULL, ...) {
-  prune_ctx_tree(vlmc, alpha = alpha, cutoff = cutoff)
+  result <- prune_ctx_tree(vlmc, alpha = alpha, cutoff = cutoff)
+  result$alpha <- alpha
+  if (is.null(cutoff)) {
+    cutoff <- stats::qchisq(alpha, df = length(vlmc$vals) - 1, lower.tail = FALSE) / 2
+  }
+  result$cutoff <- cutoff
+  result
 }
 
 #' Fit a Variable Length Markov Chain (VLMC)
 #'
-#' This function fits a  Variable Length Markov Chain (VLMC) to a discrete time series.
+#' This function fits a  Variable Length Markov Chain (VLMC) to a discrete time
+#' series.
+#'
+#' The VLMC is built using Bühlmann and Wyner's algorithm which consists in
+#' fitting a context tree (see [ctx_tree()]) to a time series and then pruning
+#' it in such as way that the conditional distribution of the next state of the
+#' time series given the context is significantly different from the
+#' distribution given a truncated version of the context.
+#'
+#' The construction of the context tree is controlled by `min_size` and
+#' `max_depth`, exactly as in [ctx_tree()]. Significativity is measured using a
+#' likelihood ratio test (threshold can be specified in terms of the ratio
+#' itself with `cutoff`) or in quantile scale with `alpha`.
+#'
+#' Pruning can be postpone by setting `prune=FALSE`. Using a combination of
+#' [cutoff()] and [prune()], the complexity of the VLMC can then be adjusted.
+#' Any VLMC model can be pruned after construction, `prune=FALSE` is a
+#' convenience parameter to avoid setting `alpha=1` (which essentially prevents
+#' any pruning).
 #'
 #' @param x a discrete time series; can be numeric, character or factor.
-#' @param alpha number in (0,1) (default: 0.05) cutoff value in quantile scale in the pruning phase.
-#' @param cutoff positive number: cutoff value in native (likelihood ratio) scale in the pruning phase.
-#'   Defaults to the value obtained from `alpha`. Takes precedence over `alpha` is specified.
+#' @param alpha number in (0,1) (default: 0.05) cutoff value in quantile scale
+#'   in the pruning phase.
+#' @param cutoff positive number: cutoff value in native (likelihood ratio)
+#'   scale in the pruning phase. Defaults to the value obtained from `alpha`.
+#'   Takes precedence over `alpha` is specified.
 #' @param min_size integer >= 1 (default: 2). Minimum number of observations for
-#'  a context in the growing phase of the context tree.
+#'   a context in the growing phase of the context tree.
 #' @param max_depth integer >= 1 (default: 100). Longest context considered in
-#'  growing phase of the context tree.
-#' @param prune logical: specified whether the context tree should be pruned (default behavior).
+#'   growing phase of the context tree.
+#' @param prune logical: specified whether the context tree should be pruned
+#'   (default behavior).
 #' @return a fitted vlmc model.
-#'
+#' @examples
+#' pc <- powerconsumption[powerconsumption$week == 5, ]
+#' dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.25, 0.5, 0.75, 1))))
+#' model <- vlmc(dts)
+#' draw(model)
+#' depth(model)
+#' ## reduce the detph of the model
+#' shallow_model <- vlmc(dts, max_depth = 3)
+#' draw(shallow_model, prob = FALSE)
+#' ## improve probability estimates
+#' robust_model <- vlmc(dts, min_size = 25)
+#' draw(robust_model, prob = FALSE) ## show the frequencies
+#' draw(robust_model)
 #' @export
+#' @seealso [cutoff()] and [prune()]
+#' @references [Bühlmann, P. and Wyner, A. J. (1999), Variable length Markov
+#'   chains. Ann. Statist. 27 (2)
+#'   480-513](https://dx.doi.org/10.1214/aos/1018031204)
 vlmc <- function(x, alpha = 0.05, cutoff = NULL, min_size = 2, max_depth = 100, prune = TRUE) {
   # data conversion
   nx <- to_dts(x)
