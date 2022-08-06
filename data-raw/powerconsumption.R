@@ -25,6 +25,13 @@ power_data[, `:=`(
 )]
 
 powerconsumption <- power_data[, lapply(.SD, mean, na.rm = TRUE), by = .(Date, hour, by_10), .SDcols = !c("Time")]
+date_time <- as.POSIXct(stringr::str_c(
+  powerconsumption$Date, " ", powerconsumption$hour, ":",
+  stringr::str_pad(powerconsumption$by_10 * 10, 2, pad = "0"), ":00"
+),
+format = "%Y-%m-%d %H:%M:%OS",
+tz = "CET"
+)
 powerconsumption[, `:=`(
   year = year(Date),
   month = month(Date),
@@ -32,7 +39,8 @@ powerconsumption[, `:=`(
   week = week(Date),
   week_day = wday(Date),
   year_day = yday(Date),
-  minute = 10 * by_10
+  minute = 10 * by_10,
+  date_time = date_time
 )]
 powerconsumption[, `:=`(Date = NULL, by_10 = NULL)]
 setcolorder(powerconsumption, c("year", "month", "month_day", "hour", "minute"))

@@ -31,6 +31,7 @@ water-heater and an air-conditioner.}
 \item{week}{week number}
 \item{week_day}{day of the week from 1 = Sunday to 7 = Saturday}
 \item{year_day}{day of the year from 1 to 366 (2008 is a leap year)}
+\item{date_time}{Date and time in POSIXct format}
 }
 }
 \source{
