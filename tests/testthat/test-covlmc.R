@@ -99,3 +99,11 @@ test_that("covlmc sequential pruning does not produce NAs with more than 3 state
     )
   }
 })
+
+test_that("covlmc handles defficient rank covariates", {
+  pc_week_5 <- powerconsumption[powerconsumption$week == 5, ]
+  elec <- pc_week_5$active_power
+  elec_dts <- cut(elec, breaks = c(0, 0.4, 2, 8), labels=c("low", "typical", "high"))
+  elec_cov <- data.frame(day = (pc_week_5$hour >= 7 & pc_week_5$hour <= 17))
+  expect_error(covlmc(elec_dts, elec_cov, min_size = 10), regexp = NA)
+})
