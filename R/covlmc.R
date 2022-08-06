@@ -682,7 +682,7 @@ assertthat::on_failure(is_covlmc) <- function(call, env) {
 #'   values or expressed in a "quantile" scale of a chi-squared distribution.
 #'   For covlmc, only the quantile scale is supported.
 #' @param ... additional arguments for the cutoff function.
-#' @return a vector of cut off values.
+#' @return a vector of cut off values, `NULL` is none can be computed
 #'
 #' @examples
 #' pc <- powerconsumption[powerconsumption$week == 5, ]
@@ -728,7 +728,12 @@ cutoff.covlmc <- function(vlmc, mode = c("quantile", "native"), ...) {
       c(df, tree$p_value, tree$merged_p_value)
     }
   }
-  before(unique(sort(recurse_cutoff(vlmc), decreasing = TRUE)))
+  preres <- recurse_cutoff(vlmc)
+  if (is.null(preres)) {
+    NULL
+  } else {
+    before(unique(sort(preres, decreasing = TRUE)))
+  }
 }
 
 #' Prune a Variable Length Markov Chain with covariates

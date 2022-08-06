@@ -16,7 +16,7 @@ For covlmc, only the quantile scale is supported.}
 \item{...}{additional arguments for the cutoff function.}
 }
 \value{
-a vector of cut off values.
+a vector of cut off values, \code{NULL} is none can be computed
 }
 \description{
 This function returns all the cutoff values that should induce a pruning of
