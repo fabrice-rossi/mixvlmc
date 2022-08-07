@@ -80,13 +80,15 @@ fit_glm <- function(target, mm, nb_vals, control) {
         if (ncol(mm) > 0) {
           try_vglm <- try(
             suppressWarnings(result <-
-            VGAM::vglm(target ~ .,
-              data = mm, family = VGAM::multinomial(refLevel = 1),
-              x.arg = FALSE, y.arg = FALSE, model = FALSE
-            )), silent = TRUE)
-          if(inherits(try_vglm, "try-error")) {
+              VGAM::vglm(target ~ .,
+                data = mm, family = VGAM::multinomial(refLevel = 1),
+                x.arg = FALSE, y.arg = FALSE, model = FALSE
+              )),
+            silent = TRUE
+          )
+          if (inherits(try_vglm, "try-error")) {
             err_cond <- as.character(attr(try_vglm, "condition"))
-            if(stringr::str_detect(err_cond, stringr::coll("vglm() only handles full-rank models (currently)"))) {
+            if (stringr::str_detect(err_cond, stringr::coll("vglm() only handles full-rank models (currently)"))) {
               ## fake result, interpreted as a low rank result
               result <- structure(list(coefficients = c(NA), ll = NA, rank = 0, target = NA, class = "constant_model"))
             } else {
@@ -94,11 +96,11 @@ fit_glm <- function(target, mm, nb_vals, control) {
             }
           }
         } else {
-            suppressWarnings(result <-
-              VGAM::vglm(target ~ 1,
-                data = mm, family = VGAM::multinomial(refLevel = 1),
-                x.arg = FALSE, y.arg = FALSE, model = FALSE
-              ))
+          suppressWarnings(result <-
+            VGAM::vglm(target ~ 1,
+              data = mm, family = VGAM::multinomial(refLevel = 1),
+              x.arg = FALSE, y.arg = FALSE, model = FALSE
+            ))
         }
       }
       result
