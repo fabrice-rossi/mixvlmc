@@ -17,3 +17,25 @@ test_that("vlmc simulation generates always the same sample with the same seed",
     expect_identical(xs2, xs)
   }
 })
+
+test_that("vlmc simulates uses correctly the initial values", {
+  for (k in 2:4) {
+    data_set <- build_markov_chain(1000, k, seed = k)
+    x_vlmc <- vlmc(data_set$x, alpha = 0.01)
+    init <- sample(states(x_vlmc), 2 * k, replace = TRUE)
+    xs <- simulate(x_vlmc, 100, init = init)
+    expect_identical(xs[1:length(init)], init)
+  }
+})
+
+test_that("vlmc simulate detects unadapted init values", {
+  for (k in 2:4) {
+    data_set <- build_markov_chain(1000, k, seed = k)
+    x_vlmc <- vlmc(data_set$x, alpha = 0.01)
+    expect_error(simulate(x_vlmc, nsim = 10, init = sample(x_vlmc$vals, 11, replace = TRUE)))
+    expect_error(simulate(x_vlmc, nsim = 10, init = c(1.0, 2.0)))
+  }
+  dts <- sample(c("A", "B", "C"), 100, replace = TRUE)
+  model <- vlmc(dts, alpha = 0.5)
+  expect_error(simulate(model, nsim = 4, init = c("A", "D")))
+})
