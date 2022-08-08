@@ -6,7 +6,7 @@ test_that("the likelihood calculation is valid", {
   df_y <- data.frame(y = y)
   for (engine in c("glm", "multinom")) {
     withr::local_options(mixvlmc.predictive = engine)
-    x_covlmc <- covlmc(x, df_y, alpha = 0.05)
+    x_covlmc <- covlmc(x, df_y, min_size = 5, alpha = 0.01)
     expect_equal(as.numeric(logLik(x_covlmc)), as.numeric(loglikelihood(x_covlmc)))
     expect_equal(loglikelihood(x_covlmc, x, newcov = df_y), loglikelihood(x_covlmc))
   }
