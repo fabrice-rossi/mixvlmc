@@ -32,3 +32,37 @@ test_that("covlmc simulation generates always the same sample with the same seed
     }
   }
 })
+
+test_that("covlmc simulates uses correctly the initial values", {
+  data_set <- build_data_set(500, seed = 0)
+  model <- covlmc(data_set$x, data_set$covariate, alpha = 0.2)
+  init <- sample(states(model), 10, replace = TRUE)
+  xs <- simulate(model, 100, covariate = data_set$covariate[1:250, , drop = FALSE], init = init)
+  expect_identical(xs[1:length(init)], init)
+  withr::local_seed(0)
+  x <- sample(c("A", "B", "C"), 500, replace = TRUE)
+  y <- ifelse(runif(length(x)) > 0.5, c(x[-1], sample(c("A", "B", "C"), 1)), c(x[-c(1, 2)], sample(c("A", "B", "C"), 2, replace = TRUE)))
+  y <- as.factor(ifelse(runif(length(x)) > 0.2, y, sample(c("A", "B", "C"), 500, replace = TRUE)))
+  df_y <- data.frame(y = y, z = runif(length(y)))
+  new_cov <- df_y[sample(1:nrow(df_y), 250, replace = TRUE), ]
+  model <- covlmc(x, df_y, alpha = 1e-8)
+  init <- sample(states(model), 15, replace = TRUE)
+  xs <- simulate(model, 250, covariate = new_cov, init = init)
+  expect_identical(xs[1:length(init)], init)
+})
+
+test_that("covlmc simulate detects unadapted init values", {
+  data_set <- build_data_set(500, seed = 0)
+  model <- covlmc(data_set$x, data_set$covariate, alpha = 0.2)
+  expect_error(simulate(model, 100, covariate = data_set$covariate[1:250, , drop = FALSE], init = c(0L, 1L)))
+  withr::local_seed(0)
+  x <- sample(c("A", "B", "C"), 500, replace = TRUE)
+  y <- ifelse(runif(length(x)) > 0.5, c(x[-1], sample(c("A", "B", "C"), 1)), c(x[-c(1, 2)], sample(c("A", "B", "C"), 2, replace = TRUE)))
+  y <- as.factor(ifelse(runif(length(x)) > 0.2, y, sample(c("A", "B", "C"), 500, replace = TRUE)))
+  df_y <- data.frame(y = y, z = runif(length(y)))
+  new_cov <- df_y[sample(1:nrow(df_y), 250, replace = TRUE), ]
+  model <- covlmc(x, df_y, alpha = 1e-8)
+  expect_error(simulate(model, 250, covariate = new_cov, init = c("A", "D")))
+  init <- sample(states(model), 15, replace = TRUE)
+  expect_error(simulate(model, 10, covariate = new_cov, init = init))
+})

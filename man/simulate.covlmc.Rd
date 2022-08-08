@@ -4,7 +4,7 @@
 \alias{simulate.covlmc}
 \title{Simulate a discrete time series for a covlmc}
 \usage{
-\method{simulate}{covlmc}(object, nsim = 1, seed = NULL, covariate, ...)
+\method{simulate}{covlmc}(object, nsim = 1, seed = NULL, covariate, init = NULL, ...)
 }
 \arguments{
 \item{object}{a fitted covlmc object.}
@@ -13,7 +13,9 @@
 
 \item{seed}{an optional random seed.}
 
-\item{covariate}{values of the coviates}
+\item{covariate}{values of the covariates}
+
+\item{init}{an optional initial sequence for the time series}
 
 \item{...}{additional arguments.}
 }
@@ -24,7 +26,8 @@ given covlmc object.
 \details{
 A VLMC with covariates model needs covariates to compute its transition
 probabilities. The covariates must be submitted as a data frame using the
-\code{covariate} argument.
+\code{covariate} argument. In addition,  the time series can be initiated by a
+fixed sequence specified via the \code{init} parameter.
 }
 \examples{
 pc <- powerconsumption[powerconsumption$week == 5, ]
@@ -34,4 +37,5 @@ m_cov <- covlmc(dts, dts_cov, min_size = 5)
 # new week with day light from 6:00 to 18:00
 new_cov <- data.frame(day_night = rep(c(rep(FALSE, 59), rep(TRUE, 121), rep(FALSE, 60)), times = 7))
 new_dts <- simulate(m_cov, nrow(new_cov), seed = 0, covariate = new_cov)
+new_dts_2 <- simulate(m_cov, nrow(new_cov), seed = 0, covariate = new_cov, init = dts[1:10])
 }
