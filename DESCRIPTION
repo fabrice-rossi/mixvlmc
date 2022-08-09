@@ -10,7 +10,9 @@ Authors@R:
              comment = c(ORCID = "0000-0003-4638-1286")),
       person(given = "Hugo",
              family = "Le Picard",
-             role = "ctb"))
+             role = "ctb",
+             email = "lepicardhugo@gmail.com",
+             comment = c(ORCID = "0000-0002-7023-2996")))
 Description: An implementation of Variable Length Markov Chains and of their 
     extension to models with covariates.
 License: GPL (>= 3)
