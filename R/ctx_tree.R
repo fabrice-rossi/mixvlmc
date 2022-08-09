@@ -63,7 +63,7 @@ grow_ctx_tree <- function(x, vals, min_size, max_depth, covsize = 0, keep_match 
       children <- vector(mode = "list", nb_vals)
       nb_children <- 0
       for (v in 1:nb_vals) {
-        if (length(fmatch$positions[[v]]) >= min_size * (1 + covsize * (d + 1))) {
+        if (sum(fmatch$counts[v, ]) >= min_size * (1 + covsize * (d + 1))) {
           children[[v]] <- recurse_ctx_tree(x, nb_vals, d + 1, fmatch$positions[[v]], fmatch$counts[v, ])
           nb_children <- nb_children + 1
         } else {
