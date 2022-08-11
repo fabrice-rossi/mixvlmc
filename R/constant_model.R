@@ -64,7 +64,7 @@ glm_likelihood.constant_model <- function(model, mm, target) {
 }
 
 #' @exportS3Method
-glm_coef.constant_model <- function(model) {
+glm_coef.constant_model <- function(model, data) {
   if (model$rank > 1) {
     matrix(model$coefficients, nrow = model$rank)
   } else {
@@ -78,6 +78,6 @@ glm_sample_one.constant_model <- function(model, newdata) {
 }
 
 #' @exportS3Method
-glm_variable_names.constant_model <- function(model) {
+glm_variable_names.constant_model <- function(model, data) {
   "(I)"
 }
