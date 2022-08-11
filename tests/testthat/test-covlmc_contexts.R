@@ -26,7 +26,7 @@ test_that("models are consistent", {
     m_cov <- covlmc(dts, dts_cov, min_size = 5, keep_data = TRUE)
     ctx_m_cov_m <- contexts(m_cov, model = "full")
     ctx_m_cov_c <- contexts(m_cov, model = "coef")
-    expect_equal(ctx_m_cov_c$coef, lapply(contexts(m_cov, type = "data.frame", model = "full")$model, coef), ignore_attr = TRUE)
+    expect_equal(ctx_m_cov_c$coef, lapply(contexts(m_cov, type = "data.frame", model = "full")$model, glm_coef, dts_cov), ignore_attr = TRUE)
   }
 })
 

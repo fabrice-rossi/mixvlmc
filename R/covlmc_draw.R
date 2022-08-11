@@ -98,7 +98,7 @@ covlmc_node2txt <- function(node, params) {
     digits <- 2
   }
   if (!is.null(node$model)) {
-    draw_covlmc_model(node$model$coefficients, node$model$p_value, node$model$hsize, glm_variable_names(node$model$model), params)
+    draw_covlmc_model(node$model$coefficients, node$model$p_value, node$model$hsize, node$model$var_names, params)
   } else if (!is.null(node$p_value) && isTRUE(params$p_value)) {
     stringr::str_c("collapsing:", signif(node$p_value, params$digits), sep = " ")
   } else if (!is.null(node$merged_p_value) && isTRUE(params$p_value)) {

@@ -14,6 +14,7 @@ test_that("covlmc simulation generates a consistent sample", {
   df_y <- data.frame(y = y, z = runif(length(y)))
   new_cov <- df_y[sample(1:nrow(df_y), 250, replace = TRUE), ]
   for (engine in c("glm", "multinom")) {
+    withr::local_options(mixvlmc.predictive = engine)
     model <- covlmc(x, df_y, alpha = 1e-8)
     xs <- simulate(model, 250, covariate = new_cov, seed = 1)
     expect_equal(length(xs), 250)
@@ -25,6 +26,7 @@ test_that("covlmc simulation generates always the same sample with the same seed
   for (k in 1:4) {
     data_set <- build_data_set(250, seed = k)
     for (engine in c("glm", "multinom")) {
+      withr::local_options(mixvlmc.predictive = engine)
       model <- covlmc(data_set$x, data_set$covariate, alpha = 0.1)
       xs <- simulate(model, 250, seed = 2 * k + 1, covariate = data_set$covariate[1:250, , drop = FALSE])
       xs2 <- simulate(model, 250, seed = 2 * k + 1, covariate = data_set$covariate[1:250, , drop = FALSE])
@@ -65,4 +67,25 @@ test_that("covlmc simulate detects unadapted init values", {
   expect_error(simulate(model, 250, covariate = new_cov, init = c("A", "D")))
   init <- sample(states(model), 15, replace = TRUE)
   expect_error(simulate(model, 10, covariate = new_cov, init = init))
+})
+
+test_that("covlmc simulate handles missing factors in subsets", {
+  withr::local_seed(0)
+  x <- sample(c(0, 1), 200, replace = TRUE)
+  xl1 <- forward_match_all_ctx_counts(x, 2)
+  xl2_0 <- forward_match_all_ctx_counts(x, 2, 1, xl1$positions[[1]])
+  xl2_1 <- forward_match_all_ctx_counts(x, 2, 1, xl1$positions[[2]])
+  y <- rep(1, length(x))
+  y[xl2_0$positions[[1]] + 1] <- sample(2:4, length(xl2_0$positions[[1]]), replace = TRUE)
+  y[xl2_0$positions[[2]] + 1] <- sample(c(1, 3:4), length(xl2_0$positions[[2]]), replace = TRUE)
+  y[xl2_1$positions[[1]] + 1] <- sample(c(1:2, 4), length(xl2_1$positions[[1]]), replace = TRUE)
+  y[xl2_1$positions[[2]] + 1] <- sample(1:3, length(xl2_1$positions[[2]]), replace = TRUE)
+  y <- as.factor(y)
+  z <- runif(length(x)) + c(x[-1], 0) / 4
+  dts_cov <- data.frame(y = y, z = z)
+  for (engine in c("glm", "multinom")) {
+    withr::local_options(mixvlmc.predictive = engine)
+    m_cov <- covlmc(x = x, covariate = dts_cov, min_size = 5, alpha = 0.5)
+    expect_error(simulate(m_cov, 100, seed = 0, covariate = dts_cov), regexp = NA)
+  }
 })

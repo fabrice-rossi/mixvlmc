@@ -160,17 +160,52 @@ is_glm_low_rank.default <- function(model) {
   model$rank < length(stats::coefficients(model))
 }
 
-glm_coef <- function(model) {
+glm_coef <- function(model, data) {
   UseMethod("glm_coef")
 }
 
 #' @exportS3Method
-glm_coef.default <- function(model) {
+glm_coef.default <- function(model, data) {
   stats::coef(model)
 }
 
 #' @exportS3Method
-glm_coef.vglm <- function(model) {
+glm_coef.glm <- function(model, data) {
+  pre_coeff <- stats::coef(model)
+  pre_names <- names(pre_coeff)
+  data_names <- names(data)
+  res <- c(pre_coeff[1]) ## intercept
+  res_name <- c(pre_names[1])
+  xlevels <- model$xlevels
+  for (var in data_names) {
+    if (var %in% pre_names) {
+      ## numerical variable, simple case
+      res <- c(res, pre_coeff[[var]])
+      res_name <- c(res_name, var)
+    } else {
+      ## non numerical
+      all_levels <- levels(data[[var]])
+      model_levels <- xlevels[[var]]
+      ref_level <- model_levels[1]
+      for (lv in all_levels) {
+        if (lv != ref_level) {
+          lv_name <- stringr::str_c(var, lv)
+          if (lv %in% model_levels) {
+            res <- c(res, pre_coeff[[lv_name]])
+          } else {
+            res <- c(res, 0)
+          }
+          res_name <- c(res_name, lv_name)
+        }
+      }
+    }
+  }
+  names(res) <- res_name
+  res
+}
+
+#' @exportS3Method
+glm_coef.vglm <- function(model, data) {
   nb_columns <- sum(sapply(model@assign, length))
   nb_rows <- length(stats::coef(model)) %/% nb_columns
   matrix(stats::coef(model), nrow = nb_rows)
@@ -182,6 +217,15 @@ glm_sample_one <- function(model, newdata) {
 
 #' @exportS3Method
 glm_sample_one.glm <- function(model, newdata) {
+  xlevels <- model$xlevels
+  for (var in names(xlevels)) {
+    nv <- newdata[[var]]
+    if (length(levels(nv)) > length(xlevels[[var]])) {
+      if (!nv %in% xlevels[[var]]) {
+        newdata[[var]] <- xlevels[[var]][1]
+      }
+    }
+  }
   probs <- stats::predict(model, newdata = newdata, type = "response")
   if (stats::runif(1) <= probs) {
     1
@@ -214,17 +258,17 @@ glm_sample_one.multinom <- function(model, newdata) {
   }
 }
 
-glm_variable_names <- function(model) {
+glm_variable_names <- function(model, data) {
   UseMethod("glm_variable_names")
 }
 
 #' @exportS3Method
-glm_variable_names.glm <- function(model) {
-  c("(I)", names(stats::coef(model))[-1])
+glm_variable_names.glm <- function(model, data) {
+  c("(I)", names(glm_coef(model, data))[-1])
 }
 
 #' @exportS3Method
-glm_variable_names.vglm <- function(model) {
+glm_variable_names.vglm <- function(model, data) {
   prenames <- names(stats::coef(model))
   nb_columns <- sum(sapply(model@assign, length))
   if (nb_columns > 1) {
