@@ -203,7 +203,15 @@ glm_sample_one.vglm <- function(model, newdata) {
 #' @exportS3Method
 glm_sample_one.multinom <- function(model, newdata) {
   probs <- stats::predict(model, newdata, type = "probs")
-  sample(0:(length(probs) - 1), 1, prob = probs)
+  if (length(probs) >= 2) {
+    sample(0:(length(probs) - 1), 1, prob = probs)
+  } else {
+    if (stats::runif(1) <= probs) {
+      1
+    } else {
+      0
+    }
+  }
 }
 
 glm_variable_names <- function(model) {
@@ -229,6 +237,11 @@ glm_variable_names.vglm <- function(model) {
 }
 
 #' @exportS3Method
-glm_variable_names.multinom <- function(model) {
-  c("(I)", colnames(stats::coef(model))[-1])
+glm_variable_names.multinom <- function(model, data) {
+  coef <- stats::coef(model)
+  if (is.matrix(coef)) {
+    c("(I)", colnames(coef)[-1])
+  } else {
+    c("(I)", names(coef)[-1])
+  }
 }
