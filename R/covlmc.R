@@ -336,7 +336,7 @@ ctx_tree_fit_glm <- function(tree, y, covariate, alpha, control, assume_model = 
             }
             ## prepare the data set
             ## we need to reextract the data as models can use different history sizes
-            ## shift the index by one to account for the reduce history
+            ## shift the index by one to account for the reduced history
             full_index <- 1 + unlist(lapply(submodels[pr_candidates], function(x) x$match))
             if (verbose) {
               print(paste("call to glm with d=", d, sep = ""))
@@ -347,7 +347,7 @@ ctx_tree_fit_glm <- function(tree, y, covariate, alpha, control, assume_model = 
         if (!is.null(local_model) && is.null(p_value)) {
           ## to compute the likelihood of the new model on the data used by
           ## the ones to merge/remove we need to reextract the data if the models
-          ## have a shorter history than the one used be the local model
+          ## have a shorter history than the one used by the local model
           ll_model_H0 <- 0
           ll_H0 <- 0
           local_df <- (1 + ncol(covariate) * local_model$H1_model$hsize) * (nb_vals - 1)
