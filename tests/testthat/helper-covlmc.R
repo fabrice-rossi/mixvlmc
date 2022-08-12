@@ -14,6 +14,26 @@ build_data_set <- function(n, seed = 0) {
   list(x = x, covariate = covariate)
 }
 
+build_data_set_2 <- function(seed = 0) {
+  withr::local_seed(seed)
+  y <- as.factor(rep(rep(1:4, each = 50), 2))
+  z <- runif(length(y))
+  dts_cov <- data.frame(y = y, z = z)
+  cov_dep <- matrix(runif(length(levels(y)) * 4, min = -1, max = 1), nrow = length(levels(y)))
+  cov_dep[cov_dep > 0.5] <- 1
+  cov_dep[cov_dep < -0.5] <- -1
+  cov_dep[cov_dep <= 0.5 & cov_dep >= -0.5] <- 0
+  x <- rep(0, length(y))
+  x[2] <- sample(c(0, 1), 1)
+  probs <- rep(NA, length(y))
+  for (k in 3:length(y)) {
+    probs[k] <- 1 / (1 + exp(-sum(cov_dep[as.integer(y[k - 1]), ] * c(1, x[k - 1], z[c(k - 1, k - 2)]))))
+    x[k] <- ifelse(runif(1) <= probs[k], 1, 0)
+  }
+  x <- as.factor(x)
+  list(x = x, covariate = dts_cov)
+}
+
 extract_p_value <- function(tree) {
   recurse_extract_p_value <- function(tree) {
     if (is.null(tree[["children"]])) {
