@@ -359,13 +359,16 @@ ctx_tree_fit_glm <- function(tree, y, covariate, alpha, control, assume_model = 
             }
             if (submodels[[v]][["model"]]$hsize == local_model$H1_model$hsize) {
               local_data <- submodels[[v]][["model"]]$data
-              mm <- submodels[[v]][["model"]]$data$local_mm
-              target <- submodels[[v]][["model"]]$data$target
             } else {
-              local_data <- prepare_glm(covariate, submodels[[v]]$match, d, y)
+              local_data <- prepare_glm(covariate, 1 + submodels[[v]]$match, d, y)
               if (verbose) {
                 print("preparing local data")
-                # print(head(local_data$local_mm))
+                print(paste(ctx, collapse=", "))
+                for(tmp in 1:5) {
+                  print(y[(tree$match[tmp]+1):(tree$match[tmp]+d+1)])
+                  print(y[(submodels[[v]]$match[tmp]+1):(submodels[[v]]$match[tmp]+d+1)])
+                  print("")
+                }
               }
             }
             ll_model_H0 <- ll_model_H0 +
