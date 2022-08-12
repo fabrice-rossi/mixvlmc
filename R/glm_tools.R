@@ -119,6 +119,20 @@ fit_glm <- function(target, mm, nb_vals, control) {
   }
 }
 
+glm_drop_level_correction <- function(model, newdata) {
+  xlevels <- model$xlevels
+  if (!is.null(xlevels)) {
+    for (var in names(xlevels)) {
+      nv <- newdata[[var]]
+      if (length(levels(nv)) > length(xlevels[[var]])) {
+        to_replace <- is.na(match(newdata[[var]], xlevels[[var]]))
+        newdata[[var]][to_replace] <- xlevels[[var]][1]
+      }
+    }
+  }
+  newdata
+}
+
 glm_likelihood <- function(model, mm, target) {
   UseMethod("glm_likelihood")
 }
@@ -172,36 +186,40 @@ glm_coef.default <- function(model, data) {
 #' @exportS3Method
 glm_coef.glm <- function(model, data) {
   pre_coeff <- stats::coef(model)
-  pre_names <- names(pre_coeff)
-  data_names <- names(data)
-  res <- c(pre_coeff[1]) ## intercept
-  res_name <- c(pre_names[1])
   xlevels <- model$xlevels
-  for (var in data_names) {
-    if (var %in% pre_names) {
-      ## numerical variable, simple case
-      res <- c(res, pre_coeff[[var]])
-      res_name <- c(res_name, var)
-    } else {
-      ## non numerical
-      all_levels <- levels(data[[var]])
-      model_levels <- xlevels[[var]]
-      ref_level <- model_levels[1]
-      for (lv in all_levels) {
-        if (lv != ref_level) {
-          lv_name <- stringr::str_c(var, lv)
-          if (lv %in% model_levels) {
-            res <- c(res, pre_coeff[[lv_name]])
-          } else {
-            res <- c(res, 0)
+  if (is.null(xlevels)) {
+    pre_coeff
+  } else {
+    pre_names <- names(pre_coeff)
+    data_names <- names(data)
+    res <- c(pre_coeff[1]) ## intercept
+    res_name <- c(pre_names[1])
+    for (var in data_names) {
+      if (var %in% pre_names) {
+        ## numerical variable, simple case
+        res <- c(res, pre_coeff[[var]])
+        res_name <- c(res_name, var)
+      } else if(var %in% names(xlevels)) {
+        ## non numerical
+        all_levels <- levels(data[[var]])
+        model_levels <- xlevels[[var]]
+        ref_level <- model_levels[1]
+        for (lv in all_levels) {
+          if (lv != ref_level) {
+            lv_name <- stringr::str_c(var, lv)
+            if (lv %in% model_levels) {
+              res <- c(res, pre_coeff[[lv_name]])
+            } else {
+              res <- c(res, 0)
+            }
+            res_name <- c(res_name, lv_name)
           }
-          res_name <- c(res_name, lv_name)
         }
       }
     }
+    names(res) <- res_name
+    res
   }
-  names(res) <- res_name
-  res
 }
 
 #' @exportS3Method
@@ -217,15 +235,7 @@ glm_sample_one <- function(model, newdata) {
 
 #' @exportS3Method
 glm_sample_one.glm <- function(model, newdata) {
-  xlevels <- model$xlevels
-  for (var in names(xlevels)) {
-    nv <- newdata[[var]]
-    if (length(levels(nv)) > length(xlevels[[var]])) {
-      if (!nv %in% xlevels[[var]]) {
-        newdata[[var]] <- xlevels[[var]][1]
-      }
-    }
-  }
+  newdata <- glm_drop_level_correction(model, newdata)
   probs <- stats::predict(model, newdata = newdata, type = "response")
   if (stats::runif(1) <= probs) {
     1
