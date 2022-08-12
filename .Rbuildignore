@@ -5,3 +5,5 @@ devutils
 ^\.github$
 ^data-raw$
 ^README\.Rmd$
+^doc$
+^Meta$
