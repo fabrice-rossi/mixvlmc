@@ -33,7 +33,7 @@ devtools::install_github("fabrice-rossi/mixvlmc")
 
 ## Usage
 ### Variable length Marvkoc chains
-Variable length Marvkov chains (VLMC) are sparse high order Markov chains. They can be used to model time series with discrete values (states) with a mix of small order dependencies for certain states and higher order dependencies for other states. For instance, with a binary time series, the probability of observing 1 a time $t$ could be constant whatever the past states if the last one (at time $t-1$) was 1, but could depend on states at time $t-3$ and $t-2$ if the state was 0 at time $t-1$. A collection of past states that determines completely the transition probabilities is a _context_ of the VLMC.
+Variable length Marvkov chains (VLMC) are sparse high order Markov chains. They can be used to model time series with discrete values (states) with a mix of small order dependencies for certain states and higher order dependencies for other states. For instance, with a binary time series, the probability of observing 1 a time $t$ could be constant whatever the past states if the last one (at time $t-1$) was 1, but could depend on states at time $t-3$ and $t-2$ if the state was 0 at time $t-1$. A collection of past states that determines completely the transition probabilities is a _context_ of the VLMC. Read `vignette("context-trees")` for details about contexts and context tree. 
 
 VLMC with covariates are extension of VLMC in which transition probabilities (probabilities of the next state given the past) can be influenced by the past values of some covariates (in addition to the past values of the time series itself). Each context is associated to a logistic model that maps the (past values of the) covariates to transition probabilities.  
 

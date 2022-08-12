@@ -46,7 +46,8 @@ and
 if the state was 0 at time
 ![t-1](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;t-1 "t-1").
 A collection of past states that determines completely the transition
-probabilities is a *context* of the VLMC.
+probabilities is a *context* of the VLMC. Read
+`vignette("context-trees")` for details about contexts and context tree.
 
 VLMC with covariates are extension of VLMC in which transition
 probabilities (probabilities of the next state given the past) can be
@@ -264,11 +265,16 @@ elec_covlmc <- covlmc(elec_dts, elec_cov, min_size = 5, alpha=0.5)
 draw(elec_covlmc, time_sep= "|")
 #> *
 #> +-- low (0.03031 [ -1.558|1.006 ])
-#> '-- typical (merging (2 3): 0.004668)
+#> '-- typical
 #> |   +-- low (0.2181 [ 0.3567|-27.81|27.81
 #> |   |                 -1.253|-14.39|13.69 ])
-#> |   '-- typical (0.3168 [ 2.666 |0.566
-#> |   |                     0.2683|0.2426 ])
+#> |   '-- typical (collapsing: 0.3619)
+#> |   |   +-- low (0.07525 [ 1.099 |18.33
+#> |   |   |                  -18.22|35.57 ])
+#> |   |   '-- typical (0.2843 [ 2.791|0.4573
+#> |   |   |                     0.47 |-0.06454 ])
+#> |   |   '-- high (0.4491 [ 18.89|-16.25
+#> |   |                      16.25|-15.56 ])
 #> |   '-- high (0.1715 [ 2.015 |16.18
 #> |                      0.6931|16.61 ])
 #> '-- high (0.05754 [ 17.41|-14.23
@@ -299,12 +305,19 @@ while(TRUE) {
 elec_covlmc_bics <- sapply(elec_covlmc_models, BIC)
 best_elec_covlmc <- elec_covlmc_models[[which.min(elec_covlmc_bics)]]
 draw(best_elec_covlmc, model = "full", time_sep = " | ")
-#> * (merging (2 3): 1.273e-111)
+#> *
 #> +-- low (0.03031 [ (I)    | day_1TRUE
 #> |                  -1.558 | 1.006 ])
-#> '-- typical (0.3886 [ (I)
-#> |                     2.487
-#> |                     0.1651 ])
+#> '-- typical (collapsing: 3.663e-09)
+#> |   +-- low (0.8071 [ (I)
+#> |   |                 0.3365
+#> |   |                 -1.609 ])
+#> |   '-- typical (0.3168 [ (I)
+#> |   |                     2.937
+#> |   |                     0.3747 ])
+#> |   '-- high (0.1715 [ (I)
+#> |                      2.773
+#> |                      1.705 ])
 #> '-- high (0.05754 [ (I)
 #>                     3.807
 #>                     5.481 ])
