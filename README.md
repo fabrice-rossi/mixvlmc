@@ -37,7 +37,8 @@ chains. They can be used to model time series with discrete values
 higher order dependencies for other states. For instance, with a binary
 time series, the probability of observing 1 a time
 ![t](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;t "t")
-could be constant whatever the past states if the last one (at time
+could be constant whatever the older past states if the last one (at
+time
 ![t-1](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;t-1 "t-1"))
 was 1, but could depend on states at time
 ![t-3](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;t-3 "t-3")
@@ -83,8 +84,8 @@ model
 The default parameters of `vlmc()` will tend to produce overly complex
 VLMC in order to avoid missing potential structure in the time series.
 In the example above, we expect the optimal VLMC to be a constant
-distribution as the sample is independent and uniformly distributed (is
-has not temporal structure). The default paramaters give here an overly
+distribution as the sample is independent and uniformly distributed (it
+has not temporal structure). The default parameters give here an overly
 complex model, as illustrated by its text based representation
 
 ``` r
@@ -106,19 +107,20 @@ draw(model)
 ```
 
 The representation uses crude ascii art to display the contexts of the
-VLMC organized in to tree:
+VLMC organized in to tree (see `vignette("context-trees")` for a more
+detailed introduction):
 
 -   the root `*` corresponds to an empty context;
 -   one can read contexts by following branches (represented by 2 dashes
-    `--`) down to its end (the leaf): for instance
+    `--`) down to their ends (the leaves): for instance
     ![(1, 0, 1, 0, 0, 0)](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%281%2C%200%2C%201%2C%200%2C%200%2C%200%29 "(1, 0, 1, 0, 0, 0)")
-    is one of the context of the tree.
+    is one of the contexts of the tree.
 
 Here the context
 ![(1, 0, 1, 0, 0, 0)](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%281%2C%200%2C%201%2C%200%2C%200%2C%200%29 "(1, 0, 1, 0, 0, 0)")
 is associated to the transition probabilities
 ![(1, 0)](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%281%2C%200%29 "(1, 0)").
-This means that when one observe this context in the time series, it is
+This means that when one observes this context in the time series, it is
 *always* followed by a 0. Notice that contexts are traditionally written
 from the most recent value to the oldest one. Thus, the context
 ![(1, 0, 1, 0, 0, 0)](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%281%2C%200%2C%201%2C%200%2C%200%2C%200%29 "(1, 0, 1, 0, 0, 0)")
@@ -234,7 +236,7 @@ elec_dts <- cut(elec, breaks = c(0, 0.4, 2, 8), labels=c("low", "typical", "high
 
 The best VLMC model is quite simple. It is almost a standard order one
 Markov chain, up to the order 2 context used when the active power is
-typical.
+*typical*.
 
 ``` r
 elec_vlmc <- vlmc(elec_dts)
@@ -250,7 +252,7 @@ draw(best_elec_vlmc)
 #> '-- high (0.003497, 0.1573, 0.8392)
 ```
 
-As pointed about above, low active power tend to correspond to night
+As pointed about above, *low* active power tend to correspond to night
 phase. We can include this information by introducing a day covariate as
 follows:
 
@@ -262,23 +264,30 @@ A VLMC with covariate is estimated using the `covlmc` function:
 
 ``` r
 elec_covlmc <- covlmc(elec_dts, elec_cov, min_size = 5, alpha=0.5)
-draw(elec_covlmc, time_sep= "|")
+draw(elec_covlmc, time_sep= "|", model = "full", p_value = FALSE)
 #> *
-#> +-- low (0.03031 [ -1.558|1.006 ])
+#> +-- low ([ (I)   |day_1TRUE
+#> |          -1.558|1.006 ])
 #> '-- typical
-#> |   +-- low (0.2181 [ 0.3567|-27.81|27.81
-#> |   |                 -1.253|-14.39|13.69 ])
-#> |   '-- typical (collapsing: 0.3619)
-#> |   |   +-- low (0.07525 [ 1.099 |18.33
-#> |   |   |                  -18.22|35.57 ])
-#> |   |   '-- typical (0.2843 [ 2.791|0.4573
-#> |   |   |                     0.47 |-0.06454 ])
-#> |   |   '-- high (0.4491 [ 18.89|-16.25
-#> |   |                      16.25|-15.56 ])
-#> |   '-- high (0.1715 [ 2.015 |16.18
-#> |                      0.6931|16.61 ])
-#> '-- high (0.05754 [ 17.41|-14.23
-#>                     19.38|-14.88 ])
+#> |   +-- low ([ (I)   |day_1TRUE|day_2TRUE
+#> |   |          0.3567|-27.81   |27.81
+#> |   |          -1.253|-14.39   |13.69 ])
+#> |   '-- typical
+#> |   |   +-- low ([ (I)   |day_1TRUE
+#> |   |   |          1.099 |18.33
+#> |   |   |          -18.22|35.57 ])
+#> |   |   '-- typical ([ (I)  |day_1TRUE
+#> |   |   |              2.791|0.4573
+#> |   |   |              0.47 |-0.06454 ])
+#> |   |   '-- high ([ (I)  |day_1TRUE
+#> |   |               18.89|-16.25
+#> |   |               16.25|-15.56 ])
+#> |   '-- high ([ (I)   |day_1TRUE
+#> |               2.015 |16.18
+#> |               0.6931|16.61 ])
+#> '-- high ([ (I)  |day_1TRUE
+#>             17.41|-14.23
+#>             19.38|-14.88 ])
 ```
 
 Pruning a covlmc model is slightly more complicated than in the case of
@@ -304,27 +313,33 @@ while(TRUE) {
 }
 elec_covlmc_bics <- sapply(elec_covlmc_models, BIC)
 best_elec_covlmc <- elec_covlmc_models[[which.min(elec_covlmc_bics)]]
-draw(best_elec_covlmc, model = "full", time_sep = " | ")
+draw(best_elec_covlmc, model = "full", time_sep = " | ", p_value = FALSE)
 #> *
-#> +-- low (0.03031 [ (I)    | day_1TRUE
-#> |                  -1.558 | 1.006 ])
-#> '-- typical (collapsing: 3.663e-09)
-#> |   +-- low (0.8071 [ (I)
-#> |   |                 0.3365
-#> |   |                 -1.609 ])
-#> |   '-- typical (0.3168 [ (I)
-#> |   |                     2.937
-#> |   |                     0.3747 ])
-#> |   '-- high (0.1715 [ (I)
-#> |                      2.773
-#> |                      1.705 ])
-#> '-- high (0.05754 [ (I)
-#>                     3.807
-#>                     5.481 ])
+#> +-- low ([ (I)    | day_1TRUE
+#> |          -1.558 | 1.006 ])
+#> '-- typical
+#> |   +-- low ([ (I)
+#> |   |          0.3365
+#> |   |          -1.609 ])
+#> |   '-- typical ([ (I)
+#> |   |              2.937
+#> |   |              0.3747 ])
+#> |   '-- high ([ (I)
+#> |               2.773
+#> |               1.705 ])
+#> '-- high ([ (I)
+#>             3.807
+#>             5.481 ])
 ```
 
-As in the VLMC case, the optimal model is simple. The two contexts
-`typical` and `high` do not use the covariate. The `low` context does
-not switch to a `high` context (hence the single row of parameters) but
-uses the covariate. As expected, the probability of switching from `low`
-to `typical` is larger during the day.
+As in the VLMC case, the optimal model remains rather simple:
+
+-   the *high* context do not use the covariate and is equivalent to the
+    vlmc context;
+-   the *low* context is more interesting: it does not switch to a
+    *high* context (hence the single row of parameters) but uses the
+    covariate. As expected, the probability of switching from *low* to
+    *typical* is larger during the day;
+-   the *typical* context is described in a more complex way that in the
+    case of the vlmc as the transition probabilities depend on the
+    previous state.

@@ -33,7 +33,7 @@ devtools::install_github("fabrice-rossi/mixvlmc")
 
 ## Usage
 ### Variable length Marvkoc chains
-Variable length Marvkov chains (VLMC) are sparse high order Markov chains. They can be used to model time series with discrete values (states) with a mix of small order dependencies for certain states and higher order dependencies for other states. For instance, with a binary time series, the probability of observing 1 a time $t$ could be constant whatever the past states if the last one (at time $t-1$) was 1, but could depend on states at time $t-3$ and $t-2$ if the state was 0 at time $t-1$. A collection of past states that determines completely the transition probabilities is a _context_ of the VLMC. Read `vignette("context-trees")` for details about contexts and context tree. 
+Variable length Marvkov chains (VLMC) are sparse high order Markov chains. They can be used to model time series with discrete values (states) with a mix of small order dependencies for certain states and higher order dependencies for other states. For instance, with a binary time series, the probability of observing 1 a time $t$ could be constant whatever the older past states if the last one (at time $t-1$) was 1, but could depend on states at time $t-3$ and $t-2$ if the state was 0 at time $t-1$. A collection of past states that determines completely the transition probabilities is a _context_ of the VLMC. Read `vignette("context-trees")` for details about contexts and context tree. 
 
 VLMC with covariates are extension of VLMC in which transition probabilities (probabilities of the next state given the past) can be influenced by the past values of some covariates (in addition to the past values of the time series itself). Each context is associated to a logistic model that maps the (past values of the) covariates to transition probabilities.  
 
@@ -51,17 +51,17 @@ x <- sample(c(0L, 1L), 200, replace = TRUE)
 model <- vlmc(x)
 model
 ```
-The default parameters of `vlmc()` will tend to produce overly complex VLMC in order to avoid missing potential structure in the time series. In the example above, we expect the optimal VLMC to be a constant distribution as the sample is independent and uniformly distributed (is has not temporal structure). The default paramaters give here an overly complex model, as illustrated by its text based representation
+The default parameters of `vlmc()` will tend to produce overly complex VLMC in order to avoid missing potential structure in the time series. In the example above, we expect the optimal VLMC to be a constant distribution as the sample is independent and uniformly distributed (it has not temporal structure). The default parameters give here an overly complex model, as illustrated by its text based representation
 ```{r}
 draw(model)
 ```
 
-The representation uses crude ascii art to display the contexts of the VLMC organized in to tree:
+The representation uses crude ascii art to display the contexts of the VLMC organized in to tree (see `vignette("context-trees")` for a more detailed introduction):
 
 - the root `*` corresponds to an empty context;
-- one can read contexts by following branches (represented by 2 dashes `--`) down to its end (the leaf): for instance $(1, 0, 1, 0, 0, 0)$ is one of the context of the tree. 
+- one can read contexts by following branches (represented by 2 dashes `--`) down to their ends (the leaves): for instance $(1, 0, 1, 0, 0, 0)$ is one of the contexts of the tree. 
 
-Here the context $(1, 0, 1, 0, 0, 0)$ is associated to the transition probabilities $(1, 0)$. This means that when one observe this context in the time series, it is _always_ followed by a 0. Notice that contexts are traditionally written from the most recent value to the oldest one. Thus, the context $(1, 0, 1, 0, 0, 0)$ corresponds to the sub time series $(0, 0, 0, 1, 0, 1)$.  
+Here the context $(1, 0, 1, 0, 0, 0)$ is associated to the transition probabilities $(1, 0)$. This means that when one observes this context in the time series, it is _always_ followed by a 0. Notice that contexts are traditionally written from the most recent value to the oldest one. Thus, the context $(1, 0, 1, 0, 0, 0)$ corresponds to the sub time series $(0, 0, 0, 1, 0, 1)$.  
 
 #### BIC based model selection
 
@@ -122,7 +122,7 @@ We build a discrete time series from those (somewhat arbitrary) thresholds:
 elec_dts <- cut(elec, breaks = c(0, 0.4, 2, 8), labels=c("low", "typical", "high"))
 ```
 
-The best VLMC model is quite simple. It is almost a standard order one Markov chain, up to the order 2 context used when the active power is typical. 
+The best VLMC model is quite simple. It is almost a standard order one Markov chain, up to the order 2 context used when the active power is _typical_. 
 ```{r}
 elec_vlmc <- vlmc(elec_dts)
 e_alphas <- cutoff(elec_vlmc)
@@ -132,14 +132,14 @@ best_elec_vlmc <- pruned_elec_vlmcs[[which.min(e_bics)]]
 draw(best_elec_vlmc)
 ```
 
-As pointed about above, low active power tend to correspond to night phase. We can include this information by introducing a day covariate as follows:
+As pointed about above, _low_ active power tend to correspond to night phase. We can include this information by introducing a day covariate as follows:
 ```{r}
 elec_cov <- data.frame(day = (pc_week_5$hour >= 7 & pc_week_5$hour <= 17))
 ```
 A VLMC with covariate is estimated using the `covlmc` function:
 ```{r}
 elec_covlmc <- covlmc(elec_dts, elec_cov, min_size = 5, alpha=0.5)
-draw(elec_covlmc, time_sep= "|")
+draw(elec_covlmc, time_sep= "|", model = "full", p_value = FALSE)
 ```
 
 Pruning a covlmc model is slightly more complicated than in the case of vlmc models. The main difficulty is that cut off values cannot be computed directly from a complex model as new values will appear during the pruning process.  A typical way to circumvent this difficulty is to recompute cut off values after each pruning operation, as follows:
@@ -160,9 +160,13 @@ while(TRUE) {
 }
 elec_covlmc_bics <- sapply(elec_covlmc_models, BIC)
 best_elec_covlmc <- elec_covlmc_models[[which.min(elec_covlmc_bics)]]
-draw(best_elec_covlmc, model = "full", time_sep = " | ")
+draw(best_elec_covlmc, model = "full", time_sep = " | ", p_value = FALSE)
 ```
 
-As in the VLMC case, the optimal model is simple. The two contexts `typical` and `high` do not use the covariate. The `low` context does not switch to a `high` context (hence the single row of parameters) but uses the covariate. As expected, the probability of switching from `low` to `typical` is larger during the day. 
+As in the VLMC case, the optimal model remains rather simple:
+
+- the _high_ context do not use the covariate and is equivalent to the vlmc context;
+- the _low_  context is more interesting: it does not switch to a _high_ context (hence the single row of parameters) but uses the covariate. As expected, the probability of switching from _low_ to _typical_ is larger during the day;
+- the _typical_ context is described in a more complex way that in the case of the vlmc as the transition probabilities depend on the previous state.
 
 
