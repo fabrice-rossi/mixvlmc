@@ -246,7 +246,6 @@ ctx_tree_fit_glm <- function(tree, y, covariate, alpha, control, assume_model = 
               nb_models <- nb_models + 1
               prunable <- submodels[[v]][["prunable"]]
               if (isTRUE(prunable)) {
-                max_hsize <- max(max_hsize, submodels[[v]][["model"]]$hsize)
                 if (assume_model) {
                   if (submodels[[v]][["model"]]$hsize == d + 1) {
                     nb_rejected <- nb_rejected + 1
@@ -255,6 +254,7 @@ ctx_tree_fit_glm <- function(tree, y, covariate, alpha, control, assume_model = 
                     nb_prunable <- nb_prunable + 1
                     ll_H0 <-
                       ll_H0 + submodels[[v]][["model"]]$likelihood
+                    max_hsize <- max(max_hsize, submodels[[v]][["model"]]$hsize)
                   }
                 } else {
                   if (!submodels[[v]][["model"]]$H0) {
@@ -264,6 +264,7 @@ ctx_tree_fit_glm <- function(tree, y, covariate, alpha, control, assume_model = 
                     nb_prunable <- nb_prunable + 1
                     ll_H0 <-
                       ll_H0 + submodels[[v]][["model"]]$likelihood
+                    max_hsize <- max(max_hsize, submodels[[v]][["model"]]$hsize)
                   }
                 }
               }
@@ -343,7 +344,7 @@ ctx_tree_fit_glm <- function(tree, y, covariate, alpha, control, assume_model = 
             if (verbose) {
               print(paste("call to glm with d=", d, sep = ""))
             }
-            local_model <- node_fit_glm(full_index, d, y, covariate, alpha, nb_vals, return_all = TRUE, control)
+            local_model <- node_fit_glm(full_index, max_hsize, y, covariate, alpha, nb_vals, return_all = TRUE, control, d - max_hsize)
           }
         }
         if (!is.null(local_model) && is.null(p_value)) {
@@ -362,7 +363,7 @@ ctx_tree_fit_glm <- function(tree, y, covariate, alpha, control, assume_model = 
             if (submodels[[v]][["model"]]$hsize == local_model$H1_model$hsize) {
               local_data <- submodels[[v]][["model"]]$data
             } else {
-              local_data <- prepare_glm(covariate, 1 + submodels[[v]]$match, d, y)
+              local_data <- prepare_glm(covariate, 1 + submodels[[v]]$match, max_hsize, y, d - max_hsize)
               if (verbose) {
                 print("preparing local data")
                 print(paste(ctx, collapse = ", "))
