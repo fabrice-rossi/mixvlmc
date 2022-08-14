@@ -199,7 +199,7 @@ glm_coef.glm <- function(model, data) {
         ## numerical variable, simple case
         res <- c(res, pre_coeff[[var]])
         res_name <- c(res_name, var)
-      } else if(var %in% names(xlevels)) {
+      } else if (var %in% names(xlevels)) {
         ## non numerical
         all_levels <- levels(data[[var]])
         model_levels <- xlevels[[var]]

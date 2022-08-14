@@ -363,10 +363,10 @@ ctx_tree_fit_glm <- function(tree, y, covariate, alpha, control, assume_model = 
               local_data <- prepare_glm(covariate, 1 + submodels[[v]]$match, d, y)
               if (verbose) {
                 print("preparing local data")
-                print(paste(ctx, collapse=", "))
-                for(tmp in 1:5) {
-                  print(y[(tree$match[tmp]+1):(tree$match[tmp]+d+1)])
-                  print(y[(submodels[[v]]$match[tmp]+1):(submodels[[v]]$match[tmp]+d+1)])
+                print(paste(ctx, collapse = ", "))
+                for (tmp in 1:5) {
+                  print(y[(tree$match[tmp] + 1):(tree$match[tmp] + d + 1)])
+                  print(y[(submodels[[v]]$match[tmp] + 1):(submodels[[v]]$match[tmp] + d + 1)])
                   print("")
                 }
               }
