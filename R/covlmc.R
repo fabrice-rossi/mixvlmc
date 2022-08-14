@@ -618,6 +618,10 @@ covlmc <- function(x, covariate, alpha = 0.05, min_size = 15, max_depth = 100, k
   if (length(vals) > max(10, 0.05 * length(x))) {
     warning(paste0("x as numerous unique values (", length(vals), ")"))
   }
+  ## covariate preparation
+  desc <- covariate_description(covariate)
+  cov_desc <- desc$cov_desc
+  covariate <- desc$covariate
   ## we enforce a full context tree (with all_children=TRUE)
   ctx_tree <- grow_ctx_tree(ix, vals,
     min_size = min_size, max_depth = max_depth,
@@ -637,6 +641,7 @@ covlmc <- function(x, covariate, alpha = 0.05, min_size = 15, max_depth = 100, k
   pre_result$cov_names <- names(covariate)
   pre_result$alpha <- alpha
   pre_result$control <- control
+  pre_result$cov_desc <- cov_desc
   if (keep_data) {
     pre_result$x <- x
     pre_result$covariate <- covariate

@@ -57,7 +57,7 @@ match_context_co <- function(tree, ctx) {
 #' new_dts_2 <- simulate(m_cov, nrow(new_cov), seed = 0, covariate = new_cov, init = dts[1:10])
 simulate.covlmc <- function(object, nsim = 1, seed = NULL, covariate, init = NULL, ...) {
   assertthat::assert_that(nrow(covariate) >= nsim)
-  assertthat::assert_that(assertthat::has_name(covariate, object$cov_names))
+  covariate <- validate_covariate(object, covariate)
   max_depth <- depth(object)
   if (!is.null(seed)) {
     withr::local_seed(seed)

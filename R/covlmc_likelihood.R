@@ -167,7 +167,7 @@ loglikelihood.covlmc <- function(vlmc, newdata, newcov, ...) {
     )
     assertthat::assert_that(is.data.frame(newcov))
     assertthat::assert_that(nrow(newcov) == length(newdata))
-    assertthat::assert_that(assertthat::has_name(newcov, vlmc$cov_names))
+    newcov <- validate_covariate(vlmc, newcov)
     nx <- to_dts(newdata, vlmc$vals)
     ncovlmc <- match_ctx(vlmc, nx$ix, keep_match = TRUE)
     if (length(vlmc$vals) > 2) {

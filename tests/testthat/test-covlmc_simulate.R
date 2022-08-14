@@ -89,3 +89,14 @@ test_that("covlmc simulate handles missing factors in subsets", {
     expect_error(simulate(m_cov, 100, seed = 0, covariate = dts_cov), regexp = NA)
   }
 })
+
+test_that("covlmc simulate detects new levels in factors", {
+  data <- build_data_set_2(0)
+  model <- covlmc(data$x, data$covariate, min_size = 5, alpha = 0.1)
+  new_cov <- data$covariate
+  new_cov$y <- as.integer(new_cov$y)
+  new_cov$y[1] <- 5
+  expect_error(simulate(model, 100, covariate = new_cov), regexp = "Factor y has new level 5")
+  new_cov$y[2] <- 6
+  expect_error(simulate(model, 100, covariate = new_cov), regexp = "Factor y has new levels 5, 6")
+})
