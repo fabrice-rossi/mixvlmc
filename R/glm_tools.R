@@ -137,10 +137,19 @@ glm_likelihood <- function(model, mm, target) {
   UseMethod("glm_likelihood")
 }
 
+sum_log_prob <- function(prob, indic) {
+  pre_res <- sum(log(prob)[indic != 0])
+  if (length(pre_res) == 0) {
+    0
+  } else {
+    pre_res
+  }
+}
+
 #' @exportS3Method
 glm_likelihood.glm <- function(model, mm, target) {
   probs <- stats::predict(model, mm, type = "response")
-  sum(log(probs) * target + log(1 - probs) * (1 - target))
+  sum_log_prob(probs, target) + sum_log_prob(1 - probs, 1 - target)
 }
 
 #' @exportS3Method
@@ -157,7 +166,12 @@ glm_likelihood.vglm <- function(model, mm, target) {
 #' @exportS3Method
 glm_likelihood.multinom <- function(model, mm, target) {
   probs <- stats::predict(model, mm, type = "probs")
-  sum(log(probs) * stats::model.matrix(~ target - 1))
+  tm <- stats::model.matrix(~ target - 1)
+  if (ncol(tm) == 1) {
+    sum_log_prob(probs, tm[, 1]) + sum_log_prob(1 - probs, 1 - tm[, 1])
+  } else {
+    sum(log(probs) * tm)
+  }
 }
 
 is_glm_low_rank <- function(model) {
