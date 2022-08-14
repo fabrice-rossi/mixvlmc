@@ -1,6 +1,6 @@
 ## fit a glm guaranteed to be of full rank by removing older covariates if needed
-node_fit_glm_full_rank <- function(index, y, covariate, nb_vals, d, control) {
-  glmdata <- prepare_glm(covariate, index, d, y)
+node_fit_glm_full_rank <- function(index, y, covariate, nb_vals, d, control, from = 0) {
+  glmdata <- prepare_glm(covariate, index, d, y, from)
   node_fit_glm_full_rank_with_data(glmdata$local_mm, d, glmdata$target, ncol(covariate), nb_vals, control)
 }
 
@@ -34,9 +34,9 @@ node_fit_glm_full_rank_with_data <- function(local_mm, d, target, dim_cov, nb_va
 ## the size=d model is returned (H0 is rejected). If it is not, the size=d-1 model
 ## is returned (H0 is not rejected)
 ## if return_all is true, both models are returned when this makes sense
-node_fit_glm <- function(index, d, y, covariate, alpha, nb_vals, return_all = FALSE, control) {
+node_fit_glm <- function(index, d, y, covariate, alpha, nb_vals, return_all = FALSE, control, from = 0) {
   ## prepare the data
-  glmdata <- prepare_glm(covariate, index, d, y)
+  glmdata <- prepare_glm(covariate, index, d, y, from)
   node_fit_glm_with_data(glmdata$local_mm, d, glmdata$target, ncol(covariate), alpha, nb_vals, return_all, control)
 }
 
@@ -234,6 +234,7 @@ ctx_tree_fit_glm <- function(tree, y, covariate, alpha, control, assume_model = 
         nb_children <- 0
         nb_rejected <- 0
         nb_prunable <- 0
+        max_hsize <- 0
         pr_candidates <- c()
         ll_H0 <- 0
         for (v in seq_along(tree$children)) {
@@ -245,6 +246,7 @@ ctx_tree_fit_glm <- function(tree, y, covariate, alpha, control, assume_model = 
               nb_models <- nb_models + 1
               prunable <- submodels[[v]][["prunable"]]
               if (isTRUE(prunable)) {
+                max_hsize <- max(max_hsize, submodels[[v]][["model"]]$hsize)
                 if (assume_model) {
                   if (submodels[[v]][["model"]]$hsize == d + 1) {
                     nb_rejected <- nb_rejected + 1
@@ -314,9 +316,9 @@ ctx_tree_fit_glm <- function(tree, y, covariate, alpha, control, assume_model = 
             }
           } else {
             if (verbose) {
-              print(paste("fitting a local model (of full rank) with", d, "covariates"))
+              print(paste("fitting a local model (of full rank) with hsize", max_hsize, "at depth", d))
             }
-            local_model <- node_fit_glm(tree$match, d, y, covariate, alpha, nb_vals, return_all = TRUE, control)
+            local_model <- node_fit_glm(tree$match, max_hsize, y, covariate, alpha, nb_vals, return_all = TRUE, control, d - max_hsize)
             if (verbose) {
               print(paste(local_model$H1_model$H0, local_model$H1_model$hsize))
             }
@@ -388,8 +390,11 @@ ctx_tree_fit_glm <- function(tree, y, covariate, alpha, control, assume_model = 
             lower.tail = FALSE
           )
           if (is.na(p_value)) {
-            print(paste(lambda, sub_df, local_df))
+            print(paste(lambda, sub_df, local_df, max_hsize, d))
             print(local_model$H1_model$model)
+            for (v in pr_candidates) {
+              print(submodels[[v]]$model$model)
+            }
           }
           if (verbose) {
             print(paste(lambda, p_value))
