@@ -38,7 +38,7 @@ draw_covlmc_model <- function(coefficients, p_value, hsize, names, params) {
 rec_draw_covlmc <- function(label, prefix, ct, vals, control, node2txt, params) {
   cat(label)
   if (!is.null(node2txt)) {
-    node_txt <- node2txt(ct, params)
+    node_txt <- node2txt(ct, vals, params)
     if (!is.null(node_txt)) {
       cat_with_prefix(label, prefix, node_txt, control)
     }
@@ -82,7 +82,7 @@ rec_draw_covlmc <- function(label, prefix, ct, vals, control, node2txt, params) 
       c_prefix <- stringr::str_c(prefix, c_prefix)
       cat(c_label)
       if (!is.null(node2txt)) {
-        node_txt <- node2txt(list(model = ct[["merged_model"]]), params)
+        node_txt <- node2txt(list(model = ct[["merged_model"]]), vasl, params)
         if (!is.null(node_txt)) {
           cat_with_prefix(c_label, c_prefix, node_txt, control)
         }
@@ -92,7 +92,7 @@ rec_draw_covlmc <- function(label, prefix, ct, vals, control, node2txt, params) 
   }
 }
 
-covlmc_node2txt <- function(node, params) {
+covlmc_node2txt <- function(node, vals, params) {
   digits <- params$digits
   if (is.null(digits)) {
     digits <- 2
@@ -103,7 +103,7 @@ covlmc_node2txt <- function(node, params) {
     stringr::str_c("collapsing:", signif(node$p_value, params$digits), sep = " ")
   } else if (!is.null(node$merged_p_value) && isTRUE(params$p_value)) {
     stringr::str_c(
-      "merging (", stringr::str_c(node$merged_candidates, collapse = " "), "): ",
+      "merging (", stringr::str_c(vals[node$merged_candidates], collapse = " and "), "): ",
       signif(node$merged_p_value, params$digits)
     )
   } else {
