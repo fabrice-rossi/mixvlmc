@@ -77,8 +77,8 @@ model <- vlmc(x)
 model
 #> VLMC context tree on 0, 1 
 #>  cutoff: 1.921 (quantile: 0.05)
-#>  Maximum context length: 6 
-#>  Number of contexts: 11
+#>  Number of contexts: 11 
+#>  Maximum context length: 6
 ```
 
 The default parameters of `vlmc()` will tend to produce overly complex
@@ -164,8 +164,8 @@ sun_model <- vlmc(sun_activity, alpha=0.1)
 sun_model
 #> VLMC context tree on high, low 
 #>  cutoff: 1.353 (quantile: 0.1)
-#>  Maximum context length: 14 
-#>  Number of contexts: 27
+#>  Number of contexts: 27 
+#>  Maximum context length: 14
 ```
 
 Then we proceed as above:

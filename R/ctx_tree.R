@@ -152,11 +152,11 @@ print.ctx_tree <- function(x, ...) {
     "Context tree on",
     paste(x$vals, collapse = ", ")
   ), "\n")
-  if (!is.null(x$depth)) {
-    cat(paste(" Maximum context length:", x$depth, "\n"))
-  }
   if (!is.null(x$nb_ctx)) {
     cat(paste(" Number of contexts:", x$nb_ctx, "\n"))
+  }
+  if (!is.null(x$depth)) {
+    cat(paste(" Maximum context length:", x$depth, "\n"))
   }
   invisible(x)
 }
