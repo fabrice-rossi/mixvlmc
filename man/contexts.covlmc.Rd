@@ -10,6 +10,7 @@
   reverse = TRUE,
   frequency = NULL,
   model = NULL,
+  hsize = FALSE,
   ...
 )
 }
@@ -32,6 +33,9 @@ Setting \code{model} to \code{"coef"} adds the coefficients of the models in a \
 column, while \code{"full"} include the models themselves (as R objects) in a
 \code{model} column.}
 
+\item{hsize}{if TRUE, adds a \code{hsize} column to the result data frame that
+gives for each context the size of the history of covariates used by the model.}
+
 \item{...}{additional arguments for the contexts function.}
 }
 \value{
@@ -46,10 +50,11 @@ covariates, possibly with some associated data.
 The default result for \code{type="auto"} (or \code{type="list"}),
 \code{frequency=NULL} and \code{model=NULL} is the list of all contexts.
 
-Other results are obtained only with \code{type="data.frame"} (or \code{type="auto"}). See
-\code{\link[=contexts.ctx_tree]{contexts.ctx_tree()}} for details about the \code{frequency} parameter. When
-\code{model} is non \code{NULL}, the resulting \code{data.frame} contains the models
-associated to each context (either the full R model or its coefficients).
+Other results are obtained only with \code{type="data.frame"} (or
+\code{type="auto"}). See \code{\link[=contexts.ctx_tree]{contexts.ctx_tree()}} for details about the \code{frequency}
+parameter. When \code{model} is non \code{NULL}, the resulting \code{data.frame} contains
+the models associated to each context (either the full R model or its
+coefficients).
 }
 \section{State order in a context}{
  Notice that contexts are given by default

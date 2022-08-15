@@ -23,15 +23,25 @@ context_number.covlmc <- function(ct) {
 }
 
 covlmc_model_extractor <- function(res, model, control) {
-  if (control$model == "coef") {
-    cores <- data.frame(coef = I(list(model$coefficients)))
-  } else {
-    if (isS4(model$model)) {
-      cores <- list(model = list(model$model))
-      attr(cores, "row.names") <- "1"
-      cores <- structure(cores, class = "data.frame")
+  cores <- NULL
+  if (!is.null(control[["model"]])) {
+    if (control[["model"]] == "coef") {
+      cores <- data.frame(coef = I(list(model$coefficients)))
     } else {
-      cores <- data.frame(model = I(list(model$model)))
+      if (isS4(model$model)) {
+        cores <- list(model = list(model$model))
+        attr(cores, "row.names") <- "1"
+        cores <- structure(cores, class = "data.frame")
+      } else {
+        cores <- data.frame(model = I(list(model$model)))
+      }
+    }
+  }
+  if (isTRUE(control$hsize)) {
+    if (is.null(cores)) {
+      cores <- data.frame(hsize = model$hsize)
+    } else {
+      cores <- cbind(cores, data.frame(hsize = model$hsize))
     }
   }
   if (is.null(res)) {
@@ -62,7 +72,7 @@ covlmc_context_extractor <- function(path, ct, vals, control, is_leaf, p_summary
     }
   } else {
     res <- frequency_context_extractor(path, ct, vals, control, is_leaf, p_summary)
-    if (!is.null(control[["model"]])) {
+    if (!is.null(control[["model"]]) || isTRUE(control[["hsize"]])) {
       res <- covlmc_model_extractor(res, ct$model, control)
     }
     res
@@ -82,14 +92,17 @@ covlmc_context_extractor <- function(path, ct, vals, control, is_leaf, p_summary
 #'   Setting `model` to `"coef"` adds the coefficients of the models in a `coef`
 #'   column, while `"full"` include the models themselves (as R objects) in a
 #'   `model` column.
+#' @param hsize if TRUE, adds a `hsize` column to the result data frame that
+#'   gives for each context the size of the history of covariates used by the model.
 #' @param ct a fitted covlmc model.
 #' @details The default result for `type="auto"` (or `type="list"`),
 #'   `frequency=NULL` and `model=NULL` is the list of all contexts.
 #'
-#'   Other results are obtained only with `type="data.frame"` (or `type="auto"`). See
-#'   [contexts.ctx_tree()] for details about the `frequency` parameter. When
-#'   `model` is non `NULL`, the resulting `data.frame` contains the models
-#'   associated to each context (either the full R model or its coefficients).
+#'   Other results are obtained only with `type="data.frame"` (or
+#'   `type="auto"`). See [contexts.ctx_tree()] for details about the `frequency`
+#'   parameter. When `model` is non `NULL`, the resulting `data.frame` contains
+#'   the models associated to each context (either the full R model or its
+#'   coefficients).
 #' @examples
 #' pc <- powerconsumption[powerconsumption$week == 5, ]
 #' breaks <- c(0, median(pc$active_power), max(pc$active_power))
@@ -99,9 +112,9 @@ covlmc_context_extractor <- function(path, ct, vals, control, is_leaf, p_summary
 #' contexts(m_cov, model = "coef")
 #' contexts(m_cov, model = "full")
 #' @export
-contexts.covlmc <- function(ct, type = c("auto", "list", "data.frame"), reverse = TRUE, frequency = NULL, model = NULL, ...) {
+contexts.covlmc <- function(ct, type = c("auto", "list", "data.frame"), reverse = TRUE, frequency = NULL, model = NULL, hsize = FALSE, ...) {
   type <- match.arg(type)
-  if (is.null(model)) {
+  if (is.null(model) && !hsize) {
     NextMethod()
   } else {
     assertthat::assert_that(type %in% c("auto", "data.frame"))
@@ -111,7 +124,7 @@ contexts.covlmc <- function(ct, type = c("auto", "list", "data.frame"), reverse 
     if (!is.null(model)) {
       assertthat::assert_that(model %in% c("coef", "full"))
     }
-    control <- list(frequency = frequency, model = model)
+    control <- list(frequency = frequency, model = model, hsize = hsize)
     preres <- contexts_extractor(ct, reverse, covlmc_context_extractor, control, no_summary)
     rownames(preres) <- 1:nrow(preres)
     preres
