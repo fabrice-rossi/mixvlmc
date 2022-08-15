@@ -376,8 +376,8 @@ ctx_tree_fit_glm <- function(tree, y, covariate, alpha, control, assume_model = 
             }
             ll_model_H0_sub <- glm_likelihood(local_model$H1_model$model, local_data$local_mm, local_data$target)
             if (is.na(ll_model_H0_sub)) {
-              print(head(local_data$local_mm))
-              print(head(local_data$local_mm))
+              print(utils::head(local_data$local_mm))
+              print(utils::head(local_data$local_mm))
             }
             ll_model_H0 <- ll_model_H0 + ll_model_H0_sub
             ll_H0 <- ll_H0 + submodels[[v]][["model"]]$likelihood
