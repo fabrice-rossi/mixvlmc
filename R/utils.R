@@ -62,6 +62,10 @@ pp_mat <- function(x, digits, width = NULL, sep = NULL, groups = NULL, colnames 
     } else {
       x_pad <- apply(x_c, 2, stringr::str_pad, width, side = "right")
     }
+  } else {
+    x_pad <- x_c
+  }
+  if (is.matrix(x_pad)) {
     if (is.null(sep)) {
       x_rows <- apply(x_pad, 1, stringr::str_c, collapse = " ")
     } else {
@@ -70,10 +74,10 @@ pp_mat <- function(x, digits, width = NULL, sep = NULL, groups = NULL, colnames 
     }
   } else {
     if (is.null(sep)) {
-      x_rows <- stringr::str_c(x_c, collapse = " ")
+      x_rows <- stringr::str_c(x_pad, collapse = " ")
     } else {
       assertthat::assert_that(!is.null(groups))
-      x_rows <- str_c_group(x_c, sep, groups)
+      x_rows <- str_c_group(x_pad, sep, groups)
     }
   }
   stringr::str_trim(x_rows, "right")
