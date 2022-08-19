@@ -160,7 +160,7 @@ sun_activity <- as.factor(ifelse(sunspot.year >= median(sunspot.year), "high", "
 We adjust a VLMC with a very conservative value of `alpha`:
 
 ``` r
-sun_model <- vlmc(sun_activity, alpha=0.1)
+sun_model <- vlmc(sun_activity, alpha = 0.1)
 sun_model
 #> VLMC context tree on high, low 
 #>  cutoff: 1.353 (quantile: 0.1)
@@ -174,9 +174,9 @@ Then we proceed as above:
 sun_alphas <- cutoff(sun_model)
 pruned_sun_models <- c(list(sun_model), lapply(sun_alphas, function(a) prune(sun_model, a)))
 sun_bics <- sapply(pruned_sun_models, BIC)
-sun_bic_fig <- data.frame(alpha=c(0.1, sun_alphas), BIC = sun_bics)
-ggplot(sun_bic_fig, aes(x=alpha, y=BIC)) + 
-  geom_line() 
+sun_bic_fig <- data.frame(alpha = c(0.1, sun_alphas), BIC = sun_bics)
+ggplot(sun_bic_fig, aes(x = alpha, y = BIC)) +
+  geom_line()
 ```
 
 <img src="man/figures/README-sunspots_bic-1.png" width="100%" />
@@ -214,9 +214,9 @@ follows:
 ``` r
 pc_week_5 <- powerconsumption[powerconsumption$week == 5, ]
 elec <- pc_week_5$active_power
-ggplot(pc_week_5, aes(x=date_time, y=active_power)) + 
-  geom_line() + 
-  xlab("t") +
+ggplot(pc_week_5, aes(x = date_time, y = active_power)) +
+  geom_line() +
+  xlab("Date") +
   ylab("Activer power (kW)")
 ```
 
@@ -231,7 +231,7 @@ We build a discrete time series from those (somewhat arbitrary)
 thresholds:
 
 ``` r
-elec_dts <- cut(elec, breaks = c(0, 0.4, 2, 8), labels=c("low", "typical", "high"))
+elec_dts <- cut(elec, breaks = c(0, 0.4, 2, 8), labels = c("low", "typical", "high"))
 ```
 
 The best VLMC model is quite simple. It is almost a standard order one
@@ -263,8 +263,8 @@ elec_cov <- data.frame(day = (pc_week_5$hour >= 7 & pc_week_5$hour <= 17))
 A VLMC with covariate is estimated using the `covlmc` function:
 
 ``` r
-elec_covlmc <- covlmc(elec_dts, elec_cov, min_size = 5, alpha=0.5)
-draw(elec_covlmc, time_sep= "|", model = "full", p_value = FALSE)
+elec_covlmc <- covlmc(elec_dts, elec_cov, min_size = 5, alpha = 0.5)
+draw(elec_covlmc, time_sep = "|", model = "full", p_value = FALSE)
 #> *
 #> +-- low ([ (I)   |day_1TRUE
 #> |          -1.558|1.006 ])
@@ -300,15 +300,15 @@ recompute cut off values after each pruning operation, as follows:
 elec_covlmc_models <- list(elec_covlmc)
 current_model <- elec_covlmc
 alpha <- cutoff(current_model)[1]
-while(TRUE) {
+while (TRUE) {
   new_model <- prune(current_model, alpha)
   elec_covlmc_models <- c(elec_covlmc_models, list(new_model))
   current_model <- new_model
   new_alphas <- cutoff(current_model)
-  if(is.null(new_alphas) || all(new_alphas>=alpha)) {
+  if (is.null(new_alphas) || all(new_alphas >= alpha)) {
     break
   } else {
-    alpha <- max(new_alphas[new_alphas<alpha])
+    alpha <- max(new_alphas[new_alphas < alpha])
   }
 }
 elec_covlmc_bics <- sapply(elec_covlmc_models, BIC)
@@ -343,3 +343,106 @@ As in the VLMC case, the optimal model remains rather simple:
 -   the *typical* context is described in a more complex way that in the
     case of the vlmc as the transition probabilities depend on the
     previous state.
+
+### Sampling
+
+VLMC models can also be used to sample new time series as in the VMLC
+bootstrap proposed by Bühlmann and Wyner. For instance, we can estimate
+for instance the longest time period spent in the *high* active power
+regime. In this “predictive” setting, the
+[AIC](https://en.wikipedia.org/wiki/Akaike_information_criterion) should
+be more adapted to select the best model. Notice that some quantities
+can be computed directly from the model in the VLMC case, using
+classical results on Markov Chains.
+
+We first select two models based on the AIC.
+
+``` r
+best_elec_vlmc_aic <- pruned_elec_vlmcs[[which.min(sapply(pruned_elec_vlmcs, AIC))]]
+best_elec_covlmc_aic <- elec_covlmc_models[[which.min(sapply(elec_covlmc_models, AIC))]]
+```
+
+The we sample 100 new time series for each model, using the `simulate`
+function as follows:
+
+``` r
+set.seed(0)
+vlmc_simul <- vector(mode = "list", 100)
+for (k in seq_along(vlmc_simul)) {
+  vlmc_simul[[k]] <- simulate(best_elec_vlmc_aic, nsim = length(elec_dts), init = elec_dts[1:2])
+}
+```
+
+``` r
+set.seed(0)
+covlmc_simul <- vector(mode = "list", 100)
+for (k in seq_along(covlmc_simul)) {
+  covlmc_simul[[k]] <- simulate(best_elec_covlmc_aic, nsim = length(elec_dts), covariate = elec_cov, init = elec_dts[1:2])
+}
+```
+
+Then statistics can be computed on those time series. For instance, we
+look for the longest time period spent in the *high* active power
+regime.
+
+``` r
+longuest_high <- function(x) {
+  high_length <- rle(x == "high")
+  10 * max(high_length$lengths[high_length$values])
+}
+lh_vlmc <- sapply(vlmc_simul, longuest_high)
+lh_covlmc <- sapply(covlmc_simul, longuest_high)
+```
+
+The average longest time spent in *high* consecutively is
+
+-   for the VLMC: 243.6 minutes with a standard error of 6.7337834;
+-   for the VLMC with covariate: 286.2 minutes with a standard error of
+    8.9157448;
+-   410 minutes for the observed time series.
+
+The following figure shows the distributions of the times obtained by
+both models as well as the observed value. The VLMC model with covariate
+is able to generate longer sequences in the *high* active power state
+than the brare VLMC model as the consequence of the sensitivity to the
+day/night schedule.
+
+``` r
+lh <- data.frame(time = c(lh_vlmc, lh_covlmc), 
+                 model = c(rep("VLMC", length(lh_vlmc)), rep("COVLMC", length(lh_covlmc))))
+ggplot(lh, aes(x = time, color = model)) + 
+  geom_density() + 
+  geom_rug(alpha = 0.5) + 
+  geom_vline(xintercept = longuest_high(elec_dts), color = 3)
+```
+
+<img src="man/figures/README-longest_time_in_high-1.png" width="100%" />
+The VLMC with covariate can be used to investigate the effects of
+changes in those covariates. For instance, if the day time is longer, we
+expect *high* power usage to be less frequent. For instance, we simulate
+one week with a day time from 6:00 to 20:00 as follows.
+
+``` r
+elec_cov_long_days <- data.frame(day = (pc_week_5$hour >= 6 & pc_week_5$hour <= 20))
+set.seed(0)
+covlmc_simul_ld <- vector(mode = "list", 100)
+for (k in seq_along(covlmc_simul_ld)) {
+  covlmc_simul_ld[[k]] <- simulate(best_elec_covlmc_aic, nsim = length(elec_dts), covariate = elec_cov_long_days, init = elec_dts[1:2])
+}
+```
+
+As expected the distribution of the longest time spend consecutively in
+*high* power usage is shifted to lower values when the day length is
+increased.
+
+``` r
+lh_covlmc_ld <- sapply(covlmc_simul_ld, longuest_high)
+day_time_effect <- data.frame(time = c(lh_covlmc, lh_covlmc_ld), 
+                              `day length` = c(rep("Short days", length(lh_covlmc)), rep("Long days", length(lh_covlmc_ld))),
+                              check.names = FALSE)
+ggplot(day_time_effect, aes(x = time, color = `day length`)) + 
+  geom_density() + 
+  geom_rug(alpha = 0.5) 
+```
+
+<img src="man/figures/README-longest_time_in_high_ld-1.png" width="100%" />
