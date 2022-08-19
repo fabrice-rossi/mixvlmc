@@ -10,6 +10,7 @@
   model = "coef",
   p_value = TRUE,
   digits = 4,
+  with_state = FALSE,
   ...
 )
 }
@@ -33,6 +34,9 @@ representation.}
 \item{digits}{numerical parameters and p-values are represented using the
 \link[base:Round]{base::signif} function, using the number of significant digits specified
 with this parameter.}
+
+\item{with_state}{specifies whether to display the state associated to each
+dimension of the logistic model (see details).}
 
 \item{...}{additional arguments for draw.}
 }
@@ -74,6 +78,21 @@ is, while factors have levels appended. The intercept is denoted \code{(I)} to
 save space. The time delays are represented by an underscore followed by
 the time delay. For instance if the model uses the numerical covariate \code{y}
 with two delays, it will appear as to variables \code{y_1} and \code{y_2}.
+}
+
+\section{State representation}{
+
+
+When \code{model} is not \code{NULL}, the coefficients of the logistic models are
+presented, organized in rows associated to states. One state is used as the
+reference state and the logistic model aims at predicting the ratio of
+probability between another state and the reference one (in log scale).
+When \code{with_state} is \code{TRUE}, the display includes for each row of
+coefficients the target state. This is useful when using e.g. \code{VGAM::vglm}
+as unused levels of the target variable will be automatically dropped from
+the model, leading to a reduce number of rows. The reference state is
+either shown on the first row if \code{model} is \code{"full"} or after the state on
+each row if \code{model} is \code{"coef"}.
 }
 
 \examples{

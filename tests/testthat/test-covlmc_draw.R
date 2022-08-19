@@ -9,6 +9,8 @@ test_that("draw obeys its contract (with vgam)", {
   expect_snapshot_output(draw(prune(model, 0.0001)))
   expect_snapshot_output(draw(prune(model, 0.0001), time_sep = " | "))
   expect_snapshot_output(draw(prune(model, 0.0001), model = "full", time_sep = " | "))
+  expect_snapshot_output(draw(prune(model, 0.0001), model = "full", time_sep = " | ", with_state = TRUE))
+  expect_snapshot_output(draw(prune(model, 0.0001), model = "coef", time_sep = " | ", with_state = TRUE))
   skip_on_ci()
   expect_snapshot_output(draw(model))
   expect_snapshot_output(draw(model, time_sep = " | "))
@@ -16,6 +18,8 @@ test_that("draw obeys its contract (with vgam)", {
   expect_snapshot_output(draw(model, model = NULL, digits = 2))
   expect_snapshot_output(draw(model, p_value = FALSE, digits = 1))
   expect_snapshot_output(draw(model, model = "full", time_sep = " ~ ", digits = 1))
+  expect_snapshot_output(draw(model, model = "full", time_sep = " ~ ", digits = 5, with_state = TRUE))
+  expect_snapshot_output(draw(model, model = "coef", time_sep = " ~ ", digits = 5, with_state = TRUE))
 })
 
 test_that("draw obeys its contract (with nnet)", {
@@ -32,6 +36,8 @@ test_that("draw obeys its contract (with nnet)", {
   expect_snapshot_output(draw(model, model = NULL, digits = 2))
   expect_snapshot_output(draw(model, p_value = FALSE, digits = 1))
   expect_snapshot_output(draw(model, model = "full", time_sep = " ^ ", digits = 1))
+  expect_snapshot_output(draw(model, model = "full", time_sep = " ^ ", digits = 3, with_state = TRUE))
+  expect_snapshot_output(draw(model, model = "coef", time_sep = " ^ ", digits = 3, with_state = TRUE))
 })
 
 test_that("draw handles cases when levels have been dropped", {
@@ -50,6 +56,7 @@ test_that("draw handles cases when levels have been dropped", {
   dts_cov <- data.frame(y = y, z = z)
   m_cov <- covlmc(x = x, covariate = dts_cov, min_size = 5, alpha = 0.5)
   expect_snapshot_output(draw(m_cov, model = "full", time_sep = " | ", digits = 1))
+  expect_snapshot_output(draw(m_cov, model = "full", time_sep = " | ", digits = 2, with_state = TRUE))
 })
 
 test_that("draw handles cases when multinom is used for two states time series", {
@@ -69,4 +76,5 @@ test_that("draw handles cases when multinom is used for two states time series",
   dts_cov <- data.frame(y = y, z = z)
   m_cov <- covlmc(x = x, covariate = dts_cov, min_size = 5, alpha = 0.5)
   expect_snapshot_output(draw(m_cov, model = "full", time_sep = " | ", digits = 1))
+  expect_snapshot_output(draw(m_cov, model = "full", time_sep = " | ", digits = 1, with_state = TRUE))
 })

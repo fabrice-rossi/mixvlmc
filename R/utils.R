@@ -25,22 +25,37 @@ signif_null <- function(x, digits) {
   }
 }
 
-str_c_group <- function(txt, sep, groups) {
+str_c_group <- function(txt, sep, groups, with_rn, rn_sep = sep) {
   if (length(txt) == 1) {
     txt
   } else {
-    pre_res <- txt[1]
-    grp_size <- (length(txt) - 1) %/% groups
-    pos <- 2
-    for (k in 1:groups) {
-      pre_res <- stringr::str_c(pre_res, stringr::str_c(txt[pos:(pos + grp_size - 1)], collapse = " "), sep = sep)
-      pos <- pos + grp_size
+    if (is.null(groups) || (groups == 0)) {
+      if (with_rn) {
+        pre_res <- stringr::str_c(txt[1], rn_sep)
+        stringr::str_c(pre_res, stringr::str_c(txt[-1], collapse = " "))
+      } else {
+        stringr::str_c(txt, collapse = sep)
+      }
+    } else {
+      pre_res <- txt[1]
+      if (with_rn) {
+        grp_size <- (length(txt) - 2) %/% groups
+        pre_res <- stringr::str_c(pre_res, txt[2], sep = rn_sep)
+        pos <- 3
+      } else {
+        grp_size <- (length(txt) - 1) %/% groups
+        pos <- 2
+      }
+      for (k in 1:groups) {
+        pre_res <- stringr::str_c(pre_res, stringr::str_c(txt[pos:(pos + grp_size - 1)], collapse = " "), sep = sep)
+        pos <- pos + grp_size
+      }
+      pre_res
     }
-    pre_res
   }
 }
 
-pp_mat <- function(x, digits, width = NULL, sep = NULL, groups = NULL, colnames = NULL) {
+pp_mat <- function(x, digits, width = NULL, sep = NULL, groups = NULL, colnames = NULL, rownames = NULL, rn_sep = sep) {
   x_s <- signif(x, digits)
   if (is.matrix(x_s)) {
     x_c <- matrix(apply(x_s, 2, as.character), ncol = ncol(x), nrow = nrow(x))
@@ -49,6 +64,13 @@ pp_mat <- function(x, digits, width = NULL, sep = NULL, groups = NULL, colnames 
   }
   if (!is.null(colnames)) {
     x_c <- rbind(colnames, x_c)
+  }
+  if (!is.null(rownames)) {
+    if (is.matrix(x_c)) {
+      x_c <- cbind(rownames, x_c)
+    } else {
+      x_c <- c(rownames, x_c)
+    }
   }
   if (is.matrix(x_c)) {
     if (is.null(width)) {
@@ -65,20 +87,15 @@ pp_mat <- function(x, digits, width = NULL, sep = NULL, groups = NULL, colnames 
   } else {
     x_pad <- x_c
   }
-  if (is.matrix(x_pad)) {
-    if (is.null(sep)) {
-      x_rows <- apply(x_pad, 1, stringr::str_c, collapse = " ")
-    } else {
-      assertthat::assert_that(!is.null(groups))
-      x_rows <- apply(x_pad, 1, str_c_group, sep = sep, groups = groups)
-    }
+  if (is.null(sep)) {
+    sep <- " "
   } else {
-    if (is.null(sep)) {
-      x_rows <- stringr::str_c(x_pad, collapse = " ")
-    } else {
-      assertthat::assert_that(!is.null(groups))
-      x_rows <- str_c_group(x_pad, sep, groups)
-    }
+    assertthat::assert_that(!is.null(groups))
   }
-  stringr::str_trim(x_rows, "right")
+  if (is.matrix(x_pad)) {
+    x_rows <- apply(x_pad, 1, str_c_group, sep = sep, groups = groups, with_rn = !is.null(rownames), rn_sep = rn_sep)
+  } else {
+    x_rows <- str_c_group(x_pad, sep, groups, !is.null(rownames), rn_sep)
+  }
+  x_rows
 }

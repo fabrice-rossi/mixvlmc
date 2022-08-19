@@ -1,9 +1,19 @@
-draw_covlmc_model <- function(coefficients, p_value, hsize, names, params) {
+draw_covlmc_model <- function(coefficients, p_value, hsize, names, lev, params) {
   if (params[["model"]] == "coef" || params[["model"]] == "full") {
     if (params[["model"]] == "coef") {
-      coeffs <- pp_mat(coefficients, params$digits, sep = params$time_sep, groups = hsize)
+      if (isTRUE(params$with_state)) {
+        lev <- stringr::str_c(lev[-1], lev[1], sep = "/")
+        coeffs <- pp_mat(coefficients, params$digits, sep = params$time_sep, groups = hsize, rownames = lev, rn_sep = params$level_sep)
+      } else {
+        coeffs <- pp_mat(coefficients, params$digits, sep = params$time_sep, groups = hsize)
+      }
     } else {
-      coeffs <- pp_mat(coefficients, params$digits, sep = params$time_sep, groups = hsize, colnames = names)
+      if (isTRUE(params$with_state)) {
+        lev[1] <- stringr::str_c("(", lev[1], ")")
+        coeffs <- pp_mat(coefficients, params$digits, sep = params$time_sep, groups = hsize, colnames = names, rownames = lev, rn_sep = params$level_sep)
+      } else {
+        coeffs <- pp_mat(coefficients, params$digits, sep = params$time_sep, groups = hsize, colnames = names)
+      }
     }
     if (length(coeffs) == 1) {
       if (isTRUE(params$p_value)) {
@@ -82,7 +92,7 @@ rec_draw_covlmc <- function(label, prefix, ct, vals, control, node2txt, params) 
       c_prefix <- stringr::str_c(prefix, c_prefix)
       cat(c_label)
       if (!is.null(node2txt)) {
-        node_txt <- node2txt(list(model = ct[["merged_model"]]), vasl, params)
+        node_txt <- node2txt(list(model = ct[["merged_model"]]), vals, params)
         if (!is.null(node_txt)) {
           cat_with_prefix(c_label, c_prefix, node_txt, control)
         }
@@ -98,7 +108,7 @@ covlmc_node2txt <- function(node, vals, params) {
     digits <- 2
   }
   if (!is.null(node$model)) {
-    draw_covlmc_model(node$model$coefficients, node$model$p_value, node$model$hsize, node$model$var_names, params)
+    draw_covlmc_model(node$model$coefficients, node$model$p_value, node$model$hsize, node$model$var_names, glm_levels(node$model$model, vals), params)
   } else if (!is.null(node$p_value) && isTRUE(params$p_value)) {
     stringr::str_c("collapsing:", signif(node$p_value, params$digits), sep = " ")
   } else if (!is.null(node$merged_p_value) && isTRUE(params$p_value)) {
@@ -127,6 +137,8 @@ covlmc_node2txt <- function(node, vals, params) {
 #' @param digits numerical parameters and p-values are represented using the
 #'   [base::signif] function, using the number of significant digits specified
 #'   with this parameter.
+#' @param with_state specifies whether to display the state associated to each
+#'   dimension of the logistic model (see details).
 #' @section Tweaking model representation:
 #'
 #'   Model representations are affected by the following additional parameter:
@@ -145,6 +157,20 @@ covlmc_node2txt <- function(node, vals, params) {
 #'   save space. The time delays are represented by an underscore followed by
 #'   the time delay. For instance if the model uses the numerical covariate `y`
 #'   with two delays, it will appear as to variables `y_1` and `y_2`.
+#'
+#' @section State representation:
+#'
+#'   When `model` is not `NULL`, the coefficients of the logistic models are
+#'   presented, organized in rows associated to states. One state is used as the
+#'   reference state and the logistic model aims at predicting the ratio of
+#'   probability between another state and the reference one (in log scale).
+#'   When `with_state` is `TRUE`, the display includes for each row of
+#'   coefficients the target state. This is useful when using e.g. `VGAM::vglm`
+#'   as unused levels of the target variable will be automatically dropped from
+#'   the model, leading to a reduce number of rows. The reference state is
+#'   either shown on the first row if `model` is `"full"` or after the state on
+#'   each row if `model` is `"coef"`.
+#'
 #' @examples
 #' pc <- powerconsumption[powerconsumption$week == 5, ]
 #' dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1))))
@@ -156,7 +182,7 @@ covlmc_node2txt <- function(node, vals, params) {
 #' draw(m_cov, p_value = FALSE, time_sep = " | ")
 #' draw(m_cov, model = "full", time_sep = " | ")
 #' @export
-draw.covlmc <- function(ct, control = draw_control(), model = "coef", p_value = TRUE, digits = 4, ...) {
+draw.covlmc <- function(ct, control = draw_control(), model = "coef", p_value = TRUE, digits = 4, with_state = FALSE, ...) {
   if (is.null(model)) {
     model <- "none"
   }
@@ -164,6 +190,8 @@ draw.covlmc <- function(ct, control = draw_control(), model = "coef", p_value = 
   if (is.null(dot_params[["time_sep"]])) {
     dot_params[["time_sep"]] <- " "
   }
+  dot_params$with_state <- with_state
+  dot_params$level_sep <- " | "
   rec_draw_covlmc(control$root, "", ct, ct$vals, control, covlmc_node2txt, c(list(model = model, p_value = p_value, digits = digits), dot_params))
   invisible(ct)
 }

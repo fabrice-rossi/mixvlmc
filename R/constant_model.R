@@ -81,3 +81,8 @@ glm_sample_one.constant_model <- function(model, newdata) {
 glm_variable_names.constant_model <- function(model, data) {
   "(I)"
 }
+
+#' @exportS3Method
+glm_levels.constant_model <- function(model, vals) {
+  vals
+}

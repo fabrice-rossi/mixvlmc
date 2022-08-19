@@ -313,3 +313,22 @@ glm_variable_names.multinom <- function(model, data) {
     c("(I)", names(coef)[-1])
   }
 }
+
+glm_levels <- function(model, vals) {
+  UseMethod("glm_levels")
+}
+
+#' @exportS3Method
+glm_levels.glm <- function(model, vals) {
+  vals
+}
+
+#' @exportS3Method
+glm_levels.vglm <- function(model, vals) {
+  model@extra$colnames.y
+}
+
+#' @exportS3Method
+glm_levels.multinom <- function(model, vals) {
+  model$lev
+}
