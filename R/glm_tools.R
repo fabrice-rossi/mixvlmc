@@ -80,6 +80,7 @@ fit_glm <- function(target, mm, nb_vals, control) {
               )
           )
         }
+        assertthat::assert_that(result$converged)
       } else {
         if (ncol(mm) > 0) {
           try_vglm <- try(
@@ -109,6 +110,9 @@ fit_glm <- function(target, mm, nb_vals, control) {
                 x.arg = FALSE, y.arg = FALSE, model = FALSE
               )
           )
+        }
+        if (inherits(result, "vglm")) {
+          assertthat::assert_that(result@iter < VGAM::vglm.control()$maxit)
         }
       }
       result
