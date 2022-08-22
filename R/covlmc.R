@@ -799,6 +799,7 @@ prune.covlmc <- function(vlmc, alpha = 0.05, cutoff = NULL, ...) {
   )
   pre_result <- new_ctx_tree(vlmc$vals, pruned_tree, count_context = count_covlmc_local_context, class = "covlmc")
   pre_result$cov_names <- vlmc$cov_names
+  pre_result$cov_desc <- vlmc$cov_desc
   pre_result$alpha <- alpha
   pre_result$x <- vlmc$x
   pre_result$covariate <- vlmc$covariate
