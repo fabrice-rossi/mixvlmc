@@ -62,28 +62,34 @@ fit_glm <- function(target, mm, nb_vals, control) {
     if (engine == "glm") {
       if (nb_vals == 2) {
         if (ncol(mm) > 0) {
-          suppressWarnings(result <-
-            stats::glm(target ~ .,
-              data = mm, family = stats::binomial(),
-              method = spaMM::spaMM_glm.fit, x = FALSE, y = FALSE,
-              model = FALSE
-            ))
+          suppressWarnings(
+            result <-
+              stats::glm(target ~ .,
+                data = mm, family = stats::binomial(),
+                x = FALSE, y = FALSE,
+                model = FALSE, control = stats::glm.control(maxit = 30)
+              )
+          )
         } else {
-          suppressWarnings(result <-
-            stats::glm(target ~ 1,
-              family = stats::binomial(),
-              method = spaMM::spaMM_glm.fit, x = FALSE, y = FALSE,
-              model = FALSE
-            ))
+          suppressWarnings(
+            result <-
+              stats::glm(target ~ 1,
+                family = stats::binomial(),
+                x = FALSE, y = FALSE,
+                model = FALSE
+              )
+          )
         }
       } else {
         if (ncol(mm) > 0) {
           try_vglm <- try(
-            suppressWarnings(result <-
-              VGAM::vglm(target ~ .,
-                data = mm, family = VGAM::multinomial(refLevel = 1),
-                x.arg = FALSE, y.arg = FALSE, model = FALSE
-              )),
+            suppressWarnings(
+              result <-
+                VGAM::vglm(target ~ .,
+                  data = mm, family = VGAM::multinomial(refLevel = 1),
+                  x.arg = FALSE, y.arg = FALSE, model = FALSE
+                )
+            ),
             silent = TRUE
           )
           if (inherits(try_vglm, "try-error")) {
@@ -96,11 +102,13 @@ fit_glm <- function(target, mm, nb_vals, control) {
             }
           }
         } else {
-          suppressWarnings(result <-
-            VGAM::vglm(target ~ 1,
-              data = mm, family = VGAM::multinomial(refLevel = 1),
-              x.arg = FALSE, y.arg = FALSE, model = FALSE
-            ))
+          suppressWarnings(
+            result <-
+              VGAM::vglm(target ~ 1,
+                data = mm, family = VGAM::multinomial(refLevel = 1),
+                x.arg = FALSE, y.arg = FALSE, model = FALSE
+              )
+          )
         }
       }
       result
