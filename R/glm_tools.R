@@ -49,6 +49,30 @@ prepare_glm <- function(covariate, ctx_match, d, y, from = 0) {
   list(local_mm = local_mm[to_keep, , drop = FALSE], target = target[to_keep])
 }
 
+glm_warning_ignore <- function(w) {
+  if (stringr::str_detect(
+    w$message,
+    stringr::coll(gettext("glm.fit: fitted probabilities numerically 0 or 1 occurred", domain = "R-stats"))
+  )) {
+    rlang::cnd_muffle(w)
+  }
+}
+
+vgam_warning_ignore <- function(w) {
+  to_ignore <- c(
+    ".* diagonal elements of the working weights variable 'wz' have been replaced by",
+    stringr::fixed("fitted values close to 0 or 1"),
+    stringr::fixed("fitted probabilities numerically 0 or 1 occurred"),
+    stringr::fixed("some quantities such as z, residuals, SEs may be inaccurate due to convergence at a half-step"),
+    stringr::fixed("iterations terminated because half-step sizes are very small")
+  )
+  for (msg in to_ignore) {
+    if (stringr::str_detect(w$message, msg)) {
+      rlang::cnd_muffle(w)
+    }
+  }
+}
+
 fit_glm <- function(target, mm, nb_vals, control) {
   assertthat::assert_that(nrow(mm) > 0)
   engine <- options()[["mixvlmc.predictive"]]
@@ -62,7 +86,8 @@ fit_glm <- function(target, mm, nb_vals, control) {
     if (engine == "glm") {
       if (nb_vals == 2) {
         if (ncol(mm) > 0) {
-          suppressWarnings(
+          withCallingHandlers(
+            warning = glm_warning_ignore,
             result <-
               stats::glm(target ~ .,
                 data = mm, family = stats::binomial(),
@@ -71,25 +96,23 @@ fit_glm <- function(target, mm, nb_vals, control) {
               )
           )
         } else {
-          suppressWarnings(
-            result <-
-              stats::glm(target ~ 1,
-                family = stats::binomial(),
-                x = FALSE, y = FALSE,
-                model = FALSE
-              )
-          )
+          result <-
+            stats::glm(target ~ 1,
+              family = stats::binomial(),
+              x = FALSE, y = FALSE,
+              model = FALSE
+            )
         }
         assertthat::assert_that(result$converged)
       } else {
         if (ncol(mm) > 0) {
           try_vglm <- try(
-            suppressWarnings(
-              result <-
-                VGAM::vglm(target ~ .,
-                  data = mm, family = VGAM::multinomial(refLevel = 1),
-                  x.arg = FALSE, y.arg = FALSE, model = FALSE
-                )
+            withCallingHandlers(
+              warning = vgam_warning_ignore,
+              result <- VGAM::vglm(target ~ .,
+                data = mm, family = VGAM::multinomial(refLevel = 1),
+                x.arg = FALSE, y.arg = FALSE, model = FALSE
+              )
             ),
             silent = TRUE
           )
@@ -103,13 +126,11 @@ fit_glm <- function(target, mm, nb_vals, control) {
             }
           }
         } else {
-          suppressWarnings(
-            result <-
-              VGAM::vglm(target ~ 1,
-                data = mm, family = VGAM::multinomial(refLevel = 1),
-                x.arg = FALSE, y.arg = FALSE, model = FALSE
-              )
-          )
+          result <-
+            VGAM::vglm(target ~ 1,
+              data = mm, family = VGAM::multinomial(refLevel = 1),
+              x.arg = FALSE, y.arg = FALSE, model = FALSE
+            )
         }
         if (inherits(result, "vglm")) {
           assertthat::assert_that(result@iter < VGAM::vglm.control()$maxit)
