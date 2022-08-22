@@ -92,7 +92,7 @@ fit_glm <- function(target, mm, nb_vals, control) {
               stats::glm(target ~ .,
                 data = mm, family = stats::binomial(),
                 x = FALSE, y = FALSE,
-                model = FALSE, control = stats::glm.control(maxit = 30)
+                model = FALSE, control = stats::glm.control(maxit = options()[["mixvlmc.maxit"]])
               )
           )
         } else {
@@ -111,7 +111,8 @@ fit_glm <- function(target, mm, nb_vals, control) {
               warning = vgam_warning_ignore,
               result <- VGAM::vglm(target ~ .,
                 data = mm, family = VGAM::multinomial(refLevel = 1),
-                x.arg = FALSE, y.arg = FALSE, model = FALSE
+                x.arg = FALSE, y.arg = FALSE, model = FALSE,
+                control = VGAM::vglm.control(maxit =  options()[["mixvlmc.maxit"]])
               )
             ),
             silent = TRUE
@@ -133,13 +134,13 @@ fit_glm <- function(target, mm, nb_vals, control) {
             )
         }
         if (inherits(result, "vglm")) {
-          assertthat::assert_that(result@iter < VGAM::vglm.control()$maxit)
+          assertthat::assert_that(result@iter <  options()[["mixvlmc.maxit"]])
         }
       }
       result
     } else if (engine == "multinom") {
       if (ncol(mm) > 0) {
-        result <- nnet::multinom(target ~ ., data = mm, trace = FALSE)
+        result <- nnet::multinom(target ~ ., data = mm, trace = FALSE, maxit = options()[["mixvlmc.maxit"]])
       } else {
         result <- nnet::multinom(target ~ 1, trace = FALSE)
       }
