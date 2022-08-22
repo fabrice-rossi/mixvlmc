@@ -140,7 +140,7 @@ elec_cov <- data.frame(day = (pc_week_5$hour >= 7 & pc_week_5$hour <= 17))
 A VLMC with covariate is estimated using the `covlmc` function:
 ```{r}
 elec_covlmc <- covlmc(elec_dts, elec_cov, min_size = 5, alpha = 0.5)
-draw(elec_covlmc, time_sep = "|", model = "full", p_value = FALSE)
+draw(elec_covlmc, time_sep = " | ", model = "full", p_value = FALSE)
 ```
 
 Pruning a covlmc model is slightly more complicated than in the case of vlmc models. The main difficulty is that cut off values cannot be computed directly from a complex model as new values will appear during the pruning process.  A typical way to circumvent this difficulty is to recompute cut off values after each pruning operation, as follows:

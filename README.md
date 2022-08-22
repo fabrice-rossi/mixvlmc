@@ -35,19 +35,11 @@ Variable length Marvkov chains (VLMC) are sparse high order Markov
 chains. They can be used to model time series with discrete values
 (states) with a mix of small order dependencies for certain states and
 higher order dependencies for other states. For instance, with a binary
-time series, the probability of observing 1 a time
-![t](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;t "t")
-could be constant whatever the older past states if the last one (at
-time
-![t-1](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;t-1 "t-1"))
-was 1, but could depend on states at time
-![t-3](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;t-3 "t-3")
-and
-![t-2](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;t-2 "t-2")
-if the state was 0 at time
-![t-1](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;t-1 "t-1").
-A collection of past states that determines completely the transition
-probabilities is a *context* of the VLMC. Read
+time series, the probability of observing 1 a time $t$ could be constant
+whatever the older past states if the last one (at time $t-1$) was 1,
+but could depend on states at time $t-3$ and $t-2$ if the state was 0 at
+time $t-1$. A collection of past states that determines completely the
+transition probabilities is a *context* of the VLMC. Read
 `vignette("context-trees")` for details about contexts and context tree.
 
 VLMC with covariates are extension of VLMC in which transition
@@ -113,19 +105,14 @@ detailed introduction):
 -   the root `*` corresponds to an empty context;
 -   one can read contexts by following branches (represented by 2 dashes
     `--`) down to their ends (the leaves): for instance
-    ![(1, 0, 1, 0, 0, 0)](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%281%2C%200%2C%201%2C%200%2C%200%2C%200%29 "(1, 0, 1, 0, 0, 0)")
-    is one of the contexts of the tree.
+    $(1, 0, 1, 0, 0, 0)$ is one of the contexts of the tree.
 
-Here the context
-![(1, 0, 1, 0, 0, 0)](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%281%2C%200%2C%201%2C%200%2C%200%2C%200%29 "(1, 0, 1, 0, 0, 0)")
-is associated to the transition probabilities
-![(1, 0)](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%281%2C%200%29 "(1, 0)").
-This means that when one observes this context in the time series, it is
-*always* followed by a 0. Notice that contexts are traditionally written
-from the most recent value to the oldest one. Thus, the context
-![(1, 0, 1, 0, 0, 0)](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%281%2C%200%2C%201%2C%200%2C%200%2C%200%29 "(1, 0, 1, 0, 0, 0)")
-corresponds to the sub time series
-![(0, 0, 0, 1, 0, 1)](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%280%2C%200%2C%200%2C%201%2C%200%2C%201%29 "(0, 0, 0, 1, 0, 1)").
+Here the context $(1, 0, 1, 0, 0, 0)$ is associated to the transition
+probabilities $(1, 0)$. This means that when one observes this context
+in the time series, it is *always* followed by a 0. Notice that contexts
+are traditionally written from the most recent value to the oldest one.
+Thus, the context $(1, 0, 1, 0, 0, 0)$ corresponds to the sub time
+series $(0, 0, 0, 1, 0, 1)$.
 
 #### BIC based model selection
 
@@ -264,30 +251,30 @@ A VLMC with covariate is estimated using the `covlmc` function:
 
 ``` r
 elec_covlmc <- covlmc(elec_dts, elec_cov, min_size = 5, alpha = 0.5)
-draw(elec_covlmc, time_sep = "|", model = "full", p_value = FALSE)
+draw(elec_covlmc, time_sep = " | ", model = "full", p_value = FALSE)
 #> *
-#> +-- low ([ (I)   |day_1TRUE
-#> |          -1.558|1.006 ])
+#> +-- low ([ (I)    | day_1TRUE
+#> |          -1.558 | 1.006 ])
 #> '-- typical
-#> |   +-- low ([ (I)   |day_1TRUE|day_2TRUE
-#> |   |          0.3567|-27.81   |27.81
-#> |   |          -1.253|-14.39   |13.69 ])
+#> |   +-- low ([ (I)    | day_1TRUE | day_2TRUE
+#> |   |          0.3567 | -27.81    | 27.81
+#> |   |          -1.253 | -14.39    | 13.69 ])
 #> |   '-- typical
-#> |   |   +-- low ([ (I)   |day_1TRUE
-#> |   |   |          1.099 |18.33
-#> |   |   |          -18.22|35.57 ])
-#> |   |   '-- typical ([ (I)  |day_1TRUE
-#> |   |   |              2.791|0.4573
-#> |   |   |              0.47 |-0.06454 ])
-#> |   |   '-- high ([ (I)  |day_1TRUE
-#> |   |               18.89|-16.25
-#> |   |               16.25|-15.56 ])
-#> |   '-- high ([ (I)   |day_1TRUE
-#> |               2.015 |16.18
-#> |               0.6931|16.61 ])
-#> '-- high ([ (I)  |day_1TRUE
-#>             17.41|-14.23
-#>             19.38|-14.88 ])
+#> |   |   +-- low ([ (I)    | day_1TRUE
+#> |   |   |          1.099  | 18.33
+#> |   |   |          -18.22 | 35.57 ])
+#> |   |   '-- typical ([ (I)   | day_1TRUE
+#> |   |   |              2.791 | 0.4573
+#> |   |   |              0.47  | -0.06454 ])
+#> |   |   '-- high ([ (I)   | day_1TRUE
+#> |   |               18.89 | -16.25
+#> |   |               16.25 | -15.56 ])
+#> |   '-- high ([ (I)    | day_1TRUE
+#> |               2.015  | 16.18
+#> |               0.6931 | 16.61 ])
+#> '-- high ([ (I)   | day_1TRUE
+#>             17.41 | -14.23
+#>             19.38 | -14.88 ])
 ```
 
 Pruning a covlmc model is slightly more complicated than in the case of
@@ -408,11 +395,13 @@ than the brare VLMC model as the consequence of the sensitivity to the
 day/night schedule.
 
 ``` r
-lh <- data.frame(time = c(lh_vlmc, lh_covlmc), 
-                 model = c(rep("VLMC", length(lh_vlmc)), rep("COVLMC", length(lh_covlmc))))
-ggplot(lh, aes(x = time, color = model)) + 
-  geom_density() + 
-  geom_rug(alpha = 0.5) + 
+lh <- data.frame(
+  time = c(lh_vlmc, lh_covlmc),
+  model = c(rep("VLMC", length(lh_vlmc)), rep("COVLMC", length(lh_covlmc)))
+)
+ggplot(lh, aes(x = time, color = model)) +
+  geom_density() +
+  geom_rug(alpha = 0.5) +
   geom_vline(xintercept = longuest_high(elec_dts), color = 3)
 ```
 
@@ -437,12 +426,14 @@ increased.
 
 ``` r
 lh_covlmc_ld <- sapply(covlmc_simul_ld, longuest_high)
-day_time_effect <- data.frame(time = c(lh_covlmc, lh_covlmc_ld), 
-                              `day length` = c(rep("Short days", length(lh_covlmc)), rep("Long days", length(lh_covlmc_ld))),
-                              check.names = FALSE)
-ggplot(day_time_effect, aes(x = time, color = `day length`)) + 
-  geom_density() + 
-  geom_rug(alpha = 0.5) 
+day_time_effect <- data.frame(
+  time = c(lh_covlmc, lh_covlmc_ld),
+  `day length` = c(rep("Short days", length(lh_covlmc)), rep("Long days", length(lh_covlmc_ld))),
+  check.names = FALSE
+)
+ggplot(day_time_effect, aes(x = time, color = `day length`)) +
+  geom_density() +
+  geom_rug(alpha = 0.5)
 ```
 
 <img src="man/figures/README-longest_time_in_high_ld-1.png" width="100%" />
