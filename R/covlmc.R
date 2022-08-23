@@ -581,8 +581,7 @@ covlmc_control <- function(pseudo_obs = 1) {
 #'   models:
 #'
 #'   - when the time series has only two states, `covlmc` uses [stats::glm()]
-#'   with a binomial link ([stats::binomial()]), with the
-#'   [spaMM::spaMM_glm.fit()] fitter;
+#'   with a binomial link ([stats::binomial()]);
 #'   - when the time series has at least three
 #'   states, `covlmc` use [VGAM::vglm()] with a multinomial link
 #'   ([VGAM::multinomial()]).

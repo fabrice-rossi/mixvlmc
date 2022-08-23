@@ -70,8 +70,7 @@ By default, \code{covlmc} uses two different computing \emph{engines} for logist
 models:
 \itemize{
 \item when the time series has only two states, \code{covlmc} uses \code{\link[stats:glm]{stats::glm()}}
-with a binomial link (\code{\link[stats:family]{stats::binomial()}}), with the
-\code{\link[spaMM:GLM.fit]{spaMM::spaMM_glm.fit()}} fitter;
+with a binomial link (\code{\link[stats:family]{stats::binomial()}});
 \item when the time series has at least three
 states, \code{covlmc} use \code{\link[VGAM:vglm]{VGAM::vglm()}} with a multinomial link
 (\code{\link[VGAM:multinomial]{VGAM::multinomial()}}).
