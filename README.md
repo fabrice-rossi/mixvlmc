@@ -254,27 +254,27 @@ elec_covlmc <- covlmc(elec_dts, elec_cov, min_size = 5, alpha = 0.5)
 draw(elec_covlmc, time_sep = " | ", model = "full", p_value = FALSE)
 #> *
 #> +-- low ([ (I)    | day_1TRUE
-#> |          -1.558 | 1.006 ])
+#> |          -1.558 | 1.006     ])
 #> '-- typical
 #> |   +-- low ([ (I)    | day_1TRUE | day_2TRUE
-#> |   |          0.3567 | -27.81    | 27.81
-#> |   |          -1.253 | -14.39    | 13.69 ])
+#> |   |          0.3567 | -27.81    | 27.81    
+#> |   |          -1.253 | -14.39    | 13.69     ])
 #> |   '-- typical
 #> |   |   +-- low ([ (I)    | day_1TRUE
-#> |   |   |          1.099  | 18.33
-#> |   |   |          -18.22 | 35.57 ])
+#> |   |   |          1.099  | 18.33    
+#> |   |   |          -18.22 | 35.57     ])
 #> |   |   '-- typical ([ (I)   | day_1TRUE
-#> |   |   |              2.791 | 0.4573
-#> |   |   |              0.47  | -0.06454 ])
+#> |   |   |              2.791 | 0.4573   
+#> |   |   |              0.47  | -0.06454  ])
 #> |   |   '-- high ([ (I)   | day_1TRUE
-#> |   |               18.89 | -16.25
-#> |   |               16.25 | -15.56 ])
+#> |   |               18.89 | -16.25   
+#> |   |               16.25 | -15.56    ])
 #> |   '-- high ([ (I)    | day_1TRUE
-#> |               2.015  | 16.18
-#> |               0.6931 | 16.61 ])
+#> |               2.015  | 16.18    
+#> |               0.6931 | 16.61     ])
 #> '-- high ([ (I)   | day_1TRUE
-#>             17.41 | -14.23
-#>             19.38 | -14.88 ])
+#>             17.41 | -14.23   
+#>             19.38 | -14.88    ])
 ```
 
 Pruning a covlmc model is slightly more complicated than in the case of
@@ -303,18 +303,18 @@ best_elec_covlmc <- elec_covlmc_models[[which.min(elec_covlmc_bics)]]
 draw(best_elec_covlmc, model = "full", time_sep = " | ", p_value = FALSE)
 #> *
 #> +-- low ([ (I)    | day_1TRUE
-#> |          -1.558 | 1.006 ])
+#> |          -1.558 | 1.006     ])
 #> '-- typical
-#> |   +-- low ([ (I)
+#> |   +-- low ([ (I)   
 #> |   |          0.3365
 #> |   |          -1.609 ])
-#> |   '-- typical ([ (I)
-#> |   |              2.937
+#> |   '-- typical ([ (I)   
+#> |   |              2.937 
 #> |   |              0.3747 ])
-#> |   '-- high ([ (I)
+#> |   '-- high ([ (I)  
 #> |               2.773
 #> |               1.705 ])
-#> '-- high ([ (I)
+#> '-- high ([ (I)  
 #>             3.807
 #>             5.481 ])
 ```
