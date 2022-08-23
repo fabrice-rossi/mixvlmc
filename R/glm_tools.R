@@ -50,11 +50,16 @@ prepare_glm <- function(covariate, ctx_match, d, y, from = 0) {
 }
 
 glm_warning_ignore <- function(w) {
-  if (stringr::str_detect(
-    w$message,
-    stringr::coll(gettext("glm.fit: fitted probabilities numerically 0 or 1 occurred", domain = "R-stats"))
-  )) {
-    rlang::cnd_muffle(w)
+  to_ignore <- c(
+    stringr::coll(gettext(c(
+      "glm.fit: fitted probabilities numerically 0 or 1 occurred",
+      "glm.fit: algorithm did not converge"
+    ), domain = "R-stats"))
+  )
+  for (msg in to_ignore) {
+    if (stringr::str_detect(w$message, msg)) {
+      rlang::cnd_muffle(w)
+    }
   }
 }
 
@@ -103,7 +108,17 @@ fit_glm <- function(target, mm, nb_vals, control) {
               model = FALSE
             )
         }
-        assertthat::assert_that(result$converged)
+        if (!is_glm_low_rank(result)) {
+          ## check only convergence for full rank models
+          if(!result$converged) {
+            warning("glm.fit did not converge")
+          }
+        } else {
+          ## signal non convergence
+          if (!result$converged) {
+            message("glm.fit did not converge for a discarded low rank model")
+          }
+        }
       } else {
         if (ncol(mm) > 0) {
           try_vglm <- try(
@@ -112,7 +127,7 @@ fit_glm <- function(target, mm, nb_vals, control) {
               result <- VGAM::vglm(target ~ .,
                 data = mm, family = VGAM::multinomial(refLevel = 1),
                 x.arg = FALSE, y.arg = FALSE, model = FALSE,
-                control = VGAM::vglm.control(maxit =  options()[["mixvlmc.maxit"]])
+                control = VGAM::vglm.control(maxit = options()[["mixvlmc.maxit"]])
               )
             ),
             silent = TRUE
@@ -134,7 +149,15 @@ fit_glm <- function(target, mm, nb_vals, control) {
             )
         }
         if (inherits(result, "vglm")) {
-          assertthat::assert_that(result@iter <  options()[["mixvlmc.maxit"]])
+          if (is_glm_low_rank(result)) {
+            if (result@iter >= options()[["mixvlmc.maxit"]]) {
+              message("vglm.fit did not converge for a discarded low rank model")
+            }
+          } else {
+            if (result@iter >= options()[["mixvlmc.maxit"]]) {
+              warning("vglm.fit did not converge")
+            }
+          }
         }
       }
       result
