@@ -128,7 +128,9 @@ node_prune_model <- function(model, cov_dim, nb_vals, alpha, keep_data = FALSE, 
       }
       h0mm <- local_mm[, -seq(ncol(local_mm), by = -1, length.out = cov_dim * k), drop = FALSE]
       H0_local_glm <- fit_glm(target, h0mm, nb_vals, control)
-      assertthat::assert_that(!is_glm_low_rank(H0_local_glm))
+      if (is_glm_low_rank(H0_local_glm)) {
+        warning("pruned model is rank deficient will non pruned model is not")
+      }
       lambda <- 2 * (current_like - stats::logLik(H0_local_glm))
       p_value <- stats::pchisq(as.numeric(lambda), df = cov_dim * (nb_vals - 1), lower.tail = FALSE)
       if (is.na(p_value)) {
@@ -613,7 +615,7 @@ covlmc_control <- function(pseudo_obs = 1) {
 #' )
 #' draw(m_cov_nnet)
 #' @seealso [cutoff.covlmc()] and [prune.covlmc()] for post-pruning.
-covlmc <- function(x, covariate, alpha = 0.05, min_size = 15, max_depth = 100, keep_data = TRUE, control = covlmc_control(...), ...) {
+covlmc <- function(x, covariate, alpha = 0.05, min_size = 5, max_depth = 100, keep_data = TRUE, control = covlmc_control(...), ...) {
   assertthat::assert_that(is.data.frame(covariate))
   assertthat::assert_that(nrow(covariate) == length(x))
   # data conversion
@@ -630,7 +632,7 @@ covlmc <- function(x, covariate, alpha = 0.05, min_size = 15, max_depth = 100, k
   ## we enforce a full context tree (with all_children=TRUE)
   ctx_tree <- grow_ctx_tree(ix, vals,
     min_size = min_size, max_depth = max_depth,
-    covsize = ncol(covariate), keep_match = TRUE, all_children = TRUE
+    covsize = desc$cov_size, keep_match = TRUE, all_children = TRUE
   )
   if (length(vals) > 2) {
     x <- nx$fx

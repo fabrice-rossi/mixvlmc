@@ -110,7 +110,7 @@ fit_glm <- function(target, mm, nb_vals, control) {
         }
         if (!is_glm_low_rank(result)) {
           ## check only convergence for full rank models
-          if(!result$converged) {
+          if (!result$converged) {
             warning("glm.fit did not converge")
           }
         } else {

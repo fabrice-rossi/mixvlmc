@@ -1,14 +1,18 @@
 covariate_description <- function(covariate) {
   cov_desc <- list()
+  cov_size <- 0
   for (var in names(covariate)) {
     if (is.character(covariate[[var]])) {
       covariate[[var]] <- factor(covariate[[var]])
     }
     if (is.factor(covariate[[var]])) {
       cov_desc[[var]] <- levels(covariate[[var]])
+      cov_size <- cov_size + length(cov_desc[[var]]) - 1
+    } else {
+      cov_size <- cov_size + 1
     }
   }
-  list(cov_desc = cov_desc, covariate = covariate)
+  list(cov_desc = cov_desc, cov_size = cov_size, covariate = covariate)
 }
 
 validate_covariate <- function(model, covariate) {

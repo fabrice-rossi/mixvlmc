@@ -8,7 +8,7 @@ covlmc(
   x,
   covariate,
   alpha = 0.05,
-  min_size = 15,
+  min_size = 5,
   max_depth = 100,
   keep_data = TRUE,
   control = covlmc_control(...),
