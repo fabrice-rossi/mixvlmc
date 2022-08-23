@@ -91,15 +91,32 @@ fit_glm <- function(target, mm, nb_vals, control) {
     if (engine == "glm") {
       if (nb_vals == 2) {
         if (ncol(mm) > 0) {
-          withCallingHandlers(
-            warning = glm_warning_ignore,
-            result <-
-              stats::glm(target ~ .,
-                data = mm, family = stats::binomial(),
-                x = FALSE, y = FALSE,
-                model = FALSE, control = stats::glm.control(maxit = options()[["mixvlmc.maxit"]])
-              )
+          try_glm <- try(
+            withCallingHandlers(
+              warning = glm_warning_ignore,
+              result <-
+                stats::glm(target ~ .,
+                  data = mm, family = stats::binomial(),
+                  x = FALSE, y = FALSE,
+                  model = FALSE, control = stats::glm.control(maxit = options()[["mixvlmc.maxit"]])
+                )
+            ),
+            silent = TRUE
           )
+          if (inherits(try_glm, "try-error")) {
+            err_cond <- as.character(attr(try_glm, "condition"))
+            if (stringr::str_detect(
+              err_cond,
+              stringr::coll(gettext("contrasts can be applied only to factors with 2 or more levels",
+                domain = "R-stats"
+              ))
+            )) {
+              ## fake result, interpreted as a low rank result
+              result <- structure(list(coefficients = c(NA), ll = NA, rank = 0, target = NA, class = "constant_model"))
+            } else {
+              stop(attr(try_glm, "condition"))
+            }
+          }
         } else {
           result <-
             stats::glm(target ~ 1,
@@ -108,15 +125,17 @@ fit_glm <- function(target, mm, nb_vals, control) {
               model = FALSE
             )
         }
-        if (!is_glm_low_rank(result)) {
-          ## check only convergence for full rank models
-          if (!result$converged) {
-            warning("glm.fit did not converge")
-          }
-        } else {
-          ## signal non convergence
-          if (!result$converged) {
-            message("glm.fit did not converge for a discarded low rank model")
+        if (inherits(result, "glm")) {
+          if (!is_glm_low_rank(result)) {
+            ## check only convergence for full rank models
+            if (!result$converged) {
+              warning("glm.fit did not converge")
+            }
+          } else {
+            ## signal non convergence
+            if (!result$converged) {
+              message("glm.fit did not converge for a discarded low rank model")
+            }
           }
         }
       } else {
