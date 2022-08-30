@@ -18,7 +18,7 @@ vlmc_node2txt <- function(ct, params) {
 #'   the tree. The default `prob=TRUE` represents the conditional distribution
 #'   of the states given the (partial) context associated to the node. Setting
 #'   `prob=FALSE` replaces the conditional distribution by the frequency of the
-#'   states that follow the context as in [draw.ctx_tree()]. Setting`prob=NULL`
+#'   states that follow the context as in [draw.ctx_tree()]. Setting `prob=NULL`
 #'   removes all additional information.
 #' @examples
 #' dts <- sample(c("A", "B", "C"), 500, replace = TRUE)

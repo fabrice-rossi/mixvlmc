@@ -16,7 +16,7 @@ representation. See details and \code{\link[=draw_control]{draw_control()}}.}
 the tree. The default \code{prob=TRUE} represents the conditional distribution
 of the states given the (partial) context associated to the node. Setting
 \code{prob=FALSE} replaces the conditional distribution by the frequency of the
-states that follow the context as in \code{\link[=draw.ctx_tree]{draw.ctx_tree()}}. Setting\code{prob=NULL}
+states that follow the context as in \code{\link[=draw.ctx_tree]{draw.ctx_tree()}}. Setting \code{prob=NULL}
 removes all additional information.}
 
 \item{...}{additional arguments for draw.}
