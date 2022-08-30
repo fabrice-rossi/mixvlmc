@@ -15,6 +15,17 @@ frequency_context_extractor <-
           res <-
             cbind(res, data.frame(freq_by_val, check.names = FALSE))
         }
+        if (!is_leaf && isTRUE(control$counts == "local")) {
+          ## remove sub counts
+          for (child in ct$children) {
+            if (!is.null(child[["f_by"]])) {
+              res$freq <- res$freq - sum(child[["f_by"]])
+              if (control$frequency == "detailed") {
+                res[, -(1:2)] <- res[, -(1:2)] - child[["f_by"]]
+              }
+            }
+          }
+        }
         res
       }
     } else {

@@ -95,6 +95,11 @@ covlmc_context_extractor <- function(path, ct, vals, control, is_leaf, p_summary
 #' @param hsize if TRUE, adds a `hsize` column to the result data frame that
 #'   gives for each context the size of the history of covariates used by the model.
 #' @param ct a fitted covlmc model.
+#' @param counts specifies how the counts reported by `frequency` are computed.
+#'   The default value `"desc"` includes both counts that are specific to the
+#'   context (if any) and counts from the descendants of the context in the
+#'   tree. When `counts = "local"` the counts include only the number of times
+#'   the context appears without being the last part of a longer context.
 #' @details The default result for `type="auto"` (or `type="list"`),
 #'   `frequency=NULL` and `model=NULL` is the list of all contexts.
 #'
@@ -112,9 +117,11 @@ covlmc_context_extractor <- function(path, ct, vals, control, is_leaf, p_summary
 #' contexts(m_cov, model = "coef")
 #' contexts(m_cov, model = "full")
 #' @export
-contexts.covlmc <- function(ct, type = c("auto", "list", "data.frame"), reverse = TRUE, frequency = NULL, model = NULL, hsize = FALSE, ...) {
+contexts.covlmc <- function(ct, type = c("auto", "list", "data.frame"), reverse = TRUE, frequency = NULL,
+                            counts = c("desc", "local"), model = NULL, hsize = FALSE, ...) {
   type <- match.arg(type)
-  if (is.null(model) && !hsize) {
+  counts <- match.arg(counts)
+  if (is.null(model) && !hsize && counts == "desc") {
     NextMethod()
   } else {
     assertthat::assert_that(type %in% c("auto", "data.frame"))
@@ -124,7 +131,7 @@ contexts.covlmc <- function(ct, type = c("auto", "list", "data.frame"), reverse 
     if (!is.null(model)) {
       assertthat::assert_that(model %in% c("coef", "full"))
     }
-    control <- list(frequency = frequency, model = model, hsize = hsize)
+    control <- list(frequency = frequency, counts = counts, model = model, hsize = hsize)
     preres <- contexts_extractor(ct, reverse, covlmc_context_extractor, control, no_summary)
     rownames(preres) <- 1:nrow(preres)
     preres

@@ -28,6 +28,11 @@ vlmc_context_extractor <-
 #'   `cutoff=NULL` does not include those values. Setting `cutoff` to `quantile`
 #'   adds the cut off values in quantile scale, while `cutoff="native"` adds
 #'   them in the native scale.
+#' @param counts specifies how the counts reported by `frequency` are computed.
+#'   The default value `"desc"` includes both counts that are specific to the
+#'   context (if any) and counts from the descendants of the context in the
+#'   tree. When `counts = "local"` the counts include only the number of times
+#'   the context appears without being the last part of a longer context.
 #' @details The default result for `type="auto"` (or `type="list"`),
 #'   `frequency=NULL` and `cutoff=NULL` is the list of all contexts.
 #'
@@ -56,9 +61,11 @@ vlmc_context_extractor <-
 #' contexts(model, frequency = "total")
 #' contexts(model, cutoff = "quantile")
 #' @export
-contexts.vlmc <- function(ct, type = c("auto", "list", "data.frame"), reverse = TRUE, frequency = NULL, cutoff = NULL, ...) {
+contexts.vlmc <- function(ct, type = c("auto", "list", "data.frame"), reverse = TRUE, frequency = NULL,
+                          counts = c("desc", "local"), cutoff = NULL, ...) {
   type <- match.arg(type)
-  if (is.null(cutoff)) {
+  counts <- match.arg(counts)
+  if (is.null(cutoff) && counts == "desc") {
     NextMethod()
   } else {
     assertthat::assert_that(type %in% c("auto", "data.frame"))
@@ -68,7 +75,7 @@ contexts.vlmc <- function(ct, type = c("auto", "list", "data.frame"), reverse = 
     if (!is.null(cutoff)) {
       assertthat::assert_that(cutoff %in% c("quantile", "native"))
     }
-    control <- list(frequency = frequency, p_value = !is.null(cutoff))
+    control <- list(frequency = frequency, counts = counts, p_value = !is.null(cutoff))
     preres <- contexts_extractor(ct, reverse, vlmc_context_extractor, control, vlmc_parent_summary)
     if (!is.null(cutoff)) {
       if ((cutoff == "quantile")) {

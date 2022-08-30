@@ -9,6 +9,7 @@
   type = c("auto", "list", "data.frame"),
   reverse = TRUE,
   frequency = NULL,
+  counts = c("desc", "local"),
   cutoff = NULL,
   ...
 )
@@ -25,6 +26,12 @@ data.frame. The default value of \code{NULL} does not include anything.
 \code{"total"} gives the number of occurrences of each context in the original
 sequence. \code{"detailed"} includes in addition the break down of these
 occurrences into all the possible states.}
+
+\item{counts}{specifies how the counts reported by \code{frequency} are computed.
+The default value \code{"desc"} includes both counts that are specific to the
+context (if any) and counts from the descendants of the context in the
+tree. When \code{counts = "local"} the counts include only the number of times
+the context appears without being the last part of a longer context.}
 
 \item{cutoff}{specifies whether to include the cut off value associated to
 each context (see \code{\link[=cutoff]{cutoff()}} and \code{\link[=prune]{prune()}}). The default result with
