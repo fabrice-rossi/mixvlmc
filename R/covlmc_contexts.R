@@ -83,7 +83,7 @@ covlmc_context_extractor <- function(path, ct, vals, control, is_leaf, p_summary
     }
   } else {
     res <- frequency_context_extractor(path, ct, vals, control, is_leaf, p_summary)
-    if (!is.null(control[["model"]]) || isTRUE(control[["hsize"]])) {
+    if (!is.null(control[["model"]]) || isTRUE(control[["hsize"]]) || isTRUE(control[["metrics"]])) {
       res <- covlmc_model_extractor(res, ct$model, control)
     }
     res
@@ -135,7 +135,7 @@ contexts.covlmc <- function(ct, type = c("auto", "list", "data.frame"), reverse 
                             counts = c("desc", "local"), model = NULL, hsize = FALSE, metrics = FALSE, ...) {
   type <- match.arg(type)
   counts <- match.arg(counts)
-  if (is.null(model) && !hsize && counts == "desc") {
+  if (is.null(model) && !hsize && counts == "desc" && !metrics) {
     NextMethod()
   } else {
     assertthat::assert_that(type %in% c("auto", "data.frame"))
