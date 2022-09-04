@@ -19,7 +19,8 @@ node_fit_glm_full_rank_with_data <- function(local_mm, d, target, dim_cov, nb_va
       likelihood = as.numeric(stats::logLik(local_glm)),
       data = list(local_mm = local_mm, target = target),
       model = local_glm,
-      hsize = d
+      hsize = d,
+      metrics = glm_metrics(local_glm, local_mm, target)
     )
   } else {
     NULL
@@ -175,10 +176,11 @@ node_prune_model <- function(model, cov_dim, nb_vals, alpha, keep_data = FALSE, 
         coefficients = glm_coef(current_model, local_mm),
         var_names = glm_variable_names(current_model, local_mm),
         likelihood = current_like,
+        data = current_data,
         model = current_model,
-        p_value = p_value,
         hsize = hsize,
-        data = current_data
+        metrics = glm_metrics(current_model, local_mm, target),
+        p_value = p_value
       )
     }
   } else {

@@ -12,6 +12,7 @@
   counts = c("desc", "local"),
   model = NULL,
   hsize = FALSE,
+  metrics = FALSE,
   ...
 )
 }
@@ -43,6 +44,9 @@ column, while \code{"full"} include the models themselves (as R objects) in a
 \item{hsize}{if TRUE, adds a \code{hsize} column to the result data frame that
 gives for each context the size of the history of covariates used by the model.}
 
+\item{metrics}{if TRUE, adds predictive metrics for each context (see \code{\link[=metrics]{metrics()}}
+for the definition of predictive metrics).}
+
 \item{...}{additional arguments for the contexts function.}
 }
 \value{
@@ -55,7 +59,8 @@ covariates, possibly with some associated data.
 }
 \details{
 The default result for \code{type="auto"} (or \code{type="list"}),
-\code{frequency=NULL} and \code{model=NULL} is the list of all contexts.
+\code{frequency = NULL}, \code{model = NULL}, \code{hsize = FALSE} and \code{metrics = FALSE}
+is the list of all contexts.
 
 Other results are obtained only with \code{type="data.frame"} (or
 \code{type="auto"}). See \code{\link[=contexts.ctx_tree]{contexts.ctx_tree()}} for details about the \code{frequency}

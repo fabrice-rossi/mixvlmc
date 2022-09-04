@@ -38,10 +38,21 @@ covlmc_model_extractor <- function(res, model, control) {
     }
   }
   if (isTRUE(control$hsize)) {
+    hsizes <- data.frame(hsize = model$hsize)
     if (is.null(cores)) {
-      cores <- data.frame(hsize = model$hsize)
+      cores <- hsizes
     } else {
-      cores <- cbind(cores, data.frame(hsize = model$hsize))
+      cores <- cbind(cores, hsizes)
+    }
+  }
+  if (isTRUE(control$metrics)) {
+    local_metrics <- metrics_from_cm(model$metrics$conf_mat)
+    local_metrics$auc <- model$metrics$auc
+    local_metrics <- as.data.frame(local_metrics)
+    if (is.null(cores)) {
+      cores <- local_metrics
+    } else {
+      cores <- cbind(cores, local_metrics)
     }
   }
   if (is.null(res)) {
@@ -100,8 +111,11 @@ covlmc_context_extractor <- function(path, ct, vals, control, is_leaf, p_summary
 #'   context (if any) and counts from the descendants of the context in the
 #'   tree. When `counts = "local"` the counts include only the number of times
 #'   the context appears without being the last part of a longer context.
+#' @param metrics if TRUE, adds predictive metrics for each context (see [metrics()]
+#'   for the definition of predictive metrics).
 #' @details The default result for `type="auto"` (or `type="list"`),
-#'   `frequency=NULL` and `model=NULL` is the list of all contexts.
+#'   `frequency = NULL`, `model = NULL`, `hsize = FALSE` and `metrics = FALSE`
+#'   is the list of all contexts.
 #'
 #'   Other results are obtained only with `type="data.frame"` (or
 #'   `type="auto"`). See [contexts.ctx_tree()] for details about the `frequency`
@@ -118,7 +132,7 @@ covlmc_context_extractor <- function(path, ct, vals, control, is_leaf, p_summary
 #' contexts(m_cov, model = "full")
 #' @export
 contexts.covlmc <- function(ct, type = c("auto", "list", "data.frame"), reverse = TRUE, frequency = NULL,
-                            counts = c("desc", "local"), model = NULL, hsize = FALSE, ...) {
+                            counts = c("desc", "local"), model = NULL, hsize = FALSE, metrics = FALSE, ...) {
   type <- match.arg(type)
   counts <- match.arg(counts)
   if (is.null(model) && !hsize && counts == "desc") {
@@ -131,7 +145,7 @@ contexts.covlmc <- function(ct, type = c("auto", "list", "data.frame"), reverse 
     if (!is.null(model)) {
       assertthat::assert_that(model %in% c("coef", "full"))
     }
-    control <- list(frequency = frequency, counts = counts, model = model, hsize = hsize)
+    control <- list(frequency = frequency, counts = counts, model = model, hsize = hsize, metrics = metrics)
     preres <- contexts_extractor(ct, reverse, covlmc_context_extractor, control, no_summary)
     rownames(preres) <- 1:nrow(preres)
     preres

@@ -25,7 +25,7 @@
 #'    in rows and true values in columns
 #'  - `auc`: the AUC of the predictive model
 #'
-#' @seealso [metrics.vlmc()]
+#' @seealso [metrics.vlmc()], [contexts.covlmc()]
 #' @references
 #' David J. Hand and Robert J. Till (2001). A Simple Generalisation of the Area
 #' Under the ROC Curve for Multiple Class Classification
@@ -34,4 +34,8 @@
 #' @export
 metrics <- function(model, ...) {
   UseMethod("metrics")
+}
+
+metrics_from_cm <- function(cm) {
+  list(accuracy = sum(diag(cm)) / sum(cm))
 }

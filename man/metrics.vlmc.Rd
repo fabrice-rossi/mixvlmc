@@ -58,5 +58,5 @@ Problems. \emph{Machine Learning} 45(2), p. 171--186. DOI:
 \href{http://dx.doi.org/10.1023/A:1010920819831}{10.1023/A:1010920819831}.
 }
 \seealso{
-\code{\link[=metrics.vlmc]{metrics.vlmc()}}
+\code{\link[=metrics.vlmc]{metrics.vlmc()}}, \code{\link[=contexts.covlmc]{contexts.covlmc()}}
 }
