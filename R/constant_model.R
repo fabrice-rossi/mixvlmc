@@ -1,8 +1,10 @@
 constant_model <- function(target, mm, nb_vals, pseudo_obs = 1) {
   if (ncol(mm) > 0) {
     nb_coeffs <- (ncol(stats::model.matrix(target ~ ., data = mm))) * (nb_vals - 1)
+    cov_desc <- list(names = names(mm), levels = lapply(mm, levels), types = lapply(mm, typeof))
   } else {
     nb_coeffs <- nb_vals - 1
+    cov_desc <- NULL
   }
   coeffs <- rep(NA, nb_coeffs)
   if (nb_vals == 2) {
@@ -17,7 +19,7 @@ constant_model <- function(target, mm, nb_vals, pseudo_obs = 1) {
     attr(ll, "df") <- nb_coeffs
     attr(ll, "nobs") <- nb_1 + nb_0
     class(ll) <- "logLik"
-    structure(list(coefficients = coeffs, ll = ll, rank = 1, target = ifelse(nb_0 == 0, 1, 0)), class = "constant_model")
+    structure(list(coefficients = coeffs, ll = ll, rank = 1, target = ifelse(nb_0 == 0, 1, 0), cov_desc = cov_desc), class = "constant_model")
   } else {
     target_dist <- table(target)
     f_target_dist <- target_dist + pseudo_obs
@@ -27,7 +29,7 @@ constant_model <- function(target, mm, nb_vals, pseudo_obs = 1) {
     attr(ll, "df") <- nb_coeffs
     attr(ll, "nobs") <- sum(target_dist)
     class(ll) <- "logLik"
-    structure(list(coefficients = coeffs, ll = ll, rank = nb_vals - 1, target = which(target_dist > 0) - 1), class = "constant_model")
+    structure(list(coefficients = coeffs, ll = ll, rank = nb_vals - 1, target = which(target_dist > 0) - 1, cov_desc = cov_desc), class = "constant_model")
   }
 }
 
@@ -42,20 +44,32 @@ logLik.constant_model <- function(object, ...) {
 }
 
 #' @exportS3Method
-predict.constant_model <- function(object, ...) {
+predict.constant_model <- function(object, newdata = NULL, ...) {
   args <- list(...)
-  assertthat::assert_that(length(args) == 1)
+  if (is.null(newdata)) {
+    nobs <- attr(object$ll, "nobs")
+  } else {
+    assertthat::assert_that(is.data.frame(newdata))
+    if (is.null(object[["cov_desc"]])) {
+      assertthat::assert_that(ncol(newdata) == 0)
+    } else {
+      assertthat::assert_that(assertthat::has_name(newdata, object$cov_desc$names))
+      assertthat::assert_that(assertthat::are_equal(lapply(newdata[object$cov_desc$names], levels), object$cov_desc$levels))
+      assertthat::assert_that(assertthat::are_equal(lapply(newdata[object$cov_desc$names], typeof), object$cov_desc$types))
+    }
+    nobs <- nrow(newdata)
+  }
   if (object$rank == 1) {
-    rep(stats::binomial()$linkinv(object$coefficients[1]), nrow(args[[1]]))
+    rep(stats::binomial()$linkinv(object$coefficients[1]), nobs)
   } else {
     base_prob <- VGAM::multilogitlink(matrix(object$coefficients[1:object$rank], ncol = object$rank), inverse = TRUE)[1, ]
-    matrix(base_prob, ncol = object$rank + 1, nrow = nrow(args[[1]]), byrow = TRUE)
+    matrix(base_prob, ncol = object$rank + 1, nrow = nobs, byrow = TRUE)
   }
 }
 
 #' @exportS3Method
 glm_likelihood.constant_model <- function(model, mm, target) {
-  probs <- stats::predict(model, mm)
+  probs <- stats::predict(model, newdata = mm)
   if (model$rank == 1) {
     sum(log(probs) * target + log(1 - probs) * (1 - target))
   } else {
@@ -89,9 +103,9 @@ glm_levels.constant_model <- function(model, vals) {
 
 #' @exportS3Method
 glm_metrics.constant_model <- function(model, mm, target) {
+  probs <- predict(model, mm, target)
   if (model$rank == 1) {
     ## binary case
-    probs <- rep(stats::binomial()$linkinv(model$coefficients[1]), length(target))
     t_dist <- c(0, 0)
     t_dist[1] <- sum(target == 0)
     t_dist[2] <- length(target) - t_dist[1]
@@ -106,8 +120,7 @@ glm_metrics.constant_model <- function(model, mm, target) {
     }
   } else {
     t_dist <- table(target)
-    base_prob <- VGAM::multilogitlink(matrix(model$coefficients[1:model$rank], ncol = model$rank), inverse = TRUE)[1, ]
-    probs <- matrix(base_prob, ncol = model$rank + 1, nrow = nrow(mm), byrow = TRUE)
+    base_prob <- probs[1, ]
     cm <- matrix(0, ncol = ncol(probs), nrow = ncol(probs))
     the_pred <- which.max(base_prob)
     cm[the_pred, ] <- t_dist
