@@ -8,10 +8,10 @@ test_that("metrics.vlmc obey its contract", {
   ## names
   expect_true(all(c("accuracy", "conf_mat", "auc") %in% names(m_metrics)))
   ## confusion matrix
-  expect_true(inherits(m_metrics$conf_mat, "matrix"))
+  expect_true(inherits(m_metrics$conf_mat, "table"))
   expect_equal(dim(m_metrics$conf_mat), c(length(states(model)), length(states(model))))
   expect_equal(colnames(m_metrics$conf_mat), as.character(states(model)))
-  expect_equal(rownames(m_metrics$conf_mat), stringr::str_c("predicted ", as.character(states(model))))
+  expect_equal(rownames(m_metrics$conf_mat), as.character(states(model)))
   expect_lte(sum(m_metrics$conf_mat), length(dts))
   expect_true(all(colSums(m_metrics$conf_mat) <= table(dts)))
 })

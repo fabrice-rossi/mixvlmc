@@ -15,25 +15,12 @@ metrics.vlmc <- function(model, ...) {
   counts <- as.matrix(all_ctx[, -(1:2)])
   freq <- all_ctx$freq
   probs <- sweep(counts, 1, freq, "/")
-  err <- freq - apply(counts, 1, max)
-  total <- sum(freq)
-  ## accuracy
-  res <- list(accuracy = (total - sum(err)) / total)
   ## confusion matrix
-  decision <- apply(counts, 1, which.max)
   if (is.factor(model$vals)) {
     the_levels <- levels(model$vals)
   } else {
     the_levels <- model$vals
   }
-  cm <- matrix(0, ncol = ncol(counts), nrow = ncol(counts))
-  for (k in 1:ncol(counts)) {
-    cm[k, ] <- colSums(counts[decision == k, , drop = FALSE])
-  }
-  colnames(cm) <- the_levels
-  rownames(cm) <- stringr::str_c("predicted", the_levels, sep = " ")
-  res$conf_mat <- cm
-  ## AUC
   # we generate fake responses that match the original data
   response <- rep(the_levels[1], sum(freq))
   pos <- 1
@@ -47,6 +34,7 @@ metrics.vlmc <- function(model, ...) {
     }
   }
   assertthat::assert_that(all(colSums(counts) == table(response)))
+  response <- factor(response, levels = the_levels)
   if (ncol(counts) > 2) {
     ## multiclass case
     predictor <- matrix(0, ncol = ncol(probs), nrow = length(response))
@@ -59,13 +47,11 @@ metrics.vlmc <- function(model, ...) {
       }
     }
     colnames(predictor) <- the_levels
-    res$roc <- pROC::multiclass.roc(response, predictor)
   } else {
     one_probs <- probs[freq > 0, 2]
     predictor <- rep(one_probs, times = freq[freq > 0])
-    res$roc <- pROC::roc(response, predictor, levels = the_levels, direction = "<")
   }
-  res$auc <- as.numeric(pROC::auc(res$roc))
+  res <- main_metrics(response, predictor)
   res$model <- model
   structure(res, class = "metrics.vlmc")
 }

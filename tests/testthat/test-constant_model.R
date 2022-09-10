@@ -57,3 +57,21 @@ test_that("constant model gives the expected predictions on the test set", {
   broken_new_covariates$x <- sample(1:4, 200, replace = TRUE)
   expect_error(predict(bin_model, broken_new_covariates))
 })
+
+test_that("constant model metrics works as expected", {
+  covariates <- data.frame(
+    x = as.factor(sample(c("a", "b"), 100, replace = TRUE)),
+    y = rnorm(100),
+    z = as.factor(sample(1:4, 100, replace = TRUE))
+  )
+  target <- factor(rep("2", 100), levels = as.character(1:3))
+  model <- constant_model(target, covariates, 3)
+  m_model <- glm_metrics(model, covariates, target)
+  expect_equal(m_model$accuracy, 1)
+  expect_equal(m_model$auc, NA)
+  cm <- table(target, target)
+  cm_dm <- dimnames(cm)
+  names(cm_dm) <- c("predicted value", "true value")
+  dimnames(cm) <- cm_dm
+  expect_equal(m_model$conf_mat, cm)
+})

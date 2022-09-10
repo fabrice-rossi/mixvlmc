@@ -104,33 +104,5 @@ glm_levels.constant_model <- function(model, vals) {
 #' @exportS3Method
 glm_metrics.constant_model <- function(model, mm, target) {
   probs <- predict(model, mm, target)
-  if (model$rank == 1) {
-    ## binary case
-    t_dist <- c(0, 0)
-    t_dist[1] <- sum(target == 0)
-    t_dist[2] <- length(target) - t_dist[1]
-    cm <- matrix(0, nrow = 2, ncol = 2)
-    cm[model$target + 1, ] <- t_dist
-    acc <- sum(diag(cm)) / length(target)
-    if (any(t_dist == 0)) {
-      list(accuracy = acc, conf_mat = cm, auc = NA)
-    } else {
-      roc <- pROC::roc(target, probs, levels = c(0, 1), direction = "<")
-      list(accuracy = acc, conf_mat = cm, roc = roc, auc = as.numeric(pROC::auc(roc)))
-    }
-  } else {
-    t_dist <- table(target)
-    base_prob <- probs[1, ]
-    cm <- matrix(0, ncol = ncol(probs), nrow = ncol(probs))
-    the_pred <- which.max(base_prob)
-    cm[the_pred, ] <- t_dist
-    acc <- sum(diag(cm)) / length(target)
-    if (any(t_dist == 0)) {
-      list(accuracy = acc, conf_mat = cm, auc = NA)
-    } else {
-      colnames(probs) <- levels(target)
-      roc <- pROC::multiclass.roc(target, probs)
-      list(accuracy = acc, conf_mat = cm, roc = roc, auc = as.numeric(pROC::auc(roc)))
-    }
-  }
+  main_metrics(target, probs)
 }
