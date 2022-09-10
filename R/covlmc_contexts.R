@@ -71,7 +71,7 @@ covlmc_context_extractor <- function(path, ct, vals, control, is_leaf, p_summary
         if (is.null(path)) {
           sub_path <- vals[v]
         } else {
-          sub_path <- c(vals[v], path)
+          sub_path <- c(path, vals[v])
         }
         l_res <- frequency_context_extractor(sub_path, ct$children[[v]], vals, control, is_leaf, p_summary)
         l_res <- covlmc_model_extractor(l_res, ct$merged_model, control)
