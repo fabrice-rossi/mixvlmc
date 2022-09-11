@@ -78,10 +78,10 @@ states, \code{covlmc} use \code{\link[VGAM:vglm]{VGAM::vglm()}} with a multinomi
 
 Both engines are able to detect degenerate cases and lead to more robust
 results that using \code{\link[nnet:multinom]{nnet::multinom()}}. It is nevertheless possible to
-replace \code{\link[VGAM:vglm]{VGAM::vglm()}} with \code{\link[nnet:multinom]{nnet::multinom()}} by setting the global option
-\code{mixvlmc.predictive} to \code{"multinom"} (the default value is \code{"glm"}). Notice
-that while results should be comparable, there is no guarantee that they
-will be identical.
+replace \code{\link[stats:glm]{stats::glm()}} and \code{\link[VGAM:vglm]{VGAM::vglm()}} with \code{\link[nnet:multinom]{nnet::multinom()}} by setting
+the global option \code{mixvlmc.predictive} to \code{"multinom"} (the default value is
+\code{"glm"}). Notice that while results should be comparable, there is no
+guarantee that they will be identical.
 }
 
 \examples{

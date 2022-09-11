@@ -592,10 +592,10 @@ covlmc_control <- function(pseudo_obs = 1) {
 #'
 #'   Both engines are able to detect degenerate cases and lead to more robust
 #'   results that using [nnet::multinom()]. It is nevertheless possible to
-#'   replace [VGAM::vglm()] with [nnet::multinom()] by setting the global option
-#'   `mixvlmc.predictive` to `"multinom"` (the default value is `"glm"`). Notice
-#'   that while results should be comparable, there is no guarantee that they
-#'   will be identical.
+#'   replace [stats::glm()] and [VGAM::vglm()] with [nnet::multinom()] by setting
+#'   the global option `mixvlmc.predictive` to `"multinom"` (the default value is
+#'   `"glm"`). Notice that while results should be comparable, there is no
+#'   guarantee that they will be identical.
 #'
 #' @references
 #'
