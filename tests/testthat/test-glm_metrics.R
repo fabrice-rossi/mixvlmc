@@ -19,7 +19,7 @@ test_that("metrics for constant_model work as expected", {
   x <- matrix(stats::rnorm(500), ncol = 2)
   x <- data.frame(x)
   target <- rep(1, nrow(x))
-  f_target <- factor(target, levels=c(0,1))
+  f_target <- factor(target, levels = c(0, 1))
   model <- constant_model(target, x, 2)
   mm <- glm_metrics(model, x, target)
   cm <- metrics_fix_names(table(f_target, f_target))

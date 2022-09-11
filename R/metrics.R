@@ -77,19 +77,19 @@ main_metrics <- function(target, probs) {
   } else {
     decision <- factor(as.integer(probs >= 0.5), levels = c(0, 1))
   }
-  if(!is.factor(target)) {
-    f_target <- factor(target, levels = c(0,1))
+  if (!is.factor(target)) {
+    f_target <- factor(target, levels = c(0, 1))
   } else {
     f_target <- target
   }
   cm <- metrics_fix_names(table(decision, f_target))
   t_dist <- colSums(cm)
-  if(is.factor(target)) {
+  if (is.factor(target)) {
     nb_levels <- length(levels(target))
   } else {
     nb_levels <- 2
   }
-  if(is.null(ncol(probs))) {
+  if (is.null(ncol(probs))) {
     degenerate <- nb_levels > 2
   } else {
     degenerate <- (nb_levels > ncol(probs))
