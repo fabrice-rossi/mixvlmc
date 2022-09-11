@@ -62,6 +62,9 @@ covlmc_context_extractor <- function(path, ct, vals, control, is_leaf, p_summary
         }
         l_res <- frequency_context_extractor(sub_path, ct$children[[v]], vals, control, is_leaf, p_summary)
         l_res <- covlmc_model_extractor(l_res, ct$merged_model, control)
+        if (isTRUE(control[["merging"]])) {
+          l_res$merged <- TRUE
+        }
         res <- rbind(res, l_res)
       }
       res
@@ -70,8 +73,12 @@ covlmc_context_extractor <- function(path, ct, vals, control, is_leaf, p_summary
     }
   } else {
     res <- frequency_context_extractor(path, ct, vals, control, is_leaf, p_summary)
-    if (!is.null(control[["model"]]) || isTRUE(control[["hsize"]]) || isTRUE(control[["metrics"]])) {
+    if (!is.null(control[["model"]]) || isTRUE(control[["hsize"]]) ||
+      isTRUE(control[["metrics"]]) || isTRUE(control[["merging"]])) {
       res <- covlmc_model_extractor(res, ct$model, control)
+      if (isTRUE(control[["merging"]])) {
+        res$merged <- FALSE
+      }
     }
     res
   }
@@ -100,9 +107,12 @@ covlmc_context_extractor <- function(path, ct, vals, control, is_leaf, p_summary
 #'   the context appears without being the last part of a longer context.
 #' @param metrics if TRUE, adds predictive metrics for each context (see [metrics()]
 #'   for the definition of predictive metrics).
-#' @details The default result for `type="auto"` (or `type="list"`),
-#'   `frequency = NULL`, `model = NULL`, `hsize = FALSE` and `metrics = FALSE`
-#'   is the list of all contexts.
+#' @param merging if TRUE, adds a `merged` column to the result data frame. For
+#'   a normal context, the value of `merged` is FALSE. Contexts that share the same
+#'   model have a TRUE `merged` value.
+#' @details The result is a list of all contexts when `type="auto"` (or `type="list"`),
+#'   and no details have been asked via specific parameters (e.g. by setting `model`
+#'   to a non `NULL` value).
 #'
 #'   Other results are obtained only with `type="data.frame"` (or
 #'   `type="auto"`). See [contexts.ctx_tree()] for details about the `frequency`
@@ -119,10 +129,11 @@ covlmc_context_extractor <- function(path, ct, vals, control, is_leaf, p_summary
 #' contexts(m_cov, model = "full")
 #' @export
 contexts.covlmc <- function(ct, type = c("auto", "list", "data.frame"), reverse = TRUE, frequency = NULL,
-                            counts = c("desc", "local"), model = NULL, hsize = FALSE, metrics = FALSE, ...) {
+                            counts = c("desc", "local"), model = NULL, hsize = FALSE, metrics = FALSE,
+                            merging = FALSE, ...) {
   type <- match.arg(type)
   counts <- match.arg(counts)
-  if (is.null(model) && !hsize && counts == "desc" && !metrics) {
+  if (is.null(model) && !hsize && counts == "desc" && !metrics && !merging) {
     NextMethod()
   } else {
     assertthat::assert_that(type %in% c("auto", "data.frame"))
@@ -132,7 +143,10 @@ contexts.covlmc <- function(ct, type = c("auto", "list", "data.frame"), reverse 
     if (!is.null(model)) {
       assertthat::assert_that(model %in% c("coef", "full"))
     }
-    control <- list(frequency = frequency, counts = counts, model = model, hsize = hsize, metrics = metrics)
+    control <- list(
+      frequency = frequency, counts = counts, model = model,
+      hsize = hsize, metrics = metrics, merging = merging
+    )
     preres <- contexts_extractor(ct, reverse, covlmc_context_extractor, control, no_summary)
     rownames(preres) <- 1:nrow(preres)
     preres

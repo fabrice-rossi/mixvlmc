@@ -21,6 +21,8 @@ test_that("context format is consistent", {
   expect_named(ctx_model, c("context", "model"))
   ctx_model_with_metrics <- contexts(model, model = "full", metrics = TRUE)
   expect_named(ctx_model_with_metrics, c("context", "model", "accuracy", "auc"))
+  ctx_model_with_merging <- contexts(model, model = "full", merging = TRUE)
+  expect_named(ctx_model_with_merging, c("context", "model", "merged"))
 })
 
 test_that("models are consistent", {

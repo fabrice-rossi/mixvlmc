@@ -13,6 +13,7 @@
   model = NULL,
   hsize = FALSE,
   metrics = FALSE,
+  merging = FALSE,
   ...
 )
 }
@@ -47,6 +48,10 @@ gives for each context the size of the history of covariates used by the model.}
 \item{metrics}{if TRUE, adds predictive metrics for each context (see \code{\link[=metrics]{metrics()}}
 for the definition of predictive metrics).}
 
+\item{merging}{if TRUE, adds a \code{merged} column to the result data frame. For
+a normal context, the value of \code{merged} is FALSE. Contexts that share the same
+model have a TRUE \code{merged} value.}
+
 \item{...}{additional arguments for the contexts function.}
 }
 \value{
@@ -58,9 +63,9 @@ This function returns the different contexts present in a VLMC with
 covariates, possibly with some associated data.
 }
 \details{
-The default result for \code{type="auto"} (or \code{type="list"}),
-\code{frequency = NULL}, \code{model = NULL}, \code{hsize = FALSE} and \code{metrics = FALSE}
-is the list of all contexts.
+The result is a list of all contexts when \code{type="auto"} (or \code{type="list"}),
+and no details have been asked via specific parameters (e.g. by setting \code{model}
+to a non \code{NULL} value).
 
 Other results are obtained only with \code{type="data.frame"} (or
 \code{type="auto"}). See \code{\link[=contexts.ctx_tree]{contexts.ctx_tree()}} for details about the \code{frequency}
