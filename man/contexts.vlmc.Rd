@@ -11,6 +11,7 @@
   frequency = NULL,
   counts = c("desc", "local"),
   cutoff = NULL,
+  metrics = FALSE,
   ...
 )
 }
@@ -39,6 +40,9 @@ each context (see \code{\link[=cutoff]{cutoff()}} and \code{\link[=prune]{prune(
 adds the cut off values in quantile scale, while \code{cutoff="native"} adds
 them in the native scale.}
 
+\item{metrics}{if TRUE, adds predictive metrics for each context (see \code{\link[=metrics]{metrics()}}
+for the definition of predictive metrics).}
+
 \item{...}{additional arguments for the contexts function.}
 }
 \value{
@@ -51,7 +55,7 @@ some associated data.
 }
 \details{
 The default result for \code{type="auto"} (or \code{type="list"}),
-\code{frequency=NULL} and \code{cutoff=NULL} is the list of all contexts.
+\code{frequency=NULL}, \code{cutoff=NULL} and \code{metrics=FALSE} is the list of all contexts.
 
 Other results are obtained only with \code{type="auto"} or \code{type="data.frame"}.
 See \code{\link[=contexts.ctx_tree]{contexts.ctx_tree()}} for details about the \code{frequency} parameter. When

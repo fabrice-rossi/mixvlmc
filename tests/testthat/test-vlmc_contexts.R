@@ -11,6 +11,8 @@ test_that("context format is consistent", {
   expect_named(full_ctx_co, c("context", "freq", "A", "B", "C", "cutoff"))
   ctx_co <- contexts(model, cutoff = "quantile")
   expect_named(ctx_co, c("context", "cutoff"))
+  m_full_ctx_co <- contexts(model, frequency = "detailed", cutoff = "native", metrics = TRUE)
+  expect_named(m_full_ctx_co, c("context", "freq", "A", "B", "C", "cutoff", "accuracy", "auc"))
 })
 
 test_that("context cut off are consistent", {

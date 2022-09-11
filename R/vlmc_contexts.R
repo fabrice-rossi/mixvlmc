@@ -13,6 +13,21 @@ vlmc_context_extractor <-
         local_kl <- kl_div(c_probs, p_summary) * sum(ct$f_by)
         res <- cbind(res, data.frame(cutoff = local_kl))
       }
+      if (isTRUE(control$metric)) {
+        if (isFALSE(control[["frequency"]] == "detailed") || isFALSE(control[["counts"]] == "local")) {
+          l_cont <- control
+          l_cont$frequency <- "detailed"
+          l_cont$counts <- "local"
+          lres <- frequency_context_extractor(path, ct, vals, l_cont, is_leaf, p_summary)
+        } else {
+          lres <- res
+        }
+        fake_data <- generate_fake_data(lres$freq, lres[, -(1:2), drop = FALSE], vals)
+        local_m <- main_metrics(fake_data$response, fake_data$predictor)
+        local_m$roc <- NULL
+        local_m$conf_mat <- NULL
+        res <- cbind(res, as.data.frame(local_m))
+      }
       res
     }
   }
@@ -33,8 +48,10 @@ vlmc_context_extractor <-
 #'   context (if any) and counts from the descendants of the context in the
 #'   tree. When `counts = "local"` the counts include only the number of times
 #'   the context appears without being the last part of a longer context.
+#' @param metrics if TRUE, adds predictive metrics for each context (see [metrics()]
+#'   for the definition of predictive metrics).
 #' @details The default result for `type="auto"` (or `type="list"`),
-#'   `frequency=NULL` and `cutoff=NULL` is the list of all contexts.
+#'   `frequency=NULL`, `cutoff=NULL` and `metrics=FALSE` is the list of all contexts.
 #'
 #'   Other results are obtained only with `type="auto"` or `type="data.frame"`.
 #'   See [contexts.ctx_tree()] for details about the `frequency` parameter. When
@@ -62,10 +79,10 @@ vlmc_context_extractor <-
 #' contexts(model, cutoff = "quantile")
 #' @export
 contexts.vlmc <- function(ct, type = c("auto", "list", "data.frame"), reverse = TRUE, frequency = NULL,
-                          counts = c("desc", "local"), cutoff = NULL, ...) {
+                          counts = c("desc", "local"), cutoff = NULL, metrics = FALSE, ...) {
   type <- match.arg(type)
   counts <- match.arg(counts)
-  if (is.null(cutoff) && counts == "desc") {
+  if (is.null(cutoff) && counts == "desc" && !metrics) {
     NextMethod()
   } else {
     assertthat::assert_that(type %in% c("auto", "data.frame"))
@@ -75,7 +92,7 @@ contexts.vlmc <- function(ct, type = c("auto", "list", "data.frame"), reverse = 
     if (!is.null(cutoff)) {
       assertthat::assert_that(cutoff %in% c("quantile", "native"))
     }
-    control <- list(frequency = frequency, counts = counts, p_value = !is.null(cutoff))
+    control <- list(frequency = frequency, counts = counts, p_value = !is.null(cutoff), metrics = metrics)
     preres <- contexts_extractor(ct, reverse, vlmc_context_extractor, control, vlmc_parent_summary)
     if (!is.null(cutoff)) {
       if ((cutoff == "quantile")) {
