@@ -16,7 +16,7 @@ test_that("metrics.vlmc obey its contract", {
   expect_true(all(colSums(m_metrics$conf_mat) <= table(dts)))
 })
 
-test_that("metrics.vlmc objects print as expecte", {
+test_that("metrics.vlmc objects print as expected", {
   pc <- powerconsumption[powerconsumption$week == 5, ]
   dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.25, 0.5, 0.75, 1))))
   model <- vlmc(dts, alpha = 0.1)

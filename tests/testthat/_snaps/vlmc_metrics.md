@@ -1,4 +1,4 @@
-# metrics.vlmc objects print as expecte
+# metrics.vlmc objects print as expected
 
     Code
       print(m_metrics)
