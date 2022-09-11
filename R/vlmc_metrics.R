@@ -1,3 +1,44 @@
+generate_fake_data <- function(freq, counts, vals) {
+  counts <- as.matrix(counts)
+  probs <- sweep(counts, 1, freq, "/")
+  if (is.factor(vals)) {
+    the_levels <- levels(vals)
+  } else {
+    the_levels <- vals
+  }
+  response <- rep(the_levels[1], sum(freq))
+  pos <- 1
+  for (k in 1:nrow(counts)) {
+    for (l in 1:ncol(counts)) {
+      if (counts[k, l] > 0) {
+        new_pos <- pos + counts[k, l]
+        response[pos:(new_pos - 1)] <- the_levels[l]
+        pos <- new_pos
+      }
+    }
+  }
+  response <- factor(response, levels = the_levels)
+  assertthat::assert_that(all(colSums(counts) == table(response)))
+  if (ncol(counts) > 2) {
+    ## multiclass case
+    predictor <- matrix(0, ncol = ncol(probs), nrow = length(response))
+    pos <- 1
+    for (k in seq_along(freq)) {
+      if (freq[k] > 0) {
+        new_pos <- pos + freq[k]
+        predictor[pos:(new_pos - 1), ] <- matrix(probs[k, ], ncol = ncol(predictor), nrow = freq[k], byrow = TRUE)
+        pos <- new_pos
+      }
+    }
+    colnames(predictor) <- the_levels
+  } else {
+    one_probs <- probs[freq > 0, 2]
+    predictor <- rep(one_probs, times = freq[freq > 0])
+  }
+  list(response = response, predictor = predictor)
+}
+
+
 #' @inherit metrics
 #' @title Predictive quality metrics for VLMC
 #' @return An object of class `metrics.vlmc` with the following components:
@@ -13,45 +54,8 @@
 metrics.vlmc <- function(model, ...) {
   all_ctx <- contexts(model, frequency = "detailed", counts = "local")
   counts <- as.matrix(all_ctx[, -(1:2)])
-  freq <- all_ctx$freq
-  probs <- sweep(counts, 1, freq, "/")
-  ## confusion matrix
-  if (is.factor(model$vals)) {
-    the_levels <- levels(model$vals)
-  } else {
-    the_levels <- model$vals
-  }
-  # we generate fake responses that match the original data
-  response <- rep(the_levels[1], sum(freq))
-  pos <- 1
-  for (k in 1:nrow(counts)) {
-    for (l in 1:ncol(counts)) {
-      if (counts[k, l] > 0) {
-        new_pos <- pos + counts[k, l]
-        response[pos:(new_pos - 1)] <- the_levels[l]
-        pos <- new_pos
-      }
-    }
-  }
-  assertthat::assert_that(all(colSums(counts) == table(response)))
-  response <- factor(response, levels = the_levels)
-  if (ncol(counts) > 2) {
-    ## multiclass case
-    predictor <- matrix(0, ncol = ncol(probs), nrow = length(response))
-    pos <- 1
-    for (k in seq_along(freq)) {
-      if (freq[k] > 0) {
-        new_pos <- pos + freq[k]
-        predictor[pos:(new_pos - 1), ] <- probs[k, ]
-        pos <- new_pos
-      }
-    }
-    colnames(predictor) <- the_levels
-  } else {
-    one_probs <- probs[freq > 0, 2]
-    predictor <- rep(one_probs, times = freq[freq > 0])
-  }
-  res <- main_metrics(response, predictor)
+  fake_data <- generate_fake_data(all_ctx$freq, counts, model$vals)
+  res <- main_metrics(fake_data$response, fake_data$predictor)
   res$model <- model
   structure(res, class = "metrics.vlmc")
 }
