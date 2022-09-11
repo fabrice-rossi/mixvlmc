@@ -23,5 +23,8 @@ test_that("metrics.covlmc objects print as expected", {
   dts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
   m_cov <- covlmc(dts, dts_cov, min_size = 4, keep_data = TRUE, alpha = 0.5)
   m_metrics <- metrics(m_cov)
+  ## AUC depends on the underlying blas/lapack
+  ## we round it to prevent the test from failing
+  m_metrics$auc <- signif(m_metrics$auc, 2)
   expect_snapshot(print(m_metrics))
 })
