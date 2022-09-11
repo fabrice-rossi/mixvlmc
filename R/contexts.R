@@ -1,15 +1,3 @@
-append_ctx_extract <- function(ecur, enew) {
-  if (is.null(enew)) {
-    ecur
-  } else {
-    if (is.data.frame(enew)) {
-      rbind(ecur, enew)
-    } else {
-      c(ecur, enew)
-    }
-  }
-}
-
 path_list_extractor <- function(path, ct, vals, control, is_leaf, p_summary) {
   if (is_leaf) {
     if (is.null(ct[["f_by"]])) {
@@ -85,10 +73,10 @@ rec_contexts_extractor <- function(path, ct, vals, extractor, control, summarize
         sub_path, ct$children[[v]], vals,
         extractor, control, summarize, l_summary
       )
-      all_ctx <- append_ctx_extract(all_ctx, sub_ctx)
+      all_ctx <- flex_append(all_ctx, sub_ctx)
     }
     local_ctx <- extractor(path, ct, vals, control, FALSE, p_summary)
-    all_ctx <- append_ctx_extract(all_ctx, local_ctx)
+    all_ctx <- flex_append(all_ctx, local_ctx)
     all_ctx
   }
 }

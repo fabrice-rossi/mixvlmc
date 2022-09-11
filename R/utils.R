@@ -99,3 +99,27 @@ pp_mat <- function(x, digits, width = NULL, sep = NULL, groups = NULL, colnames 
   }
   x_rows
 }
+
+flex_append <- function(ecur, enew) {
+  if (is.null(enew)) {
+    ecur
+  } else if (is.null(ecur)) {
+    enew
+  } else {
+    if (is.data.frame(enew)) {
+      rbind(ecur, enew)
+    } else {
+      c(ecur, enew)
+    }
+  }
+}
+
+flex_cbind <- function(ecur, enew) {
+  if (is.null(enew)) {
+    ecur
+  } else if (is.null(ecur)) {
+    enew
+  } else {
+    cbind(ecur, enew)
+  }
+}

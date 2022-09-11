@@ -39,28 +39,15 @@ covlmc_model_extractor <- function(res, model, control) {
   }
   if (isTRUE(control$hsize)) {
     hsizes <- data.frame(hsize = model$hsize)
-    if (is.null(cores)) {
-      cores <- hsizes
-    } else {
-      cores <- cbind(cores, hsizes)
-    }
+    cores <- flex_cbind(cores, hsizes)
   }
   if (isTRUE(control$metrics)) {
     local_metrics <- metrics_from_cm(model$metrics$conf_mat)
     local_metrics$auc <- model$metrics$auc
     local_metrics <- as.data.frame(local_metrics)
-    if (is.null(cores)) {
-      cores <- local_metrics
-    } else {
-      cores <- cbind(cores, local_metrics)
-    }
+    cores <- flex_cbind(cores, local_metrics)
   }
-  if (is.null(res)) {
-    res <- cores
-  } else {
-    res <- cbind(res, cores)
-  }
-  res
+  flex_cbind(res, cores)
 }
 
 covlmc_context_extractor <- function(path, ct, vals, control, is_leaf, p_summary) {
