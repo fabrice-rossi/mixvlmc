@@ -39,7 +39,7 @@ glm_coef.glm <- function(model, data) {
         res <- c(res, pre_coeff[[var]])
         res_name <- c(res_name, var)
       } else if (var %in% names(xlevels)) {
-        ## non numerical
+        ## factor variable
         all_levels <- levels(data[[var]])
         model_levels <- xlevels[[var]]
         ref_level <- model_levels[1]
@@ -53,6 +53,13 @@ glm_coef.glm <- function(model, data) {
             }
             res_name <- c(res_name, lv_name)
           }
+        }
+      } else {
+        ## should be a logical variable
+        lv_name <- stringr::str_c(var, "TRUE")
+        if (lv_name %in% pre_names) {
+          res <- c(res, pre_coeff[[lv_name]])
+          res_name <- c(res_name, lv_name)
         }
       }
     }
