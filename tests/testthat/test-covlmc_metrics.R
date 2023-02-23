@@ -17,7 +17,7 @@ test_that("metrics.covlmc obey its contract", {
   expect_true(all(colSums(m_metrics$conf_mat) <= table(dts)))
 })
 
-test_that("metrics.covlmc objects print as expected", {
+test_that("metrics.covlmc objects print as expected without AUC", {
   pc <- powerconsumption[powerconsumption$week == 5, ]
   dts <- cut(pc$active_power, breaks = c(0, 0.4, 2, 8), labels = c("low", "typical", "high"))
   dts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
@@ -25,6 +25,17 @@ test_that("metrics.covlmc objects print as expected", {
   m_metrics <- metrics(m_cov)
   ## AUC depends on the underlying blas/lapack
   ## we round it to prevent the test from failing
-  m_metrics$auc <- signif(m_metrics$auc, 2)
+  m_metrics$auc <- signif(m_metrics$auc, 1)
+  expect_snapshot(print(m_metrics))
+})
+
+test_that("metrics.covlmc objects print as expected", {
+  skip_on_ci()
+  pc <- powerconsumption[powerconsumption$week == 5, ]
+  dts <- cut(pc$active_power, breaks = c(0, 0.4, 2, 8), labels = c("low", "typical", "high"))
+  dts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
+  m_cov <- covlmc(dts, dts_cov, min_size = 4, keep_data = TRUE, alpha = 0.5)
+  m_metrics <- metrics(m_cov)
+  m_metrics <- metrics(m_cov)
   expect_snapshot(print(m_metrics))
 })
