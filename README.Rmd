@@ -213,7 +213,9 @@ The average longest time spent in _high_ consecutively is
 - for the VLMC with covariate: `r mean(lh_covlmc)` minutes with a standard error of `r sd(lh_covlmc)/sqrt(length(covlmc_simul))`;
 - `r longuest_high(elec_dts)` minutes for the observed time series.
 
-The following figure shows the distributions of the times obtained by both models as well as the observed value. The VLMC model with covariate is able to generate longer sequences in the _high_ active power state than the brare VLMC model as the consequence of the sensitivity to the day/night schedule.
+
+The following figure shows the distributions of the times obtained by both models as well as the observed value. The VLMC model with covariate is able to generate longer sequences in the _high_ active power state than the bare VLMC model as the consequence of the sensitivity to the day/night schedule.
+
 ```{r longest_time_in_high}
 lh <- data.frame(
   time = c(lh_vlmc, lh_covlmc),
@@ -224,6 +226,7 @@ ggplot(lh, aes(x = time, color = model)) +
   geom_rug(alpha = 0.5) +
   geom_vline(xintercept = longuest_high(elec_dts), color = 3)
 ```
+
 The VLMC with covariate can be used to investigate the effects of changes in those covariates. For instance, if the day time is longer, we expect _high_ power usage to be less frequent. For instance, we simulate one week with a day time from 6:00 to 20:00 as follows.
 
 ```{r cache = TRUE}
@@ -236,6 +239,7 @@ for (k in seq_along(covlmc_simul_ld)) {
 ```
 
 As expected the distribution of the longest time spend consecutively in _high_ power usage is shifted to lower values when the day length is increased. 
+
 ```{r longest_time_in_high_ld}
 lh_covlmc_ld <- sapply(covlmc_simul_ld, longuest_high)
 day_time_effect <- data.frame(

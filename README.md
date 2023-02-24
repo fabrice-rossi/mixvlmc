@@ -11,12 +11,12 @@
 `mixvlmc` implements variable length Markov chains (VLMC) and variable
 length Markov chains with covariates, as described in:
 
--   [Bühlmann, P. and Wyner, A. J. (1999), Variable length Markov
-    chains. Ann. Statist. 27 (2)
-    480-513](https://dx.doi.org/10.1214/aos/1018031204)
--   [Zanin Zambom, A., Kim, S. and Lopes Garcia, N. (2022), Variable
-    length Markov chain with exogenous covariates. J. Time Ser. Anal.,
-    43 (2) 312-328](https://doi.org/10.1111/jtsa.12615)
+- [Bühlmann, P. and Wyner, A. J. (1999), Variable length Markov chains.
+  Ann. Statist. 27 (2)
+  480-513](https://dx.doi.org/10.1214/aos/1018031204)
+- [Zanin Zambom, A., Kim, S. and Lopes Garcia, N. (2022), Variable
+  length Markov chain with exogenous covariates. J. Time Ser. Anal.,
+  43 (2) 312-328](https://doi.org/10.1111/jtsa.12615)
 
 ## Installation
 
@@ -102,10 +102,10 @@ The representation uses crude ascii art to display the contexts of the
 VLMC organized in to tree (see `vignette("context-trees")` for a more
 detailed introduction):
 
--   the root `*` corresponds to an empty context;
--   one can read contexts by following branches (represented by 2 dashes
-    `--`) down to their ends (the leaves): for instance
-    $(1, 0, 1, 0, 0, 0)$ is one of the contexts of the tree.
+- the root `*` corresponds to an empty context;
+- one can read contexts by following branches (represented by 2 dashes
+  `--`) down to their ends (the leaves): for instance
+  $(1, 0, 1, 0, 0, 0)$ is one of the contexts of the tree.
 
 Here the context $(1, 0, 1, 0, 0, 0)$ is associated to the transition
 probabilities $(1, 0)$. This means that when one observes this context
@@ -180,6 +180,12 @@ draw(best_sun_model)
 #> |   +-- high (0.7899, 0.2101)
 #> |   |   +-- high (0.7447, 0.2553)
 #> |   |   |   +-- high (0.6571, 0.3429)
+#> |   |   |   |   +-- high (0.5217, 0.4783)
+#> |   |   |   |   |   '-- high (0.375, 0.625)
+#> |   |   |   |   |       '-- high (0.4444, 0.5556)
+#> |   |   |   |   |           '-- high (0.5, 0.5)
+#> |   |   |   |   |               +-- high (0, 1)
+#> |   |   |   |   |               '-- low (1, 0)
 #> |   |   |   |   '-- low (0.9167, 0.08333)
 #> |   |   |   '-- low (1, 0)
 #> |   |   '-- low (0.96, 0.04)
@@ -189,7 +195,24 @@ draw(best_sun_model)
 #>     '-- low (0.2328, 0.7672)
 #>         +-- high (0, 1)
 #>         '-- low (0.3034, 0.6966)
-#>             '-- high (0.07692, 0.9231)
+#>             +-- high (0.07692, 0.9231)
+#>             '-- low (0.4032, 0.5968)
+#>                 +-- high (0.375, 0.625)
+#>                 |   '-- high (0.3913, 0.6087)
+#>                 |       '-- high (0.4091, 0.5909)
+#>                 |           '-- high (0.4091, 0.5909)
+#>                 |               '-- high (0.45, 0.55)
+#>                 |                   '-- low (0.3333, 0.6667)
+#>                 |                       '-- low (0.3333, 0.6667)
+#>                 |                           '-- low (0.3333, 0.6667)
+#>                 |                               '-- low (0.3333, 0.6667)
+#>                 |                                   +-- high (1, 0)
+#>                 |                                   '-- low (0, 1)
+#>                 '-- low (0.4324, 0.5676)
+#>                     '-- low (0.381, 0.619)
+#>                         '-- low (0.3846, 0.6154)
+#>                             '-- low (0.375, 0.625)
+#>                                 '-- high (0, 1)
 ```
 
 ### Fitting a VLMC with covariates
@@ -210,9 +233,9 @@ ggplot(pc_week_5, aes(x = date_time, y = active_power)) +
 <img src="man/figures/README-active_power_week_5-1.png" width="100%" />
 The time series displays some typical patterns of electricity usage:
 
--   low active power at night (typically below 0.4 kW);
--   standard use between 0.4 and 2 kW;
--   peak use above 2 kW.
+- low active power at night (typically below 0.4 kW);
+- standard use between 0.4 and 2 kW;
+- peak use above 2 kW.
 
 We build a discrete time series from those (somewhat arbitrary)
 thresholds:
@@ -234,9 +257,32 @@ best_elec_vlmc <- pruned_elec_vlmcs[[which.min(e_bics)]]
 draw(best_elec_vlmc)
 #> * (0.1667, 0.5496, 0.2837)
 #> +-- low (0.7665, 0.2335, 0)
+#> |   '-- low (0.7638, 0.2362, 0)
+#> |       '-- low (0.7917, 0.2083, 0)
+#> |           '-- low (0.8133, 0.1867, 0)
+#> |               +-- low (0.9167, 0.08333, 0)
+#> |               |   '-- low (0.9091, 0.09091, 0)
+#> |               |       '-- low (0.9, 0.1, 0)
+#> |               |           '-- low (0.8889, 0.1111, 0)
+#> |               |               '-- typical (0.4, 0.6, 0)
+#> |               '-- typical (0.4, 0.6, 0)
 #> '-- typical (0.0704, 0.8466, 0.08303)
-#> |   '-- low (0.3846, 0.5385, 0.07692)
+#> |   +-- low (0.3846, 0.5385, 0.07692)
+#> |   '-- typical (0.04691, 0.8849, 0.06823)
+#> |   |   '-- typical (0.04337, 0.8892, 0.06747)
+#> |   |       '-- low (0.2941, 0.6471, 0.05882)
+#> |   '-- high (0.04444, 0.7111, 0.2444)
 #> '-- high (0.003497, 0.1573, 0.8392)
+#>     +-- typical (0.02174, 0.2826, 0.6957)
+#>     |   '-- typical (0.03125, 0.3125, 0.6562)
+#>     |       '-- high (0.3333, 0.6667, 0)
+#>     '-- high (0, 0.1333, 0.8667)
+#>         '-- high (0, 0.1106, 0.8894)
+#>             '-- high (0, 0.0973, 0.9027)
+#>                 '-- high (0, 0.1018, 0.8982)
+#>                     '-- high (0, 0.1, 0.9)
+#>                         '-- high (0, 0.1037, 0.8963)
+#>                             '-- typical (0, 0.3571, 0.6429)
 ```
 
 As pointed about above, *low* active power tend to correspond to night
@@ -321,15 +367,15 @@ draw(best_elec_covlmc, model = "full", time_sep = " | ", p_value = FALSE)
 
 As in the VLMC case, the optimal model remains rather simple:
 
--   the *high* context do not use the covariate and is equivalent to the
-    vlmc context;
--   the *low* context is more interesting: it does not switch to a
-    *high* context (hence the single row of parameters) but uses the
-    covariate. As expected, the probability of switching from *low* to
-    *typical* is larger during the day;
--   the *typical* context is described in a more complex way that in the
-    case of the vlmc as the transition probabilities depend on the
-    previous state.
+- the *high* context do not use the covariate and is equivalent to the
+  vlmc context;
+- the *low* context is more interesting: it does not switch to a *high*
+  context (hence the single row of parameters) but uses the covariate.
+  As expected, the probability of switching from *low* to *typical* is
+  larger during the day;
+- the *typical* context is described in a more complex way that in the
+  case of the vlmc as the transition probabilities depend on the
+  previous state.
 
 ### Sampling
 
@@ -383,15 +429,15 @@ lh_covlmc <- sapply(covlmc_simul, longuest_high)
 
 The average longest time spent in *high* consecutively is
 
--   for the VLMC: 243.6 minutes with a standard error of 6.7337834;
--   for the VLMC with covariate: 286.2 minutes with a standard error of
-    8.9157448;
--   410 minutes for the observed time series.
+- for the VLMC: 243.6 minutes with a standard error of 6.7337834;
+- for the VLMC with covariate: 286.2 minutes with a standard error of
+  8.9157448;
+- 410 minutes for the observed time series.
 
 The following figure shows the distributions of the times obtained by
 both models as well as the observed value. The VLMC model with covariate
 is able to generate longer sequences in the *high* active power state
-than the brare VLMC model as the consequence of the sensitivity to the
+than the bare VLMC model as the consequence of the sensitivity to the
 day/night schedule.
 
 ``` r
@@ -406,6 +452,7 @@ ggplot(lh, aes(x = time, color = model)) +
 ```
 
 <img src="man/figures/README-longest_time_in_high-1.png" width="100%" />
+
 The VLMC with covariate can be used to investigate the effects of
 changes in those covariates. For instance, if the day time is longer, we
 expect *high* power usage to be less frequent. For instance, we simulate
