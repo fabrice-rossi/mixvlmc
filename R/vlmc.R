@@ -1,4 +1,3 @@
-
 #' Test if the object is a vlmc model
 #'
 #' This function returns `TRUE` for VLMC models and `FALSE` for other objects.
@@ -81,7 +80,9 @@ cutoff.vlmc <- function(vlmc, mode = c("quantile", "native"), ...) {
   if (mode == "native") {
     before(pre_result)
   } else {
-    before(stats::pchisq(2 * pre_result, df = length(vlmc$vals) - 1, lower.tail = FALSE))
+    pre_alpha <- before(stats::pchisq(2 * pre_result, df = length(vlmc$vals) - 1, lower.tail = FALSE))
+    pre_alpha[pre_alpha < 0] <- 0
+    pre_alpha
   }
 }
 
@@ -93,7 +94,7 @@ prune_ctx_tree <- function(tree, alpha = 0.05, cutoff = NULL, verbose = FALSE) {
       nb_pruned <- 0
       for (v in seq_along(tree$children)) {
         subtrees[[v]] <- recurse_prune_kl_ctx_tree(tree$children[[v]], c_probs, c(ctx, v - 1), K)
-        if (!is.null(subtrees[[v]]$kl)) {
+        if (!is.null(subtrees[[v]][["kl"]])) {
           if (subtrees[[v]]$kl < K) {
             ## let's prune it
             if (verbose) {
