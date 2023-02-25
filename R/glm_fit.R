@@ -61,7 +61,7 @@ fit_glm <- function(target, mm, nb_vals, control) {
               ))
             )) {
               ## fake result, interpreted as a low rank result
-              result <- structure(list(coefficients = c(NA), ll = NA, rank = 0, target = NA, class = "constant_model"))
+              result <- structure(list(coefficients = c(NA), ll = NA, rank = 0, target = NA), class = "constant_model")
             } else {
               stop(attr(try_glm, "condition"))
             }
