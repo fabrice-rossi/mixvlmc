@@ -1,9 +1,14 @@
 glm_warning_ignore <- function(w) {
-  to_ignore <- c(
-    stringr::coll(gettext(c(
+  to_ignore <- stringr::coll(
+    c(
+      gettext(c(
+        "glm.fit: fitted probabilities numerically 0 or 1 occurred",
+        "glm.fit: algorithm did not converge"
+      ), domain = "R-stats"),
+      ## keep the English text to circumvent inconsistency in locale setting
       "glm.fit: fitted probabilities numerically 0 or 1 occurred",
       "glm.fit: algorithm did not converge"
-    ), domain = "R-stats"))
+    )
   )
   for (msg in to_ignore) {
     if (stringr::str_detect(w$message, msg)) {
@@ -59,6 +64,8 @@ fit_glm <- function(target, mm, nb_vals, control) {
               stringr::coll(gettext("contrasts can be applied only to factors with 2 or more levels",
                 domain = "R-stats"
               ))
+            ) || stringr::str_detect(
+              err_cond, "contrasts can be applied only to factors with 2 or more levels"
             )) {
               ## fake result, interpreted as a low rank result
               result <- structure(list(coefficients = c(NA), ll = NA, rank = 0, target = NA), class = "constant_model")
