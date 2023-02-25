@@ -25,12 +25,13 @@ power_data[, `:=`(
 )]
 
 powerconsumption <- power_data[, lapply(.SD, mean, na.rm = TRUE), by = .(Date, hour, by_10), .SDcols = !c("Time")]
-date_time <- as.POSIXct(stringr::str_c(
-  powerconsumption$Date, " ", powerconsumption$hour, ":",
-  stringr::str_pad(powerconsumption$by_10 * 10, 2, pad = "0"), ":00"
-),
-format = "%Y-%m-%d %H:%M:%OS",
-tz = "CET"
+date_time <- as.POSIXct(
+  stringr::str_c(
+    powerconsumption$Date, " ", powerconsumption$hour, ":",
+    stringr::str_pad(powerconsumption$by_10 * 10, 2, pad = "0"), ":00"
+  ),
+  format = "%Y-%m-%d %H:%M:%OS",
+  tz = "CET"
 )
 powerconsumption[, `:=`(
   year = year(Date),

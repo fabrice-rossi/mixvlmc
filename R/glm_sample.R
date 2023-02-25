@@ -1,4 +1,3 @@
-
 glm_sample_one <- function(model, newdata) {
   UseMethod("glm_sample_one")
 }
