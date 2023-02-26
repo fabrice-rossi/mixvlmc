@@ -177,6 +177,11 @@ prune <- function(vlmc, alpha = 0.05, cutoff = NULL, ...) {
 #' @inherit prune
 #' @export
 prune.vlmc <- function(vlmc, alpha = 0.05, cutoff = NULL, ...) {
+  if (is.null(cutoff)) {
+    if (is.null(alpha) || !is.numeric(alpha) || alpha <= 0) {
+      stop("the alpha parameter must be a strictly positive number")
+    }
+  }
   result <- prune_ctx_tree(vlmc, alpha = alpha, cutoff = cutoff)
   result$alpha <- alpha
   if (is.null(cutoff)) {

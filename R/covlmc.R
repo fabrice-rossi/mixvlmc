@@ -795,7 +795,12 @@ prune.covlmc <- function(vlmc, alpha = 0.05, cutoff = NULL, ...) {
   if (is.null(vlmc$x) || is.null(vlmc$covariate)) {
     stop("covlmc must be called with keep_data=TRUE to enable post pruning")
   }
-  assertthat::assert_that(is.null(cutoff))
+  if (!is.null(cutoff)) {
+    stop("covlmc does not support cutoff based pruning")
+  }
+  if (is.null(alpha) || !is.numeric(alpha) || alpha <= 0) {
+    stop("the alpha parameter must be a strictly positive number")
+  }
   pruned_tree <- ctx_tree_fit_glm(vlmc, vlmc$x, vlmc$covariate,
     alpha = alpha, control = vlmc$control, assume_model = TRUE,
     keep_local_data = TRUE, keep_model = TRUE, verbose = FALSE
