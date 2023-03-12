@@ -45,6 +45,7 @@ fit_glm <- function(target, mm, nb_vals, control) {
     if (engine == "glm") {
       if (nb_vals == 2) {
         if (ncol(mm) > 0) {
+          mm$target <- target
           try_glm <- try(
             withCallingHandlers(
               warning = glm_warning_ignore,
@@ -96,6 +97,7 @@ fit_glm <- function(target, mm, nb_vals, control) {
         }
       } else {
         if (ncol(mm) > 0) {
+          mm$target <- target
           try_vglm <- try(
             withCallingHandlers(
               warning = vgam_warning_ignore,
@@ -138,6 +140,7 @@ fit_glm <- function(target, mm, nb_vals, control) {
       result
     } else if (engine == "multinom") {
       if (ncol(mm) > 0) {
+        mm$target <- target
         result <- nnet::multinom(target ~ ., data = mm, trace = FALSE, maxit = options()[["mixvlmc.maxit"]])
       } else {
         result <- nnet::multinom(target ~ 1, trace = FALSE)
