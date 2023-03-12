@@ -29,9 +29,9 @@ devtools::install_github("fabrice-rossi/mixvlmc")
 
 ## Usage
 
-### Variable length Marvkoc chains
+### Variable length Markov chains
 
-Variable length Marvkov chains (VLMC) are sparse high order Markov
+Variable length Markov chains (VLMC) are sparse high order Markov
 chains. They can be used to model time series with discrete values
 (states) with a mix of small order dependencies for certain states and
 higher order dependencies for other states. For instance, with a binary
