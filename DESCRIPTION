@@ -22,6 +22,7 @@ Encoding: UTF-8
 LazyData: true
 Imports: 
     assertthat,
+    butcher,
     nnet,
     pROC,
     Rcpp (>= 1.0.8.3),

@@ -56,6 +56,9 @@ match_context_co <- function(tree, ctx) {
 #' new_dts <- simulate(m_cov, nrow(new_cov), seed = 0, covariate = new_cov)
 #' new_dts_2 <- simulate(m_cov, nrow(new_cov), seed = 0, covariate = new_cov, init = dts[1:10])
 simulate.covlmc <- function(object, nsim = 1, seed = NULL, covariate, init = NULL, ...) {
+  if (isTRUE(object$trimmed == "full")) {
+    stop("simulate is not supported by fully trimmed covlmc")
+  }
   assertthat::assert_that(nrow(covariate) >= nsim)
   covariate <- validate_covariate(object, covariate)
   max_depth <- depth(object)

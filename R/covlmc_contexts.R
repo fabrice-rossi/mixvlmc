@@ -142,6 +142,9 @@ contexts.covlmc <- function(ct, type = c("auto", "list", "data.frame"), reverse 
     }
     if (!is.null(model)) {
       assertthat::assert_that(model %in% c("coef", "full"))
+      if (model == "full" && isTRUE(ct$trimmed == "full")) {
+        stop("Full model extraction is not supported by fully trimmed covlmc")
+      }
     }
     control <- list(
       frequency = frequency, counts = counts, model = model,

@@ -162,6 +162,9 @@ loglikelihood.covlmc <- function(vlmc, newdata, newcov, ...) {
     )
     pre_res <- rec_loglikelihood_covlmc(vlmc)
   } else {
+    if (isTRUE(vlmc$trimmed == "full")) {
+      stop("loglikelihood calculation for new data is not supported by fully trimmed covlmc")
+    }
     assertthat::assert_that(!missing(newcov),
       msg = "Need new covariate values (newcov) with new data (newdata)"
     )

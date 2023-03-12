@@ -30,6 +30,9 @@ covlmc_predictive_extractor <- function(path, ct, vals, control, is_leaf, p_summ
 #'  together with the values of the components above.
 #' @exportS3Method
 metrics.covlmc <- function(model, ...) {
+  if (!is.null(model$trimmed)) {
+    stop("metrics is not supported by trimmed covlmc")
+  }
   all_preds <- contexts_extractor(model, TRUE, covlmc_predictive_extractor, list(), no_summary)
   res <- main_metrics(all_preds$target, all_preds[, -1])
   res$model <- model
