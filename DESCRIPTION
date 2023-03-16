@@ -16,7 +16,8 @@ Authors@R:
 Description: An implementation of Variable Length Markov Chains and of their 
     extension to models with covariates.
 License: GPL (>= 3)
-URL: https://github.com/fabrice-rossi/mixvlmc
+URL: https://github.com/fabrice-rossi/mixvlmc,
+    https://fabrice-rossi.github.io/mixvlmc/
 BugReports: https://github.com/fabrice-rossi/mixvlmc/issues
 Encoding: UTF-8
 LazyData: true
