@@ -9,7 +9,7 @@
 <!-- badges: end -->
 
 `mixvlmc` implements variable length Markov chains (VLMC) and variable
-length Markov chains with covariates, as described in:
+length Markov chains with covariates (COVLMC), as described in:
 
 - [Bühlmann, P. and Wyner, A. J. (1999), Variable length Markov chains.
   Ann. Statist. 27 (2)
@@ -42,7 +42,7 @@ time $t-1$. A collection of past states that determines completely the
 transition probabilities is a *context* of the VLMC. Read
 `vignette("context-trees")` for details about contexts and context tree.
 
-VLMC with covariates are extension of VLMC in which transition
+VLMC with covariates (COVLMC) are extension of VLMC in which transition
 probabilities (probabilities of the next state given the past) can be
 influenced by the past values of some covariates (in addition to the
 past values of the time series itself). Each context is associated to a
@@ -77,7 +77,7 @@ The default parameters of `vlmc()` will tend to produce overly complex
 VLMC in order to avoid missing potential structure in the time series.
 In the example above, we expect the optimal VLMC to be a constant
 distribution as the sample is independent and uniformly distributed (it
-has not temporal structure). The default parameters give here an overly
+has no temporal structure). The default parameters give here an overly
 complex model, as illustrated by its text based representation
 
 ``` r
@@ -118,7 +118,7 @@ series $(0, 0, 0, 1, 0, 1)$.
 
 The VLMC above is obviously overfitting to the time series, as
 illustrated by the 0/1 transition probabilities. A classical way to
-select a good model is to maximize the
+select a good model is to minimize the
 [BIC](https://en.wikipedia.org/wiki/Bayesian_information_criterion). In
 `mixvlmc` this can be done easily by *pruning* a complex VLMC using a
 combination of `cutoff` and `prune`, as follows:
@@ -247,7 +247,7 @@ follows:
 elec_cov <- data.frame(day = (pc_week_5$hour >= 7 & pc_week_5$hour <= 17))
 ```
 
-A VLMC with covariate is estimated using the `covlmc` function:
+A COVLMC is estimated using the `covlmc` function:
 
 ``` r
 elec_covlmc <- covlmc(elec_dts, elec_cov, min_size = 5, alpha = 0.5)
@@ -337,10 +337,10 @@ VLMC models can also be used to sample new time series as in the VMLC
 bootstrap proposed by Bühlmann and Wyner. For instance, we can estimate
 for instance the longest time period spent in the *high* active power
 regime. In this “predictive” setting, the
-[AIC](https://en.wikipedia.org/wiki/Akaike_information_criterion) should
-be more adapted to select the best model. Notice that some quantities
-can be computed directly from the model in the VLMC case, using
-classical results on Markov Chains.
+[AIC](https://en.wikipedia.org/wiki/Akaike_information_criterion) may be
+more adapted to select the best model. Notice that some quantities can
+be computed directly from the model in the VLMC case, using classical
+results on Markov Chains.
 
 We first select two models based on the AIC.
 

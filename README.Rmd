@@ -20,7 +20,7 @@ knitr::opts_chunk$set(
 [![R-CMD-check](https://github.com/fabrice-rossi/mixvlmc/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/fabrice-rossi/mixvlmc/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
-`mixvlmc` implements variable length Markov chains (VLMC) and variable length Markov chains with covariates, as described in:
+`mixvlmc` implements variable length Markov chains (VLMC) and variable length Markov chains with covariates (COVLMC), as described in:
 
 - [Bühlmann, P. and Wyner, A. J. (1999), Variable length Markov chains. Ann. Statist. 27 (2) 480-513](https://dx.doi.org/10.1214/aos/1018031204)
 - [Zanin Zambom, A., Kim, S. and Lopes Garcia, N. (2022), Variable length Markov chain with exogenous covariates. J. Time Ser. Anal., 43 (2) 312-328](https://doi.org/10.1111/jtsa.12615)
@@ -36,7 +36,7 @@ devtools::install_github("fabrice-rossi/mixvlmc")
 ### Variable length Markov chains
 Variable length Markov chains (VLMC) are sparse high order Markov chains. They can be used to model time series with discrete values (states) with a mix of small order dependencies for certain states and higher order dependencies for other states. For instance, with a binary time series, the probability of observing 1 a time $t$ could be constant whatever the older past states if the last one (at time $t-1$) was 1, but could depend on states at time $t-3$ and $t-2$ if the state was 0 at time $t-1$. A collection of past states that determines completely the transition probabilities is a _context_ of the VLMC. Read `vignette("context-trees")` for details about contexts and context tree. 
 
-VLMC with covariates are extension of VLMC in which transition probabilities (probabilities of the next state given the past) can be influenced by the past values of some covariates (in addition to the past values of the time series itself). Each context is associated to a logistic model that maps the (past values of the) covariates to transition probabilities.  
+VLMC with covariates (COVLMC) are extension of VLMC in which transition probabilities (probabilities of the next state given the past) can be influenced by the past values of some covariates (in addition to the past values of the time series itself). Each context is associated to a logistic model that maps the (past values of the) covariates to transition probabilities.  
 
 ### Fitting a VLMC
 The package is loaded in a standard way.
@@ -52,7 +52,7 @@ x <- sample(c(0L, 1L), 200, replace = TRUE)
 model <- vlmc(x)
 model
 ```
-The default parameters of `vlmc()` will tend to produce overly complex VLMC in order to avoid missing potential structure in the time series. In the example above, we expect the optimal VLMC to be a constant distribution as the sample is independent and uniformly distributed (it has not temporal structure). The default parameters give here an overly complex model, as illustrated by its text based representation
+The default parameters of `vlmc()` will tend to produce overly complex VLMC in order to avoid missing potential structure in the time series. In the example above, we expect the optimal VLMC to be a constant distribution as the sample is independent and uniformly distributed (it has no temporal structure). The default parameters give here an overly complex model, as illustrated by its text based representation
 ```{r}
 draw(model)
 ```
@@ -66,7 +66,7 @@ Here the context $(1, 0, 1, 0, 0, 0)$ is associated to the transition probabilit
 
 #### BIC based model selection
 
-The VLMC above is obviously overfitting to the time series, as illustrated by the 0/1 transition probabilities. A classical way to select a good model is to maximize the [BIC](https://en.wikipedia.org/wiki/Bayesian_information_criterion). In `mixvlmc` this can be done easily by _pruning_ a complex VLMC using a combination of `cutoff` and `prune`, as follows:
+The VLMC above is obviously overfitting to the time series, as illustrated by the 0/1 transition probabilities. A classical way to select a good model is to minimize the [BIC](https://en.wikipedia.org/wiki/Bayesian_information_criterion). In `mixvlmc` this can be done easily by _pruning_ a complex VLMC using a combination of `cutoff` and `prune`, as follows:
 ```{r}
 alphas <- cutoff(model)
 pruned_models <- c(list(model), lapply(alphas, function(a) prune(model, a)))
@@ -137,7 +137,7 @@ As pointed about above, _low_ active power tend to correspond to night phase. We
 ```{r}
 elec_cov <- data.frame(day = (pc_week_5$hour >= 7 & pc_week_5$hour <= 17))
 ```
-A VLMC with covariate is estimated using the `covlmc` function:
+A COVLMC is estimated using the `covlmc` function:
 ```{r}
 elec_covlmc <- covlmc(elec_dts, elec_cov, min_size = 5, alpha = 0.5)
 draw(elec_covlmc, time_sep = " | ", model = "full", p_value = FALSE)
@@ -171,7 +171,7 @@ As in the VLMC case, the optimal model remains rather simple:
 - the _typical_ context is described in a more complex way that in the case of the vlmc as the transition probabilities depend on the previous state.
 
 ### Sampling 
-VLMC models can also be used to sample new time series as in the VMLC bootstrap proposed by Bühlmann and Wyner. For instance, we can estimate for instance the longest time period spent in the _high_ active power regime. In this "predictive" setting, the [AIC](https://en.wikipedia.org/wiki/Akaike_information_criterion) should be more adapted to select the best model. Notice that some quantities can be computed directly from the model in the VLMC case, using classical results on Markov Chains. 
+VLMC models can also be used to sample new time series as in the VMLC bootstrap proposed by Bühlmann and Wyner. For instance, we can estimate for instance the longest time period spent in the _high_ active power regime. In this "predictive" setting, the [AIC](https://en.wikipedia.org/wiki/Akaike_information_criterion) may be more adapted to select the best model. Notice that some quantities can be computed directly from the model in the VLMC case, using classical results on Markov Chains. 
 
 We first select two models based on the AIC.
 ```{r}
