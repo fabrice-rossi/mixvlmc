@@ -223,8 +223,9 @@ prune.vlmc <- function(vlmc, alpha = 0.05, cutoff = NULL, ...) {
 #'   a context in the growing phase of the context tree.
 #' @param max_depth integer >= 1 (default: 100). Longest context considered in
 #'   growing phase of the context tree.
-#' @param prune logical: specified whether the context tree should be pruned
+#' @param prune logical: specify whether the context tree should be pruned
 #'   (default behavior).
+#' @param keep_match logical: specify whether to keep the context matches (default to FALSE)
 #' @return a fitted vlmc model.
 #' @examples
 #' pc <- powerconsumption[powerconsumption$week == 5, ]
@@ -244,7 +245,7 @@ prune.vlmc <- function(vlmc, alpha = 0.05, cutoff = NULL, ...) {
 #' @references [Bühlmann, P. and Wyner, A. J. (1999), Variable length Markov
 #'   chains. Ann. Statist. 27 (2)
 #'   480-513](https://dx.doi.org/10.1214/aos/1018031204)
-vlmc <- function(x, alpha = 0.05, cutoff = NULL, min_size = 2, max_depth = 100, prune = TRUE) {
+vlmc <- function(x, alpha = 0.05, cutoff = NULL, min_size = 2, max_depth = 100, prune = TRUE, keep_match = FALSE) {
   # data conversion
   nx <- to_dts(x)
   ix <- nx$ix
@@ -252,7 +253,7 @@ vlmc <- function(x, alpha = 0.05, cutoff = NULL, min_size = 2, max_depth = 100, 
   if (length(vals) > max(10, 0.05 * length(x))) {
     warning(paste0("x as numerous unique values (", length(vals), ")"))
   }
-  ctx_tree <- grow_ctx_tree(ix, vals, min_size = min_size, max_depth = max_depth, compute_stats = !prune)
+  ctx_tree <- grow_ctx_tree(ix, vals, min_size = min_size, max_depth = max_depth, compute_stats = !prune, keep_match = keep_match)
   result <- ctx_tree
   if (prune) {
     result <- prune_ctx_tree(ctx_tree, alpha = alpha, cutoff = cutoff)
