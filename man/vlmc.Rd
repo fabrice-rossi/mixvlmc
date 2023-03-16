@@ -10,7 +10,8 @@ vlmc(
   cutoff = NULL,
   min_size = 2,
   max_depth = 100,
-  prune = TRUE
+  prune = TRUE,
+  keep_match = FALSE
 )
 }
 \arguments{
@@ -29,8 +30,10 @@ a context in the growing phase of the context tree.}
 \item{max_depth}{integer >= 1 (default: 100). Longest context considered in
 growing phase of the context tree.}
 
-\item{prune}{logical: specified whether the context tree should be pruned
+\item{prune}{logical: specify whether the context tree should be pruned
 (default behavior).}
+
+\item{keep_match}{logical: specify whether to keep the context matches (default to FALSE)}
 }
 \value{
 a fitted vlmc model.
