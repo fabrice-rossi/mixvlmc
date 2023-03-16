@@ -3,10 +3,7 @@ glm_predict <- function(model, newdata = NULL, lev) {
 }
 
 glm_add_missing_prediction <- function(probs, lev) {
-  if (!is.matrix(probs)) {
-    probs <- matrix(probs, ncol = 1)
-  }
-  if ((length(lev) > 1) && (ncol(probs) < length(lev))) {
+  if ((length(lev) > 2) && (ncol(probs) < length(lev))) {
     ## degenerate case
     preprobs <- matrix(0, nrow = nrow(probs), ncol = length(lev))
     preprobs[, match(colnames(probs), lev)] <- probs

@@ -56,6 +56,8 @@ metrics.vlmc <- function(model, ...) {
   counts <- as.matrix(all_ctx[, -(1:2)])
   fake_data <- generate_fake_data(all_ctx$freq, counts, model$vals)
   res <- main_metrics(fake_data$response, fake_data$predictor)
+  rownames(res$conf_mat) <- model$vals
+  colnames(res$conf_mat) <- model$vals
   res$model <- model
   structure(res, class = "metrics.vlmc")
 }

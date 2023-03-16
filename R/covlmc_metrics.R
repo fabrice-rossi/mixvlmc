@@ -35,6 +35,8 @@ metrics.covlmc <- function(model, ...) {
   }
   all_preds <- contexts_extractor(model, TRUE, covlmc_predictive_extractor, list(), no_summary)
   res <- main_metrics(all_preds$target, all_preds[, -1])
+  rownames(res$conf_mat) <- model$vals
+  colnames(res$conf_mat) <- model$vals
   res$model <- model
   structure(res, class = "metrics.covlmc")
 }
