@@ -78,7 +78,7 @@ cutoff.vlmc <- function(vlmc, mode = c("quantile", "native"), ...) {
   }
   pre_result <- unique(sort(recurse_kl_cutoff(vlmc, vlmc$f_by / sum(vlmc$f_by))))
   if (mode == "native") {
-    before(pre_result)
+    after(pre_result)
   } else {
     pre_alpha <- before(stats::pchisq(2 * pre_result, df = length(vlmc$vals) - 1, lower.tail = FALSE))
     pre_alpha[pre_alpha < 0] <- 0

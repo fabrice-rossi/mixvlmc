@@ -98,7 +98,7 @@ contexts.vlmc <- function(ct, type = c("auto", "list", "data.frame"), reverse = 
       if ((cutoff == "quantile")) {
         preres$cutoff <- before(stats::pchisq(2 * preres$cutoff, df = length(ct$vals) - 1, lower.tail = FALSE))
       } else {
-        preres$cutoff <- before(preres$cutoff)
+        preres$cutoff <- after(preres$cutoff)
       }
     }
     preres
