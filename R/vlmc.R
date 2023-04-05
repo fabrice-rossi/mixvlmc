@@ -183,10 +183,13 @@ prune.vlmc <- function(vlmc, alpha = 0.05, cutoff = NULL, ...) {
     }
   }
   result <- prune_ctx_tree(vlmc, alpha = alpha, cutoff = cutoff)
-  result$alpha <- alpha
   if (is.null(cutoff)) {
     cutoff <- stats::qchisq(alpha, df = length(vlmc$vals) - 1, lower.tail = FALSE) / 2
+  } else {
+    ## cutoff takes precedence
+    alpha <- stats::pchisq(2 * cutoff, df = length(vlmc$vals) - 1, lower.tail = FALSE)
   }
+  result$alpha <- alpha
   result$cutoff <- cutoff
   result
 }
@@ -258,10 +261,13 @@ vlmc <- function(x, alpha = 0.05, cutoff = NULL, min_size = 2, max_depth = 100, 
   if (prune) {
     result <- prune_ctx_tree(ctx_tree, alpha = alpha, cutoff = cutoff)
   }
-  result$alpha <- alpha
   if (is.null(cutoff)) {
     cutoff <- stats::qchisq(alpha, df = length(vals) - 1, lower.tail = FALSE) / 2
+  } else {
+    ## cutoff takes precedence
+    alpha <- stats::pchisq(2 * cutoff, df = length(vals) - 1, lower.tail = FALSE)
   }
+  result$alpha <- alpha
   result$cutoff <- cutoff
   result
 }
