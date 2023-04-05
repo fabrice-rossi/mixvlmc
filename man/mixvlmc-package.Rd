@@ -33,6 +33,7 @@ are able to detect and deal with degeneracy in the data set.
 Useful links:
 \itemize{
   \item \url{https://github.com/fabrice-rossi/mixvlmc}
+  \item \url{https://fabrice-rossi.github.io/mixvlmc/}
   \item Report bugs at \url{https://github.com/fabrice-rossi/mixvlmc/issues}
 }
 
