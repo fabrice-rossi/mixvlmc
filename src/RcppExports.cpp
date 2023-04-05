@@ -10,6 +10,17 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
+// after
+NumericVector after(NumericVector x);
+RcppExport SEXP _mixvlmc_after(SEXP xSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type x(xSEXP);
+    rcpp_result_gen = Rcpp::wrap(after(x));
+    return rcpp_result_gen;
+END_RCPP
+}
 // before
 NumericVector before(NumericVector x);
 RcppExport SEXP _mixvlmc_before(SEXP xSEXP) {
@@ -37,6 +48,7 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_mixvlmc_after", (DL_FUNC) &_mixvlmc_after, 1},
     {"_mixvlmc_before", (DL_FUNC) &_mixvlmc_before, 1},
     {"_mixvlmc_forward_match_all_ctx_counts", (DL_FUNC) &_mixvlmc_forward_match_all_ctx_counts, 4},
     {NULL, NULL, 0}
