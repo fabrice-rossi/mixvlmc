@@ -30,5 +30,5 @@
         typical 38  467     46   
         high    1   45      240  
        Accurary: 0.8318 
-       AUC: 0.9241 
+       AUC: 0.93 
 
