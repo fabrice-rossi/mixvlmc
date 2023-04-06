@@ -40,7 +40,9 @@ whatever the older past states if the last one (at time $t-1$) was 1,
 but could depend on states at time $t-3$ and $t-2$ if the state was 0 at
 time $t-1$. A collection of past states that determines completely the
 transition probabilities is a *context* of the VLMC. Read
-`vignette("context-trees")` for details about contexts and context tree.
+`vignette("context-trees")` for details about contexts and context tree,
+and (see `vignette("variable-length-markov-chains")` for a more detailed
+introduction to VLMC.
 
 VLMC with covariates (COVLMC) are extension of VLMC in which transition
 probabilities (probabilities of the next state given the past) can be

@@ -1,0 +1,275 @@
+---
+title: "Variable length Markov chains (VLMC)"
+output: 
+  rmarkdown::html_vignette:
+     df_print: kable
+vignette: >
+  %\VignetteIndexEntry{Variable length Markov chains (VLMC)}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(mixvlmc)
+```
+
+A [Markov chain](https://en.wikipedia.org/wiki/Markov_chain) is a
+probabilistic model for time series in which the probability of the next
+state depends only on finite memory of previous states (including the
+current state). The most common case is the *order one* Markov chain, in
+which the memory is limited to the current state.
+
+We consider here only Markov chains with finite state spaces.
+
+## Theoretical aspects
+
+### High order Markov chains
+
+Let us denote $X_1, X_2, \ldots, X_n, \ldots$ a sequence of random
+variables. It is a (stationary) Markov chain of order $m$ is for all
+$n>m$ $$
+\begin{multline}
+\mathbb{P}(X_n=x_n|X_{n-1}=x_{n-1}, X_{n-2}=x_{n-2}, \ldots, X_{1}=x_{1})=\\
+\mathbb{P}(X_n=x_n|X_{n-1}=x_{n-1}, X_{n-2}=x_{n-2}, \ldots, X_{n-m}=x_{n-m}).
+\end{multline}
+$$ To specify such a Markov chain of order $m$, one needs to describe
+the conditional distribution on the right hand side of the previous
+equation for all values of the past, i.e. for all contexts (see
+`vignette("context-trees")`).
+
+For a state space with $k$ states, we need $k-1$ parameters to specify
+completely $$
+\mathbb{P}(X_n=x_n|X_{n-1}=x_{n-1}, X_{n-2}=x_{n-2}, \ldots, X_{n-m}=x_{n-m})
+$$ for all values of $x_n$ and for *a single* context
+$(x_{n-1}, x_{n-2}, \ldots, x_{n-m})$.\
+There are $k^{m-1}$ such contexts and thus we need a total of
+$(k-1)k^{m-1}$ parameters to specify completely a Markov chain of order
+$m$ on a state space with $k$ states.
+
+Unfortunately, the exponential growth with respect to the order makes
+high order Markov chain unrealistic on a statistical point of view: the
+number of parameters to estimate grows too quickly compared to the
+typical length of a time series.
+
+If we consider a [gene](https://en.wikipedia.org/wiki/Gene) as a
+sequence of (pair of) bases, we have a state space with $k=4$ states.
+The mean protein-coding length for
+[humans](https://en.wikipedia.org/wiki/Human_genome) is roughly 66,000
+(pairs of) bases. The following table shows the growth of the parameter
+number for $k=4$ with the order of a Markov chain. There are already way
+too many parameter with $m=7$ for a proper estimation based on a single
+gene of an average length. Even the longest genes would be insufficient
+for $m=10$.
+
+```{r, echo=FALSE}
+homc <- data.frame(m = 1:10)
+homc$parameters <- 3 * (4^homc$m)
+homc
+```
+
+### Sparse models
+
+While higher order Markov chains would be very useful to capture long
+memory in time series, the exponential growth of their parameter space
+is incompatible with this goal. Variable length Markov chains provide a
+compromise between the controlled number of parameters of low order
+Markov chains and the long memory of high order ones. The key idea is to
+consider that the dependency order can depend on the context itself.
+
+```{r echo=FALSE}
+bin_mark <- cbind(
+  data.frame(Probablity = c(0.1, 0.2, 0.1, 0.3, 0.1, 0.4, 0.1, 0.3)),
+  expand.grid("n-1" = 0:1, "n-2" = 0:1, "n-3" = 0:1)
+)
+```
+
+Let us consider a simple example with a binary valued time series
+($k=2$) and a Markov chain of order 3. We need to specify for instance
+the probability of $X_n=1$ given the eight possible contexts, from
+$(0, 0, 0)$ to $(1, 1, 1)$. A possible choice is
+
+```{r, echo=FALSE}
+bin_mark
+```
+
+In this table, several contexts share the same conditional probability
+distribution. For instance $$
+\mathbb{P}(X_n=1|X_{n-1}=0, X_{n-2}=0,X_{n-3}=0)=\mathbb{P}(X_n=1|X_{n-1}=0, X_{n-2}=1,X_{n-3}=0). 
+$$
+
+In fact, a careful look at the table shows that $$
+\begin{align*}
+\mathbb{P}(X_n=1|X_{n-1}=0, X_{n-2}=a, X_{n-3}=b)&=0.1&\forall a, \forall b,\\
+\mathbb{P}(X_n=1|X_{n-1}=1, X_{n-2}=1, X_{n-3}=c)&=0.3&\forall c,\\
+\mathbb{P}(X_n=1|X_{n-1}=1, X_{n-2}=0, X_{n-3}=0)&=0.2,&\\
+\mathbb{P}(X_n=1|X_{n-1}=1, X_{n-2}=0, X_{n-3}=1)&=0.4,
+\end{align*}
+$$ and thus the Markov chain can be described by only 4 probability
+distributions rather than 8. The corresponding contexts are:
+
+-   $(0)$ : short memory only when the last state is 0
+-   $(1, 1)$ : second order memory when the two last states are 1
+-   $(1, 0, 0)$ and $(1, 0, 1)$ : full third order memory
+
+This third order Markov chain is parsimonious in the sense that it can
+be described by the four contexts and their associated probability
+distributions rather than by the full collection needed for an arbitrary
+third order Markov chain.
+
+### Variable length Markov chain
+
+A variable length Markov chain (VLMC) is a sparse high order Markov
+chain. Let us denote $X_1, X_2, \ldots, X_n, \ldots$ a sequence of
+random variables taking values in the finite state space $S$. The
+sequence is a VLMC if there is a maximal order $l_{\max}$ and a function
+$l$ from $S^{l_{\max}}$ to $\{0,\ldots,l_{\max}\}$ such that for all
+$n>l_{\max}$ $$
+\begin{multline}
+\mathbb{P}(X_n=x_n|X_{n-1}=x_{n-1}, X_{n-2}=x_{n-2}, \ldots, X_{1}=x_{1})=\\
+\mathbb{P}(X_n=x_n|X_{n-1}=x_{n-1}, X_{n-2}=x_{n-2}, \ldots, X_{n-l(x_{n-1},\ldots,x_{n-l_{\max}})}=x_{n-l(x_{n-1},\ldots,x_{n-l_{\max}})}).
+\end{multline}
+$$ In other words, the memory length (the order) is *variable* and given
+by $l(x_{n-1},\ldots,x_{n-l_{\max}})$.
+
+The memory length function generates a *context* function $c$ which
+keeps in the past the one needed to obtain the conditional distribution:
+$c$ is a function from $S^{l_{\max}}$ to $\bigcup_{k=0}^{l_{\max}}S^k$
+given by: $$
+c(x_1, x_2, \ldots, x_{l_{\max}})=(x_1,\ldots,x_{c(x_1, x_2, \ldots, x_{l_{\max}})})
+$$ The image by $c$ of $S^{l_{\max}}$ is the set of contexts of the VLMC
+which is entirely specified by $l$ and one conditional distribution by
+unique context.
+
+In the above example, $l_{\max}=3$ and $l$ is defined from $\{0, 1\}^3$
+to $\{0, 1, 2, 3\}$ by $$
+\begin{align*}
+l(0, a, b)&=1&\forall a, \forall b,\\
+l(1, 1, c)&=2&\forall c,\\
+l(1, 0, 0)&=3,&\\
+l(1, 0, 1)&=3.&\\
+\end{align*}
+$$
+
+### VLMC estimation
+
+If we assume that an observed time series has been generated by a VLMC,
+we can try and estimate from it the $l$ function and the corresponding
+conditional probabilities. This is a non-parametric estimation problem
+as $l_{\max}$ is unknown. A natural way to carry on the estimation is to
+use some form of penalized likelihood approach.
+
+This is done by first extracting from the time series its context tree
+(see `vignette("context-trees")`), a sparse representation of all the
+sub-sequences (i.e. contexts) that appear at least a few times in the
+time series. Each unique sub-sequence/context is followed by a state in
+the time series: this is used to estimate the conditional probabilities
+(from frequencies). Finally a pruning algorithm is applied to balance
+the complexity of the tree with its likelihood (given the time series).
+
+## VLMC in practice
+
+### Estimation
+
+VLMC estimation is provided by the `vlmc()` function as in the following
+example.
+
+```{r}
+set.seed(0)
+x <- sample(c(0L, 1L, 2L), 200, replace = TRUE)
+model <- vlmc(x)
+model
+```
+
+The estimation process is controlled by three parameters:
+
+-   `max_depth`: the largest order/memory considered for the VLMC
+    (defaults to 100). This parameter is essentially a computational
+    burden control parameter and should be increased to a larger value
+    if the final model has contexts that reach the maximum value;
+-   `min_size`: the minimum number of occurrences of a context in the
+    time series for it to be included in the context tree during the
+    first phase of the algorithm. The default 2 value is very
+    conservative. Larger values will produce simpler trees;
+-   `alpha`/`cutoff`: this is the main complexity control parameter,
+    which can be expressed in two different scales. `cutoff` is
+    expressed in the native Kullback-Liebler divergence scale used to
+    assess the difference between conditional probability distributions
+    given different contexts. `alpha` is expressed in a more convenient
+    universal scale based on the quantiles of the Chi-Squared
+    distribution that appears when the pruning criterion is interpreted
+    as a likelihood ratio test (the default is `alpha=0.05`).
+
+It is recommended to use the default value for `min_size`, to increase
+`max_depth` only in case of "overflow" (i.e. when the maximum context
+length reaches `max_depth`) and to use only `alpha` to control the
+complexity of the VLMC. An important point to note is that a *higher*
+value of `alpha` leads to a more complex model as does a *lower* value
+of `cutoff`.
+
+Based on theoretical results, the order of magnitude of `cutoff` should
+be in $K \log n$ (for $n$ observations), where $K$ depends on the type
+of convergence analysis conducted. For instance a BIC inspired value for
+$K$ is $(|S|-1)/2$ for a state space $S$ (of size $|S|$). In the above
+example, we get:
+
+```{r}
+model_theo <- vlmc(x, cutoff = log(length(x)))
+model_theo
+```
+
+The result is a memory less model, as expected based on the way `x` was
+generated. In this situation, the chosen value of `cutoff` leads to the
+optimal model, but this is not always the case as this choice is only
+informed by asymptotic analysis.
+
+### Model choice
+
+In practice, it is recommended to start with a conservative value of
+`cutoff` (or `alpha`) and to use an information criterion to find the
+best model. A conservative value of `cutoff` is a small one, while
+`alpha` should be high to be conservative. A possible choice is to use
+the BIC inspired `cutoff` divided by a fixed value, for instance
+$\frac{1}{4}(|S|-1)\log n$.
+
+Once a "large" model has been obtained, two functions can be used to
+generate the collection of simpler models that would have been obtained
+by using larger values of `cutoff`. The function `cutoff()` returns a
+list of values (in `alpha` scale by default) that are guaranteed to
+contain all values that can generate simpler models that the reference
+one. For instance in the following code
+
+```{r}
+model_large <- vlmc(x, cutoff = 0.5 * log(length(x)))
+model_large
+model_cutoff <- cutoff(model_large, mode = "native")
+model_cutoff
+```
+
+we first adjust a "complex" model using
+``` cutoff=``r round(0.5*log(length(x)),2) ``` and find then that
+`r length(model_cutoff)` other values can be used to build simpler
+models, using `prune()` as follows:
+
+```{r}
+model_medium <- prune(model_large, cutoff = model_cutoff[1])
+model_medium
+```
+
+```{r}
+model_small <- prune(model_large, cutoff = model_cutoff[2])
+model_small
+```
+
+The final model `model_small` is again the memory less model.
+
+
