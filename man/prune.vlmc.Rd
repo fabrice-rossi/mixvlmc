@@ -12,7 +12,7 @@
 \item{alpha}{number in (0,1) (default: 0.05) cutoff value in quantile scale
 for pruning.}
 
-\item{cutoff}{positive number: cutoff value in native (likelihood ratio)
+\item{cutoff}{positive number: cutoff value in native (log likelihood ratio)
 scale for pruning. Defaults to the value obtained from \code{alpha}. Takes
 precedence over \code{alpha} if specified.}
 

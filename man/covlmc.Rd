@@ -21,7 +21,7 @@ covlmc(
 \item{covariate}{a data frame of covariates.}
 
 \item{alpha}{number in (0,1) (default: 0.05) cut off value in the pruning
-phase.}
+phase (in quantile scale).}
 
 \item{min_size}{integer >= 1 (default: 15). Tune the minimum number of
 observations for a context in the growing phase of the context tree (see

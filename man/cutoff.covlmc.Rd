@@ -30,7 +30,16 @@ Notice that the list of cutoff values returned by the function is not as
 complete as the one computed for a VLMC without covariates. Indeed, pruning
 the coVLMC tree creates new pruning opportunities that are not evaluated
 during the construction of the initial model, while all pruning opportunities
-are computed during the construction of a VLMC context tree.
+are computed during the construction of a VLMC context tree. Nevertheless,
+the largest value returned by the function is guaranteed to produce the least
+pruned tree consistent with the reference one.
+
+Notice that the loglikelihood scale is not directly useful in coVLMC as
+the differences in model sizes are not constant through the pruning process.
+As a consequence, the "native" scale is not supported by this function.
+
+Setting \code{raw} to \code{TRUE} removes the small perturbation that are subtracted from
+the log-likelihood ratio values computed from the coVLMC (in quantile scale).
 }
 \examples{
 pc <- powerconsumption[powerconsumption$week == 5, ]

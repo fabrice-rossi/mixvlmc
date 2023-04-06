@@ -547,7 +547,7 @@ covlmc_control <- function(pseudo_obs = 1) {
 #' @param x a discrete time series; can be numeric, character or factor.
 #' @param covariate a data frame of covariates.
 #' @param alpha number in (0,1) (default: 0.05) cut off value in the pruning
-#'   phase.
+#'   phase (in quantile scale).
 #' @param min_size integer >= 1 (default: 15). Tune the minimum number of
 #'   observations for a context in the growing phase of the context tree (see
 #'   below for details).
@@ -694,7 +694,16 @@ assertthat::on_failure(is_covlmc) <- function(call, env) {
 #' complete as the one computed for a VLMC without covariates. Indeed, pruning
 #' the coVLMC tree creates new pruning opportunities that are not evaluated
 #' during the construction of the initial model, while all pruning opportunities
-#' are computed during the construction of a VLMC context tree.
+#' are computed during the construction of a VLMC context tree. Nevertheless,
+#' the largest value returned by the function is guaranteed to produce the least
+#' pruned tree consistent with the reference one.
+#'
+#' Notice that the loglikelihood scale is not directly useful in coVLMC as
+#' the differences in model sizes are not constant through the pruning process.
+#' As a consequence, the "native" scale is not supported by this function.
+#'
+#' Setting `raw` to `TRUE` removes the small perturbation that are subtracted from
+#'  the log-likelihood ratio values computed from the coVLMC (in quantile scale).
 #'
 #' @param vlmc a fitted covlmc model.
 #' @param mode specify whether the results should be "native" likelihood ratio
