@@ -38,7 +38,9 @@ the context appears without being the last part of a longer context.}
 each context (see \code{\link[=cutoff]{cutoff()}} and \code{\link[=prune]{prune()}}). The default result with
 \code{cutoff=NULL} does not include those values. Setting \code{cutoff} to \code{quantile}
 adds the cut off values in quantile scale, while \code{cutoff="native"} adds
-them in the native scale.}
+them in the native scale. The returned values are directly based on the
+log likelihood ratio computed in the context tree and are not modified to
+ensure pruning (as when \code{\link[=cutoff]{cutoff()}} is called by  \code{raw=TRUE}).}
 
 \item{metrics}{if TRUE, adds predictive metrics for each context (see \code{\link[=metrics]{metrics()}}
 for the definition of predictive metrics).}
@@ -66,7 +68,7 @@ two scales.
 }
 \section{Cut off values}{
  The cut off values reported by \code{contexts.vlmc} can
-be different from the ones reported by \code{\link[=cutoff]{cutoff()}} for two reasons:
+be different from the ones reported by \code{\link[=cutoff]{cutoff()}} for three reasons:
 \enumerate{
 \item \code{\link[=cutoff]{cutoff()}} reports only useful cut off values, i.e., cut off values that
 should induce a simplification of the VLMC when used in \code{\link[=prune]{prune()}}. This
@@ -75,6 +77,8 @@ the ones of their descendants in the context tree. Those values are
 reported by \code{context.vlmc}.
 \item \code{context.vlmc} reports only cut off values of actual contexts, while
 \code{\link[=cutoff]{cutoff()}} reports cut off values for all nodes of the context tree.
+\item values are not modified to induce pruning, contrarily to the default
+behaviour of \code{\link[=cutoff]{cutoff()}}
 }
 }
 

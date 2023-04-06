@@ -42,7 +42,9 @@ vlmc_context_extractor <-
 #'   each context (see [cutoff()] and [prune()]). The default result with
 #'   `cutoff=NULL` does not include those values. Setting `cutoff` to `quantile`
 #'   adds the cut off values in quantile scale, while `cutoff="native"` adds
-#'   them in the native scale.
+#'   them in the native scale. The returned values are directly based on the
+#'   log likelihood ratio computed in the context tree and are not modified to
+#'   ensure pruning (as when [cutoff()] is called by  `raw=TRUE`).
 #' @param counts specifies how the counts reported by `frequency` are computed.
 #'   The default value `"desc"` includes both counts that are specific to the
 #'   context (if any) and counts from the descendants of the context in the
@@ -60,7 +62,7 @@ vlmc_context_extractor <-
 #'   [cutoff()] and [prune()] for the definitions of cut off values and of the
 #'   two scales.
 #' @section Cut off values: The cut off values reported by `contexts.vlmc` can
-#'   be different from the ones reported by [cutoff()] for two reasons:
+#'   be different from the ones reported by [cutoff()] for three reasons:
 #'
 #'   1. [cutoff()] reports only useful cut off values, i.e., cut off values that
 #'   should induce a simplification of the VLMC when used in [prune()]. This
@@ -70,6 +72,9 @@ vlmc_context_extractor <-
 #'
 #'   2. `context.vlmc` reports only cut off values of actual contexts, while
 #'   [cutoff()] reports cut off values for all nodes of the context tree.
+#'
+#'   3. values are not modified to induce pruning, contrarily to the default
+#'   behaviour of [cutoff()]
 #'
 #' @examples
 #' dts <- sample(as.factor(c("A", "B", "C")), 100, replace = TRUE)
@@ -96,9 +101,7 @@ contexts.vlmc <- function(ct, type = c("auto", "list", "data.frame"), reverse = 
     preres <- contexts_extractor(ct, reverse, vlmc_context_extractor, control, vlmc_parent_summary)
     if (!is.null(cutoff)) {
       if ((cutoff == "quantile")) {
-        preres$cutoff <- before(stats::pchisq(2 * preres$cutoff, df = length(ct$vals) - 1, lower.tail = FALSE))
-      } else {
-        preres$cutoff <- after(preres$cutoff)
+        preres$cutoff <- to_quantile(preres$cutoff, length(ct$vals))
       }
     }
     preres
