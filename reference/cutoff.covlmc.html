@@ -58,7 +58,7 @@ the context tree of a VLMC with covariates.</p>
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S3 method for covlmc</span></span>
-<span><span class="fu"><a href="cutoff.html">cutoff</a></span><span class="op">(</span><span class="va">vlmc</span>, mode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"quantile"</span>, <span class="st">"native"</span><span class="op">)</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="cutoff.html">cutoff</a></span><span class="op">(</span><span class="va">vlmc</span>, mode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"quantile"</span>, <span class="st">"native"</span><span class="op">)</span>, raw <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -71,6 +71,11 @@ the context tree of a VLMC with covariates.</p>
 <dd><p>specify whether the results should be "native" likelihood ratio
 values or expressed in a "quantile" scale of a chi-squared distribution.
 For covlmc, only the quantile scale is supported.</p></dd>
+
+
+<dt>raw</dt>
+<dd><p>specify whether the returned values should be limit values computed in the model or
+modified values that guarantee pruning (see details)</p></dd>
 
 
 <dt>...</dt>
@@ -89,7 +94,14 @@ For covlmc, only the quantile scale is supported.</p></dd>
 complete as the one computed for a VLMC without covariates. Indeed, pruning
 the coVLMC tree creates new pruning opportunities that are not evaluated
 during the construction of the initial model, while all pruning opportunities
-are computed during the construction of a VLMC context tree.</p>
+are computed during the construction of a VLMC context tree. Nevertheless,
+the largest value returned by the function is guaranteed to produce the least
+pruned tree consistent with the reference one.</p>
+<p>Notice that the loglikelihood scale is not directly useful in coVLMC as
+the differences in model sizes are not constant through the pruning process.
+As a consequence, the "native" scale is not supported by this function.</p>
+<p>Setting <code>raw</code> to <code>TRUE</code> removes the small perturbation that are subtracted from
+the log-likelihood ratio values computed from the coVLMC (in quantile scale).</p>
     </div>
 
     <div class="section level2">

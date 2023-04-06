@@ -70,7 +70,7 @@ for pruning.</p></dd>
 
 
 <dt>cutoff</dt>
-<dd><p>positive number: cutoff value in native (likelihood ratio)
+<dd><p>positive number: cutoff value in native (log likelihood ratio)
 scale for pruning. Defaults to the value obtained from <code>alpha</code>. Takes
 precedence over <code>alpha</code> if specified.</p></dd>
 
@@ -119,7 +119,6 @@ function.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> |           '-- (0.458,1.34] (0, 0.8889, 0.1111, 0)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> '-- (1.34,2.13] (0.003968, 0.123, 0.7262, 0.1468)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> '-- (2.13,7.54] (0.003968, 0.01587, 0.1587, 0.8214)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     '-- (0.458,1.34] (0, 0.1429, 0.5714, 0.2857)</span>
 <span class="r-in"><span><span class="va">direct_simple</span> <span class="op">&lt;-</span> <span class="fu"><a href="vlmc.html">vlmc</a></span><span class="op">(</span><span class="va">dts</span>, alpha <span class="op">=</span> <span class="va">model_cuts</span><span class="op">[</span><span class="fl">3</span><span class="op">]</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="draw.html">draw</a></span><span class="op">(</span><span class="va">direct_simple</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> * (0.25, 0.25, 0.25, 0.25)</span>
@@ -134,7 +133,6 @@ function.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> |           '-- (0.458,1.34] (0, 0.8889, 0.1111, 0)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> '-- (1.34,2.13] (0.003968, 0.123, 0.7262, 0.1468)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> '-- (2.13,7.54] (0.003968, 0.01587, 0.1587, 0.8214)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     '-- (0.458,1.34] (0, 0.1429, 0.5714, 0.2857)</span>
 <span class="r-in"><span><span class="co"># pruned_model and direct_simple should be identical</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="va">pruned_model</span>, <span class="va">direct_simple</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
