@@ -700,6 +700,8 @@ assertthat::on_failure(is_covlmc) <- function(call, env) {
 #' @param mode specify whether the results should be "native" likelihood ratio
 #'   values or expressed in a "quantile" scale of a chi-squared distribution.
 #'   For covlmc, only the quantile scale is supported.
+#' @param raw specify whether the returned values should be limit values computed in the model or
+#'  modified values that guarantee pruning (see details)
 #' @param ... additional arguments for the cutoff function.
 #' @return a vector of cut off values, `NULL` is none can be computed
 #'
@@ -713,7 +715,7 @@ assertthat::on_failure(is_covlmc) <- function(call, env) {
 #' draw(m_cov)
 #' cutoff(m_cov)
 #' @export
-cutoff.covlmc <- function(vlmc, mode = c("quantile", "native"), ...) {
+cutoff.covlmc <- function(vlmc, mode = c("quantile", "native"), raw = FALSE, ...) {
   mode <- match.arg(mode)
   if (mode == "native") {
     stop("native mode is not supported by covlmc objects")
@@ -751,7 +753,12 @@ cutoff.covlmc <- function(vlmc, mode = c("quantile", "native"), ...) {
   if (is.null(preres)) {
     NULL
   } else {
-    before(unique(sort(preres, decreasing = TRUE)))
+    preres <- unique(sort(preres, decreasing = TRUE))
+    if (raw) {
+      preres
+    } else {
+      before(preres)
+    }
   }
 }
 

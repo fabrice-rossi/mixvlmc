@@ -34,9 +34,21 @@ kl_div <- function(p, q) {
 #' This function returns all the cutoff values that are guaranteed to induce a
 #' pruning of the context tree of a VLMC. Pruning is implemented by the [prune()] function.
 #'
+#' By default, the function tries to return values that can be used directly to
+#' induce pruning in the context tree. This is done by returning values that are
+#' slightly smaller than values computed in the context tree in the "quantile" scale
+#' and slightly larger in the "native" scale. However, this approach does not allow
+#' full consistency between scales: while the cutoff values correspond when transformed
+#' from one scale to another, round off errors could induce differences in the results.
+#'
+#' Setting the `raw` parameter to `TRUE` removes this operation on the values and shifts
+#' the burden of value perturbation to the user.
+#'
 #' @param vlmc a fitted VLMC model.
 #' @param mode specify whether the results should be "native" likelihood ratio values
 #'  or expressed in a "quantile" scale of a chi-squared distribution (defaults to "quantile").
+#' @param raw specify whether the returned values should be limit values computed in the model or
+#'  modified values that guarantee pruning (see details)
 #' @param ... additional arguments for the cutoff function.
 #' @return a vector of cut off values.
 #' @examples
@@ -49,13 +61,13 @@ kl_div <- function(p, q) {
 #' draw(model_2)
 #' @seealso [prune()]
 #' @export
-cutoff <- function(vlmc, mode = c("quantile", "native"), ...) {
+cutoff <- function(vlmc, mode = c("quantile", "native"), raw = FALSE, ...) {
   UseMethod("cutoff")
 }
 
 #' @inherit cutoff
 #' @export
-cutoff.vlmc <- function(vlmc, mode = c("quantile", "native"), ...) {
+cutoff.vlmc <- function(vlmc, mode = c("quantile", "native"), raw = FALSE, ...) {
   mode <- match.arg(mode)
   recurse_kl_cutoff <- function(vlmc, p_probs) {
     c_probs <- vlmc$f_by / sum(vlmc$f_by)
@@ -78,11 +90,20 @@ cutoff.vlmc <- function(vlmc, mode = c("quantile", "native"), ...) {
   }
   pre_result <- unique(sort(recurse_kl_cutoff(vlmc, vlmc$f_by / sum(vlmc$f_by))))
   if (mode == "native") {
-    after(pre_result)
+    if (raw) {
+      pre_result
+    } else {
+      after(pre_result)
+    }
   } else {
-    pre_alpha <- before(stats::pchisq(2 * pre_result, df = length(vlmc$vals) - 1, lower.tail = FALSE))
-    pre_alpha[pre_alpha < 0] <- 0
-    pre_alpha
+    alpha <- to_quantile(pre_result, length(vlmc$vals))
+    if (raw) {
+      alpha
+    } else {
+      pre_alpha <- before(alpha)
+      pre_alpha[pre_alpha < 0] <- 0
+      pre_alpha
+    }
   }
 }
 
@@ -121,7 +142,7 @@ prune_ctx_tree <- function(tree, alpha = 0.05, cutoff = NULL, verbose = FALSE) {
     }
   }
   if (is.null(cutoff)) {
-    K <- stats::qchisq(alpha, df = length(tree$vals) - 1, lower.tail = FALSE) / 2
+    K <- to_native(alpha, length(tree$vals))
   } else {
     K <- cutoff
   }
@@ -184,10 +205,10 @@ prune.vlmc <- function(vlmc, alpha = 0.05, cutoff = NULL, ...) {
   }
   result <- prune_ctx_tree(vlmc, alpha = alpha, cutoff = cutoff)
   if (is.null(cutoff)) {
-    cutoff <- stats::qchisq(alpha, df = length(vlmc$vals) - 1, lower.tail = FALSE) / 2
+    cutoff <- to_native(alpha, length(vlmc$vals))
   } else {
     ## cutoff takes precedence
-    alpha <- stats::pchisq(2 * cutoff, df = length(vlmc$vals) - 1, lower.tail = FALSE)
+    alpha <- to_quantile(cutoff, length(vlmc$vals))
   }
   result$alpha <- alpha
   result$cutoff <- cutoff
@@ -262,10 +283,10 @@ vlmc <- function(x, alpha = 0.05, cutoff = NULL, min_size = 2, max_depth = 100, 
     result <- prune_ctx_tree(ctx_tree, alpha = alpha, cutoff = cutoff)
   }
   if (is.null(cutoff)) {
-    cutoff <- stats::qchisq(alpha, df = length(vals) - 1, lower.tail = FALSE) / 2
+    cutoff <- to_native(alpha, length(vals))
   } else {
     ## cutoff takes precedence
-    alpha <- stats::pchisq(2 * cutoff, df = length(vals) - 1, lower.tail = FALSE)
+    alpha <- to_quantile(cutoff, length(vals))
   }
   result$alpha <- alpha
   result$cutoff <- cutoff

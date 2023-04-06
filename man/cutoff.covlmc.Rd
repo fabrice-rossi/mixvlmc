@@ -4,7 +4,7 @@
 \alias{cutoff.covlmc}
 \title{Cutoff values for pruning the context tree of a VLMC with covariates}
 \usage{
-\method{cutoff}{covlmc}(vlmc, mode = c("quantile", "native"), ...)
+\method{cutoff}{covlmc}(vlmc, mode = c("quantile", "native"), raw = FALSE, ...)
 }
 \arguments{
 \item{vlmc}{a fitted covlmc model.}
@@ -12,6 +12,9 @@
 \item{mode}{specify whether the results should be "native" likelihood ratio
 values or expressed in a "quantile" scale of a chi-squared distribution.
 For covlmc, only the quantile scale is supported.}
+
+\item{raw}{specify whether the returned values should be limit values computed in the model or
+modified values that guarantee pruning (see details)}
 
 \item{...}{additional arguments for the cutoff function.}
 }

@@ -4,13 +4,16 @@
 \alias{cutoff.vlmc}
 \title{Cutoff values for pruning the context tree of a VLMC}
 \usage{
-\method{cutoff}{vlmc}(vlmc, mode = c("quantile", "native"), ...)
+\method{cutoff}{vlmc}(vlmc, mode = c("quantile", "native"), raw = FALSE, ...)
 }
 \arguments{
 \item{vlmc}{a fitted VLMC model.}
 
 \item{mode}{specify whether the results should be "native" likelihood ratio values
 or expressed in a "quantile" scale of a chi-squared distribution (defaults to "quantile").}
+
+\item{raw}{specify whether the returned values should be limit values computed in the model or
+modified values that guarantee pruning (see details)}
 
 \item{...}{additional arguments for the cutoff function.}
 }
@@ -20,6 +23,17 @@ a vector of cut off values.
 \description{
 This function returns all the cutoff values that are guaranteed to induce a
 pruning of the context tree of a VLMC. Pruning is implemented by the \code{\link[=prune]{prune()}} function.
+}
+\details{
+By default, the function tries to return values that can be used directly to
+induce pruning in the context tree. This is done by returning values that are
+slightly smaller than values computed in the context tree in the "quantile" scale
+and slightly larger in the "native" scale. However, this approach does not allow
+full consistency between scales: while the cutoff values correspond when transformed
+from one scale to another, round off errors could induce differences in the results.
+
+Setting the \code{raw} parameter to \code{TRUE} removes this operation on the values and shifts
+the burden of value perturbation to the user.
 }
 \examples{
 pc <- powerconsumption[powerconsumption$week == 5, ]
