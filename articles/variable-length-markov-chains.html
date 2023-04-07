@@ -363,6 +363,80 @@ using <code><a href="../reference/prune.html">prune()</a></code> as follows:</p>
 <p>The final model <code>model_small</code> is again the memory less
 model.</p>
 </div>
+<div class="section level3">
+<h3 id="diagnostics">Diagnostics<a class="anchor" aria-label="anchor" href="#diagnostics"></a>
+</h3>
+<p>The package provides numerous ways to analyse a VLMC. Basic functions
+include</p>
+<ul>
+<li>
+<code>states</code> returns the state space of the model;</li>
+<li>
+<code>depth</code> returns the length of the longest context in the
+model;</li>
+<li>
+<code>context_number</code> returns the number of contexts in the
+model.</li>
+</ul>
+<p>For instance, the large model obtained above has the following
+characteristics:</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/states.html">states</a></span><span class="op">(</span><span class="va">model_large</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 0 1 2</span></span>
+<span><span class="fu"><a href="../reference/depth.html">depth</a></span><span class="op">(</span><span class="va">model_large</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 3</span></span>
+<span><span class="fu"><a href="../reference/context_number.html">context_number</a></span><span class="op">(</span><span class="va">model_large</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 6</span></span></code></pre></div>
+<p>VLMC objects support classical statistical functions such as:</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/logLik.html" class="external-link">logLik</a></span><span class="op">(</span><span class="va">model_large</span><span class="op">)</span></span>
+<span><span class="co">#&gt; 'log Lik.' -206.1223 (df=12)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/stats/AIC.html" class="external-link">AIC</a></span><span class="op">(</span><span class="va">model_large</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 436.2446</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/stats/AIC.html" class="external-link">BIC</a></span><span class="op">(</span><span class="va">model_large</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 475.8244</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="contexts">Contexts<a class="anchor" aria-label="anchor" href="#contexts"></a>
+</h3>
+<p>The model can be explored in details by drawing its context tree (see
+<code><a href="../articles/context-trees.html">vignette("context-trees")</a></code> for details) as follows:</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/draw.html">draw</a></span><span class="op">(</span><span class="va">model_large</span><span class="op">)</span></span>
+<span><span class="co">#&gt; * (0.325, 0.345, 0.33)</span></span>
+<span><span class="co">#&gt; '-- 1 (0.3043, 0.4203, 0.2754)</span></span>
+<span><span class="co">#&gt;     +-- 1 (0.2069, 0.4828, 0.3103)</span></span>
+<span><span class="co">#&gt;     |   '-- 0 (0.2222, 0.7778, 0)</span></span>
+<span><span class="co">#&gt;     '-- 2 (0.3, 0.3, 0.4)</span></span>
+<span><span class="co">#&gt;         '-- 2 (0, 0.375, 0.625)</span></span></code></pre></div>
+<p>To explore the contexts in a programatic way, one should rely on the
+<code>contexts</code> function. VLMC contexts have additional
+characteristics compared to context trees. In particular, the
+<code>contexts</code> function can report the log likelihood ratio
+associated to each context as follows (compare to <code>cutoff</code>
+above):</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/contexts.html">contexts</a></span><span class="op">(</span><span class="va">model_large</span>, cutoff <span class="op">=</span> <span class="st">"native"</span><span class="op">)</span></span>
+<span><span class="co">#&gt;   context    cutoff</span></span>
+<span><span class="co">#&gt; 1 1, 1, 0 3.4813864</span></span>
+<span><span class="co">#&gt; 2    1, 1 0.7006631</span></span>
+<span><span class="co">#&gt; 3 1, 2, 2 2.9008662</span></span>
+<span><span class="co">#&gt; 4    1, 2 0.8777091</span></span>
+<span><span class="co">#&gt; 5       1 0.9067789</span></span>
+<span><span class="co">#&gt; 6         0.0000000</span></span></code></pre></div>
+<p>Notice that by default <code><a href="../reference/contexts.html">contexts()</a></code> uses the reverse
+representation of contexts, but they can be returned in the natural time
+sequence using <code>reverse=FALSE</code>, as in</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/contexts.html">contexts</a></span><span class="op">(</span><span class="va">model_large</span>, cutoff <span class="op">=</span> <span class="st">"quantile"</span>, reverse <span class="op">=</span> <span class="cn">FALSE</span>, frequency <span class="op">=</span> <span class="st">"detailed"</span><span class="op">)</span></span>
+<span><span class="co">#&gt;   context freq  0  1  2     cutoff</span></span>
+<span><span class="co">#&gt; 1 0, 1, 1    9  2  7  0 0.03076473</span></span>
+<span><span class="co">#&gt; 2    1, 1   29  6 14  9 0.49625611</span></span>
+<span><span class="co">#&gt; 3 2, 2, 1    8  0  3  5 0.05497558</span></span>
+<span><span class="co">#&gt; 4    2, 1   20  6  6  8 0.41573421</span></span>
+<span><span class="co">#&gt; 5       1   69 21 29 19 0.40382287</span></span>
+<span><span class="co">#&gt; 6          200 65 69 66 1.00000000</span></span></code></pre></div>
+</div>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>
