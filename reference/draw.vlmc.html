@@ -25,6 +25,7 @@
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../articles/context-trees.html">Context trees</a>
+    <a class="dropdown-item" href="../articles/variable-length-markov-chains.html">Variable length Markov chains (VLMC)</a>
   </div>
 </li>
       </ul><form class="form-inline my-2 my-lg-0" role="search">
@@ -104,38 +105,29 @@ tree.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">dts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A"</span>, <span class="st">"B"</span>, <span class="st">"C"</span><span class="op">)</span>, <span class="fl">500</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="vlmc.html">vlmc</a></span><span class="op">(</span><span class="va">dts</span>, alpha <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="draw.html">draw</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> * (0.306, 0.35, 0.344)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> +-- A (0.3399, 0.3137, 0.3464)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |   '-- A (0.2692, 0.3269, 0.4038)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |       +-- A (0, 0.4286, 0.5714)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |       '-- C (0.4737, 0.2105, 0.3158)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |           '-- A (1, 0, 0)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> '-- B (0.2857, 0.3371, 0.3771)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     '-- C (0.2985, 0.3433, 0.3582)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         '-- B (0.2963, 0.3333, 0.3704)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             '-- A (0.5714, 0.4286, 0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> * (0.306, 0.356, 0.338)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> +-- A (0.375, 0.3421, 0.2829)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |   '-- C (0.4043, 0.383, 0.2128)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |       '-- C (0.5882, 0.1176, 0.2941)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> '-- B (0.2753, 0.3596, 0.3652)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     '-- B (0.25, 0.3906, 0.3594)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         '-- C (0.5556, 0.1667, 0.2778)</span>
 <span class="r-in"><span><span class="fu"><a href="draw.html">draw</a></span><span class="op">(</span><span class="va">model</span>, prob <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> * (153, 175, 172)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> +-- A (52, 48, 53)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |   '-- A (14, 17, 21)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |       +-- A (0, 6, 8)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |       '-- C (9, 4, 6)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |           '-- A (5, 0, 0)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> '-- B (50, 59, 66)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     '-- C (20, 23, 24)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         '-- B (8, 9, 10)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             '-- A (4, 3, 0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> * (153, 178, 169)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> +-- A (57, 52, 43)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |   '-- C (19, 18, 10)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |       '-- C (10, 2, 5)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> '-- B (49, 64, 65)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     '-- B (16, 25, 23)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         '-- C (10, 3, 5)</span>
 <span class="r-in"><span><span class="fu"><a href="draw.html">draw</a></span><span class="op">(</span><span class="va">model</span>, prob <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> *</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> +-- A</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |   '-- A</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |       +-- A</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |   '-- C</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> |       '-- C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |           '-- A</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> '-- B</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     '-- C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         '-- B</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             '-- A</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     '-- B</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         '-- C</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

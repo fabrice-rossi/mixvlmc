@@ -44,6 +44,7 @@
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="articles/context-trees.html">Context trees</a>
+    <a class="dropdown-item" href="articles/variable-length-markov-chains.html">Variable length Markov chains (VLMC)</a>
   </div>
 </li>
       </ul>
@@ -89,7 +90,7 @@
 <div class="section level3">
 <h3 id="variable-length-markov-chains-1">Variable length Markov chains<a class="anchor" aria-label="anchor" href="#variable-length-markov-chains-1"></a>
 </h3>
-<p>Variable length Markov chains (VLMC) are sparse high order Markov chains. They can be used to model time series with discrete values (states) with a mix of small order dependencies for certain states and higher order dependencies for other states. For instance, with a binary time series, the probability of observing 1 a time <span class="math inline"><em>t</em></span> could be constant whatever the older past states if the last one (at time <span class="math inline"><em>t</em> − 1</span>) was 1, but could depend on states at time <span class="math inline"><em>t</em> − 3</span> and <span class="math inline"><em>t</em> − 2</span> if the state was 0 at time <span class="math inline"><em>t</em> − 1</span>. A collection of past states that determines completely the transition probabilities is a <em>context</em> of the VLMC. Read <code><a href="articles/context-trees.html">vignette("context-trees")</a></code> for details about contexts and context tree.</p>
+<p>Variable length Markov chains (VLMC) are sparse high order Markov chains. They can be used to model time series with discrete values (states) with a mix of small order dependencies for certain states and higher order dependencies for other states. For instance, with a binary time series, the probability of observing 1 a time <span class="math inline"><em>t</em></span> could be constant whatever the older past states if the last one (at time <span class="math inline"><em>t</em> − 1</span>) was 1, but could depend on states at time <span class="math inline"><em>t</em> − 3</span> and <span class="math inline"><em>t</em> − 2</span> if the state was 0 at time <span class="math inline"><em>t</em> − 1</span>. A collection of past states that determines completely the transition probabilities is a <em>context</em> of the VLMC. Read <code><a href="articles/context-trees.html">vignette("context-trees")</a></code> for details about contexts and context tree, and (see <code><a href="articles/variable-length-markov-chains.html">vignette("variable-length-markov-chains")</a></code> for a more detailed introduction to VLMC.</p>
 <p>VLMC with covariates (COVLMC) are extension of VLMC in which transition probabilities (probabilities of the next state given the past) can be influenced by the past values of some covariates (in addition to the past values of the time series itself). Each context is associated to a logistic model that maps the (past values of the) covariates to transition probabilities.</p>
 </div>
 <div class="section level3">

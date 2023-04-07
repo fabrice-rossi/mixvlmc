@@ -25,6 +25,7 @@
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../articles/context-trees.html">Context trees</a>
+    <a class="dropdown-item" href="../articles/variable-length-markov-chains.html">Variable length Markov chains (VLMC)</a>
   </div>
 </li>
       </ul><form class="form-inline my-2 my-lg-0" role="search">
@@ -104,28 +105,26 @@ tree.</p>
 <span class="r-in"><span><span class="va">ctree_c</span> <span class="op">&lt;-</span> <span class="fu"><a href="ctx_tree.html">ctx_tree</a></span><span class="op">(</span><span class="va">dts_c</span>, min_size <span class="op">=</span> <span class="fl">10</span>, max_depth <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="draw.html">draw</a></span><span class="op">(</span><span class="va">ctree_c</span>, frequency <span class="op">=</span> <span class="st">"total"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> * (100)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> +-- A (33)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |   +-- A (11)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |   '-- B (13)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> '-- B (38)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> +-- A (23)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |   '-- B (15)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> '-- B (39)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> |   +-- A (10)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |   '-- B (13)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |   '-- CD (14)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> '-- CD (28)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     +-- A (12)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     '-- B (12)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |   '-- B (11)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |   '-- CD (18)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> '-- CD (37)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     +-- B (13)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     '-- CD (14)</span>
 <span class="r-in"><span><span class="fu"><a href="draw.html">draw</a></span><span class="op">(</span><span class="va">ctree_c</span>, frequency <span class="op">=</span> <span class="st">"detailed"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> * (33,38,29)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> +-- A (11,10,12)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |   +-- A (3,4,4)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |   '-- B (4,4,5)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> '-- B (13,13,12)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |   +-- A (3,5,2)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |   '-- B (4,6,3)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |   '-- CD (5,2,7)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> '-- CD (9,14,5)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     +-- A (5,6,1)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     '-- B (1,7,4)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> * (24,39,37)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> +-- A (4,10,9)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |   '-- B (2,8,5)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> '-- B (15,11,13)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |   +-- A (5,3,2)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |   '-- B (4,3,4)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |   '-- CD (6,5,7)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> '-- CD (5,18,14)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     +-- B (3,5,5)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     '-- CD (1,7,6)</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
