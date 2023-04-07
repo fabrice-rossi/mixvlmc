@@ -247,14 +247,12 @@ by using larger values of `cutoff`. The function `cutoff()` returns a
 list of values (in `alpha` scale by default) that are guaranteed to
 contain all values that can generate simpler models that the reference
 one. For instance in the following code
-
 ```{r}
 model_large <- vlmc(x, cutoff = 0.5 * log(length(x)))
 model_large
 model_cutoff <- cutoff(model_large, mode = "native")
 model_cutoff
 ```
-
 we first adjust a "complex" model using
 ``` cutoff=``r round(0.5*log(length(x)),2) ``` and find then that
 `r length(model_cutoff)` other values can be used to build simpler
@@ -272,4 +270,43 @@ model_small
 
 The final model `model_small` is again the memory less model.
 
+### Diagnostics
+The package provides numerous ways to analyse a VLMC. Basic functions include
 
+- `states` returns the state space of the model;
+- `depth` returns the length of the longest context in the model;
+- `context_number` returns the number of contexts in the model.
+
+For instance, the large model obtained above has the following
+characteristics:
+```{r}
+states(model_large)
+depth(model_large)
+context_number(model_large)
+```
+VLMC objects support classical statistical functions such as:
+```{r}
+logLik(model_large)
+AIC(model_large)
+BIC(model_large)
+```
+
+### Contexts
+The model can be explored in details by drawing its context tree 
+(see `vignette("context-trees")` for details) as follows:
+```{r}
+draw(model_large)
+```
+To explore the contexts in a programatic way, one should rely on the `contexts` 
+function. VLMC contexts have additional characteristics compared to context trees.
+In particular, the `contexts` function can report the log likelihood ratio associated
+to each context as follows (compare to `cutoff` above):
+```{r}
+contexts(model_large, cutoff = "native")
+```
+Notice that by default `contexts()` uses the reverse representation of contexts, 
+but they can  be returned in the natural time sequence using `reverse=FALSE`, as
+in 
+```{r}
+contexts(model_large, cutoff = "quantile", reverse = FALSE, frequency = "detailed")
+```

@@ -1,7 +1,6 @@
 test_that("trimming removes only what it should remove", {
   for (engine in c("glm", "multinom")) {
     withr::local_options(mixvlmc.predictive = engine)
-
     pc <- powerconsumption[powerconsumption$week %in% 5:7, ]
     dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1))))
     dts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
