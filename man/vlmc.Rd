@@ -17,10 +17,10 @@ vlmc(
 \arguments{
 \item{x}{a discrete time series; can be numeric, character or factor.}
 
-\item{alpha}{number in (0,1) (default: 0.05) cutoff value in quantile scale
+\item{alpha}{number in (0,1] (default: 0.05) cutoff value in quantile scale
 in the pruning phase.}
 
-\item{cutoff}{positive number: cutoff value in native (likelihood ratio)
+\item{cutoff}{non negative number: cutoff value in native (likelihood ratio)
 scale in the pruning phase. Defaults to the value obtained from \code{alpha}.
 Takes precedence over \code{alpha} is specified.}
 

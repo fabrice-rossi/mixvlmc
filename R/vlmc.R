@@ -156,7 +156,7 @@ prune_ctx_tree <- function(tree, alpha = 0.05, cutoff = NULL, verbose = FALSE) {
 #' function.
 #'
 #' @param vlmc a fitted VLMC model.
-#' @param alpha number in (0,1) (default: 0.05) cutoff value in quantile scale
+#' @param alpha number in (0,1] (default: 0.05) cutoff value in quantile scale
 #'   for pruning.
 #' @param cutoff positive number: cutoff value in native (log likelihood ratio)
 #'   scale for pruning. Defaults to the value obtained from `alpha`. Takes
@@ -185,8 +185,8 @@ prune <- function(vlmc, alpha = 0.05, cutoff = NULL, ...) {
 #' @export
 prune.vlmc <- function(vlmc, alpha = 0.05, cutoff = NULL, ...) {
   if (is.null(cutoff)) {
-    if (is.null(alpha) || !is.numeric(alpha) || alpha <= 0) {
-      stop("the alpha parameter must be a strictly positive number")
+    if (is.null(alpha) || !is.numeric(alpha) || alpha <= 0 || alpha > 1) {
+      stop("the alpha parameter must be in (0, 1]")
     }
   }
   result <- prune_ctx_tree(vlmc, alpha = alpha, cutoff = cutoff)
@@ -224,9 +224,9 @@ prune.vlmc <- function(vlmc, alpha = 0.05, cutoff = NULL, ...) {
 #' any pruning).
 #'
 #' @param x a discrete time series; can be numeric, character or factor.
-#' @param alpha number in (0,1) (default: 0.05) cutoff value in quantile scale
+#' @param alpha number in (0,1] (default: 0.05) cutoff value in quantile scale
 #'   in the pruning phase.
-#' @param cutoff positive number: cutoff value in native (likelihood ratio)
+#' @param cutoff non negative number: cutoff value in native (likelihood ratio)
 #'   scale in the pruning phase. Defaults to the value obtained from `alpha`.
 #'   Takes precedence over `alpha` is specified.
 #' @param min_size integer >= 1 (default: 2). Minimum number of observations for
@@ -269,9 +269,15 @@ vlmc <- function(x, alpha = 0.05, cutoff = NULL, min_size = 2, max_depth = 100, 
     result <- prune_ctx_tree(ctx_tree, alpha = alpha, cutoff = cutoff)
   }
   if (is.null(cutoff)) {
+    if (is.null(alpha) || !is.numeric(alpha) || alpha <= 0 || alpha > 1) {
+      stop("the alpha parameter must be in (0, 1]")
+    }
     cutoff <- to_native(alpha, length(vals))
   } else {
     ## cutoff takes precedence
+    if (!is.numeric(cutoff) || cutoff < 0) {
+      stop("the cutoff parameter must be a non negative number")
+    }
     alpha <- to_quantile(cutoff, length(vals))
   }
   result$alpha <- alpha

@@ -9,7 +9,7 @@ prune(vlmc, alpha = 0.05, cutoff = NULL, ...)
 \arguments{
 \item{vlmc}{a fitted VLMC model.}
 
-\item{alpha}{number in (0,1) (default: 0.05) cutoff value in quantile scale
+\item{alpha}{number in (0,1] (default: 0.05) cutoff value in quantile scale
 for pruning.}
 
 \item{cutoff}{positive number: cutoff value in native (log likelihood ratio)
