@@ -107,3 +107,13 @@ test_that("covlmc handles defficient rank covariates", {
   elec_cov <- data.frame(day = (pc_week_5$hour >= 7 & pc_week_5$hour <= 17))
   expect_error(covlmc(elec_dts, elec_cov, min_size = 10), regexp = NA)
 })
+
+test_that("covlmc handles tibble correctly", {
+  skip_if_not_installed("tibble")
+  data_set <- build_data_set_2(seed = 0)
+  alpha <- 0.5
+  model_df <- covlmc(data_set$x, data_set$covariate, alpha = alpha, min_size = 3)
+  data_set$covariate <- tibble::as_tibble(data_set$covariate)
+  model_tb <- covlmc(data_set$x, data_set$covariate, alpha = alpha, min_size = 3)
+  expect_true(compare_covlmc(model_df, model_tb))
+})

@@ -33,7 +33,11 @@ prepare_covariate.data.frame <- function(covariate, ctx_match, d, from, ...) {
     the_names <- names(covariate)
     for (step in 1:d) {
       for (p in 1:ncol(covariate)) {
-        res[[paste0(the_names[p], "_", step)]] <- covariate[ctx_match + from + d - step + 1, p]
+        pre <- covariate[ctx_match + from + d - step + 1, p]
+        if (is.list(pre)) {
+          pre <- covariate[ctx_match + from + d - step + 1, ][[p]]
+        }
+        res[[paste0(the_names[p], "_", step)]] <- pre
       }
     }
     list2DF(res)
