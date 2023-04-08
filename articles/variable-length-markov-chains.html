@@ -370,12 +370,12 @@ model.</p>
 include</p>
 <ul>
 <li>
-<code>states</code> returns the state space of the model;</li>
+<code><a href="../reference/states.html">states()</a></code> returns the state space of the model;</li>
 <li>
-<code>depth</code> returns the length of the longest context in the
-model;</li>
+<code><a href="../reference/depth.html">depth()</a></code> returns the length of the longest context in
+the model;</li>
 <li>
-<code>context_number</code> returns the number of contexts in the
+<code><a href="../reference/context_number.html">context_number()</a></code> returns the number of contexts in the
 model.</li>
 </ul>
 <p>For instance, the large model obtained above has the following
@@ -409,11 +409,11 @@ characteristics:</p>
 <span><span class="co">#&gt;     |   '-- 0 (0.2222, 0.7778, 0)</span></span>
 <span><span class="co">#&gt;     '-- 2 (0.3, 0.3, 0.4)</span></span>
 <span><span class="co">#&gt;         '-- 2 (0, 0.375, 0.625)</span></span></code></pre></div>
-<p>To explore the contexts in a programatic way, one should rely on the
-<code>contexts</code> function. VLMC contexts have additional
+<p>To explore the contexts in a programmatic way, one should rely on the
+<code><a href="../reference/contexts.html">contexts()</a></code> function. VLMC contexts have additional
 characteristics compared to context trees. In particular, the
-<code>contexts</code> function can report the log likelihood ratio
-associated to each context as follows (compare to <code>cutoff</code>
+<code><a href="../reference/contexts.html">contexts()</a></code> function can report the log likelihood ratio
+associated to each context as follows (compare to <code><a href="../reference/cutoff.html">cutoff()</a></code>
 above):</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/contexts.html">contexts</a></span><span class="op">(</span><span class="va">model_large</span>, cutoff <span class="op">=</span> <span class="st">"native"</span><span class="op">)</span></span>
