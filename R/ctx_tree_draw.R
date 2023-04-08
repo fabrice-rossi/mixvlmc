@@ -150,6 +150,7 @@ draw.ctx_tree <- function(ct, control = draw_control(), frequency = NULL, ...) {
   if (is.null(frequency)) {
     rec_draw(control$root, "", ct, ct$vals, control, NULL, list(...))
   } else {
+    frequency <- match.arg(frequency, c("total", "detailed"))
     rec_draw(control$root, "", ct, ct$vals, control, ctx_tree_node2txt, c(list(frequency = frequency), list(...)))
   }
   invisible(ct)
