@@ -273,9 +273,9 @@ The final model `model_small` is again the memory less model.
 ### Diagnostics
 The package provides numerous ways to analyse a VLMC. Basic functions include
 
-- `states` returns the state space of the model;
-- `depth` returns the length of the longest context in the model;
-- `context_number` returns the number of contexts in the model.
+- `states()` returns the state space of the model;
+- `depth()` returns the length of the longest context in the model;
+- `context_number()` returns the number of contexts in the model.
 
 For instance, the large model obtained above has the following
 characteristics:
@@ -297,10 +297,10 @@ The model can be explored in details by drawing its context tree
 ```{r}
 draw(model_large)
 ```
-To explore the contexts in a programatic way, one should rely on the `contexts` 
+To explore the contexts in a programmatic way, one should rely on the `contexts()` 
 function. VLMC contexts have additional characteristics compared to context trees.
-In particular, the `contexts` function can report the log likelihood ratio associated
-to each context as follows (compare to `cutoff` above):
+In particular, the `contexts()` function can report the log likelihood ratio associated
+to each context as follows (compare to `cutoff()` above):
 ```{r}
 contexts(model_large, cutoff = "native")
 ```
