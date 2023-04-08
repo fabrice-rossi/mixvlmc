@@ -17,57 +17,69 @@ knitr::opts_chunk$set(
 # Variable Length Markov Chains
 
 <!-- badges: start -->
+
 [![R-CMD-check](https://github.com/fabrice-rossi/mixvlmc/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/fabrice-rossi/mixvlmc/actions/workflows/R-CMD-check.yaml)
+
 <!-- badges: end -->
 
 `mixvlmc` implements variable length Markov chains (VLMC) and variable length Markov chains with covariates (COVLMC), as described in:
 
-- [Bühlmann, P. and Wyner, A. J. (1999), Variable length Markov chains. Ann. Statist. 27 (2) 480-513](https://dx.doi.org/10.1214/aos/1018031204)
-- [Zanin Zambom, A., Kim, S. and Lopes Garcia, N. (2022), Variable length Markov chain with exogenous covariates. J. Time Ser. Anal., 43 (2) 312-328](https://doi.org/10.1111/jtsa.12615)
+-   [Bühlmann, P. and Wyner, A. J. (1999), Variable length Markov chains. Ann. Statist. 27 (2) 480-513](https://dx.doi.org/10.1214/aos/1018031204)
+-   [Zanin Zambom, A., Kim, S. and Lopes Garcia, N. (2022), Variable length Markov chain with exogenous covariates. J. Time Ser. Anal., 43 (2) 312-328](https://doi.org/10.1111/jtsa.12615)
 
 ## Installation
+
 The package is only available from GitHub:
+
 ```{r, eval = FALSE}
 # install.packages("devtools")
 devtools::install_github("fabrice-rossi/mixvlmc")
 ```
 
 ## Usage
-### Variable length Markov chains
-Variable length Markov chains (VLMC) are sparse high order Markov chains. They can be used to model time series with discrete values (states) with a mix of small order dependencies for certain states and higher order dependencies for other states. For instance, with a binary time series, the probability of observing 1 a time $t$ could be constant whatever the older past states if the last one (at time $t-1$) was 1, but could depend on states at time $t-3$ and $t-2$ if the state was 0 at time $t-1$. A collection of past states that determines completely the transition probabilities is a _context_ of the VLMC. Read `vignette("context-trees")` for details about contexts and context tree, and  (see `vignette("variable-length-markov-chains")` for a more detailed
-introduction to VLMC. 
 
-VLMC with covariates (COVLMC) are extension of VLMC in which transition probabilities (probabilities of the next state given the past) can be influenced by the past values of some covariates (in addition to the past values of the time series itself). Each context is associated to a logistic model that maps the (past values of the) covariates to transition probabilities.  
+### Variable length Markov chains
+
+Variable length Markov chains (VLMC) are sparse high order Markov chains. They can be used to model time series with discrete values (states) with a mix of small order dependencies for certain states and higher order dependencies for other states. For instance, with a binary time series, the probability of observing 1 a time $t$ could be constant whatever the older past states if the last one (at time $t-1$) was 1, but could depend on states at time $t-3$ and $t-2$ if the state was 0 at time $t-1$. A collection of past states that determines completely the transition probabilities is a *context* of the VLMC. Read `vignette("context-trees")` for details about contexts and context tree, and (see `vignette("variable-length-markov-chains")` for a more detailed introduction to VLMC.
+
+VLMC with covariates (COVLMC) are extension of VLMC in which transition probabilities (probabilities of the next state given the past) can be influenced by the past values of some covariates (in addition to the past values of the time series itself). Each context is associated to a logistic model that maps the (past values of the) covariates to transition probabilities.
 
 ### Fitting a VLMC
+
 The package is loaded in a standard way.
+
 ```{r}
 library(mixvlmc)
 ## we use ggplot2 for graphics but this is not a dependency of the package
 library(ggplot2)
 ```
-The main function of VLMC is `vlmc()` which can be called on a time series represented by a numerical vector or a factor. 
+
+The main function of VLMC is `vlmc()` which can be called on a time series represented by a numerical vector or a factor.
+
 ```{r}
 set.seed(0)
 x <- sample(c(0L, 1L), 200, replace = TRUE)
 model <- vlmc(x)
 model
 ```
+
 The default parameters of `vlmc()` will tend to produce overly complex VLMC in order to avoid missing potential structure in the time series. In the example above, we expect the optimal VLMC to be a constant distribution as the sample is independent and uniformly distributed (it has no temporal structure). The default parameters give here an overly complex model, as illustrated by its text based representation
+
 ```{r}
 draw(model)
 ```
 
 The representation uses crude ascii art to display the contexts of the VLMC organized in to tree (see `vignette("context-trees")` for a more detailed introduction):
 
-- the root `*` corresponds to an empty context;
-- one can read contexts by following branches (represented by 2 dashes `--`) down to their ends (the leaves): for instance $(1, 0, 1, 0, 0, 0)$ is one of the contexts of the tree. 
+-   the root `*` corresponds to an empty context;
+-   one can read contexts by following branches (represented by 2 dashes `--`) down to their ends (the leaves): for instance $(1, 0, 1, 0, 0, 0)$ is one of the contexts of the tree.
 
-Here the context $(1, 0, 1, 0, 0, 0)$ is associated to the transition probabilities $(1, 0)$. This means that when one observes this context in the time series, it is _always_ followed by a 0. Notice that contexts are traditionally written from the most recent value to the oldest one. Thus, the context $(1, 0, 1, 0, 0, 0)$ corresponds to the sub time series $(0, 0, 0, 1, 0, 1)$.  
+Here the context $(1, 0, 1, 0, 0, 0)$ is associated to the transition probabilities $(1, 0)$. This means that when one observes this context in the time series, it is *always* followed by a 0. Notice that contexts are traditionally written from the most recent value to the oldest one. Thus, the context $(1, 0, 1, 0, 0, 0)$ corresponds to the sub time series $(0, 0, 0, 1, 0, 1)$.
 
 #### BIC based model selection
 
-The VLMC above is obviously overfitting to the time series, as illustrated by the 0/1 transition probabilities. A classical way to select a good model is to minimize the [BIC](https://en.wikipedia.org/wiki/Bayesian_information_criterion). In `mixvlmc` this can be done easily by _pruning_ a complex VLMC using a combination of `cutoff` and `prune`, as follows:
+The VLMC above is obviously overfitting to the time series, as illustrated by the 0/1 transition probabilities. A classical way to select a good model is to minimize the [BIC](https://en.wikipedia.org/wiki/Bayesian_information_criterion). In `mixvlmc` this can be done easily by *pruning* a complex VLMC using a combination of `cutoff()` and `prune()`, as follows (see `vignette("variable-length-markov-chains")` for details):
+
 ```{r}
 alphas <- cutoff(model)
 pruned_models <- c(list(model), lapply(alphas, function(a) prune(model, a)))
@@ -76,18 +88,23 @@ best_model <- pruned_models[[which.min(bics)]]
 draw(best_model)
 ```
 
-As expected, we end up with a constant model. 
+As expected, we end up with a constant model.
 
-In time series with actual temporal patterns, the optimal model will be more complex. As a very basic illustrative example, let us consider the `sunspot.year` time series and turn it into a binary one, with high activity associated to a number of sun spots larger than the median number. 
+In time series with actual temporal patterns, the optimal model will be more complex. As a very basic illustrative example, let us consider the `sunspot.year` time series and turn it into a binary one, with high activity associated to a number of sun spots larger than the median number.
+
 ```{r}
 sun_activity <- as.factor(ifelse(sunspot.year >= median(sunspot.year), "high", "low"))
 ```
+
 We adjust a VLMC with a very conservative value of `alpha`:
+
 ```{r}
 sun_model <- vlmc(sun_activity, alpha = 0.1)
 sun_model
 ```
+
 Then we proceed as above:
+
 ```{r sunspots_bic}
 sun_alphas <- cutoff(sun_model)
 pruned_sun_models <- c(list(sun_model), lapply(sun_alphas, function(a) prune(sun_model, a)))
@@ -98,13 +115,16 @@ ggplot(sun_bic_fig, aes(x = alpha, y = BIC)) +
 ```
 
 The plot shows that simpler models are too simple as the BIC increases when pruning becomes strong enough. The best model remains rather complex (as expected based on the periodicity of the Solar cycle):
+
 ```{r}
 best_sun_model <- pruned_sun_models[[which.min(sun_bics)]]
 draw(best_sun_model)
 ```
 
 ### Fitting a VLMC with covariates
+
 To illustrate the use of covariates, we use the power consumption data set included in the package. We consider a week of electricity usage as follows:
+
 ```{r active_power_week_5}
 pc_week_5 <- powerconsumption[powerconsumption$week == 5, ]
 elec <- pc_week_5$active_power
@@ -113,18 +133,21 @@ ggplot(pc_week_5, aes(x = date_time, y = active_power)) +
   xlab("Date") +
   ylab("Activer power (kW)")
 ```
+
 The time series displays some typical patterns of electricity usage:
 
-- low active power at night (typically below 0.4 kW);
-- standard use between 0.4 and 2 kW;
-- peak use above 2 kW.
+-   low active power at night (typically below 0.4 kW);
+-   standard use between 0.4 and 2 kW;
+-   peak use above 2 kW.
 
 We build a discrete time series from those (somewhat arbitrary) thresholds:
+
 ```{r}
 elec_dts <- cut(elec, breaks = c(0, 0.4, 2, 8), labels = c("low", "typical", "high"))
 ```
 
-The best VLMC model is quite simple. It is almost a standard order one Markov chain, up to the order 2 context used when the active power is _typical_. 
+The best VLMC model is quite simple. It is almost a standard order one Markov chain, up to the order 2 context used when the active power is *typical*.
+
 ```{r}
 elec_vlmc <- vlmc(elec_dts)
 e_alphas <- cutoff(elec_vlmc)
@@ -134,17 +157,21 @@ best_elec_vlmc <- pruned_elec_vlmcs[[which.min(e_bics)]]
 draw(best_elec_vlmc)
 ```
 
-As pointed about above, _low_ active power tend to correspond to night phase. We can include this information by introducing a day covariate as follows:
+As pointed about above, *low* active power tend to correspond to night phase. We can include this information by introducing a day covariate as follows:
+
 ```{r}
 elec_cov <- data.frame(day = (pc_week_5$hour >= 7 & pc_week_5$hour <= 17))
 ```
+
 A COVLMC is estimated using the `covlmc` function:
+
 ```{r}
 elec_covlmc <- covlmc(elec_dts, elec_cov, min_size = 5, alpha = 0.5)
 draw(elec_covlmc, time_sep = " | ", model = "full", p_value = FALSE)
 ```
 
-Pruning a covlmc model is slightly more complicated than in the case of vlmc models. The main difficulty is that cut off values cannot be computed directly from a complex model as new values will appear during the pruning process.  A typical way to circumvent this difficulty is to recompute cut off values after each pruning operation, as follows:
+Pruning a covlmc model is slightly more complicated than in the case of vlmc models. The main difficulty is that cut off values cannot be computed directly from a complex model as new values will appear during the pruning process. A typical way to circumvent this difficulty is to recompute cut off values after each pruning operation, as follows:
+
 ```{r}
 elec_covlmc_models <- list(elec_covlmc)
 current_model <- elec_covlmc
@@ -167,20 +194,22 @@ draw(best_elec_covlmc, model = "full", time_sep = " | ", p_value = FALSE)
 
 As in the VLMC case, the optimal model remains rather simple:
 
-- the _high_ context do not use the covariate and is equivalent to the vlmc context;
-- the _low_  context is more interesting: it does not switch to a _high_ context (hence the single row of parameters) but uses the covariate. As expected, the probability of switching from _low_ to _typical_ is larger during the day;
-- the _typical_ context is described in a more complex way that in the case of the vlmc as the transition probabilities depend on the previous state.
+-   the *high* context do not use the covariate and is equivalent to the vlmc context;
+-   the *low* context is more interesting: it does not switch to a *high* context (hence the single row of parameters) but uses the covariate. As expected, the probability of switching from *low* to *typical* is larger during the day;
+-   the *typical* context is described in a more complex way that in the case of the vlmc as the transition probabilities depend on the previous state.
 
-### Sampling 
-VLMC models can also be used to sample new time series as in the VMLC bootstrap proposed by Bühlmann and Wyner. For instance, we can estimate for instance the longest time period spent in the _high_ active power regime. In this "predictive" setting, the [AIC](https://en.wikipedia.org/wiki/Akaike_information_criterion) may be more adapted to select the best model. Notice that some quantities can be computed directly from the model in the VLMC case, using classical results on Markov Chains. 
+### Sampling
+
+VLMC models can also be used to sample new time series as in the VMLC bootstrap proposed by Bühlmann and Wyner. For instance, we can estimate for instance the longest time period spent in the *high* active power regime. In this "predictive" setting, the [AIC](https://en.wikipedia.org/wiki/Akaike_information_criterion) may be more adapted to select the best model. Notice that some quantities can be computed directly from the model in the VLMC case, using classical results on Markov Chains.
 
 We first select two models based on the AIC.
+
 ```{r}
 best_elec_vlmc_aic <- pruned_elec_vlmcs[[which.min(sapply(pruned_elec_vlmcs, AIC))]]
 best_elec_covlmc_aic <- elec_covlmc_models[[which.min(sapply(elec_covlmc_models, AIC))]]
 ```
 
-The we sample 100 new time series for each model, using the `simulate` function as follows:
+The we sample 100 new time series for each model, using the `simulate()` function as follows:
 
 ```{r cache=TRUE}
 set.seed(0)
@@ -198,7 +227,8 @@ for (k in seq_along(covlmc_simul)) {
 }
 ```
 
-Then statistics can be computed on those time series. For instance, we look for the longest time period spent in the _high_ active power regime.
+Then statistics can be computed on those time series. For instance, we look for the longest time period spent in the *high* active power regime.
+
 ```{r}
 longuest_high <- function(x) {
   high_length <- rle(x == "high")
@@ -208,14 +238,13 @@ lh_vlmc <- sapply(vlmc_simul, longuest_high)
 lh_covlmc <- sapply(covlmc_simul, longuest_high)
 ```
 
-The average longest time spent in _high_ consecutively is 
+The average longest time spent in *high* consecutively is
 
-- for the VLMC: `r mean(lh_vlmc)` minutes with a standard error of `r sd(lh_vlmc)/sqrt(length(vlmc_simul))`;
-- for the VLMC with covariate: `r mean(lh_covlmc)` minutes with a standard error of `r sd(lh_covlmc)/sqrt(length(covlmc_simul))`;
-- `r longuest_high(elec_dts)` minutes for the observed time series.
+-   for the VLMC: `r mean(lh_vlmc)` minutes with a standard error of `r sd(lh_vlmc)/sqrt(length(vlmc_simul))`;
+-   for the VLMC with covariate: `r mean(lh_covlmc)` minutes with a standard error of `r sd(lh_covlmc)/sqrt(length(covlmc_simul))`;
+-   `r longuest_high(elec_dts)` minutes for the observed time series.
 
-
-The following figure shows the distributions of the times obtained by both models as well as the observed value. The VLMC model with covariate is able to generate longer sequences in the _high_ active power state than the bare VLMC model as the consequence of the sensitivity to the day/night schedule.
+The following figure shows the distributions of the times obtained by both models as well as the observed value. The VLMC model with covariate is able to generate longer sequences in the *high* active power state than the bare VLMC model as the consequence of the sensitivity to the day/night schedule.
 
 ```{r longest_time_in_high}
 lh <- data.frame(
@@ -228,7 +257,7 @@ ggplot(lh, aes(x = time, color = model)) +
   geom_vline(xintercept = longuest_high(elec_dts), color = 3)
 ```
 
-The VLMC with covariate can be used to investigate the effects of changes in those covariates. For instance, if the day time is longer, we expect _high_ power usage to be less frequent. For instance, we simulate one week with a day time from 6:00 to 20:00 as follows.
+The VLMC with covariate can be used to investigate the effects of changes in those covariates. For instance, if the day time is longer, we expect *high* power usage to be less frequent. For instance, we simulate one week with a day time from 6:00 to 20:00 as follows.
 
 ```{r cache = TRUE}
 elec_cov_long_days <- data.frame(day = (pc_week_5$hour >= 6 & pc_week_5$hour <= 20))
@@ -239,7 +268,7 @@ for (k in seq_along(covlmc_simul_ld)) {
 }
 ```
 
-As expected the distribution of the longest time spend consecutively in _high_ power usage is shifted to lower values when the day length is increased. 
+As expected the distribution of the longest time spend consecutively in *high* power usage is shifted to lower values when the day length is increased.
 
 ```{r longest_time_in_high_ld}
 lh_covlmc_ld <- sapply(covlmc_simul_ld, longuest_high)

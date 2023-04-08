@@ -6,6 +6,7 @@
 <!-- badges: start -->
 
 [![R-CMD-check](https://github.com/fabrice-rossi/mixvlmc/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/fabrice-rossi/mixvlmc/actions/workflows/R-CMD-check.yaml)
+
 <!-- badges: end -->
 
 `mixvlmc` implements variable length Markov chains (VLMC) and variable
@@ -123,7 +124,8 @@ illustrated by the 0/1 transition probabilities. A classical way to
 select a good model is to minimize the
 [BIC](https://en.wikipedia.org/wiki/Bayesian_information_criterion). In
 `mixvlmc` this can be done easily by *pruning* a complex VLMC using a
-combination of `cutoff` and `prune`, as follows:
+combination of `cutoff()` and `prune()`, as follows (see
+`vignette("variable-length-markov-chains")` for details):
 
 ``` r
 alphas <- cutoff(model)
@@ -210,6 +212,7 @@ ggplot(pc_week_5, aes(x = date_time, y = active_power)) +
 ```
 
 <img src="man/figures/README-active_power_week_5-1.png" width="100%" />
+
 The time series displays some typical patterns of electricity usage:
 
 - low active power at night (typically below 0.4 kW);
@@ -351,7 +354,7 @@ best_elec_vlmc_aic <- pruned_elec_vlmcs[[which.min(sapply(pruned_elec_vlmcs, AIC
 best_elec_covlmc_aic <- elec_covlmc_models[[which.min(sapply(elec_covlmc_models, AIC))]]
 ```
 
-The we sample 100 new time series for each model, using the `simulate`
+The we sample 100 new time series for each model, using the `simulate()`
 function as follows:
 
 ``` r
