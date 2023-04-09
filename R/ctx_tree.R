@@ -62,10 +62,15 @@ grow_ctx_tree <- function(x, vals, min_size, max_depth, covsize = 0, keep_match 
       fmatch <- forward_match_all_ctx_counts(x, nb_vals, d, from)
       children <- vector(mode = "list", nb_vals)
       nb_children <- 0
+      d_max <- FALSE
       for (v in 1:nb_vals) {
         if (sum(fmatch$counts[v, ]) >= min_size * (1 + covsize * (d + 1))) {
           children[[v]] <- recurse_ctx_tree(x, nb_vals, d + 1, fmatch$positions[[v]], fmatch$counts[v, ])
           nb_children <- nb_children + 1
+          if(isTRUE(children[[v]]$max_depth)) {
+            d_max <- TRUE
+            children[[v]]$max_depth <- NULL
+          }
         } else {
           children[[v]] <- list()
         }
@@ -78,9 +83,12 @@ grow_ctx_tree <- function(x, vals, min_size, max_depth, covsize = 0, keep_match 
       if (keep_match) {
         result$match <- from
       }
+      if(d_max) {
+        result$max_depth <- TRUE
+      }
       result
     } else {
-      result <- list(f_by = f_by)
+      result <- list(f_by = f_by, max_depth = TRUE)
       if (keep_match) {
         result$match <- from
       }
@@ -88,6 +96,9 @@ grow_ctx_tree <- function(x, vals, min_size, max_depth, covsize = 0, keep_match 
     }
   }
   pre_res <- recurse_ctx_tree(x, length(vals), 0, NULL, table(x))
+  if(is.null(pre_res$max_depth)) {
+    pre_res$max_depth <- FALSE
+  }
   new_ctx_tree(vals, pre_res, compute_stats = compute_stats)
 }
 

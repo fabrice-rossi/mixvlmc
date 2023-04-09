@@ -651,6 +651,7 @@ covlmc <- function(x, covariate, alpha = 0.05, min_size = 5, max_depth = 100, ke
   pre_result$alpha <- alpha
   pre_result$control <- control
   pre_result$cov_desc <- cov_desc
+  pre_result$max_depth <- ctx_tree$max_depth
   if (keep_data) {
     pre_result$x <- x
     pre_result$covariate <- covariate
