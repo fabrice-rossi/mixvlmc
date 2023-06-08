@@ -6,6 +6,9 @@ to_dts <- function(x, vals = NULL) {
     } else if (is.factor(x)) {
       fx <- x
       vals <- factor(levels(fx), levels(fx))
+    } else if (is.logical(x)) {
+      vals <- c(FALSE, TRUE)
+      fx <- factor(x, vals)
     } else {
       stop(paste("x is not character, numeric or factor, but", class(x)))
     }

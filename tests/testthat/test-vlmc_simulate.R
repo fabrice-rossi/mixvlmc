@@ -47,3 +47,17 @@ test_that("vlmc simulate supports zero depth model", {
   expect_equal(depth(d_vlmc), 0L)
   expect_equal(length(simulate(d_vlmc, 50)), 50)
 })
+
+test_that("vlmc simulate respects the type of the data", {
+  all_data <- list(
+    int_data = sample(1:5, 200, replace = TRUE),
+    float_data = sample(c(1.5, 3.5, -2.4), 200, replace = TRUE),
+    chr_data = sample(c("A", "B", "C"), 200, replace = TRUE),
+    fct_data = as.factor(sample(c("A", "B", "C"), 200, replace = TRUE)),
+    lgl_data = sample(c(TRUE, FALSE), 200, replace = TRUE)
+  )
+  for (data in all_data) {
+    d_model <- vlmc(data)
+    expect_type(simulate(d_model, 50), typeof(data))
+  }
+})
