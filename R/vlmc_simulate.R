@@ -42,13 +42,17 @@ simulate.vlmc <- function(object, nsim = 1, seed = NULL, init = NULL, ...) {
     pre_res[1:length(init)] <- init_dts$ix + 1
   }
   if (istart <= nsim) {
-    for (i in (istart):nsim) {
-      subtree <- match_context(object, ctx)
-      pre_res[i] <- sample(int_vals, 1, prob = subtree$tree$f_by)
-      if (length(ctx) < max_depth) {
-        ctx <- c(pre_res[i], ctx)
-      } else {
-        ctx <- c(pre_res[i], ctx[1:(max_depth - 1)])
+    if (max_depth == 0) {
+      pre_res[istart:nsim] <- sample(int_vals, nsim - istart + 1, replace = TRUE, prob = object$f_by)
+    } else {
+      for (i in (istart):nsim) {
+        subtree <- match_context(object, ctx)
+        pre_res[i] <- sample(int_vals, 1, prob = subtree$tree$f_by)
+        if (length(ctx) < max_depth) {
+          ctx <- c(pre_res[i], ctx)
+        } else {
+          ctx <- c(pre_res[i], ctx[1:(max_depth - 1)])
+        }
       }
     }
   }

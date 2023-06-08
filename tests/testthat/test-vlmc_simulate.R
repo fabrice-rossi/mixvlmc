@@ -39,3 +39,11 @@ test_that("vlmc simulate detects unadapted init values", {
   model <- vlmc(dts, alpha = 0.5)
   expect_error(simulate(model, nsim = 4, init = c("A", "D")))
 })
+
+test_that("vlmc simulate supports zero depth model", {
+  withr::local_seed(0)
+  data_set <- sample(1:5, 50, replace = TRUE)
+  d_vlmc <- vlmc(data_set)
+  expect_equal(depth(d_vlmc), 0L)
+  expect_equal(length(simulate(d_vlmc, 50)), 50)
+})
