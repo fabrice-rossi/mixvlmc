@@ -31,6 +31,10 @@ test_that("metrics.covlmc objects print as expected without AUC", {
 
 test_that("metrics.covlmc objects print as expected", {
   skip_on_ci()
+  skip_if(
+    is.null(grep("openblas-openmp", sessionInfo()$BLAS)),
+    "Numeric instability prevents testing in this configuration"
+  )
   pc <- powerconsumption[powerconsumption$week == 5, ]
   dts <- cut(pc$active_power, breaks = c(0, 0.4, 2, 8), labels = c("low", "typical", "high"))
   dts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
