@@ -764,10 +764,14 @@ cutoff.covlmc <- function(vlmc, mode = c("quantile", "native"), raw = FALSE, ...
     NULL
   } else {
     preres <- unique(sort(preres, decreasing = TRUE))
-    if (raw) {
-      preres
+    if (!raw) {
+      preres <- before(preres)
+      preres[preres < 0] <- 0
+    }
+    if (length(preres) == 1 && preres[1] == 0) {
+      NULL
     } else {
-      before(preres)
+      preres
     }
   }
 }
