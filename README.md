@@ -123,15 +123,14 @@ The VLMC above is obviously overfitting to the time series, as
 illustrated by the 0/1 transition probabilities. A classical way to
 select a good model is to minimize the
 [BIC](https://en.wikipedia.org/wiki/Bayesian_information_criterion). In
-`mixvlmc` this can be done easily by *pruning* a complex VLMC using a
-combination of `cutoff()` and `prune()`, as follows (see
+`mixvlmc` this can be done easily using using ‘tune_vlmc()’ which fits
+first a complex VLMC and then *prunes* it (using a combination of
+`cutoff()` and `prune()`), as follows (see
 `vignette("variable-length-markov-chains")` for details):
 
 ``` r
-alphas <- cutoff(model)
-pruned_models <- c(list(model), lapply(alphas, function(a) prune(model, a)))
-bics <- sapply(pruned_models, BIC)
-best_model <- pruned_models[[which.min(bics)]]
+best_model_tune <- tune_vlmc(x)
+best_model <- as_vlmc(best_model_tune)
 draw(best_model)
 #> * (0.505, 0.495)
 ```
@@ -148,26 +147,24 @@ number.
 sun_activity <- as.factor(ifelse(sunspot.year >= median(sunspot.year), "high", "low"))
 ```
 
-We adjust a VLMC with a very conservative value of `alpha`:
+We adjust automatically an optimal VLMC as follows:
 
 ``` r
-sun_model <- vlmc(sun_activity, alpha = 0.1)
-sun_model
+sun_model_tune <- tune_vlmc(sun_activity)
+sun_model_tune
 #> VLMC context tree on high, low 
-#>  cutoff: 1.353 (quantile: 0.1)
-#>  Number of contexts: 27 
-#>  Maximum context length: 14
+#>  cutoff: 3.481 (quantile: 0.0083243263138364)
+#>  Number of contexts: 9 
+#>  Maximum context length: 5 
+#>  Selected by BIC (244.0594)
 ```
 
-Then we proceed as above:
+The results of the pruning process can be represented graphically:
 
 ``` r
-sun_alphas <- cutoff(sun_model)
-pruned_sun_models <- c(list(sun_model), lapply(sun_alphas, function(a) prune(sun_model, a)))
-sun_bics <- sapply(pruned_sun_models, BIC)
-sun_bic_fig <- data.frame(alpha = c(0.1, sun_alphas), BIC = sun_bics)
-ggplot(sun_bic_fig, aes(x = alpha, y = BIC)) +
-  geom_line()
+ggplot(sun_model_tune$results, aes(x = alpha, y = BIC)) +
+  geom_line() + 
+  geom_point()
 ```
 
 <img src="man/figures/README-sunspots_bic-1.png" width="100%" />
@@ -177,17 +174,15 @@ when pruning becomes strong enough. The best model remains rather
 complex (as expected based on the periodicity of the Solar cycle):
 
 ``` r
-best_sun_model <- pruned_sun_models[[which.min(sun_bics)]]
+best_sun_model <- as_vlmc(sun_model_tune)
 draw(best_sun_model)
 #> * (0.5052, 0.4948)
 #> +-- high (0.8207, 0.1793)
-#> |   +-- high (0.7899, 0.2101)
-#> |   |   +-- high (0.7447, 0.2553)
-#> |   |   |   +-- high (0.6571, 0.3429)
-#> |   |   |   |   '-- low (0.9167, 0.08333)
-#> |   |   |   '-- low (1, 0)
-#> |   |   '-- low (0.96, 0.04)
-#> |   '-- low (0.9615, 0.03846)
+#> |   '-- high (0.7899, 0.2101)
+#> |       '-- high (0.7447, 0.2553)
+#> |           +-- high (0.6571, 0.3429)
+#> |           |   '-- low (0.9167, 0.08333)
+#> |           '-- low (1, 0)
 #> '-- low (0.1888, 0.8112)
 #>     +-- high (0, 1)
 #>     '-- low (0.2328, 0.7672)

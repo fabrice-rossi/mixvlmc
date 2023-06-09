@@ -78,13 +78,11 @@ Here the context $(1, 0, 1, 0, 0, 0)$ is associated to the transition probabilit
 
 #### BIC based model selection
 
-The VLMC above is obviously overfitting to the time series, as illustrated by the 0/1 transition probabilities. A classical way to select a good model is to minimize the [BIC](https://en.wikipedia.org/wiki/Bayesian_information_criterion). In `mixvlmc` this can be done easily by *pruning* a complex VLMC using a combination of `cutoff()` and `prune()`, as follows (see `vignette("variable-length-markov-chains")` for details):
+The VLMC above is obviously overfitting to the time series, as illustrated by the 0/1 transition probabilities. A classical way to select a good model is to minimize the [BIC](https://en.wikipedia.org/wiki/Bayesian_information_criterion). In `mixvlmc` this can be done easily using using 'tune_vlmc()' which fits first a complex VLMC and then *prunes* it (using a combination of `cutoff()` and `prune()`), as follows (see `vignette("variable-length-markov-chains")` for details):
 
 ```{r}
-alphas <- cutoff(model)
-pruned_models <- c(list(model), lapply(alphas, function(a) prune(model, a)))
-bics <- sapply(pruned_models, BIC)
-best_model <- pruned_models[[which.min(bics)]]
+best_model_tune <- tune_vlmc(x)
+best_model <- as_vlmc(best_model_tune)
 draw(best_model)
 ```
 
@@ -96,28 +94,25 @@ In time series with actual temporal patterns, the optimal model will be more com
 sun_activity <- as.factor(ifelse(sunspot.year >= median(sunspot.year), "high", "low"))
 ```
 
-We adjust a VLMC with a very conservative value of `alpha`:
+We adjust automatically an optimal VLMC as follows:
 
 ```{r}
-sun_model <- vlmc(sun_activity, alpha = 0.1)
-sun_model
+sun_model_tune <- tune_vlmc(sun_activity)
+sun_model_tune
 ```
 
-Then we proceed as above:
+The results of the pruning process can be represented graphically:
 
 ```{r sunspots_bic}
-sun_alphas <- cutoff(sun_model)
-pruned_sun_models <- c(list(sun_model), lapply(sun_alphas, function(a) prune(sun_model, a)))
-sun_bics <- sapply(pruned_sun_models, BIC)
-sun_bic_fig <- data.frame(alpha = c(0.1, sun_alphas), BIC = sun_bics)
-ggplot(sun_bic_fig, aes(x = alpha, y = BIC)) +
-  geom_line()
+ggplot(sun_model_tune$results, aes(x = alpha, y = BIC)) +
+  geom_line() + 
+  geom_point()
 ```
 
 The plot shows that simpler models are too simple as the BIC increases when pruning becomes strong enough. The best model remains rather complex (as expected based on the periodicity of the Solar cycle):
 
 ```{r}
-best_sun_model <- pruned_sun_models[[which.min(sun_bics)]]
+best_sun_model <- as_vlmc(sun_model_tune)
 draw(best_sun_model)
 ```
 
