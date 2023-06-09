@@ -138,3 +138,16 @@ tune_vlmc <- function(x, criterion = c("BIC", "AIC"), min_size = 2, max_depth = 
   }
   structure(pre_result, class = "tune_vlmc")
 }
+
+#' @export
+print.tune_vlmc <- function(x, ...) {
+  print(x$best_model)
+  cat(" Selected by", x$criterion, "(")
+  if (x$criterion == "BIC") {
+    cat(min(x$results$BIC))
+  } else {
+    cat(min(x$results$AIC))
+  }
+  cat(")\n")
+  invisible(x)
+}
