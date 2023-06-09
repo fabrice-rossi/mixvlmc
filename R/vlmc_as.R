@@ -23,3 +23,15 @@ as_vlmc <- function(x, ...) {
 as_vlmc.ctx_tree <- function(x, ...) {
   new_ctx_tree(x$vals, x, class = "vlmc")
 }
+
+#' @inherit as_vlmc
+#' @export
+#' @examples
+#' dts <- sample(as.factor(c("A", "B", "C")), 100, replace = TRUE)
+#' tune_result <- tune_vlmc(dts)
+#' tune_result
+#' dts_best_vlmc <- as_vlmc(tune_result)
+#' draw(dts_best_vlmc)
+as_vlmc.tune_vlmc <- function(x, ...) {
+  x$best_model
+}
