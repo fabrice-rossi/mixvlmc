@@ -270,6 +270,22 @@ model_small
 
 The final model `model_small` is again the memory less model.
 
+### Automatic model choice
+
+The pair `cutoff()`/`prune()` can be used to implement advanced model selection
+techniques, for instance based on the quality of the predictions of the model on a
+hold-out example. For a more standard use, the `tune_vlmc()` provides a fully
+automated solution, including the choice of conservative values of the initial cut 
+off, as demonstrated below:
+
+```{r}
+model_tune <- tune_vlmc(x)
+model_opt <- as_vlmc(model_tune)
+model_opt
+```
+
+We obtain directly an optimal model according to the BIC criterion. 
+
 ### Diagnostics
 The package provides numerous ways to analyse a VLMC. Basic functions include
 
