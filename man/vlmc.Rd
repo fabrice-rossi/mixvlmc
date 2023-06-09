@@ -54,11 +54,11 @@ The construction of the context tree is controlled by \code{min_size} and
 likelihood ratio test (threshold can be specified in terms of the ratio
 itself with \code{cutoff}) or in quantile scale with \code{alpha}.
 
-Pruning can be postpone by setting \code{prune=FALSE}. Using a combination of
+Pruning can be postponed by setting \code{prune=FALSE}. Using a combination of
 \code{\link[=cutoff]{cutoff()}} and \code{\link[=prune]{prune()}}, the complexity of the VLMC can then be adjusted.
 Any VLMC model can be pruned after construction, \code{prune=FALSE} is a
 convenience parameter to avoid setting \code{alpha=1} (which essentially prevents
-any pruning).
+any pruning). Automated model selection is provided by \code{\link[=tune_vlmc]{tune_vlmc()}}.
 }
 \examples{
 pc <- powerconsumption[powerconsumption$week == 5, ]
@@ -78,5 +78,5 @@ draw(robust_model)
 \href{https://dx.doi.org/10.1214/aos/1018031204}{Bühlmann, P. and Wyner, A. J. (1999), Variable length Markov chains. Ann. Statist. 27 (2) 480-513}
 }
 \seealso{
-\code{\link[=cutoff]{cutoff()}} and \code{\link[=prune]{prune()}}
+\code{\link[=cutoff]{cutoff()}}, \code{\link[=prune]{prune()}} and \code{\link[=tune_vlmc]{tune_vlmc()}}
 }

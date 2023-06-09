@@ -9,10 +9,10 @@
 \arguments{
 \item{vlmc}{a fitted VLMC model.}
 
-\item{alpha}{number in (0,1] (default: 0.05) cutoff value in quantile scale
+\item{alpha}{number in (0,1] (default: 0.05) cut off value in quantile scale
 for pruning.}
 
-\item{cutoff}{positive number: cutoff value in native (log likelihood ratio)
+\item{cutoff}{positive number: cut off value in native (log likelihood ratio)
 scale for pruning. Defaults to the value obtained from \code{alpha}. Takes
 precedence over \code{alpha} if specified.}
 
@@ -31,6 +31,11 @@ a \code{a} cut off and then pruning it with a \code{b} cut off (with \code{a>b})
 produce the same VLMC than building directly the VLMC with a \code{b} cut off.
 Interesting cut off values can be extracted from a VLMC using the \code{\link[=cutoff]{cutoff()}}
 function.
+
+As automated model selection is provided by \code{\link[=tune_vlmc]{tune_vlmc()}}, the direct use of \code{cutoff}
+should be reserved to advanced exploration of the set of trees that can be
+obtained from a complex one, e.g. to implement model selection techniques that
+are not provided by \code{\link[=tune_vlmc]{tune_vlmc()}}.
 }
 \examples{
 pc <- powerconsumption[powerconsumption$week == 5, ]
@@ -45,5 +50,5 @@ draw(direct_simple)
 all.equal(pruned_model, direct_simple)
 }
 \seealso{
-\code{\link[=cutoff]{cutoff()}}
+\code{\link[=cutoff]{cutoff()}} and \code{\link[=tune_vlmc]{tune_vlmc()}}
 }
