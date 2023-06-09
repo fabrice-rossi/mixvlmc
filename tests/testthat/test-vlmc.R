@@ -52,3 +52,9 @@ test_that("max_depth is always reported", {
   model <- vlmc(data_set$x, cutoff = 0.5 * log(length(data_set$x)), max_depth = 2)
   expect_true(model$max_depth)
 })
+
+test_that("vlmc always returns a vlmc object", {
+  data_set <- build_markov_chain(500, 2, seed = 6)
+  model <- vlmc(data_set$x, cutoff = 0.5 * log(length(data_set$x)), max_depth = 2, prune = FALSE)
+  expect_s3_class(model, "vlmc")
+})

@@ -271,6 +271,8 @@ vlmc <- function(x, alpha = 0.05, cutoff = NULL, min_size = 2, max_depth = 100, 
   result <- ctx_tree
   if (prune) {
     result <- prune_ctx_tree(ctx_tree, alpha = alpha, cutoff = cutoff)
+  } else {
+    result <- new_ctx_tree(result$vals, result, class = "vlmc")
   }
   if (is.null(cutoff)) {
     if (is.null(alpha) || !is.numeric(alpha) || alpha <= 0 || alpha > 1) {
