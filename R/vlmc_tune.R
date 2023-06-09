@@ -55,7 +55,7 @@ tune_vlmc <- function(x, criterion = c("BIC", "AIC"), min_size = 2, max_depth = 
   criterion <- match.arg(criterion)
   save <- match.arg(save)
   if (criterion == "BIC") {
-    cutoff <- 0.5 * log(length(x))
+    cutoff <- 0.25 * log(length(x))
     f_criterion <- stats::BIC
   } else {
     cutoff <- 1
