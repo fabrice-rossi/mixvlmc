@@ -25,7 +25,7 @@ a pruned VLMC
 This function prunes a VLMC.
 }
 \details{
-In general, pruning a VLMC is more efficient than consrtucting two VLMC (the
+In general, pruning a VLMC is more efficient than constructing two VLMC (the
 base one and pruned one). Up to numerical instabilities, building a VLMC with
 a \code{a} cut off and then pruning it with a \code{b} cut off (with \code{a>b}) should
 produce the same VLMC than building directly the VLMC with a \code{b} cut off.
