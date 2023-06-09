@@ -137,18 +137,20 @@ prune_ctx_tree <- function(tree, alpha = 0.05, cutoff = NULL, verbose = FALSE) {
     # empty result
     pre_res <- new_ctx_tree(tree$vals, class = "vlmc")
     pre_res$f_by <- tree$f_by
-    pre_res
   } else {
     ## compute stats
-    new_ctx_tree(pre_res$vals, pre_res, class = "vlmc")
+    pre_res <- new_ctx_tree(pre_res$vals, pre_res, class = "vlmc")
   }
+  ## preserve construction information
+  pre_res$max_depth <- tree$max_depth
+  pre_res
 }
 
 #' Prune a Variable Length Markov Chain (VLMC)
 #'
 #' This function prunes a VLMC.
 #'
-#' In general, pruning a VLMC is more efficient than consrtucting two VLMC (the
+#' In general, pruning a VLMC is more efficient than constructing two VLMC (the
 #' base one and pruned one). Up to numerical instabilities, building a VLMC with
 #' a `a` cut off and then pruning it with a `b` cut off (with `a>b`) should
 #' produce the same VLMC than building directly the VLMC with a `b` cut off.
@@ -198,6 +200,8 @@ prune.vlmc <- function(vlmc, alpha = 0.05, cutoff = NULL, ...) {
   }
   result$alpha <- alpha
   result$cutoff <- cutoff
+  ## preserve the construction information
+  result$max_depth <- vlmc$max_depth
   result
 }
 
@@ -267,6 +271,8 @@ vlmc <- function(x, alpha = 0.05, cutoff = NULL, min_size = 2, max_depth = 100, 
   result <- ctx_tree
   if (prune) {
     result <- prune_ctx_tree(ctx_tree, alpha = alpha, cutoff = cutoff)
+  } else {
+    result <- new_ctx_tree(result$vals, result, class = "vlmc")
   }
   if (is.null(cutoff)) {
     if (is.null(alpha) || !is.numeric(alpha) || alpha <= 0 || alpha > 1) {

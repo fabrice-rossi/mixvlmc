@@ -46,3 +46,15 @@ test_that("alpha pruning is equivalent to cutoff pruning", {
     expect_equal(a_pruned_model, c_pruned_model)
   }
 })
+
+test_that("max_depth is always reported", {
+  data_set <- build_markov_chain(500, 2, seed = 6)
+  model <- vlmc(data_set$x, cutoff = 0.5 * log(length(data_set$x)), max_depth = 2)
+  expect_true(model$max_depth)
+})
+
+test_that("vlmc always returns a vlmc object", {
+  data_set <- build_markov_chain(500, 2, seed = 6)
+  model <- vlmc(data_set$x, cutoff = 0.5 * log(length(data_set$x)), max_depth = 2, prune = FALSE)
+  expect_s3_class(model, "vlmc")
+})
