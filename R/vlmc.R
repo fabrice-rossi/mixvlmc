@@ -29,9 +29,9 @@ kl_div <- function(p, q) {
   sum(p * ifelse(pratio > 0, log(pratio), 0))
 }
 
-#' Cutoff values for pruning the context tree of a VLMC
+#' Cut off values for pruning the context tree of a VLMC
 #'
-#' This function returns a collection of cutoff values that are guaranteed to induce all
+#' This function returns a collection of cut off values that are guaranteed to induce all
 #' valid pruned trees of the context tree of a VLMC. Pruning is implemented by the [prune()] function.
 #'
 #' By default, the function returns values that can be used directly to
@@ -44,6 +44,11 @@ kl_div <- function(p, q) {
 #'
 #' Setting the `raw` parameter to `TRUE` removes this operation on the values and
 #' asks the function to return the relevant log likelihood ratios.
+#'
+#' As automated model selection is provided by [tune_vlmc()], the direct use of `cutoff`
+#' should be reserved to advanced exploration of the set of trees that can be
+#' obtained from a complex one, e.g. to implement model selection techniques that
+#' are not provided by [tune_vlmc()].
 #'
 #' @param vlmc a fitted VLMC model.
 #' @param mode specify whether the results should be "native" log likelihood ratio values
@@ -60,7 +65,7 @@ kl_div <- function(p, q) {
 #' model_cuts <- cutoff(model)
 #' model_2 <- prune(model, model_cuts[2])
 #' draw(model_2)
-#' @seealso [prune()]
+#' @seealso [prune()] and [tune_vlmc()]
 #' @export
 cutoff <- function(vlmc, mode = c("quantile", "native"), raw = FALSE, ...) {
   UseMethod("cutoff")
@@ -157,16 +162,21 @@ prune_ctx_tree <- function(tree, alpha = 0.05, cutoff = NULL, verbose = FALSE) {
 #' Interesting cut off values can be extracted from a VLMC using the [cutoff()]
 #' function.
 #'
+#' As automated model selection is provided by [tune_vlmc()], the direct use of `cutoff`
+#' should be reserved to advanced exploration of the set of trees that can be
+#' obtained from a complex one, e.g. to implement model selection techniques that
+#' are not provided by [tune_vlmc()].
+#'
 #' @param vlmc a fitted VLMC model.
-#' @param alpha number in (0,1] (default: 0.05) cutoff value in quantile scale
+#' @param alpha number in (0,1] (default: 0.05) cut off value in quantile scale
 #'   for pruning.
-#' @param cutoff positive number: cutoff value in native (log likelihood ratio)
+#' @param cutoff positive number: cut off value in native (log likelihood ratio)
 #'   scale for pruning. Defaults to the value obtained from `alpha`. Takes
 #'   precedence over `alpha` if specified.
 #' @param ... additional arguments for the prune function.
 #'
 #' @return a pruned VLMC
-#' @seealso [cutoff()]
+#' @seealso [cutoff()] and [tune_vlmc()]
 #' @export
 #' @examples
 #' pc <- powerconsumption[powerconsumption$week == 5, ]
@@ -221,16 +231,16 @@ prune.vlmc <- function(vlmc, alpha = 0.05, cutoff = NULL, ...) {
 #' likelihood ratio test (threshold can be specified in terms of the ratio
 #' itself with `cutoff`) or in quantile scale with `alpha`.
 #'
-#' Pruning can be postpone by setting `prune=FALSE`. Using a combination of
+#' Pruning can be postponed by setting `prune=FALSE`. Using a combination of
 #' [cutoff()] and [prune()], the complexity of the VLMC can then be adjusted.
 #' Any VLMC model can be pruned after construction, `prune=FALSE` is a
 #' convenience parameter to avoid setting `alpha=1` (which essentially prevents
-#' any pruning).
+#' any pruning). Automated model selection is provided by [tune_vlmc()].
 #'
 #' @param x a discrete time series; can be numeric, character or factor.
-#' @param alpha number in (0,1] (default: 0.05) cutoff value in quantile scale
+#' @param alpha number in (0,1] (default: 0.05) cut off value in quantile scale
 #'   in the pruning phase.
-#' @param cutoff non negative number: cutoff value in native (likelihood ratio)
+#' @param cutoff non negative number: cut off value in native (likelihood ratio)
 #'   scale in the pruning phase. Defaults to the value obtained from `alpha`.
 #'   Takes precedence over `alpha` is specified.
 #' @param min_size integer >= 1 (default: 2). Minimum number of observations for
@@ -238,7 +248,7 @@ prune.vlmc <- function(vlmc, alpha = 0.05, cutoff = NULL, ...) {
 #' @param max_depth integer >= 1 (default: 100). Longest context considered in
 #'   growing phase of the context tree.
 #' @param prune logical: specify whether the context tree should be pruned
-#'   (default behavior).
+#'   (default behaviour).
 #' @param keep_match logical: specify whether to keep the context matches (default to FALSE)
 #' @return a fitted vlmc model.
 #' @examples
@@ -255,7 +265,7 @@ prune.vlmc <- function(vlmc, alpha = 0.05, cutoff = NULL, ...) {
 #' draw(robust_model, prob = FALSE) ## show the frequencies
 #' draw(robust_model)
 #' @export
-#' @seealso [cutoff()] and [prune()]
+#' @seealso [cutoff()], [prune()] and [tune_vlmc()]
 #' @references [Bühlmann, P. and Wyner, A. J. (1999), Variable length Markov
 #'   chains. Ann. Statist. 27 (2)
 #'   480-513](https://dx.doi.org/10.1214/aos/1018031204)

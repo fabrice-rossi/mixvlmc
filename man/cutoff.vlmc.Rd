@@ -2,7 +2,7 @@
 % Please edit documentation in R/vlmc.R
 \name{cutoff.vlmc}
 \alias{cutoff.vlmc}
-\title{Cutoff values for pruning the context tree of a VLMC}
+\title{Cut off values for pruning the context tree of a VLMC}
 \usage{
 \method{cutoff}{vlmc}(vlmc, mode = c("quantile", "native"), raw = FALSE, ...)
 }
@@ -21,7 +21,7 @@ modified values that guarantee pruning (see details)}
 a vector of cut off values.
 }
 \description{
-This function returns a collection of cutoff values that are guaranteed to induce all
+This function returns a collection of cut off values that are guaranteed to induce all
 valid pruned trees of the context tree of a VLMC. Pruning is implemented by the \code{\link[=prune]{prune()}} function.
 }
 \details{
@@ -35,6 +35,11 @@ parameter in "quantile" scale).
 
 Setting the \code{raw} parameter to \code{TRUE} removes this operation on the values and
 asks the function to return the relevant log likelihood ratios.
+
+As automated model selection is provided by \code{\link[=tune_vlmc]{tune_vlmc()}}, the direct use of \code{cutoff}
+should be reserved to advanced exploration of the set of trees that can be
+obtained from a complex one, e.g. to implement model selection techniques that
+are not provided by \code{\link[=tune_vlmc]{tune_vlmc()}}.
 }
 \examples{
 pc <- powerconsumption[powerconsumption$week == 5, ]
@@ -46,5 +51,5 @@ model_2 <- prune(model, model_cuts[2])
 draw(model_2)
 }
 \seealso{
-\code{\link[=prune]{prune()}}
+\code{\link[=prune]{prune()}} and \code{\link[=tune_vlmc]{tune_vlmc()}}
 }
