@@ -170,7 +170,7 @@ The results of the pruning process can be represented graphically:
 
 ``` r
 ggplot(sun_model_tune$results, aes(x = alpha, y = BIC)) +
-  geom_line() + 
+  geom_line() +
   geom_point()
 ```
 
@@ -233,11 +233,8 @@ Markov chain, up to the order 2 context used when the active power is
 *typical*.
 
 ``` r
-elec_vlmc <- vlmc(elec_dts)
-e_alphas <- cutoff(elec_vlmc)
-pruned_elec_vlmcs <- c(list(elec_vlmc), lapply(e_alphas, function(a) prune(elec_vlmc, a)))
-e_bics <- sapply(pruned_elec_vlmcs, BIC)
-best_elec_vlmc <- pruned_elec_vlmcs[[which.min(e_bics)]]
+elec_vlmc_tune <- tune_vlmc(elec_dts)
+best_elec_vlmc <- as_vlmc(elec_vlmc_tune)
 draw(best_elec_vlmc)
 #> * (0.1667, 0.5496, 0.2837)
 #> +-- low (0.7665, 0.2335, 0)
@@ -284,29 +281,12 @@ draw(elec_covlmc, time_sep = " | ", model = "full", p_value = FALSE)
 #>             19.38 | -14.88    ])
 ```
 
-Pruning a covlmc model is slightly more complicated than in the case of
-vlmc models. The main difficulty is that cut off values cannot be
-computed directly from a complex model as new values will appear during
-the pruning process. A typical way to circumvent this difficulty is to
-recompute cut off values after each pruning operation, as follows:
+The model appears a bit complex. To get a more adapted model, we use a
+BIC based model selection as follows:
 
 ``` r
-elec_covlmc_models <- list(elec_covlmc)
-current_model <- elec_covlmc
-alpha <- cutoff(current_model)[1]
-while (TRUE) {
-  new_model <- prune(current_model, alpha)
-  elec_covlmc_models <- c(elec_covlmc_models, list(new_model))
-  current_model <- new_model
-  new_alphas <- cutoff(current_model)
-  if (is.null(new_alphas) || all(new_alphas >= alpha)) {
-    break
-  } else {
-    alpha <- max(new_alphas[new_alphas < alpha])
-  }
-}
-elec_covlmc_bics <- sapply(elec_covlmc_models, BIC)
-best_elec_covlmc <- elec_covlmc_models[[which.min(elec_covlmc_bics)]]
+elec_covlmc_tune <- tune_covlmc(elec_dts, elec_cov)
+best_elec_covlmc <- as_covlmc(elec_covlmc_tune)
 draw(best_elec_covlmc, model = "full", time_sep = " | ", p_value = FALSE)
 #> *
 #> +-- low ([ (I)    | day_1TRUE
@@ -342,8 +322,8 @@ As in the VLMC case, the optimal model remains rather simple:
 
 VLMC models can also be used to sample new time series as in the VMLC
 bootstrap proposed by Bühlmann and Wyner. For instance, we can estimate
-for instance the longest time period spent in the *high* active power
-regime. In this “predictive” setting, the
+the longest time period spent in the *high* active power regime. In this
+“predictive” setting, the
 [AIC](https://en.wikipedia.org/wiki/Akaike_information_criterion) may be
 more adapted to select the best model. Notice that some quantities can
 be computed directly from the model in the VLMC case, using classical
@@ -352,8 +332,8 @@ results on Markov Chains.
 We first select two models based on the AIC.
 
 ``` r
-best_elec_vlmc_aic <- pruned_elec_vlmcs[[which.min(sapply(pruned_elec_vlmcs, AIC))]]
-best_elec_covlmc_aic <- elec_covlmc_models[[which.min(sapply(elec_covlmc_models, AIC))]]
+best_elec_vlmc_aic <- as_vlmc(tune_vlmc(elec_dts, criterion = "AIC"))
+best_elec_covlmc_aic <- as_covlmc(tune_covlmc(elec_dts, elec_cov, criterion = "AIC"))
 ```
 
 The we sample 100 new time series for each model, using the `simulate()`
