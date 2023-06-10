@@ -33,17 +33,17 @@ devtools::install_github("fabrice-rossi/mixvlmc")
 ### Variable length Markov chains
 
 Variable length Markov chains (VLMC) are sparse high order Markov
-chains. They can be used to model time series with discrete values
-(states) with a mix of small order dependencies for certain states and
-higher order dependencies for other states. For instance, with a binary
-time series, the probability of observing 1 a time $t$ could be constant
-whatever the older past states if the last one (at time $t-1$) was 1,
-but could depend on states at time $t-3$ and $t-2$ if the state was 0 at
-time $t-1$. A collection of past states that determines completely the
-transition probabilities is a *context* of the VLMC. Read
-`vignette("context-trees")` for details about contexts and context tree,
-and (see `vignette("variable-length-markov-chains")` for a more detailed
-introduction to VLMC.
+chains. They can be used to model time series (sequences) with discrete
+values (states) with a mix of small order dependencies for certain
+states and higher order dependencies for other states. For instance,
+with a binary time series, the probability of observing 1 at time $t$
+could be constant whatever the older past states if the last one (at
+time $t-1$) was 1, but could depend on states at time $t-3$ and $t-2$ if
+the state was 0 at time $t-1$. A collection of past states that
+determines completely the transition probabilities is a *context* of the
+VLMC. Read `vignette("context-trees")` for details about contexts and
+context tree, and see `vignette("variable-length-markov-chains")` for a
+more detailed introduction to VLMC.
 
 VLMC with covariates (COVLMC) are extension of VLMC in which transition
 probabilities (probabilities of the next state given the past) can be
@@ -63,7 +63,7 @@ library(ggplot2)
 ```
 
 The main function of VLMC is `vlmc()` which can be called on a time
-series represented by a numerical vector or a factor.
+series represented by a numerical vector or a factor, for instance.
 
 ``` r
 set.seed(0)
@@ -101,8 +101,8 @@ draw(model)
 #>                     '-- 1 (1, 0)
 ```
 
-The representation uses crude ascii art to display the contexts of the
-VLMC organized in to tree (see `vignette("context-trees")` for a more
+The representation uses simple ASCII art to display the contexts of the
+VLMC organized into a tree (see `vignette("context-trees")` for a more
 detailed introduction):
 
 - the root `*` corresponds to an empty context;

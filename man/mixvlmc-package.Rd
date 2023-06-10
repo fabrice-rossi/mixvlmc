@@ -4,9 +4,9 @@
 \name{mixvlmc-package}
 \alias{mixvlmc}
 \alias{mixvlmc-package}
-\title{mixvlmc: Variable Length Markov Chains}
+\title{mixvlmc: Variable Length Markov Chains with Covariates}
 \description{
-An implementation of Variable Length Markov Chains and of their extension to models with covariates.
+Estimates Variable Length Markov Chains (VLMC) models and VLMC with covariates models from discrete sequences. Supports model selection via information criteria and simulation of new sequences from an estimated model.
 }
 \section{Package options}{
 
@@ -39,7 +39,7 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Fabrice Rossi \email{Fabrice.Rossi@apiacoa.org} (\href{https://orcid.org/0000-0003-4638-1286}{ORCID})
+\strong{Maintainer}: Fabrice Rossi \email{Fabrice.Rossi@apiacoa.org} (\href{https://orcid.org/0000-0003-4638-1286}{ORCID}) [copyright holder]
 
 Other contributors:
 \itemize{
