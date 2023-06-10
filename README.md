@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# Variable Length Markov Chains
+# Variable Length Markov Chains with Covariates
 
 <!-- badges: start -->
 
@@ -18,6 +18,13 @@ length Markov chains with covariates (COVLMC), as described in:
 - [Zanin Zambom, A., Kim, S. and Lopes Garcia, N. (2022), Variable
   length Markov chain with exogenous covariates. J. Time Ser. Anal.,
   43 (2) 312-328](https://doi.org/10.1111/jtsa.12615)
+
+`mixvlmc` includes functionalities similar to the ones available in
+[VLMC](https://cran.r-project.org/package=VLMC) and
+[PST](https://cran.r-project.org/package=PST). The main advantages of
+`mixvlmc` are the support of time varying covariates with COVLMC and the
+introduction of post-pruning of the models that enables fast model
+selection via information criteria.
 
 ## Installation
 
