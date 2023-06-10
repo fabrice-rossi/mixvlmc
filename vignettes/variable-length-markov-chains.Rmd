@@ -195,7 +195,8 @@ The estimation process is controlled by three parameters:
 -   `max_depth`: the largest order/memory considered for the VLMC
     (defaults to 100). This parameter is essentially a computational
     burden control parameter and should be increased to a larger value
-    if the final model has contexts that reach the maximum value;
+    if the final model has contexts that reach the maximum value (this is done 
+    automatically in `tune_vlmc()`);
 -   `min_size`: the minimum number of occurrences of a context in the
     time series for it to be included in the context tree during the
     first phase of the algorithm. The default 2 value is very
@@ -212,9 +213,9 @@ The estimation process is controlled by three parameters:
 It is recommended to use the default value for `min_size`, to increase
 `max_depth` only in case of "overflow" (i.e. when the maximum context
 length reaches `max_depth`) and to use only `alpha` to control the
-complexity of the VLMC. An important point to note is that a *higher*
-value of `alpha` leads to a more complex model as does a *lower* value
-of `cutoff`.
+complexity of the VLMC, preferably automatically with `tune_vlmc()`. 
+An important point to note is that a *higher* value of `alpha` leads to 
+a more complex model as does a *lower* value of `cutoff`.
 
 Based on theoretical results, the order of magnitude of `cutoff` should
 be in $K \log n$ (for $n$ observations), where $K$ depends on the type
@@ -235,11 +236,10 @@ informed by asymptotic analysis.
 ### Model choice
 
 In practice, it is recommended to start with a conservative value of
-`cutoff` (or `alpha`) and to use an information criterion to find the
-best model. A conservative value of `cutoff` is a small one, while
-`alpha` should be high to be conservative. A possible choice is to use
-the BIC inspired `cutoff` divided by a fixed value, for instance
-$\frac{1}{4}(|S|-1)\log n$.
+`cutoff` (or `alpha`) and to use a penalized criterion to find the
+best model in a way that balances likelihood and complexity. A conservative
+value of `cutoff` is a small one, while `alpha` should be high to be conservative. A possible choice is to use the BIC inspired `cutoff` 
+divided by a fixed value, for instance $\frac{1}{4}(|S|-1)\log n$.
 
 Once a "large" model has been obtained, two functions can be used to
 generate the collection of simpler models that would have been obtained
@@ -273,10 +273,10 @@ The final model `model_small` is again the memory less model.
 ### Automatic model choice
 
 The pair `cutoff()`/`prune()` can be used to implement advanced model selection
-techniques, for instance based on the quality of the predictions of the model on a
-hold-out example. For a more standard use, the `tune_vlmc()` provides a fully
-automated solution, including the choice of conservative values of the initial cut 
-off, as demonstrated below:
+techniques, for instance based on the quality of the predictions of the model 
+on a hold-out example. For a more standard use, the `tune_vlmc()` provides a 
+fully automated solution, including the choice of conservative values of the
+initial cut off and of a large enough `max_depth`, as demonstrated below:
 
 ```{r}
 model_tune <- tune_vlmc(x)
