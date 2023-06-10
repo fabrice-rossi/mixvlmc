@@ -1,11 +1,11 @@
 Package: mixvlmc
 Type: Package
-Title: Variable Length Markov Chains
+Title: Variable Length Markov Chains with Covariates
 Version: 0.1.0
 Authors@R: 
     c(person(given = "Fabrice",
              family = "Rossi",
-             role = c("aut", "cre"),
+             role = c("aut", "cre", "cph"),
              email = "Fabrice.Rossi@apiacoa.org",
              comment = c(ORCID = "0000-0003-4638-1286")),
       person(given = "Hugo",
@@ -13,8 +13,10 @@ Authors@R:
              role = "ctb",
              email = "lepicardhugo@gmail.com",
              comment = c(ORCID = "0000-0002-7023-2996")))
-Description: An implementation of Variable Length Markov Chains and of their 
-    extension to models with covariates.
+Description: Estimates Variable Length Markov Chains (VLMC) models and VLMC with 
+    covariates models from discrete sequences. Supports model selection via
+    information criteria and simulation of new sequences from an estimated
+    model. 
 License: GPL (>= 3)
 URL: https://github.com/fabrice-rossi/mixvlmc,
     https://fabrice-rossi.github.io/mixvlmc/
