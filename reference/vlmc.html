@@ -79,12 +79,12 @@ series.</p>
 
 
 <dt>alpha</dt>
-<dd><p>number in (0,1] (default: 0.05) cutoff value in quantile scale
+<dd><p>number in (0,1] (default: 0.05) cut off value in quantile scale
 in the pruning phase.</p></dd>
 
 
 <dt>cutoff</dt>
-<dd><p>non negative number: cutoff value in native (likelihood ratio)
+<dd><p>non negative number: cut off value in native (likelihood ratio)
 scale in the pruning phase. Defaults to the value obtained from <code>alpha</code>.
 Takes precedence over <code>alpha</code> is specified.</p></dd>
 
@@ -101,7 +101,7 @@ growing phase of the context tree.</p></dd>
 
 <dt>prune</dt>
 <dd><p>logical: specify whether the context tree should be pruned
-(default behavior).</p></dd>
+(default behaviour).</p></dd>
 
 
 <dt>keep_match</dt>
@@ -125,11 +125,11 @@ distribution given a truncated version of the context.</p>
 <code>max_depth</code>, exactly as in <code><a href="ctx_tree.html">ctx_tree()</a></code>. Significativity is measured using a
 likelihood ratio test (threshold can be specified in terms of the ratio
 itself with <code>cutoff</code>) or in quantile scale with <code>alpha</code>.</p>
-<p>Pruning can be postpone by setting <code>prune=FALSE</code>. Using a combination of
+<p>Pruning can be postponed by setting <code>prune=FALSE</code>. Using a combination of
 <code><a href="cutoff.html">cutoff()</a></code> and <code><a href="prune.html">prune()</a></code>, the complexity of the VLMC can then be adjusted.
 Any VLMC model can be pruned after construction, <code>prune=FALSE</code> is a
 convenience parameter to avoid setting <code>alpha=1</code> (which essentially prevents
-any pruning).</p>
+any pruning). Automated model selection is provided by <code><a href="tune_vlmc.html">tune_vlmc()</a></code>.</p>
     </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
@@ -137,7 +137,7 @@ any pruning).</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="cutoff.html">cutoff()</a></code> and <code><a href="prune.html">prune()</a></code></p></div>
+    <div class="dont-index"><p><code><a href="cutoff.html">cutoff()</a></code>, <code><a href="prune.html">prune()</a></code> and <code><a href="tune_vlmc.html">tune_vlmc()</a></code></p></div>
     </div>
 
     <div class="section level2">

@@ -69,12 +69,12 @@
 
 
 <dt>alpha</dt>
-<dd><p>number in (0,1] (default: 0.05) cutoff value in quantile scale
+<dd><p>number in (0,1] (default: 0.05) cut off value in quantile scale
 for pruning.</p></dd>
 
 
 <dt>cutoff</dt>
-<dd><p>positive number: cutoff value in native (log likelihood ratio)
+<dd><p>positive number: cut off value in native (log likelihood ratio)
 scale for pruning. Defaults to the value obtained from <code>alpha</code>. Takes
 precedence over <code>alpha</code> if specified.</p></dd>
 
@@ -97,10 +97,14 @@ a <code>a</code> cut off and then pruning it with a <code>b</code> cut off (with
 produce the same VLMC than building directly the VLMC with a <code>b</code> cut off.
 Interesting cut off values can be extracted from a VLMC using the <code><a href="cutoff.html">cutoff()</a></code>
 function.</p>
+<p>As automated model selection is provided by <code><a href="tune_vlmc.html">tune_vlmc()</a></code>, the direct use of <code>cutoff</code>
+should be reserved to advanced exploration of the set of trees that can be
+obtained from a complex one, e.g. to implement model selection techniques that
+are not provided by <code><a href="tune_vlmc.html">tune_vlmc()</a></code>.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="cutoff.html">cutoff()</a></code></p></div>
+    <div class="dont-index"><p><code><a href="cutoff.html">cutoff()</a></code> and <code><a href="tune_vlmc.html">tune_vlmc()</a></code></p></div>
     </div>
 
     <div class="section level2">

@@ -278,7 +278,8 @@ the following example.</p>
 <code>max_depth</code>: the largest order/memory considered for the
 VLMC (defaults to 100). This parameter is essentially a computational
 burden control parameter and should be increased to a larger value if
-the final model has contexts that reach the maximum value;</li>
+the final model has contexts that reach the maximum value (this is done
+automatically in <code><a href="../reference/tune_vlmc.html">tune_vlmc()</a></code>);</li>
 <li>
 <code>min_size</code>: the minimum number of occurrences of a
 context in the time series for it to be included in the context tree
@@ -298,10 +299,11 @@ is interpreted as a likelihood ratio test (the default is
 <p>It is recommended to use the default value for <code>min_size</code>,
 to increase <code>max_depth</code> only in case of “overflow” (i.e. when
 the maximum context length reaches <code>max_depth</code>) and to use
-only <code>alpha</code> to control the complexity of the VLMC. An
-important point to note is that a <em>higher</em> value of
-<code>alpha</code> leads to a more complex model as does a
-<em>lower</em> value of <code>cutoff</code>.</p>
+only <code>alpha</code> to control the complexity of the VLMC,
+preferably automatically with <code><a href="../reference/tune_vlmc.html">tune_vlmc()</a></code>. An important
+point to note is that a <em>higher</em> value of <code>alpha</code>
+leads to a more complex model as does a <em>lower</em> value of
+<code>cutoff</code>.</p>
 <p>Based on theoretical results, the order of magnitude of
 <code>cutoff</code> should be in <span class="math inline">\(K \log
 n\)</span> (for <span class="math inline">\(n\)</span> observations),
@@ -324,11 +326,13 @@ the case as this choice is only informed by asymptotic analysis.</p>
 <h3 id="model-choice">Model choice<a class="anchor" aria-label="anchor" href="#model-choice"></a>
 </h3>
 <p>In practice, it is recommended to start with a conservative value of
-<code>cutoff</code> (or <code>alpha</code>) and to use an information
-criterion to find the best model. A conservative value of
-<code>cutoff</code> is a small one, while <code>alpha</code> should be
-high to be conservative. A possible choice is to use the BIC inspired
-<code>cutoff</code> divided by a fixed value, for instance <span class="math inline">\(\frac{1}{4}(|S|-1)\log n\)</span>.</p>
+<code>cutoff</code> (or <code>alpha</code>) and to use a penalized
+criterion to find the best model in a way that balances likelihood and
+complexity. A conservative value of <code>cutoff</code> is a small one,
+while <code>alpha</code> should be high to be conservative. A possible
+choice is to use the BIC inspired <code>cutoff</code> divided by a fixed
+value, for instance <span class="math inline">\(\frac{1}{4}(|S|-1)\log
+n\)</span>.</p>
 <p>Once a “large” model has been obtained, two functions can be used to
 generate the collection of simpler models that would have been obtained
 by using larger values of <code>cutoff</code>. The function
@@ -367,6 +371,27 @@ using <code><a href="../reference/prune.html">prune()</a></code> as follows:</p>
 model.</p>
 </div>
 <div class="section level3">
+<h3 id="automatic-model-choice">Automatic model choice<a class="anchor" aria-label="anchor" href="#automatic-model-choice"></a>
+</h3>
+<p>The pair <code><a href="../reference/cutoff.html">cutoff()</a></code>/<code><a href="../reference/prune.html">prune()</a></code> can be used to
+implement advanced model selection techniques, for instance based on the
+quality of the predictions of the model on a hold-out example. For a
+more standard use, the <code><a href="../reference/tune_vlmc.html">tune_vlmc()</a></code> provides a fully
+automated solution, including the choice of conservative values of the
+initial cut off and of a large enough <code>max_depth</code>, as
+demonstrated below:</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">model_tune</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tune_vlmc.html">tune_vlmc</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
+<span><span class="va">model_opt</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/as_vlmc.html">as_vlmc</a></span><span class="op">(</span><span class="va">model_tune</span><span class="op">)</span></span>
+<span><span class="va">model_opt</span></span>
+<span><span class="co">#&gt; VLMC context tree on 0, 1, 2 </span></span>
+<span><span class="co">#&gt;  cutoff: 3.785 (quantile: 0.0227117061190262)</span></span>
+<span><span class="co">#&gt;  Number of contexts: 0 </span></span>
+<span><span class="co">#&gt;  Maximum context length: 0</span></span></code></pre></div>
+<p>We obtain directly an optimal model according to the BIC
+criterion.</p>
+</div>
+<div class="section level3">
 <h3 id="diagnostics">Diagnostics<a class="anchor" aria-label="anchor" href="#diagnostics"></a>
 </h3>
 <p>The package provides numerous ways to analyse a VLMC. Basic functions
@@ -383,7 +408,7 @@ model.</li>
 </ul>
 <p>For instance, the large model obtained above has the following
 characteristics:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/states.html">states</a></span><span class="op">(</span><span class="va">model_large</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 0 1 2</span></span>
 <span><span class="fu"><a href="../reference/depth.html">depth</a></span><span class="op">(</span><span class="va">model_large</span><span class="op">)</span></span>
@@ -391,7 +416,7 @@ characteristics:</p>
 <span><span class="fu"><a href="../reference/context_number.html">context_number</a></span><span class="op">(</span><span class="va">model_large</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 6</span></span></code></pre></div>
 <p>VLMC objects support classical statistical functions such as:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/logLik.html" class="external-link">logLik</a></span><span class="op">(</span><span class="va">model_large</span><span class="op">)</span></span>
 <span><span class="co">#&gt; 'log Lik.' -206.1223 (df=12)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/AIC.html" class="external-link">AIC</a></span><span class="op">(</span><span class="va">model_large</span><span class="op">)</span></span>
@@ -404,7 +429,7 @@ characteristics:</p>
 </h3>
 <p>The model can be explored in details by drawing its context tree (see
 <code><a href="../articles/context-trees.html">vignette("context-trees")</a></code> for details) as follows:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/draw.html">draw</a></span><span class="op">(</span><span class="va">model_large</span><span class="op">)</span></span>
 <span><span class="co">#&gt; * (0.325, 0.345, 0.33)</span></span>
 <span><span class="co">#&gt; '-- 1 (0.3043, 0.4203, 0.2754)</span></span>
@@ -418,7 +443,7 @@ characteristics compared to context trees. In particular, the
 <code><a href="../reference/contexts.html">contexts()</a></code> function can report the log likelihood ratio
 associated to each context as follows (compare to <code><a href="../reference/cutoff.html">cutoff()</a></code>
 above):</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/contexts.html">contexts</a></span><span class="op">(</span><span class="va">model_large</span>, cutoff <span class="op">=</span> <span class="st">"native"</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   context    cutoff</span></span>
 <span><span class="co">#&gt; 1 1, 1, 0 3.4813864</span></span>
@@ -430,7 +455,7 @@ above):</p>
 <p>Notice that by default <code><a href="../reference/contexts.html">contexts()</a></code> uses the reverse
 representation of contexts, but they can be returned in the natural time
 sequence using <code>reverse=FALSE</code>, as in</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/contexts.html">contexts</a></span><span class="op">(</span><span class="va">model_large</span>, cutoff <span class="op">=</span> <span class="st">"quantile"</span>, reverse <span class="op">=</span> <span class="cn">FALSE</span>, frequency <span class="op">=</span> <span class="st">"detailed"</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   context freq  0  1  2     cutoff</span></span>
 <span><span class="co">#&gt; 1 0, 1, 1    9  2  7  0 0.03076473</span></span>
