@@ -14,7 +14,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-# Variable Length Markov Chains
+# Variable Length Markov Chains with Covariates
 
 <!-- badges: start -->
 
@@ -26,6 +26,12 @@ knitr::opts_chunk$set(
 
 -   [Bühlmann, P. and Wyner, A. J. (1999), Variable length Markov chains. Ann. Statist. 27 (2) 480-513](https://dx.doi.org/10.1214/aos/1018031204)
 -   [Zanin Zambom, A., Kim, S. and Lopes Garcia, N. (2022), Variable length Markov chain with exogenous covariates. J. Time Ser. Anal., 43 (2) 312-328](https://doi.org/10.1111/jtsa.12615)
+
+`mixvlmc` includes functionalities similar to the ones available in 
+[VLMC](https://cran.r-project.org/package=VLMC) and [PST](https://cran.r-project.org/package=PST). The main advantages of `mixvlmc` are
+the support of time varying covariates with COVLMC and the introduction of 
+post-pruning of the models that enables fast model selection via information 
+criteria.
 
 ## Installation
 
