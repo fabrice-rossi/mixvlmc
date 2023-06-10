@@ -36,7 +36,7 @@ For instance, if $S=\{0, 1\}$ and $x=(0, 0, 0, 1, 1, 1)$
 
 The contexts of a time series can be represented by a tree. The root of the tree stands for the empty context. The children of the root represent the contexts of length 1. In general, if a node represents the context $c=(c_1, \ldots, c_k)$, then contexts of the form $c'=(c_1, \ldots, c_k, c_{k+1})$ are represented by the children of the node. 
 
-Let us consider again $x=(0, 0, 0, 1, 1, 1)$ and all contexts that appear _at least twice_ in $x$ (i.e. which are observed for at least two different values of $t$). An ascii art representation of the corresponding context tree is:
+Let us consider again $x=(0, 0, 0, 1, 1, 1)$ and all contexts that appear _at least twice_ in $x$ (i.e. which are observed for at least two different values of $t$). An ASCII art representation of the corresponding context tree is:
 ```
 *
 +-- 0
@@ -64,7 +64,7 @@ The default extraction is done with `min_size=2` and `max_depth=10` which means 
 - contexts are included only if they appear at least twice in the time series;
 - the maximum length of a context is 10 (the term _depth_ is used in reference to the tree representation).
 
-Notice that the number of potential contexts grows exponentialy  with the length of the time series and it is therefore advisable to keep `max_depth` to a reasonable value. Let us consider a simple example.
+Notice that the number of potential contexts grows exponentially  with the length of the time series and it is therefore advisable to keep `max_depth` to a reasonable value. Let us consider a simple example.
 
 ```{r}
 set.seed(0)
