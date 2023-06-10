@@ -17,10 +17,10 @@ vlmc(
 \arguments{
 \item{x}{a discrete time series; can be numeric, character or factor.}
 
-\item{alpha}{number in (0,1] (default: 0.05) cutoff value in quantile scale
+\item{alpha}{number in (0,1] (default: 0.05) cut off value in quantile scale
 in the pruning phase.}
 
-\item{cutoff}{non negative number: cutoff value in native (likelihood ratio)
+\item{cutoff}{non negative number: cut off value in native (likelihood ratio)
 scale in the pruning phase. Defaults to the value obtained from \code{alpha}.
 Takes precedence over \code{alpha} is specified.}
 
@@ -31,7 +31,7 @@ a context in the growing phase of the context tree.}
 growing phase of the context tree.}
 
 \item{prune}{logical: specify whether the context tree should be pruned
-(default behavior).}
+(default behaviour).}
 
 \item{keep_match}{logical: specify whether to keep the context matches (default to FALSE)}
 }
