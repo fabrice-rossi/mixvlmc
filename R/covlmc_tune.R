@@ -173,4 +173,3 @@ print.tune_covlmc <- function(x, ...) {
   cat(")\n")
   invisible(x)
 }
-
