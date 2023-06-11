@@ -39,7 +39,7 @@ Let us focus again on the electrical usage data set used in the package
 introduction, using the following two weeks of data:
 
 ```{r active_power_week_15_16}
-pc_week_15_16 <- powerconsumption[powerconsumption$week %in% c(15,16), ]
+pc_week_15_16 <- powerconsumption[powerconsumption$week %in% c(15, 16), ]
 elec <- pc_week_15_16$active_power
 ggplot(pc_week_15_16, aes(x = date_time, y = active_power)) +
   geom_line() +
@@ -167,11 +167,11 @@ g\left(\alpha^{1,1}+y_{t-1}\beta^{1,1}_1+y_{t-2}\beta^{1,1}_2\right).
 \end{multline*}
 $$
 
-More generally, the probability distribution associated to a 
-context could be given by any function that maps the values of the
-covariates to a distribution on $S$, the state space. Following the
-original [paper](https://doi.org/10.1111/jtsa.12615), `mixvlmc` uses
-multinomial logistic regression as implemented by `VGAM::vglm()` or
+More generally, the probability distribution associated to a context
+could be given by any function that maps the values of the covariates to
+a distribution on $S$, the state space. Following the original
+[paper](https://doi.org/10.1111/jtsa.12615), `mixvlmc` uses multinomial
+logistic regression as implemented by `VGAM::vglm()` or
 `nnet::multinom()`, or a logistic regression provided by `stats::glm()`
 for state spaces with only 2 states. This has several advantages over a
 more general solution:
@@ -186,75 +186,85 @@ more general solution:
 3)  logistic models with different memory order are easy to compare
     using a likelihood-ratio test.
 
-The last point is used in `mixvlmc` (as in the original paper) to simplify local 
-models with respect to the covariates. For a context of length $l$, 
-the probability distribution is assumed to depend on the $l$ past values o of
-$\mathbf{Y}$ but in practice we allow a dependency to only $k<l$ past values. 
-For instance, we could have
-$$
+The last point is used in `mixvlmc` (as in the original paper) to
+simplify local models with respect to the covariates. For a context of
+length $l$, the probability distribution is assumed to depend on the $l$
+past values o of $\mathbf{Y}$ but in practice we allow a dependency to
+only $k<l$ past values. For instance, we could have $$
 \mathbb{P}(X_t=1\mid X_{t-1}=1, X_{t-2}=1, Y_{t_1}=y_{t-1}, Y_{t_2}=y_{t-2})=g\left(\alpha^{1,1}+y_{t-1}\beta^{1,1}_1\right).
 $$
- 
-### Beta-Context algorithm
-Estimating a COVLMC model from two time series is more complex than estimating 
-a VLMC model. `mixvlmc` implements the Beta-Context algorithm proposed in the
-original [paper](https://doi.org/10.1111/jtsa.12615). It is inspired from the
-context algorithm used for VLMC (and proposed in  [Variable length Markov chains](https://dx.doi.org/10.1214/aos/1018031204)). It can be summarized 
-as follows:
 
-1) the first step consists in building a context tree (see `vignette("context-trees")`) from the $\mathbf{X}$ discrete sequences, almost
-   exactly as for a VLMC: the only difference is that to be kept in the tree a
-   context must appear a number of times that depends on its length, on the
-   dimension of the covariates and on the number of states. This guarantees a 
-   minimal number of observations for the (maximum likelihood) estimation of the
-   context dependant multinomial logistic regression. 
-2) the second step is an estimation one: a multinomial logistic regression 
-  model is estimated for each context, using a number of past values of 
-  $\mathbf{Y}$ equal to the length of the context.
-3) the rest of the algorithm consists in pruning the context tree and the logistic
-  models:
-  1) leaf contexts are first assessed in terms of model simplification. The 
-  likelihood-ratio test is used to decide whether the oldest value of $\mathbf{Y}$ 
-  is relevant or not. Essentially we compare e.g. $g\left(\alpha^{1,1}+y_{t-1}\beta^{1,1}_1\right)$ 
-  to g\left(\alpha^{1,1}+y_{t-1}\beta^{1,1}_1+y_{t-2}\beta^{1,1}_2\right)$ as an
-  estimator of $\mathbb{P}(X_t=1\mid X_{t-1}=1, X_{t-2}=1, Y_{t_1}=y_{t-1}, Y_{t_2}=y_{t-2})$;
-  2) based on the results of those tests, it may be possible to completely remove 
-  a context from the tree, see the [paper](https://doi.org/10.1111/jtsa.12615) for
-  details. 
-  
-This last pruning phase is carried out repeatedly as context removals turn internal
-contexts into leaves that can then be further simplified. 
+### Beta-Context algorithm
+
+Estimating a COVLMC model from two time series is more complex than
+estimating a VLMC model. `mixvlmc` implements the Beta-Context algorithm
+proposed in the original [paper](https://doi.org/10.1111/jtsa.12615). It
+is inspired from the context algorithm used for VLMC (and proposed in
+[Variable length Markov
+chains](https://dx.doi.org/10.1214/aos/1018031204)). It can be
+summarized as follows:
+
+1)  the first step consists in building a context tree (see
+    `vignette("context-trees")`) from the $\mathbf{X}$ discrete
+    sequences, almost exactly as for a VLMC: the only difference is that
+    to be kept in the tree a context must appear a number of times that
+    depends on its length, on the dimension of the covariates and on the
+    number of states. This guarantees a minimal number of observations
+    for the (maximum likelihood) estimation of the context dependant
+    multinomial logistic regression.
+2)  the second step is an estimation one: a multinomial logistic
+    regression model is estimated for each context, using a number of
+    past values of $\mathbf{Y}$ equal to the length of the context.
+3)  the rest of the algorithm consists in pruning the context tree and
+    the logistic models:
+    1)  leaf contexts are first assessed in terms of model
+        simplification. The likelihood-ratio test is used to decide
+        whether the oldest value of $\mathbf{Y}$ is relevant or not.
+        Essentially we compare e.g.
+        $g\left(\alpha^{1,1}+y_{t-1}\beta^{1,1}_1\right)$ to
+        $g\left(\alpha^{1,1}+y_{t-1}\beta^{1,1}_1+y_{t-2}\beta^{1,1}_2\right)$
+        as an estimator of
+        $\mathbb{P}(X_t=1\mid X_{t-1}=1, X_{t-2}=1, Y_{t_1}=y_{t-1}, Y_{t_2}=y_{t-2})$;
+    2)  based on the results of those tests, it may be possible to
+        completely remove a context from the tree, see the
+        [paper](https://doi.org/10.1111/jtsa.12615) for details.
+
+This last pruning phase is carried out repeatedly as context removals
+turn internal contexts into leaves that can then be further simplified.
 
 ## COVLMC in practice
 
 ### Estimation
-COVLMC estimation is provided by the `covlmc()` function. We build first a simple
-example data set as follows:
+
+COVLMC estimation is provided by the `covlmc()` function. We build first
+a simple example data set as follows:
+
 ```{r}
 set.seed(0)
 nb_obs <- 200
-covariates <- data.frame(y=runif(nb_obs))
+covariates <- data.frame(y = runif(nb_obs))
 x <- 0
-for(k in 2:nb_obs) {
+for (k in 2:nb_obs) {
   ## we induce a simple dependency to the covariate
   ## and an order 1 memory
-  if(covariates$y[k-1]<0.5) {
-    if(x[k-1]==0) { 
-      x[k] <- sample(c(0,1),1, prob=c(0.7,0.3))
+  if (covariates$y[k - 1] < 0.5) {
+    if (x[k - 1] == 0) {
+      x[k] <- sample(c(0, 1), 1, prob = c(0.7, 0.3))
     } else {
-      x[k] <- sample(c(0,1),1, prob=c(0.3,0.7))
+      x[k] <- sample(c(0, 1), 1, prob = c(0.3, 0.7))
     }
   } else {
-    if(x[k-1]==0) { 
-      x[k] <- sample(c(0,1),1, prob=c(0.1,0.9))
+    if (x[k - 1] == 0) {
+      x[k] <- sample(c(0, 1), 1, prob = c(0.1, 0.9))
     } else {
-      x[k] <- sample(c(0,1),1, prob=c(0.5,0.5))
+      x[k] <- sample(c(0, 1), 1, prob = c(0.5, 0.5))
     }
   }
 }
 ```
 
 Then we estimate a COVLMC as follows:
+
 ```{r}
 model <- covlmc(x, covariates)
 model
@@ -264,20 +274,90 @@ The estimation process is controlled by three parameters:
 
 -   `max_depth`: the largest order/memory considered for the COVLMC
     (defaults to 100). This parameter is essentially a computational
-    burden control parameter. It does not play a major role in COVLMC 
-    estimation because of the constraints imposed by `min_size`. The default
-    value is very conservative;
--   `min_size`: this parameter controls the minimal number of occurrences needed
-    for a context to be included in the initial context tree. It gives the
-    number of occurences *per parameter* of the logistic model which depends on 
-    both the length of the context, the dimension of the covariates and the
-    number of states;
+    burden control parameter. It does not play a major role in COVLMC
+    estimation because of the constraints imposed by `min_size`. The
+    default value is very conservative;
+-   `min_size`: this parameter controls the minimal number of
+    occurrences needed for a context to be included in the initial
+    context tree. It gives the number of occurrences *per parameter* of
+    the logistic model which depends on both the length of the context,
+    the dimension of the covariates and the number of states;
 -   `alpha`: is the parameter of the pruning process of the Beta-Context
-    algorithm. Pruning decisions are all based on likelihood ratio tests and
-    `alpha` is the common level of all those tests. 
+    algorithm. Pruning decisions are all based on likelihood ratio tests
+    and `alpha` is the common level of all those tests.
 
+The default parameters work well on the previous example, as shown by the obtained
+model:
+```{r}
+draw(model, model = "full", p_value = FALSE)
+```
+
+The model has 2 contexts, 0 and 1, as expected. The logistic models are described
+by their parameters. For context 0, the intercept is negative and the coefficient of
+$y_{t-1}$ is positive: the probability of switching to 1 is small when $y_{t-1}$ is
+small and increases with $y_{t-1}$. For context 1, the situation is reversed and
+the effect of $y_{t-1}$ is smaller. This is consistent with the way the series
+were constructed. 
+
+Notice however that obtained an interesting model with the default parameters 
+should not be seen as a general property and proper model choice must be implemented. 
 
 ### Model choice
+As COVLMC estimation fits a potentially large number of logistic models to the 
+data, the use of a penalized likelihood approach is recommended to set its parameters
+and avoid overfitting. 
+
+However, model choice is more complex in the case of the COVLMC than for VLMC. In particular,
+the pair `cutoff()`/`prune()` does not work as well for COVLMC than for VLMC (see `vignette("variable-length-markov-chains")`). Indeed the pruning process of the 
+Beta-Context algorithm is such that its effects cannot be predicted as easily as 
+the ones of the Context algorithm. In practice, computing the largest `alpha` 
+(test level) that is guaranteed to make a minimal but actual pruning of a given
+COVLMC is easy. But subsequent cut off values could be misleading. To avoid any 
+problem it is therefore recommended to rely on the `tune_covlmc()` function that
+has been designed to explore the full "pruning space" associated to a given data set.
+
+Used on the artificial example above, it gives:
+```{r}
+model_tune <- tune_covlmc(x, covariates)
+model_tune
+```
+and
+```{r}
+draw(as_covlmc(model_tune), model = "full", p_value = FALSE)
+```
+The resulting model is the same as the one obtained before but it was properly 
+obtained by 
+
+As for `tune_vlmc()`, the `max_depth` parameter is automatically increased to
+avoid using it inadvertently as a regularisation parameter. However, while 
+`min_size` is generally considered as not having a major influence on the model
+selection for VLMC, this is not the case for COVLMC. There is currently no
+support in `mixvlmc` for an automatic choice of `min_size` and one should therefore
+test several values and compare the obtained BIC/AIC. In the articial case, we
+can try for instance `min_size=2` as follows:
+```{r}
+model_tune_2 <- tune_covlmc(x, covariates, min_size = 2)
+model_tune_2
+```
+and `min_size=10` as follows:
+```{r}
+model_tune_10 <- tune_covlmc(x, covariates, min_size = 10)
+model_tune_10
+```
+
+Here we see no particular effect of the parameter because of the simplicity of the
+problem.
+
+Let us now come back to the electricity consumption example described above. We
+introduce a very basic day/night covariate as follows:
+```{r}
+elec_cov <- data.frame(day = (pc_week_15_16$hour >= 7 & pc_week_15_16$hour <= 18))
+```
+and fit a COVLMC with
+```{r}
+elec_tune <- tune_covlmc(elec_dts, elec_cov, min_size = 10)
+elec_tune
+```
 
 ### Diagnostics
 
