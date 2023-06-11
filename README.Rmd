@@ -124,7 +124,7 @@ draw(best_sun_model)
 
 ### Fitting a VLMC with covariates
 
-To illustrate the use of covariates, we use the power consumption data set included in the package. We consider a week of electricity usage as follows:
+To illustrate the use of covariates, we use the power consumption data set included in the package (see `vignette("covlmc")` for details). We consider a week of electricity usage as follows:
 
 ```{r active_power_week_5}
 pc_week_5 <- powerconsumption[powerconsumption$week == 5, ]
