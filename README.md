@@ -254,7 +254,7 @@ elec_cov <- data.frame(day = (pc_week_5$hour >= 7 & pc_week_5$hour <= 17))
 A COVLMC is estimated using the `covlmc` function:
 
 ``` r
-elec_covlmc <- covlmc(elec_dts, elec_cov, min_size = 5, alpha = 0.5)
+elec_covlmc <- covlmc(elec_dts, elec_cov, min_size = 2, alpha = 0.5)
 draw(elec_covlmc, time_sep = " | ", model = "full", p_value = FALSE)
 #> *
 #> +-- low ([ (I)    | day_1TRUE
