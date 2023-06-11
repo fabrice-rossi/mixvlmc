@@ -355,9 +355,48 @@ elec_cov <- data.frame(day = (pc_week_15_16$hour >= 7 & pc_week_15_16$hour <= 18
 ```
 and fit a COVLMC with
 ```{r}
-elec_tune <- tune_covlmc(elec_dts, elec_cov, min_size = 10)
+elec_tune <- tune_covlmc(elec_dts, elec_cov)
 elec_tune
 ```
+
+The model selection process can be represented graphically as follows:
+```{r}
+ggplot(elec_tune$results, aes(x = alpha, y = BIC)) +
+  geom_line() +
+  geom_point()
+```
+The final model is:
+```{r}
+draw(as_covlmc(elec_tune), model = "full", p_value = FALSE, with_state = TRUE)
+```
+
+It shows some interesting patterns:
+
+- one of the logistic model is degenerate: in the `high` context, no transition 
+  to a `low` context can happen. This was already observed with the VLMC;
+- the only dependency with respect to the covariate is in the context typical, 
+  typical, typical. In this case, the probability to stay in the typical context is 
+  increased during day time and decreased (but to a lesser extent) during the night. 
+  In practice, this means that the model is able to generate longer sequences that
+  stay in the typical state during the day than at night.
+
+Notice finally that for this real world example, the `min_size` parameter has
+some influence on the results. Setting it to a smaller value does not change the 
+final model, as shown below:
+
+```{r}
+elec_tune_3 <- tune_covlmc(elec_dts, elec_cov, min_size = 3)
+elec_tune_3
+```
+
+However, increasing the parameter to, e.g., 10 generates a simpler but weaker model
+as show here:
+
+```{r}
+elec_tune_10 <- tune_covlmc(elec_dts, elec_cov, min_size = 10)
+elec_tune_10
+```
+
 
 ### Diagnostics
 
