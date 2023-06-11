@@ -1,6 +1,8 @@
 ---
 title: "Variable Length Markov Chains with Covariates (COVLMC)"
-output: rmarkdown::html_vignette
+output: 
+  rmarkdown::html_vignette:
+    df_print: kable
 vignette: >
   %\VignetteIndexEntry{Variable Length Markov Chains with Covariates (COVLMC)}
   %\VignetteEncoding{UTF-8}
@@ -399,5 +401,52 @@ elec_tune_10
 
 
 ### Diagnostics
+The package provides numerous ways to analyse a COVLMC. asic functions include
+
+- `states()` returns the state space of the model;
+- `depth()` returns the length of the longest context in the model;
+- `context_number()` returns the number of contexts in the model.
+
+For instance, the large model obtained above has the following
+characteristics:
+```{r}
+elec_model <- as_covlmc(elec_tune)
+states(elec_model)
+depth(elec_model)
+context_number(elec_model)
+```
+VLMC objects support classical statistical functions such as:
+```{r}
+logLik(elec_model)
+AIC(elec_model)
+BIC(elec_model)
+```
 
 ### Contexts
+The model can be explored in details by drawing its context tree 
+(see `vignette("context-trees")` for details) as follows:
+```{r}
+draw(elec_model)
+```
+
+The `draw.covlmc()` function is more advanced that its VLMC counterpart. In particular
+it reports in more details p-values associated to pruning operations. 
+The "merging" p-value corresponds to replacing the some of the contexts
+by a single join model while the "collapsing" p-value is associated to pruning
+all the sub-contexts of a context. P-values associated to specific models correspond
+to reducing the memory of the corresponding model, that is discarding the dependency 
+of the conditional probability towards the oldest covariates. 
+
+To explore the contexts in a programmatic way, one should rely on the `contexts()` 
+function. COVLMC contexts have additional characteristics compared to VLMC and context trees.
+In particular, the `contexts()` function can report the model associated to each context, either
+by its parameters only:
+```{r}
+contexts(elec_model, model="coef")
+```
+or using the models themselves:
+```{r}
+contexts(elec_model, model="full")
+```
+
+See `contexts.covlmc()` for details.
