@@ -1,0 +1,284 @@
+---
+title: "Variable Length Markov Chains with Covariates (COVLMC)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Variable Length Markov Chains with Covariates (COVLMC)}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(mixvlmc)
+library(ggplot2)
+```
+
+## Limitations of Variable Length Markov Chains
+
+Variable Length Markov Chains (VLMC) are very useful to capture complex
+structures in discrete time series as they can mix short memory with
+long memory in a contextual way, leading to sparse models.
+
+However, they cannot capture the influence of exogenous variables on the
+behaviour of a time series. As a consequence, a VLMC adjusted on
+sequences influenced by covariates could fail to capture interesting
+patterns.
+
+### A typical example
+
+Let us focus again on the electrical usage data set used in the package
+introduction, using the following two weeks of data:
+
+```{r active_power_week_15_16}
+pc_week_15_16 <- powerconsumption[powerconsumption$week %in% c(15,16), ]
+elec <- pc_week_15_16$active_power
+ggplot(pc_week_15_16, aes(x = date_time, y = active_power)) +
+  geom_line() +
+  xlab("Date") +
+  ylab("Activer power (kW)")
+```
+
+We build again a discrete time series using the following thresholds:
+
+-   low active power at night (typically below 0.4 kW);
+-   standard use between 0.4 and 2 kW;
+-   peak use above 2 kW.
+
+```{r}
+elec_dts <- cut(elec, breaks = c(0, 0.4, 2, 8), labels = c("low", "typical", "high"))
+```
+
+Adjusting a VLMC to this sequence gives the following model (using BIC
+for model selection):
+
+```{r}
+elec_vlmc_tune <- tune_vlmc(elec_dts)
+best_elec_vlmc <- as_vlmc(elec_vlmc_tune)
+draw(best_elec_vlmc)
+```
+
+Considering the apparent regularity of the time series, one may wonder
+whether this model is really capturing the dynamics of power electricity
+consumption. In particular the longest memory of 3 time steps, i.e., 30
+minutes, may seem a bit short compared to the somewhat long periods of
+stability.
+
+## Theoretical aspects
+
+VLMC with covariates have been introduced in [Variable length Markov
+chain with exogenous covariates](https://doi.org/10.1111/jtsa.12615).
+The core idea is to enable the conditional probabilities of the next
+state given the context to depend on exogenous covariates.
+
+### Variable memory
+
+A COVLMC models a pair of sequences. The main sequence is denoted
+$\mathbf{X}=X_1, X_2, \ldots, X_n, \ldots$. The random variables take
+values in a finite state space $S$ exactly as in a standard VLMC. We
+have *in addition* another sequence of random variables
+$\mathbf{Y}=Y_1, Y_2, \ldots, Y_n, \ldots$ which take values in
+$\mathbb{R}^p$. This latter assumption $Y_l\in \mathbb{R}^p$ is can be
+relaxed to more general spaces.
+
+A COVLMC puts restriction on the conditional probabilities of $X_n$
+given the past of *both* sequences. To simplify the presentation, we
+denote $X^k_l$ the sequence of random variables $$
+X^k_l=(X_k, X_{k-1}, \ldots, X_l),
+$$ and we use similar notations for the values taken by the variables
+$x^k_l$, as well as for $Y^k_l$ and $y^k_l$. We use here the traditional
+reverser ordering in which $X_k$ is the more recent variable and $X_l$
+the oldest.
+
+A pair of sequences $\mathbf{X}$ and $\mathbf{Y}$ is a COVLMC if there
+is a maximal order $l_{\max}$ and a function $l$ from $S^{l_{\max}}$ to
+$\{0,\ldots,l_{\max}\}$ such that for all $n>l_{\max}$ $$
+\begin{multline}
+\mathbb{P}(X_n=x_n\mid X^{n-1}_1=x^{n-1}_1, Y^{n-1}_1=y^{n-1}_1)=\\
+\mathbb{P}\left(X_n=x_n\mid X^{n-1}_{n-l\left(x^{n-1}_{n-l_{\max}}\right)}=x^{n-1}_{n-l\left(x^{n-1}_{n-l_{\max}}\right)}, Y^{n-1}_{n-l\left(x^{n-1}_{n-l_{\max}}\right)}=y^{n-1}_{n-l\left(x^{n-1}_{n-l_{\max}}\right)}\right).
+\end{multline}
+$$ As in VLMC, the $\mathbf{X}$ process has a finite and variable
+memory, but this memory applies to both $\mathbf{X}$ and $\mathbf{Y}$.
+Notice that the memory order depends only on $\mathbf{X}$ and that no
+assumptions are made on the temporal behaviour of $\mathbf{Y}$. Thus a
+COVLMC on $\mathbf{X}$ and $\mathbf{Y}$ is not a VLMC on the pair
+$(\mathbf{X}, \mathbf{Y})$ (which can make sense if $\mathbf{Y}$ is
+discrete).
+
+As for VLMC, the memory length function generates a *context* function
+$c$ which keeps in the past the part needed to obtain the conditional
+distribution: $c$ is a function from $S^{l_{\max}}$ to
+$\bigcup_{k=0}^{l_{\max}}S^k$ given by $$
+c(x^{n-1}_{n-l_{\max}})=x^{n-1}_{n-l\left(x^{n-1}_{n-l_{\max}}\right)}
+$$ The image by $c$ of $S^{l_{\max}}$ is the set of contexts of the
+COVLMC which is entirely specified by $l$ and one conditional
+distribution by unique context.
+
+As the notations are somewhat opaque at fist, we can illustrate the
+definition with a simple example. We consider a binary sequence (values
+in $S=\{0, 1\}$) and a single numerical covariate $Y_t\in\mathbb{R}$. As
+in the theoretical example in
+`vignette("variable-length-markov-chains")` we assume that $l_{\max}=3$
+and that $l$ is given by $$
+\begin{align*}
+l(0, a, b)&=1&\forall a, \forall b,\\
+l(1, 1, c)&=2&\forall c,\\
+l(1, 0, 0)&=3,&\\
+l(1, 0, 1)&=3.&\\
+\end{align*}
+$$ In practice the COVLMC is therefore fully described by specifying the
+following probabilities: $$
+\begin{align*}
+\mathbb{P}(X_t=1\mid& X_{t-1}=0, Y_{t_1}=y_{t-1})\\
+\mathbb{P}(X_t=1\mid& X_{t-1}=1, X_{t-2}=1, Y_{t_1}=y_{t-1}, Y_{t_2}=y_{t-2})\\
+\mathbb{P}(X_t=1\mid& X_{t-1}=1, X_{t-2}=0, X_{t-3}=0, Y_{t_1}=y_{t-1}, Y_{t_2}=y_{t-2}, Y_{t_3}=y_{t-3})\\
+\mathbb{P}(X_t=1\mid& X_{t-1}=1, X_{t-2}=0, X_{t-3}=1, Y_{t_1}=y_{t-1}, Y_{t_2}=y_{t-2}, Y_{t_3}=y_{t-3})
+\end{align*}
+$$
+
+### Conditional distributions
+
+The main difficulty induced by COVLMC compared to VLMC is the
+specification of the conditional distributions. Indeed the conditional
+distributions depends on $\mathbf{Y}$ and cannot simply be given by a
+table. For instance, in the example above, we need to specify, among
+others, $\mathbb{P}(X_t=1\mid X_{t-1}=0, Y_{t_1}=y_{t-1})$, for each all
+values of $y_{t-1}\in \mathbb{R}$ (in $\mathbb{R}^p$ in the general
+case).
+
+A natural choice in this particular example is to use a logistic model,
+i.e. to assume $$
+\mathbb{P}(X_t=1\mid X_{t-1}=0, Y_{t_1}=y_{t-1})=g(\alpha^0+y_{t-1}\beta_1^0),
+$$ with $g(t)=\frac{1}{1+\exp(-t)}$ is the logistic function. The
+superscript on $\alpha^0$ and $\beta^0_1$ refer to the context, here
+$0$, while the subscript on $\beta^0_1$ refers to the time delay (here
+$1$). By extension, we have for example $$
+\begin{multline*}
+\mathbb{P}(X_t=1\mid X_{t-1}=1, X_{t-2}=1, Y_{t_1}=y_{t-1}, Y_{t_2}=y_{t-2})=\\
+g\left(\alpha^{1,1}+y_{t-1}\beta^{1,1}_1+y_{t-2}\beta^{1,1}_2\right).
+\end{multline*}
+$$
+
+More generally, the probability distribution associated to a 
+context could be given by any function that maps the values of the
+covariates to a distribution on $S$, the state space. Following the
+original [paper](https://doi.org/10.1111/jtsa.12615), `mixvlmc` uses
+multinomial logistic regression as implemented by `VGAM::vglm()` or
+`nnet::multinom()`, or a logistic regression provided by `stats::glm()`
+for state spaces with only 2 states. This has several advantages over a
+more general solution:
+
+1)  during the estimation phase, one probability distribution is
+    estimated for each relevant context: this could induce a large
+    computational burden for more complex models than multinomial
+    logistic ones;
+2)  having a simple model enables to fit contexts with limited number of
+    occurrences which is important to allow searching for long term
+    dependencies;
+3)  logistic models with different memory order are easy to compare
+    using a likelihood-ratio test.
+
+The last point is used in `mixvlmc` (as in the original paper) to simplify local 
+models with respect to the covariates. For a context of length $l$, 
+the probability distribution is assumed to depend on the $l$ past values o of
+$\mathbf{Y}$ but in practice we allow a dependency to only $k<l$ past values. 
+For instance, we could have
+$$
+\mathbb{P}(X_t=1\mid X_{t-1}=1, X_{t-2}=1, Y_{t_1}=y_{t-1}, Y_{t_2}=y_{t-2})=g\left(\alpha^{1,1}+y_{t-1}\beta^{1,1}_1\right).
+$$
+ 
+### Beta-Context algorithm
+Estimating a COVLMC model from two time series is more complex than estimating 
+a VLMC model. `mixvlmc` implements the Beta-Context algorithm proposed in the
+original [paper](https://doi.org/10.1111/jtsa.12615). It is inspired from the
+context algorithm used for VLMC (and proposed in  [Variable length Markov chains](https://dx.doi.org/10.1214/aos/1018031204)). It can be summarized 
+as follows:
+
+1) the first step consists in building a context tree (see `vignette("context-trees")`) from the $\mathbf{X}$ discrete sequences, almost
+   exactly as for a VLMC: the only difference is that to be kept in the tree a
+   context must appear a number of times that depends on its length, on the
+   dimension of the covariates and on the number of states. This guarantees a 
+   minimal number of observations for the (maximum likelihood) estimation of the
+   context dependant multinomial logistic regression. 
+2) the second step is an estimation one: a multinomial logistic regression 
+  model is estimated for each context, using a number of past values of 
+  $\mathbf{Y}$ equal to the length of the context.
+3) the rest of the algorithm consists in pruning the context tree and the logistic
+  models:
+  1) leaf contexts are first assessed in terms of model simplification. The 
+  likelihood-ratio test is used to decide whether the oldest value of $\mathbf{Y}$ 
+  is relevant or not. Essentially we compare e.g. $g\left(\alpha^{1,1}+y_{t-1}\beta^{1,1}_1\right)$ 
+  to g\left(\alpha^{1,1}+y_{t-1}\beta^{1,1}_1+y_{t-2}\beta^{1,1}_2\right)$ as an
+  estimator of $\mathbb{P}(X_t=1\mid X_{t-1}=1, X_{t-2}=1, Y_{t_1}=y_{t-1}, Y_{t_2}=y_{t-2})$;
+  2) based on the results of those tests, it may be possible to completely remove 
+  a context from the tree, see the [paper](https://doi.org/10.1111/jtsa.12615) for
+  details. 
+  
+This last pruning phase is carried out repeatedly as context removals turn internal
+contexts into leaves that can then be further simplified. 
+
+## COVLMC in practice
+
+### Estimation
+COVLMC estimation is provided by the `covlmc()` function. We build first a simple
+example data set as follows:
+```{r}
+set.seed(0)
+nb_obs <- 200
+covariates <- data.frame(y=runif(nb_obs))
+x <- 0
+for(k in 2:nb_obs) {
+  ## we induce a simple dependency to the covariate
+  ## and an order 1 memory
+  if(covariates$y[k-1]<0.5) {
+    if(x[k-1]==0) { 
+      x[k] <- sample(c(0,1),1, prob=c(0.7,0.3))
+    } else {
+      x[k] <- sample(c(0,1),1, prob=c(0.3,0.7))
+    }
+  } else {
+    if(x[k-1]==0) { 
+      x[k] <- sample(c(0,1),1, prob=c(0.1,0.9))
+    } else {
+      x[k] <- sample(c(0,1),1, prob=c(0.5,0.5))
+    }
+  }
+}
+```
+
+Then we estimate a COVLMC as follows:
+```{r}
+model <- covlmc(x, covariates)
+model
+```
+
+The estimation process is controlled by three parameters:
+
+-   `max_depth`: the largest order/memory considered for the COVLMC
+    (defaults to 100). This parameter is essentially a computational
+    burden control parameter. It does not play a major role in COVLMC 
+    estimation because of the constraints imposed by `min_size`. The default
+    value is very conservative;
+-   `min_size`: this parameter controls the minimal number of occurrences needed
+    for a context to be included in the initial context tree. It gives the
+    number of occurences *per parameter* of the logistic model which depends on 
+    both the length of the context, the dimension of the covariates and the
+    number of states;
+-   `alpha`: is the parameter of the pruning process of the Beta-Context
+    algorithm. Pruning decisions are all based on likelihood ratio tests and
+    `alpha` is the common level of all those tests. 
+
+
+### Model choice
+
+### Diagnostics
+
+### Contexts
