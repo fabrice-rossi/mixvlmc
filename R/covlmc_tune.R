@@ -133,7 +133,7 @@ tune_covlmc <- function(x, covariate, criterion = c("BIC", "AIC"), min_size = 5,
       break
     } else {
       alpha <- max(new_alphas[new_alphas < alpha])
-      if(alpha <= 0) {
+      if (alpha <= 0) {
         break
       }
       if (verbose > 0) {

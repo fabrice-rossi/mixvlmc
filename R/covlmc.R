@@ -357,14 +357,28 @@ ctx_tree_fit_glm <- function(tree, y, covariate, alpha, control, assume_model = 
           ## have a shorter history than the one used by the local model
           ll_model_H0 <- 0
           ll_H0 <- 0
-          local_df <- (1 + ncol(covariate) * local_model$H1_model$hsize) * (nb_vals - 1)
+          ## the local_modal can be either H1 or H0
+          if (is.na(local_model$p_value)) {
+            if (local_model$H0_model$H0) {
+              actual_model <- local_model$H0_model
+            } else {
+              actual_model <- local_model$H1_model
+            }
+          } else {
+            if (local_model$p_value > alpha) {
+              actual_model <- local_model$H0_model
+            } else {
+              actual_model <- local_model$H1_model
+            }
+          }
+          local_df <- (1 + ncol(covariate) * actual_model$hsize) * (nb_vals - 1)
           sub_df <- 0
           for (v in pr_candidates) {
             sub_df <- sub_df + (1 + ncol(covariate) * submodels[[v]][["model"]]$hsize) * (nb_vals - 1)
             if (verbose) {
-              print(paste(v, submodels[[v]][["model"]]$hsize, local_model$H1_model$hsize))
+              print(paste(v, submodels[[v]][["model"]]$hsize, actual_model$hsize))
             }
-            if (submodels[[v]][["model"]]$hsize == local_model$H1_model$hsize) {
+            if (submodels[[v]][["model"]]$hsize == actual_model$hsize) {
               local_data <- submodels[[v]][["model"]]$data
             } else {
               local_data <- prepare_glm(covariate, 1 + submodels[[v]]$match, max_hsize, y, d - max_hsize)
@@ -378,7 +392,7 @@ ctx_tree_fit_glm <- function(tree, y, covariate, alpha, control, assume_model = 
                 }
               }
             }
-            ll_model_H0_sub <- glm_likelihood(local_model$H1_model$model, local_data$local_mm, local_data$target)
+            ll_model_H0_sub <- glm_likelihood(actual_model$model, local_data$local_mm, local_data$target)
             if (is.na(ll_model_H0_sub)) {
               print(utils::head(local_data$local_mm))
               print(utils::head(local_data$local_mm))
@@ -638,7 +652,7 @@ covlmc <- function(x, covariate, alpha = 0.05, min_size = 5, max_depth = 100, ke
   ## of grow_ctx_tree is to multiply min_size by 1+depth*covsize in order to
   ## work without modification or test is covsize==0
   ctx_tree <- grow_ctx_tree(ix, vals,
-    min_size = min_size*(length(vals)-1), max_depth = max_depth,
+    min_size = min_size * (length(vals) - 1), max_depth = max_depth,
     covsize = desc$cov_size, keep_match = TRUE, all_children = TRUE
   )
   if (length(vals) > 2) {
