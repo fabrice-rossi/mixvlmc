@@ -64,7 +64,7 @@
 #' dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1))))
 #' dts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
 #' dts_best_model_tune <- tune_covlmc(dts, dts_cov)
-#' draw(dts_best_model_tune$best_model)
+#' draw(as_covlmc(dts_best_model_tune))
 tune_covlmc <- function(x, covariate, criterion = c("BIC", "AIC"), min_size = 5, max_depth = 100,
                         verbose = 0,
                         save = c("best", "initial", "all"),
@@ -133,6 +133,9 @@ tune_covlmc <- function(x, covariate, criterion = c("BIC", "AIC"), min_size = 5,
       break
     } else {
       alpha <- max(new_alphas[new_alphas < alpha])
+      if(alpha <= 0) {
+        break
+      }
       if (verbose > 0) {
         cat("Pruning covlmc with alpha=", alpha, "\n")
       }
