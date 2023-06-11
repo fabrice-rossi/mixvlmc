@@ -201,8 +201,8 @@ draw(best_sun_model)
 ### Fitting a VLMC with covariates
 
 To illustrate the use of covariates, we use the power consumption data
-set included in the package. We consider a week of electricity usage as
-follows:
+set included in the package (see `vignette("covlmc")` for details). We
+consider a week of electricity usage as follows:
 
 ``` r
 pc_week_5 <- powerconsumption[powerconsumption$week == 5, ]
@@ -263,16 +263,9 @@ draw(elec_covlmc, time_sep = " | ", model = "full", p_value = FALSE)
 #> |   +-- low ([ (I)    | day_1TRUE | day_2TRUE
 #> |   |          0.3567 | -27.81    | 27.81    
 #> |   |          -1.253 | -14.39    | 13.69     ])
-#> |   '-- typical
-#> |   |   +-- low ([ (I)    | day_1TRUE
-#> |   |   |          1.099  | 18.33    
-#> |   |   |          -18.22 | 35.57     ])
-#> |   |   '-- typical ([ (I)   | day_1TRUE
-#> |   |   |              2.791 | 0.4573   
-#> |   |   |              0.47  | -0.06454  ])
-#> |   |   '-- high ([ (I)   | day_1TRUE
-#> |   |               18.89 | -16.25   
-#> |   |               16.25 | -15.56    ])
+#> |   '-- typical ([ (I)    | day_1TRUE
+#> |   |              2.666  | 0.566    
+#> |   |              0.2683 | 0.2426    ])
 #> |   '-- high ([ (I)    | day_1TRUE
 #> |               2.015  | 16.18    
 #> |               0.6931 | 16.61     ])
