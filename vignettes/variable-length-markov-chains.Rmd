@@ -142,10 +142,10 @@ $$ In other words, the memory length (the order) is *variable* and given
 by $l(x_{n-1},\ldots,x_{n-l_{\max}})$.
 
 The memory length function generates a *context* function $c$ which
-keeps in the past the one needed to obtain the conditional distribution:
+keeps in the past the part needed to obtain the conditional distribution:
 $c$ is a function from $S^{l_{\max}}$ to $\bigcup_{k=0}^{l_{\max}}S^k$
 given by: $$
-c(x_1, x_2, \ldots, x_{l_{\max}})=(x_1,\ldots,x_{c(x_1, x_2, \ldots, x_{l_{\max}})})
+c(x_1, x_2, \ldots, x_{l_{\max}})=(x_1,\ldots,x_{l(x_1, x_2, \ldots, x_{l_{\max}})})
 $$ The image by $c$ of $S^{l_{\max}}$ is the set of contexts of the VLMC
 which is entirely specified by $l$ and one conditional distribution by
 unique context.
