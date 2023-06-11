@@ -548,7 +548,7 @@ covlmc_control <- function(pseudo_obs = 1) {
 #' @param covariate a data frame of covariates.
 #' @param alpha number in (0,1) (default: 0.05) cut off value in the pruning
 #'   phase (in quantile scale).
-#' @param min_size integer >= 1 (default: 15). Tune the minimum number of
+#' @param min_size number >= 1 (default: 5). Tune the minimum number of
 #'   observations for a context in the growing phase of the context tree (see
 #'   below for details).
 #' @param max_depth integer >= 1 (default: 100). Longest context considered in
@@ -566,8 +566,10 @@ covlmc_control <- function(pseudo_obs = 1) {
 #' for the [vlmc()] approach, the algorithm builds first a context tree (see
 #' [ctx_tree()]). The `min_size` parameter is used to compute the actual number
 #' of observations per context in the growing phase of the tree. It is computed
-#' as `min_size*(1+ncol(covariate)*(d+1))` where `d` is the length of the
-#' context (a.k.a. the depth in the tree).
+#' as `min_size*(1+ncol(covariate)*d)*(s-1)` where `d` is the length of the
+#' context (a.k.a. the depth in the tree) and `s` is the number of states. This
+#' corresponds to ensuring min_size observations per parameter of the logistic
+#' regression during the estimation phase.
 #'
 #' Then logistic models are adjusted in the leaves at the tree: the goal of each
 #' logistic model is to estimate the conditional distribution of the next state
@@ -632,8 +634,11 @@ covlmc <- function(x, covariate, alpha = 0.05, min_size = 5, max_depth = 100, ke
   cov_desc <- desc$cov_desc
   covariate <- desc$covariate
   ## we enforce a full context tree (with all_children=TRUE)
+  ## min_size is multiplied by the state space cardinal minus 1 as the semantics
+  ## of grow_ctx_tree is to multiply min_size by 1+depth*covsize in order to
+  ## work without modification or test is covsize==0
   ctx_tree <- grow_ctx_tree(ix, vals,
-    min_size = min_size, max_depth = max_depth,
+    min_size = min_size*(length(vals)-1), max_depth = max_depth,
     covsize = desc$cov_size, keep_match = TRUE, all_children = TRUE
   )
   if (length(vals) > 2) {

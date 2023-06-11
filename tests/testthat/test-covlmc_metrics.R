@@ -2,7 +2,7 @@ test_that("metrics.covlmc obey its contract", {
   pc <- powerconsumption[powerconsumption$week == 5, ]
   dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.25, 0.5, 0.75, 1))))
   dts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
-  m_cov <- covlmc(dts, dts_cov, min_size = 4, keep_data = TRUE, alpha = 0.5)
+  m_cov <- covlmc(dts, dts_cov, min_size = 4/3, keep_data = TRUE, alpha = 0.5)
   m_metrics <- metrics(m_cov)
   ## class
   expect_s3_class(m_metrics, "metrics.covlmc")
@@ -21,7 +21,7 @@ test_that("metrics.covlmc objects print as expected without AUC", {
   pc <- powerconsumption[powerconsumption$week == 5, ]
   dts <- cut(pc$active_power, breaks = c(0, 0.4, 2, 8), labels = c("low", "typical", "high"))
   dts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
-  m_cov <- covlmc(dts, dts_cov, min_size = 4, keep_data = TRUE, alpha = 0.5)
+  m_cov <- covlmc(dts, dts_cov, min_size = 4/2, keep_data = TRUE, alpha = 0.5)
   m_metrics <- metrics(m_cov)
   ## AUC depends on the underlying blas/lapack
   ## we round it to prevent the test from failing
@@ -38,7 +38,7 @@ test_that("metrics.covlmc objects print as expected", {
   pc <- powerconsumption[powerconsumption$week == 5, ]
   dts <- cut(pc$active_power, breaks = c(0, 0.4, 2, 8), labels = c("low", "typical", "high"))
   dts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
-  m_cov <- covlmc(dts, dts_cov, min_size = 4, keep_data = TRUE, alpha = 0.5)
+  m_cov <- covlmc(dts, dts_cov, min_size = 4/2, keep_data = TRUE, alpha = 0.5)
   m_metrics <- metrics(m_cov)
   expect_snapshot(print(m_metrics))
 })

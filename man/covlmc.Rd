@@ -23,7 +23,7 @@ covlmc(
 \item{alpha}{number in (0,1) (default: 0.05) cut off value in the pruning
 phase (in quantile scale).}
 
-\item{min_size}{integer >= 1 (default: 15). Tune the minimum number of
+\item{min_size}{number >= 1 (default: 5). Tune the minimum number of
 observations for a context in the growing phase of the context tree (see
 below for details).}
 
@@ -50,8 +50,10 @@ The model is built using the algorithm described in Zanin Zambom et al. As
 for the \code{\link[=vlmc]{vlmc()}} approach, the algorithm builds first a context tree (see
 \code{\link[=ctx_tree]{ctx_tree()}}). The \code{min_size} parameter is used to compute the actual number
 of observations per context in the growing phase of the tree. It is computed
-as \code{min_size*(1+ncol(covariate)*(d+1))} where \code{d} is the length of the
-context (a.k.a. the depth in the tree).
+as \code{min_size*(1+ncol(covariate)*d)*(s-1)} where \code{d} is the length of the
+context (a.k.a. the depth in the tree) and \code{s} is the number of states. This
+corresponds to ensuring min_size observations per parameter of the logistic
+regression during the estimation phase.
 
 Then logistic models are adjusted in the leaves at the tree: the goal of each
 logistic model is to estimate the conditional distribution of the next state

@@ -58,9 +58,9 @@ test_that("covlmc prune works with more that 2 states", {
   y <- ifelse(runif(length(x)) > 0.5, c(x[-1], sample(c("A", "B", "C"), 1)), c(x[-c(1, 2)], sample(c("A", "B", "C"), 2, replace = TRUE)))
   y <- as.factor(ifelse(runif(length(x)) > 0.2, y, sample(c("A", "B", "C"), 500, replace = TRUE)))
   df_y <- data.frame(y = y, z = runif(length(y)))
-  model <- covlmc(x, df_y, max_depth = 5, min_size = 5, alpha = 0.005)
+  model <- covlmc(x, df_y, max_depth = 5, min_size = 3, alpha = 0.005)
   model_2 <- prune(model, 0.0001)
-  model_3 <- covlmc(x, df_y, max_depth = 5, min_size = 5, alpha = 0.0001)
+  model_3 <- covlmc(x, df_y, max_depth = 5, min_size = 3, alpha = 0.0001)
   expect_true(compare_covlmc(model_2, model_3))
 })
 
@@ -87,7 +87,7 @@ test_that("covlmc sequential pruning does not produce NAs with more than 3 state
   y <- ifelse(runif(length(x)) > 0.5, c(x[-1], sample(c("A", "B", "C"), 1)), c(x[-c(1, 2)], sample(c("A", "B", "C"), 2, replace = TRUE)))
   y <- as.factor(ifelse(runif(length(x)) > 0.2, y, sample(c("A", "B", "C"), 500, replace = TRUE)))
   df_y <- data.frame(y = y, z = runif(length(y)))
-  model <- covlmc(x, df_y, max_depth = 5, min_size = 4, alpha = 0.5)
+  model <- covlmc(x, df_y, max_depth = 5, min_size = 2, alpha = 0.5)
   m_cuts <- cutoff(model)
   m_current <- model
   for (k in seq_along(m_cuts)) {
