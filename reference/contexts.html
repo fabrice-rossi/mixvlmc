@@ -133,11 +133,11 @@ reverse to <code>FALSE</code> for the reverse convention.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Levels: A B C</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[5]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] B A</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] B A A</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Levels: A B C</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[6]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] B B C</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] B A</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Levels: A B C</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[7]]</span>
@@ -149,38 +149,30 @@ reverse to <code>FALSE</code> for the reverse convention.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Levels: A B C</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[9]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] B C C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Levels: A B C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[10]]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] B C</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Levels: A B C</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[11]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [[10]]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] C A C</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Levels: A B C</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[12]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [[11]]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] C A</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Levels: A B C</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[13]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] C B C</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [[12]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] C B A</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Levels: A B C</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[14]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [[13]]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] C B</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Levels: A B C</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[15]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] C C A</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Levels: A B C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[16]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [[14]]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] C C C</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Levels: A B C</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[17]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [[15]]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] C C</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Levels: A B C</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -190,19 +182,17 @@ reverse to <code>FALSE</code> for the reverse convention.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2     A, B</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 3  A, C, B</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 4     A, C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5     B, A</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6  B, B, C</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5  B, A, A</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6     B, A</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 7     B, B</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 8  B, C, B</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9  B, C, C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10    B, C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11 C, A, C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 12    C, A</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 13 C, B, C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 14    C, B</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 15 C, C, A</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 16 C, C, C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 17    C, C</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9     B, C</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10 C, A, C</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11    C, A</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12 C, B, A</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13    C, B</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14 C, C, C</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15    C, C</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

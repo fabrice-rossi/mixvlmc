@@ -170,16 +170,10 @@ to use <code>keep_model=TRUE</code> in <code><a href="trim.covlmc.html">trim.cov
 <span class="r-in"><span><span class="va">dts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cut.html" class="external-link">cut</a></span><span class="op">(</span><span class="va">pc</span><span class="op">$</span><span class="va">active_power</span>, breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">pc</span><span class="op">$</span><span class="va">active_power</span>, probs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">dts_cov</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>day_night <span class="op">=</span> <span class="op">(</span><span class="va">pc</span><span class="op">$</span><span class="va">hour</span> <span class="op">&gt;=</span> <span class="fl">7</span> <span class="op">&amp;</span> <span class="va">pc</span><span class="op">$</span><span class="va">hour</span> <span class="op">&lt;=</span> <span class="fl">17</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">dts_best_model_tune</span> <span class="op">&lt;-</span> <span class="fu">tune_covlmc</span><span class="op">(</span><span class="va">dts</span>, <span class="va">dts_cov</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="draw.html">draw</a></span><span class="op">(</span><span class="va">dts_best_model_tune</span><span class="op">$</span><span class="va">best_model</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="draw.html">draw</a></span><span class="op">(</span><span class="fu"><a href="as_covlmc.html">as_covlmc</a></span><span class="op">(</span><span class="va">dts_best_model_tune</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> *</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> +-- (0,1.28] (0.0001741 [ -2.789 0.7354 ])</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> '-- (1.28,7.54]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     +-- (0,1.28] (0.747 [ 1.569 ])</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     '-- (1.28,7.54]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         +-- (0,1.28] (1 [ 1.768 ])</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         '-- (1.28,7.54] (collapsing: 0.0002145)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             +-- (0,1.28] (0.02883 [ 1.58 ])</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             '-- (1.28,7.54] (0.7186 [ 2.828 ])</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> '-- (1.28,7.54] (0.31 [ 2.488 ])</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

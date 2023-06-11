@@ -89,7 +89,7 @@ phase (in quantile scale).</p></dd>
 
 
 <dt>min_size</dt>
-<dd><p>integer &gt;= 1 (default: 15). Tune the minimum number of
+<dd><p>number &gt;= 1 (default: 5). Tune the minimum number of
 observations for a context in the growing phase of the context tree (see
 below for details).</p></dd>
 
@@ -125,8 +125,10 @@ are stored in the resulting object to enable post pruning (see
 for the <code><a href="vlmc.html">vlmc()</a></code> approach, the algorithm builds first a context tree (see
 <code><a href="ctx_tree.html">ctx_tree()</a></code>). The <code>min_size</code> parameter is used to compute the actual number
 of observations per context in the growing phase of the tree. It is computed
-as <code>min_size*(1+ncol(covariate)*(d+1))</code> where <code>d</code> is the length of the
-context (a.k.a. the depth in the tree).</p>
+as <code>min_size*(1+ncol(covariate)*d)*(s-1)</code> where <code>d</code> is the length of the
+context (a.k.a. the depth in the tree) and <code>s</code> is the number of states. This
+corresponds to ensuring min_size observations per parameter of the logistic
+regression during the estimation phase.</p>
 <p>Then logistic models are adjusted in the leaves at the tree: the goal of each
 logistic model is to estimate the conditional distribution of the next state
 of the times series given the context (the recent past of the time series)

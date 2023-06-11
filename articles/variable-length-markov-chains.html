@@ -218,10 +218,10 @@ X_{n-l(x_{n-1},\ldots,x_{n-l_{\max}})}=x_{n-l(x_{n-1},\ldots,x_{n-l_{\max}})}).
 \]</span> In other words, the memory length (the order) is
 <em>variable</em> and given by <span class="math inline">\(l(x_{n-1},\ldots,x_{n-l_{\max}})\)</span>.</p>
 <p>The memory length function generates a <em>context</em> function
-<span class="math inline">\(c\)</span> which keeps in the past the one
+<span class="math inline">\(c\)</span> which keeps in the past the part
 needed to obtain the conditional distribution: <span class="math inline">\(c\)</span> is a function from <span class="math inline">\(S^{l_{\max}}\)</span> to <span class="math inline">\(\bigcup_{k=0}^{l_{\max}}S^k\)</span> given by:
 <span class="math display">\[
-c(x_1, x_2, \ldots, x_{l_{\max}})=(x_1,\ldots,x_{c(x_1, x_2, \ldots,
+c(x_1, x_2, \ldots, x_{l_{\max}})=(x_1,\ldots,x_{l(x_1, x_2, \ldots,
 x_{l_{\max}})})
 \]</span> The image by <span class="math inline">\(c\)</span> of <span class="math inline">\(S^{l_{\max}}\)</span> is the set of contexts of
 the VLMC which is entirely specified by <span class="math inline">\(l\)</span> and one conditional distribution by
