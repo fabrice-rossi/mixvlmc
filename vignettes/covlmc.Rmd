@@ -94,10 +94,10 @@ relaxed to more general spaces.
 A COVLMC puts restriction on the conditional probabilities of $X_n$
 given the past of *both* sequences. To simplify the presentation, we
 denote $X^k_l$ the sequence of random variables $$
-X^k_l=(X_k, X_{k-1}, \ldots, X_l),
+X^k_m=(X_k, X_{k-1}, \ldots, X_m),
 $$ and we use similar notations for the values taken by the variables
-$x^k_l$, as well as for $Y^k_l$ and $y^k_l$. We use here the traditional
-reverser ordering in which $X_k$ is the more recent variable and $X_l$
+$x^k_m$, as well as for $Y^k_m$ and $y^k_m$. We use here the traditional
+reverser ordering in which $X_k$ is the more recent variable and $X_m$
 the oldest.
 
 A pair of sequences $\mathbf{X}$ and $\mathbf{Y}$ is a COVLMC if there
@@ -124,7 +124,7 @@ $$ The image by $c$ of $S^{l_{\max}}$ is the set of contexts of the
 COVLMC which is entirely specified by $l$ and one conditional
 distribution by unique context.
 
-As the notations are somewhat opaque at fist, we can illustrate the
+As the notations are somewhat opaque at first, we can illustrate the
 definition with a simple example. We consider a binary sequence (values
 in $S=\{0, 1\}$) and a single numerical covariate $Y_t\in\mathbb{R}$. As
 in the theoretical example in
@@ -139,10 +139,10 @@ l(1, 0, 1)&=3.&\\
 $$ In practice the COVLMC is therefore fully described by specifying the
 following probabilities: $$
 \begin{align*}
-\mathbb{P}(X_t=1\mid& X_{t-1}=0, Y_{t_1}=y_{t-1})\\
-\mathbb{P}(X_t=1\mid& X_{t-1}=1, X_{t-2}=1, Y_{t_1}=y_{t-1}, Y_{t_2}=y_{t-2})\\
-\mathbb{P}(X_t=1\mid& X_{t-1}=1, X_{t-2}=0, X_{t-3}=0, Y_{t_1}=y_{t-1}, Y_{t_2}=y_{t-2}, Y_{t_3}=y_{t-3})\\
-\mathbb{P}(X_t=1\mid& X_{t-1}=1, X_{t-2}=0, X_{t-3}=1, Y_{t_1}=y_{t-1}, Y_{t_2}=y_{t-2}, Y_{t_3}=y_{t-3})
+\mathbb{P}(X_t=1\mid& X_{t-1}=0, Y_{t-1}=y_{t-1})\\
+\mathbb{P}(X_t=1\mid& X_{t-1}=1, X_{t-2}=1, Y_{t-1}=y_{t-1}, Y_{t-2}=y_{t-2})\\
+\mathbb{P}(X_t=1\mid& X_{t-1}=1, X_{t-2}=0, X_{t-3}=0, Y_{t-1}=y_{t-1}, Y_{t-2}=y_{t-2}, Y_{t-3}=y_{t-3})\\
+\mathbb{P}(X_t=1\mid& X_{t-1}=1, X_{t-2}=0, X_{t-3}=1, Y_{t-1}=y_{t-1}, Y_{t-2}=y_{t-2}, Y_{t-3}=y_{t-3})
 \end{align*}
 $$
 
@@ -150,7 +150,7 @@ $$
 
 The main difficulty induced by COVLMC compared to VLMC is the
 specification of the conditional distributions. Indeed the conditional
-distributions depends on $\mathbf{Y}$ and cannot simply be given by a
+distributions depend on $\mathbf{Y}$ and cannot simply be given by a
 table. For instance, in the example above, we need to specify, among
 others, $\mathbb{P}(X_t=1\mid X_{t-1}=0, Y_{t_1}=y_{t-1})$, for each all
 values of $y_{t-1}\in \mathbb{R}$ (in $\mathbb{R}^p$ in the general
@@ -191,7 +191,7 @@ more general solution:
 The last point is used in `mixvlmc` (as in the original paper) to
 simplify local models with respect to the covariates. For a context of
 length $l$, the probability distribution is assumed to depend on the $l$
-past values o of $\mathbf{Y}$ but in practice we allow a dependency to
+past values of $\mathbf{Y}$ but in practice we allow a dependency to
 only $k<l$ past values. For instance, we could have $$
 \mathbb{P}(X_t=1\mid X_{t-1}=1, X_{t-2}=1, Y_{t_1}=y_{t-1}, Y_{t_2}=y_{t-2})=g\left(\alpha^{1,1}+y_{t-1}\beta^{1,1}_1\right).
 $$
@@ -429,16 +429,10 @@ The model can be explored in details by drawing its context tree
 draw(elec_model)
 ```
 
-The `draw.covlmc()` function is more advanced that its VLMC counterpart. In particular
-it reports in more details p-values associated to pruning operations. 
-The "merging" p-value corresponds to replacing the some of the contexts
-by a single join model while the "collapsing" p-value is associated to pruning
-all the sub-contexts of a context. P-values associated to specific models correspond
-to reducing the memory of the corresponding model, that is discarding the dependency 
+The `draw.covlmc()` function is more advanced than its VLMC counterpart. It provides more detailed information, particularly regarding p-values associated with pruning operations. The "merging" p-value corresponds to replacing some of the contexts with a single joint model, while the "collapsing" p-value is associated to pruning all the sub-contexts of a context. P-values associated to specific models correspond to reducing the memory of the corresponding model, that is discarding the dependency 
 of the conditional probability towards the oldest covariates. 
 
-To explore the contexts in a programmatic way, one should rely on the `contexts()` 
-function. COVLMC contexts have additional characteristics compared to VLMC and context trees.
+To explore the contexts in a programmatically way, one should rely on the `contexts()` function. COVLMC contexts have additional characteristics compared to VLMC and context trees.
 In particular, the `contexts()` function can report the model associated to each context, either
 by its parameters only:
 ```{r}

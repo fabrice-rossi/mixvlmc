@@ -78,7 +78,7 @@ With the default parameters, we end up with already `r context_number(y_ctx_def)
 y_ctx_min_1 <- ctx_tree(y, min_size = 1)
 y_ctx_min_1
 ```
-If we rise the depth limit, the number of contexts keep increasing:
+If we raise the depth limit, the number of contexts keeps increasing:
 ```{r}
 y_ctx_min_1_d_15 <- ctx_tree(y, min_size = 1, max_depth = 15)
 y_ctx_min_1_d_15
