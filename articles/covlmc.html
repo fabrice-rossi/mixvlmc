@@ -159,12 +159,12 @@ relaxed to more general spaces.</p>
 <p>A COVLMC puts restriction on the conditional probabilities of <span class="math inline">\(X_n\)</span> given the past of <em>both</em>
 sequences. To simplify the presentation, we denote <span class="math inline">\(X^k_l\)</span> the sequence of random variables
 <span class="math display">\[
-X^k_l=(X_k, X_{k-1}, \ldots, X_l),
+X^k_m=(X_k, X_{k-1}, \ldots, X_m),
 \]</span> and we use similar notations for the values taken by the
-variables <span class="math inline">\(x^k_l\)</span>, as well as for
-<span class="math inline">\(Y^k_l\)</span> and <span class="math inline">\(y^k_l\)</span>. We use here the traditional
+variables <span class="math inline">\(x^k_m\)</span>, as well as for
+<span class="math inline">\(Y^k_m\)</span> and <span class="math inline">\(y^k_m\)</span>. We use here the traditional
 reverser ordering in which <span class="math inline">\(X_k\)</span> is
-the more recent variable and <span class="math inline">\(X_l\)</span>
+the more recent variable and <span class="math inline">\(X_m\)</span>
 the oldest.</p>
 <p>A pair of sequences <span class="math inline">\(\mathbf{X}\)</span>
 and <span class="math inline">\(\mathbf{Y}\)</span> is a COVLMC if there
@@ -192,7 +192,7 @@ c(x^{n-1}_{n-l_{\max}})=x^{n-1}_{n-l\left(x^{n-1}_{n-l_{\max}}\right)}
 \]</span> The image by <span class="math inline">\(c\)</span> of <span class="math inline">\(S^{l_{\max}}\)</span> is the set of contexts of
 the COVLMC which is entirely specified by <span class="math inline">\(l\)</span> and one conditional distribution by
 unique context.</p>
-<p>As the notations are somewhat opaque at fist, we can illustrate the
+<p>As the notations are somewhat opaque at first, we can illustrate the
 definition with a simple example. We consider a binary sequence (values
 in <span class="math inline">\(S=\{0, 1\}\)</span>) and a single
 numerical covariate <span class="math inline">\(Y_t\in\mathbb{R}\)</span>. As in the theoretical
@@ -208,13 +208,13 @@ l(1, 0, 1)&amp;=3.&amp;\\
 \]</span> In practice the COVLMC is therefore fully described by
 specifying the following probabilities: <span class="math display">\[
 \begin{align*}
-\mathbb{P}(X_t=1\mid&amp; X_{t-1}=0, Y_{t_1}=y_{t-1})\\
-\mathbb{P}(X_t=1\mid&amp; X_{t-1}=1, X_{t-2}=1, Y_{t_1}=y_{t-1},
-Y_{t_2}=y_{t-2})\\
+\mathbb{P}(X_t=1\mid&amp; X_{t-1}=0, Y_{t-1}=y_{t-1})\\
+\mathbb{P}(X_t=1\mid&amp; X_{t-1}=1, X_{t-2}=1, Y_{t-1}=y_{t-1},
+Y_{t-2}=y_{t-2})\\
 \mathbb{P}(X_t=1\mid&amp; X_{t-1}=1, X_{t-2}=0, X_{t-3}=0,
-Y_{t_1}=y_{t-1}, Y_{t_2}=y_{t-2}, Y_{t_3}=y_{t-3})\\
+Y_{t-1}=y_{t-1}, Y_{t-2}=y_{t-2}, Y_{t-3}=y_{t-3})\\
 \mathbb{P}(X_t=1\mid&amp; X_{t-1}=1, X_{t-2}=0, X_{t-3}=1,
-Y_{t_1}=y_{t-1}, Y_{t_2}=y_{t-2}, Y_{t_3}=y_{t-3})
+Y_{t-1}=y_{t-1}, Y_{t-2}=y_{t-2}, Y_{t-3}=y_{t-3})
 \end{align*}
 \]</span></p>
 </div>
@@ -223,7 +223,7 @@ Y_{t_1}=y_{t-1}, Y_{t_2}=y_{t-2}, Y_{t_3}=y_{t-3})
 </h3>
 <p>The main difficulty induced by COVLMC compared to VLMC is the
 specification of the conditional distributions. Indeed the conditional
-distributions depends on <span class="math inline">\(\mathbf{Y}\)</span>
+distributions depend on <span class="math inline">\(\mathbf{Y}\)</span>
 and cannot simply be given by a table. For instance, in the example
 above, we need to specify, among others, <span class="math inline">\(\mathbb{P}(X_t=1\mid X_{t-1}=0,
 Y_{t_1}=y_{t-1})\)</span>, for each all values of <span class="math inline">\(y_{t-1}\in \mathbb{R}\)</span> (in <span class="math inline">\(\mathbb{R}^p\)</span> in the general case).</p>
@@ -265,7 +265,7 @@ using a likelihood-ratio test.</li>
 <p>The last point is used in <code>mixvlmc</code> (as in the original
 paper) to simplify local models with respect to the covariates. For a
 context of length <span class="math inline">\(l\)</span>, the
-probability distribution is assumed to depend on the <span class="math inline">\(l\)</span> past values o of <span class="math inline">\(\mathbf{Y}\)</span> but in practice we allow a
+probability distribution is assumed to depend on the <span class="math inline">\(l\)</span> past values of <span class="math inline">\(\mathbf{Y}\)</span> but in practice we allow a
 dependency to only <span class="math inline">\(k&lt;l\)</span> past
 values. For instance, we could have <span class="math display">\[
 \mathbb{P}(X_t=1\mid X_{t-1}=1, X_{t-2}=1, Y_{t_1}=y_{t-1},
@@ -596,16 +596,17 @@ characteristics:</p>
 <span><span class="co">#&gt; |   '-- high (0.1638 [ 3.367</span></span>
 <span><span class="co">#&gt; |                      1.705 ])</span></span>
 <span><span class="co">#&gt; '-- high (0.776 [ 1.474 ])</span></span></code></pre></div>
-<p>The <code><a href="../reference/draw.covlmc.html">draw.covlmc()</a></code> function is more advanced that its
-VLMC counterpart. In particular it reports in more details p-values
-associated to pruning operations. The “merging” p-value corresponds to
-replacing the some of the contexts by a single join model while the
-“collapsing” p-value is associated to pruning all the sub-contexts of a
-context. P-values associated to specific models correspond to reducing
-the memory of the corresponding model, that is discarding the dependency
-of the conditional probability towards the oldest covariates.</p>
-<p>To explore the contexts in a programmatic way, one should rely on the
-<code><a href="../reference/contexts.html">contexts()</a></code> function. COVLMC contexts have additional
+<p>The <code><a href="../reference/draw.covlmc.html">draw.covlmc()</a></code> function is more advanced than its
+VLMC counterpart. It provides more detailed information, particularly
+regarding p-values associated with pruning operations. The “merging”
+p-value corresponds to replacing some of the contexts with a single
+joint model, while the “collapsing” p-value is associated to pruning all
+the sub-contexts of a context. P-values associated to specific models
+correspond to reducing the memory of the corresponding model, that is
+discarding the dependency of the conditional probability towards the
+oldest covariates.</p>
+<p>To explore the contexts in a programmatically way, one should rely on
+the <code><a href="../reference/contexts.html">contexts()</a></code> function. COVLMC contexts have additional
 characteristics compared to VLMC and context trees. In particular, the
 <code><a href="../reference/contexts.html">contexts()</a></code> function can report the model associated to each
 context, either by its parameters only:</p>
