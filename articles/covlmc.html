@@ -428,7 +428,7 @@ the full “pruning space” associated to a given data set.</p>
 <span><span class="co">#&gt; '-- 1 ([ (I)   y_1   </span></span>
 <span><span class="co">#&gt;          1.719 -1.881 ])</span></span></code></pre></div>
 <p>The resulting model is the same as the one obtained before but it was
-properly obtained by</p>
+properly obtained by minimising the BIC.</p>
 <p>As for <code><a href="../reference/tune_vlmc.html">tune_vlmc()</a></code>, the <code>max_depth</code> parameter
 is automatically increased to avoid using it inadvertently as a
 regularisation parameter. However, while <code>min_size</code> is
@@ -476,8 +476,8 @@ follows:</p>
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">elec_tune</span><span class="op">$</span><span class="va">results</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">alpha</span>, y <span class="op">=</span> <span class="va">BIC</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p><img src="covlmc_files/figure-html/unnamed-chunk-13-1.png" width="700">
-The final model is:</p>
+<p><img src="covlmc_files/figure-html/unnamed-chunk-13-1.png" width="700"></p>
+<p>The final model is:</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/draw.html">draw</a></span><span class="op">(</span><span class="fu"><a href="../reference/as_covlmc.html">as_covlmc</a></span><span class="op">(</span><span class="va">elec_tune</span><span class="op">)</span>, model <span class="op">=</span> <span class="st">"full"</span>, p_value <span class="op">=</span> <span class="cn">FALSE</span>, with_state <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; *</span></span>
@@ -611,7 +611,7 @@ characteristics compared to VLMC and context trees. In particular, the
 <code><a href="../reference/contexts.html">contexts()</a></code> function can report the model associated to each
 context, either by its parameters only:</p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/contexts.html">contexts</a></span><span class="op">(</span><span class="va">elec_model</span>, model<span class="op">=</span><span class="st">"coef"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/contexts.html">contexts</a></span><span class="op">(</span><span class="va">elec_model</span>, model <span class="op">=</span> <span class="st">"coef"</span><span class="op">)</span></span>
 <span><span class="co">#&gt;        context         coef</span></span>
 <span><span class="co">#&gt; 1          low -1.49102....</span></span>
 <span><span class="co">#&gt; 2 typical, low 0.464305....</span></span>
@@ -622,7 +622,7 @@ context, either by its parameters only:</p>
 <span><span class="co">#&gt; 7         high 1.473892....</span></span></code></pre></div>
 <p>or using the models themselves:</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/contexts.html">contexts</a></span><span class="op">(</span><span class="va">elec_model</span>, model<span class="op">=</span><span class="st">"full"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/contexts.html">contexts</a></span><span class="op">(</span><span class="va">elec_model</span>, model <span class="op">=</span> <span class="st">"full"</span><span class="op">)</span></span>
 <span><span class="co">#&gt;        context                                            model</span></span>
 <span><span class="co">#&gt; 1          low &lt;S4 class 'vglm' [package "VGAM"] with 37 slots&gt;</span></span>
 <span><span class="co">#&gt; 2 typical, low &lt;S4 class 'vglm' [package "VGAM"] with 37 slots&gt;</span></span>
