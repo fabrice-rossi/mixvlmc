@@ -328,7 +328,7 @@ and
 draw(as_covlmc(model_tune), model = "full", p_value = FALSE)
 ```
 The resulting model is the same as the one obtained before but it was properly 
-obtained by 
+obtained by minimising the BIC.
 
 As for `tune_vlmc()`, the `max_depth` parameter is automatically increased to
 avoid using it inadvertently as a regularisation parameter. However, while 
@@ -367,6 +367,7 @@ ggplot(elec_tune$results, aes(x = alpha, y = BIC)) +
   geom_line() +
   geom_point()
 ```
+
 The final model is:
 ```{r}
 draw(as_covlmc(elec_tune), model = "full", p_value = FALSE, with_state = TRUE)
