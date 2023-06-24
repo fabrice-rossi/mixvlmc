@@ -12,7 +12,11 @@ Authors@R:
              family = "Le Picard",
              role = "ctb",
              email = "lepicardhugo@gmail.com",
-             comment = c(ORCID = "0000-0002-7023-2996")))
+             comment = c(ORCID = "0000-0002-7023-2996")),
+      person(given = "Guénolé",
+             family = "Joubioux",
+             role = "ctb",
+             email = "guenole.joubioux@gmail.com"))
 Description: Estimates Variable Length Markov Chains (VLMC) models and VLMC with 
     covariates models from discrete sequences. Supports model selection via
     information criteria and simulation of new sequences from an estimated

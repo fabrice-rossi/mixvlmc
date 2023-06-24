@@ -44,6 +44,7 @@ Useful links:
 Other contributors:
 \itemize{
   \item Hugo Le Picard \email{lepicardhugo@gmail.com} (\href{https://orcid.org/0000-0002-7023-2996}{ORCID}) [contributor]
+  \item Guénolé Joubioux \email{guenole.joubioux@gmail.com} [contributor]
 }
 
 }
