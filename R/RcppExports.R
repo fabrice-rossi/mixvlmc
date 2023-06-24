@@ -4,8 +4,8 @@
 #' Find a double just after another one
 #'
 #' This function returns a vector of values that are the "just after" the ones
-#' given in input: a is just after b is a is the smallest double strictly larger
-#' than b. This is implement with the \code{nextafter} C++ function.
+#' given in input: a is just after b is a is the smallest double strictly
+#' larger than b. This is implement with the \code{nextafter} C++ function.
 #'
 #' @param x vector of values
 #' @return vector of just after values
@@ -18,8 +18,8 @@ after <- function(x) {
 #' Find a double just before another one
 #'
 #' This function returns a vector of values that are the "just before" the ones
-#' given in input: a is just before b is a is the largest double strictly smaller
-#' than b. This is implement with the \code{nextafter} C++ function.
+#' given in input: a is just before b is a is the largest double strictly
+#' smaller than b. This is implement with the \code{nextafter} C++ function.
 #'
 #' @param x vector of values
 #' @return vector of just before values

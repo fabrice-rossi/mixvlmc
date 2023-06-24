@@ -4,8 +4,8 @@ using namespace Rcpp;
 //' Find a double just after another one
 //'
 //' This function returns a vector of values that are the "just after" the ones
-//' given in input: a is just after b is a is the smallest double strictly larger
-//' than b. This is implement with the \code{nextafter} C++ function.
+//' given in input: a is just after b is a is the smallest double strictly
+//' larger than b. This is implement with the \code{nextafter} C++ function.
 //'
 //' @param x vector of values
 //' @return vector of just after values
