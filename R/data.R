@@ -4,8 +4,13 @@
 #' household with a time resolution of 10 minutes for the full year of 2008.
 #'
 #' This is a simplified version of the full data available on the UCI Machine
-#' Learning Repository. The original data have been averaged over a 10 minute
-#' time period (discarding missing data in each period). The data set contains only
+#' Learning Repository under a
+#' \href{https://creativecommons.org/licenses/by/4.0/legalcode}{Creative Commons
+#' Attribution 4.0 International} (CC BY 4.0) license, and provided by Georges
+#' Hebrail and Alice Berard.
+#'
+#' The original data have been averaged over a 10 minute time period (discarding
+#' missing data in each period). The data set contains only
 #' the measurements from year 2008.
 #'
 #' Notice that the different variables are expressed in the adapted units.
@@ -42,6 +47,8 @@
 #' }
 #'
 #' @source
-#'   <https://archive.ics.uci.edu/ml/datasets/Individual+household+electric+power+consumption>
+#'   Individual household electric power consumption, 2012, G. Hebrail and A. Berard,
+#'   UC Irvine Machine Learning repository.
+#'   <https://doi.org/10.24432/C58K54>
 #'
 "powerconsumption"
