@@ -184,7 +184,7 @@ As in the VLMC case, the optimal model remains rather simple:
 
 ### Sampling
 
-VLMC models can also be used to sample new time series as in the VMLC bootstrap proposed by Bühlmann and Wyner. For instance, we can estimate the longest time period spent in the *high* active power regime. In this "predictive" setting, the [AIC](https://en.wikipedia.org/wiki/Akaike_information_criterion) may be more adapted to select the best model. Notice that some quantities can be computed directly from the model in the VLMC case, using classical results on Markov Chains.
+VLMC models can also be used to sample new time series as in the VMLC bootstrap proposed by Bühlmann and Wyner. For instance, we can estimate the longest time period spent in the *high* active power regime. In this "predictive" setting, the [AIC](https://en.wikipedia.org/wiki/Akaike_information_criterion) may be more adapted to select the best model. Notice that some quantities can be computed directly from the model in the VLMC case, using classical results on Markov Chains. See `vignette("sampling")` for details on sampling. 
 
 We first select two models based on the AIC.
 
