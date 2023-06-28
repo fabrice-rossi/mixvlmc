@@ -11,6 +11,9 @@ vignette: >
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
+  fig.width = 7, 
+  fig.height = 7, 
+  fig.align = "center",
   cache.path = ".sampling_cache/"
 )
 ```
@@ -119,7 +122,7 @@ obtained model is quite complex with `r context_number(CAC_model)` contexts.
 
 The original discrete time series does not exhibit long subsequences of constant 
 values as shown in the following graphical representation.
-```{r}
+```{r fig.height=4}
 CAC_rle <- rle(as.integer(CAC_dts))
 CAC_rle_df <- data.frame(value = CAC_rle$values, length = CAC_rle$lengths)
 ggplot(CAC_rle_df, aes(x = length)) +
@@ -170,7 +173,7 @@ bootstrap_ls <- sapply(bootstrap_samples, long_sequence)
 The bootstrap distribution of this statistics is illustrated on the following
 figure in which the red vertical line represents the value of the statistics on
 the original sequence. 
-```{r}
+```{r fig.height=4}
 ggplot(mapping = aes(x = bootstrap_ls)) +
   geom_density() +
   geom_rug() +
