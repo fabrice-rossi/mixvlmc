@@ -226,3 +226,55 @@ co_sample <- simulate(CAC_comodel,
   covariate = CAC_covariates
 )
 ```
+
+### What-if scenarios
+In some situations, one can modify the covariates to test the consequences of the 
+external influence on the discrete time series under study. Let us consider for
+instance a week of electrical consumption:
+
+```{r fig.height=5}
+pc_week <- powerconsumption[powerconsumption$week == 12, ]
+elec <- pc_week$active_power
+ggplot(pc_week, aes(x = date_time, y = active_power)) +
+  geom_line() +
+  xlab("Date") +
+  ylab("Activer power (kW)")
+```
+We build a discrete version by considering two states: the background base 
+active power below 0.4 kW and the active use of electric appliance above this limit.
+
+```{r}
+elec_dts <- cut(elec, breaks = c(0, 1.2, 8), labels = c("background", "active"))
+elec_cov <- data.frame(day = (pc_week$hour >= 7 & pc_week$hour <= 17))
+```
+
+Then we adjust a COVLMC with a binary covariate day/night, using the AIC. 
+
+```{r}
+elec_covlmc_tune <- tune_covlmc(elec_dts, elec_cov, criterion = "AIC")
+best_elec_covlmc <- as_covlmc(elec_covlmc_tune)
+draw(best_elec_covlmc, model = "full", time_sep = " | ", p_value = FALSE)
+```
+
+Then we can simulate longer or shorter days by manipulating the covariates. For
+instance a "day only" full week could be obtained as follows
+```{r}
+day_only <- simulate(best_elec_covlmc,
+  length(elec_dts),
+  seed = 0,
+  covariate = data.frame(day = rep(TRUE, length(elec_dts)))
+)
+```
+while a "night only" full week is given by
+```{r}
+night_only <- simulate(best_elec_covlmc,
+  length(elec_dts),
+  seed = 0,
+  covariate = data.frame(day = rep(FALSE, length(elec_dts)))
+)
+```
+
+A typical use of this approach consists in simulating first a collection of 
+sequences with the original covariates to get a sense of the variability of the
+statistics of interest. In a second phase, a comparable collection of sequences
+is generated using the manipulated covariates. 
