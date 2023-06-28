@@ -320,7 +320,8 @@ the longest time period spent in the *high* active power regime. In this
 [AIC](https://en.wikipedia.org/wiki/Akaike_information_criterion) may be
 more adapted to select the best model. Notice that some quantities can
 be computed directly from the model in the VLMC case, using classical
-results on Markov Chains.
+results on Markov Chains. See `vignette("sampling")` for details on
+sampling.
 
 We first select two models based on the AIC.
 
