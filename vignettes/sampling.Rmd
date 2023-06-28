@@ -11,8 +11,8 @@ vignette: >
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  fig.width = 7, 
-  fig.height = 7, 
+  fig.width = 7,
+  fig.height = 7,
   fig.align = "center",
   cache.path = ".sampling_cache/"
 )
@@ -25,8 +25,10 @@ library(data.table) ## for frollapply
 ```
 
 Once a (CO)VLMC has been estimated from a sequence, it can be used to produce new sequences. Any statistical estimator defined on the original sequence can be applied to the simulated sequences leading a form of [semi-parametric bootstrap](https://en.wikipedia.org/wiki/Bootstrapping_(statistics)). This provides
-an interesting alternative to other boostrapping solutions for correlated data,
-such as the block bootstrap. 
+an interesting alternative to other bootstrapping solutions for correlated data,
+such as the block bootstrap. This can also be use to consider what-if scenarios 
+when different values of the covariates are used study their effect beyond analysis
+coefficients in context specific models. 
 
 ## Theoretical results
 
@@ -106,8 +108,7 @@ CAC_dts <- factor(
   ifelse(CAC_rel_evol >= 0.005, "Up",
     ifelse(CAC_rel_evol <= -0.005, "Down", "Stay")
   ),
-  levels = c("Down", "Stay", "Up"),
-  ordered = TRUE
+  levels = c("Down", "Stay", "Up")
 )
 ```
 
@@ -182,4 +183,46 @@ ggplot(mapping = aes(x = bootstrap_ls)) +
     x = "Probability"
   ) +
   geom_vline(xintercept = long_sequence(CAC_dts), color = "red")
+```
+
+## Sampling from a COVLMC
+
+The case of COVLMC is more complex mainly because of the dependence towards an 
+external time series that is not modelled. In addition, no theoretical result
+justify a form of COVLMC bootstrap at the time of writing this document (2023).
+
+We can nevertheless use sampling both to get an idea of the potential variability
+of the results from a qualitative point of view, and also to study some what-if 
+scenarios based on a modification of the covariates. 
+
+### CAC example continued
+Let us study the CAC discrete time series using the three other indexes from 
+`EuStockMarkets` as covariates. As previously, we select a model with the AIC
+criterion:
+```{r cache=TRUE}
+CAC_covariates <- as.data.frame(EuStockMarkets)[c("DAX", "SMI", "FTSE")][-1, ]
+CAC_covlmc <- tune_covlmc(CAC_dts, CAC_covariates, criterion = "AIC")
+CAC_comodel <- as_covlmc(CAC_covlmc)
+```
+The obtained model is relatively complex as shown below:
+```{r}
+draw(CAC_comodel, model = "full", with_state = TRUE)
+```
+
+The variability of the discrete time series for fixed values of the covariates
+can be investigated using simulated sequences. The only difference between
+`simulate.vlmc()` and `simulate.covlmc()` is the need for the covariates in the 
+latter. A burning time is also problematic here as we do not have additional 
+throw away values for the covariates. A possibility used here consists in starting
+the discrete time series as the observed one started, using as many values as the
+size of the largest context. Notice that in the current implementation, 
+simulating from a COVLMC is relatively slow compared to simulation from a VLMC. 
+Here we perform a single simulation to illustrate the feature.
+```{r cache=TRUE}
+co_sample <- simulate(CAC_comodel,
+  length(CAC_dts),
+  seed = 0,
+  init = CAC_dts[1:depth(CAC_comodel)],
+  covariate = CAC_covariates
+)
 ```
