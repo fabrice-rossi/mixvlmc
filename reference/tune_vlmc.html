@@ -28,6 +28,7 @@ series by optimizing an information criterion (BIC or AIC)."><!-- mathjax --><sc
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../articles/context-trees.html">Context trees</a>
     <a class="dropdown-item" href="../articles/covlmc.html">Variable Length Markov Chains with Covariates (COVLMC)</a>
+    <a class="dropdown-item" href="../articles/sampling.html">Sampling from (CO)VLMC</a>
     <a class="dropdown-item" href="../articles/variable-length-markov-chains.html">Variable length Markov chains (VLMC)</a>
   </div>
 </li>
@@ -144,7 +145,7 @@ information criterion.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">dts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A"</span>, <span class="st">"B"</span>, <span class="st">"C"</span><span class="op">)</span><span class="op">)</span>, <span class="fl">100</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">tune_result</span> <span class="op">&lt;-</span> <span class="fu">tune_vlmc</span><span class="op">(</span><span class="va">dts</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="draw.html">draw</a></span><span class="op">(</span><span class="va">tune_result</span><span class="op">$</span><span class="va">best_model</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> * (0.33, 0.32, 0.35)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> * (0.3, 0.35, 0.35)</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
