@@ -15,7 +15,10 @@ editor_options:
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  fig.width = 7, 
+  fig.height = 7, 
+  fig.align = "center"
 )
 ```
 
@@ -40,7 +43,7 @@ patterns.
 Let us focus again on the electrical usage data set used in the package
 introduction, using the following two weeks of data:
 
-```{r active_power_week_15_16}
+```{r active_power_week_15_16, fig.height=5}
 pc_week_15_16 <- powerconsumption[powerconsumption$week %in% c(15, 16), ]
 elec <- pc_week_15_16$active_power
 ggplot(pc_week_15_16, aes(x = date_time, y = active_power)) +
@@ -362,7 +365,7 @@ elec_tune
 ```
 
 The model selection process can be represented graphically as follows:
-```{r}
+```{r fig.height=4}
 ggplot(elec_tune$results, aes(x = alpha, y = BIC)) +
   geom_line() +
   geom_point()
