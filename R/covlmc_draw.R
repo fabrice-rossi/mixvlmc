@@ -9,6 +9,7 @@ draw_covlmc_model <- function(coefficients, p_value, hsize, names, lev, params) 
       }
     } else {
       if (isTRUE(params$with_state)) {
+        lev <- as.character(lev)
         lev[1] <- stringr::str_c("(", lev[1], ")")
         coeffs <- pp_mat(coefficients, params$digits, sep = params$time_sep, groups = hsize, colnames = names, rownames = lev, rn_sep = params$level_sep)
       } else {
