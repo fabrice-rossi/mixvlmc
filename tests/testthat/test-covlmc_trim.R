@@ -21,3 +21,19 @@ test_that("trimming removes only what it should remove", {
     )
   }
 })
+
+test_that("trimmed model can be drawn", {
+  for (engine in c("glm", "multinom")) {
+    withr::local_options(mixvlmc.predictive = engine)
+    pc <- powerconsumption[powerconsumption$week %in% 5:7, ]
+    dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1))))
+    dts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
+    m_cov <- covlmc(dts, dts_cov, min_size = 10, keep_data = TRUE)
+    t_m_cov_model <- trim(m_cov, keep_model = TRUE)
+    t_m_cov <- trim(m_cov)
+    expect_snapshot(draw(t_m_cov_model, model = "coef", time_sep = " | ", with_state = TRUE, digits = 2))
+    expect_snapshot(draw(t_m_cov, model = "coef", time_sep = " | ", with_state = TRUE, digits = 2))
+    expect_snapshot(draw(t_m_cov_model, model = "full", time_sep = " | ", with_state = TRUE, digits = 2))
+    expect_snapshot(draw(t_m_cov, model = "full", time_sep = " | ", with_state = TRUE, digits = 2))
+  }
+})
