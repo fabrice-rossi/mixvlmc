@@ -79,3 +79,15 @@ test_that("draw handles cases when multinom is used for two states time series",
   expect_snapshot_output(draw(m_cov, model = "full", time_sep = " | ", digits = 1))
   expect_snapshot_output(draw(m_cov, model = "full", time_sep = " | ", digits = 1, with_state = TRUE))
 })
+
+test_that("draw handles degenerate cases", {
+  for (engine in c("glm", "multinom")) {
+    withr::local_options(mixvlmc.predictive = engine)
+    pc <- powerconsumption[powerconsumption$week %in% 5:7, ]
+    dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1))))
+    dts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
+    m_cov <- covlmc(dts, dts_cov, min_size = 10, keep_data = TRUE)
+    expect_snapshot_output(draw(m_cov, model = "coef", time_sep = " | ", with_state = TRUE, digits = 2))
+    expect_snapshot_output(draw(m_cov, model = "full", time_sep = " | ", with_state = TRUE, digits = 2))
+  }
+})
