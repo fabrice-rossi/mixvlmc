@@ -2,9 +2,12 @@
 % Please edit documentation in R/vlmc.R
 \name{prune}
 \alias{prune}
+\alias{prune.vlmc}
 \title{Prune a Variable Length Markov Chain (VLMC)}
 \usage{
 prune(vlmc, alpha = 0.05, cutoff = NULL, ...)
+
+\method{prune}{vlmc}(vlmc, alpha = 0.05, cutoff = NULL, ...)
 }
 \arguments{
 \item{vlmc}{a fitted VLMC model.}

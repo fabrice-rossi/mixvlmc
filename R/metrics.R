@@ -18,7 +18,7 @@
 #' @param model The context based model on which to compute predictive metrics.
 #' @param ... Additional parameters for predictive metrics computation.
 #'
-#' @return The returned value is guaranteed to have at least three components
+#' @returns The returned value is guaranteed to have at least three components
 #'
 #'  - `accuracy`: the accuracy of the predictions
 #'  - `conf_mat`: the confusion matrix of the predictions, with predicted values
@@ -31,6 +31,18 @@
 #' Under the ROC Curve for Multiple Class Classification
 #' Problems. _Machine Learning_ 45(2), p. 171--186. DOI:
 #'  [10.1023/A:1010920819831](http://dx.doi.org/10.1023/A:1010920819831).
+#' @examples
+#' pc <- powerconsumption[powerconsumption$week == 5, ]
+#' breaks <- c(
+#'   0,
+#'   median(powerconsumption$active_power, na.rm = TRUE),
+#'   max(powerconsumption$active_power, na.rm = TRUE)
+#' )
+#' labels <- c(0, 1)
+#' dts <- cut(pc$active_power, breaks = breaks, labels = labels)
+#' model <- vlmc(dts)
+#' metrics(model)
+#'
 #' @export
 metrics <- function(model, ...) {
   UseMethod("metrics")
@@ -64,7 +76,7 @@ metrics_fix_names <- function(cm) {
 #' @param target A vector of true classes.
 #' @param probs A matrix/vector providing estimates of the probabilities of each class.
 #'
-#' @return A list with several quality metrics.
+#' @returns A list with several quality metrics.
 #' @noRd
 main_metrics <- function(target, probs) {
   if (is.matrix(probs) || is.data.frame(probs)) {

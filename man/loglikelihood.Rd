@@ -29,7 +29,7 @@ For VLMC objects, the method \code{loglikelihood.vlmc} will be used. For VLMC wi
 will instead be called. For more informations on \code{loglikelihood} methods, use \code{methods(loglikelihood)} and their associated documentation.
 }
 \examples{
-# Likelihood for a fitted VLMC.
+## Likelihood for a fitted VLMC.
 pc <- powerconsumption[powerconsumption$week == 5, ]
 breaks <- c(
   0,
@@ -43,7 +43,7 @@ ll <- loglikelihood(m_nocovariate)
 ll
 attr(ll, "nobs")
 
-# Likelihood for a new time series with previously fitted VLMC.
+## Likelihood for a new time series with previously fitted VLMC.
 pc_new <- powerconsumption[powerconsumption$week == 11, ]
 dts_new <- cut(pc_new$active_power, breaks = breaks, labels = labels)
 ll_new <- loglikelihood(m_nocovariate, newdata = dts_new)

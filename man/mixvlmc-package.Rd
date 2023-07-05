@@ -6,7 +6,7 @@
 \alias{mixvlmc-package}
 \title{mixvlmc: Variable Length Markov Chains with Covariates}
 \description{
-Estimates Variable Length Markov Chains (VLMC) models and VLMC with covariates models from discrete sequences. Supports model selection via information criteria and simulation of new sequences from an estimated model.
+Estimates Variable Length Markov Chains (VLMC) models and VLMC with covariates models from discrete sequences. Supports model selection via information criteria and simulation of new sequences from an estimated model. See Bühlmann, P. and Wyner, A. J. (1999) \doi{10.1214/aos/1018031204} for VLMC and Zanin Zambom, A., Kim, S. and Lopes Garcia, N. (2022) \doi{10.1111/jtsa.12615} for VLMC with covariates.
 }
 \section{Package options}{
 

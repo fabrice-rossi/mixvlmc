@@ -32,7 +32,7 @@ will instead be called. For more informations on \code{loglikelihood} methods, u
 }
 \examples{
 
-# Likelihood for a fitted VLMC with covariates.
+## Likelihood for a fitted VLMC with covariates.
 pc <- powerconsumption[powerconsumption$week == 5, ]
 breaks <- c(
   0,
@@ -47,7 +47,8 @@ ll <- loglikelihood(m_cov)
 ll
 attr(ll, "nobs")
 
-# Likelihood for new time series and covariates with previously fitted VLMC with covariates
+## Likelihood for new time series and covariates with previously
+## fitted VLMC with covariates
 pc_new <- powerconsumption[powerconsumption$week == 11, ]
 dts_new <- cut(pc_new$active_power, breaks = breaks, labels = labels)
 dts_cov_new <- data.frame(day_night = (pc_new$hour >= 7 & pc_new$hour <= 17))

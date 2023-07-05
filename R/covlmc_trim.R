@@ -42,7 +42,7 @@ rec_trim_covlmc <- function(ct, keep_model, vals) {
 #' @param keep_model specifies whether to keep the internal models (or not)
 #' @param ... additional arguments for the trim function.
 #'
-#' @return a trimmed context tree.
+#' @returns a trimmed context tree.
 #' @export
 #'
 #' @examples

@@ -41,7 +41,7 @@ generate_fake_data <- function(freq, counts, vals) {
 
 #' @inherit metrics
 #' @title Predictive quality metrics for VLMC
-#' @return An object of class `metrics.vlmc` with the following components:
+#' @returns An object of class `metrics.vlmc` with the following components:
 #'
 #'  - `accuracy`: the accuracy of the predictions
 #'  - `conf_mat`: the confusion matrix of the predictions, with predicted values

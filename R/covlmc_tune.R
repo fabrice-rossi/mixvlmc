@@ -36,7 +36,7 @@
 #'   selection process. See details for memory occupation.
 #' @param trimming specify the type of trimming used when saving the intermediate models, see details.
 #'
-#' @return a list with the following components:
+#' @returns a list with the following components:
 #'
 #'   - `best_model`: the optimal VLMC
 #'   - `criterion`: the criterion used to select the optimal VLMC
