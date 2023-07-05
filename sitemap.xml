@@ -34,16 +34,7 @@
     <loc>https://fabrice-rossi.github.io/mixvlmc/reference/as_covlmc.html</loc>
   </url>
   <url>
-    <loc>https://fabrice-rossi.github.io/mixvlmc/reference/as_covlmc.tune_covlmc.html</loc>
-  </url>
-  <url>
-    <loc>https://fabrice-rossi.github.io/mixvlmc/reference/as_vlmc.ctx_tree.html</loc>
-  </url>
-  <url>
     <loc>https://fabrice-rossi.github.io/mixvlmc/reference/as_vlmc.html</loc>
-  </url>
-  <url>
-    <loc>https://fabrice-rossi.github.io/mixvlmc/reference/as_vlmc.tune_vlmc.html</loc>
   </url>
   <url>
     <loc>https://fabrice-rossi.github.io/mixvlmc/reference/context_number.covlmc.html</loc>
@@ -77,9 +68,6 @@
   </url>
   <url>
     <loc>https://fabrice-rossi.github.io/mixvlmc/reference/cutoff.html</loc>
-  </url>
-  <url>
-    <loc>https://fabrice-rossi.github.io/mixvlmc/reference/cutoff.vlmc.html</loc>
   </url>
   <url>
     <loc>https://fabrice-rossi.github.io/mixvlmc/reference/depth.html</loc>
@@ -137,9 +125,6 @@
   </url>
   <url>
     <loc>https://fabrice-rossi.github.io/mixvlmc/reference/prune.html</loc>
-  </url>
-  <url>
-    <loc>https://fabrice-rossi.github.io/mixvlmc/reference/prune.vlmc.html</loc>
   </url>
   <url>
     <loc>https://fabrice-rossi.github.io/mixvlmc/reference/simulate.covlmc.html</loc>

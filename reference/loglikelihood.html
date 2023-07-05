@@ -104,7 +104,7 @@ will instead be called. For more informations on <code>loglikelihood</code> meth
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Likelihood for a fitted VLMC.</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co">## Likelihood for a fitted VLMC.</span></span></span>
 <span class="r-in"><span><span class="va">pc</span> <span class="op">&lt;-</span> <span class="va">powerconsumption</span><span class="op">[</span><span class="va">powerconsumption</span><span class="op">$</span><span class="va">week</span> <span class="op">==</span> <span class="fl">5</span>, <span class="op">]</span></span></span>
 <span class="r-in"><span><span class="va">breaks</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>  <span class="fl">0</span>,</span></span>
@@ -122,7 +122,7 @@ will instead be called. For more informations on <code>loglikelihood</code> meth
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">ll</span>, <span class="st">"nobs"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1008</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Likelihood for a new time series with previously fitted VLMC.</span></span></span>
+<span class="r-in"><span><span class="co">## Likelihood for a new time series with previously fitted VLMC.</span></span></span>
 <span class="r-in"><span><span class="va">pc_new</span> <span class="op">&lt;-</span> <span class="va">powerconsumption</span><span class="op">[</span><span class="va">powerconsumption</span><span class="op">$</span><span class="va">week</span> <span class="op">==</span> <span class="fl">11</span>, <span class="op">]</span></span></span>
 <span class="r-in"><span><span class="va">dts_new</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cut.html" class="external-link">cut</a></span><span class="op">(</span><span class="va">pc_new</span><span class="op">$</span><span class="va">active_power</span>, breaks <span class="op">=</span> <span class="va">breaks</span>, labels <span class="op">=</span> <span class="va">labels</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">ll_new</span> <span class="op">&lt;-</span> <span class="fu">loglikelihood</span><span class="op">(</span><span class="va">m_nocovariate</span>, newdata <span class="op">=</span> <span class="va">dts_new</span><span class="op">)</span></span></span>
