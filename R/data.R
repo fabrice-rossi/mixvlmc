@@ -52,3 +52,38 @@
 #'   \doi{10.24432/C58K54}
 #'
 "powerconsumption"
+
+#' Significant Earthquake Dataset
+#'
+#' A data set containing Earthquake that have occured during the period of
+#' 1900-2020 with GPS coordinates and magnitudes.
+#'
+#' This is a compiled version of the full data set available on
+#' \href{https://earthquake.usgs.gov/}{U.S. Geological Survey Earthquake Events}
+#' (USGS) which are in the
+#' \href{https://www.usgs.gov/information-policies-and-instructions/copyrights-and-credits}{public domain}.
+#'
+#' The data set contains only the earthquake between 1900 and 2000
+#' with a magnitude higher than 5.
+#'
+#' @format A data frame with 14159 rows and 4 variables:
+#' \describe{
+#' \item{date_time}{Date and time in POSIXct format}
+#' \item{latitude}{latitude of the earthquake, from -90° to 90°}
+#' \item{longitude}{longitude of the earthquake, from -180° to 180°}
+#' \item{mag}{the magnitude of the earthquake, indicating its strenth}
+#' \item{Date}{date when the seisme occured}
+#' \item{nbweeks}{number of weeks since 1900/01/01}
+#' \item{year}{year}
+#' \item{month}{month of the year}
+#' \item{month_day}{day of the month}
+#' \item{week}{week number}
+#' \item{week_day}{day of the week from 1 = Sunday to 7 = Saturday}
+#' \item{year_day}{day of the year from 1 to 366}
+#' }
+#'
+#' @source
+#'    Earthquake Catalog, U.S. Geological Survey, Department of the Interior.
+#'    <https://earthquake.usgs.gov/>
+#'
+"globalearthquake"
