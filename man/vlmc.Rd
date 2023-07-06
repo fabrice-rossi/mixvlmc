@@ -75,7 +75,9 @@ draw(robust_model, prob = FALSE) ## show the frequencies
 draw(robust_model)
 }
 \references{
-\href{https://dx.doi.org/10.1214/aos/1018031204}{Bühlmann, P. and Wyner, A. J. (1999), Variable length Markov chains. Ann. Statist. 27 (2) 480-513}
+Bühlmann, P. and Wyner, A. J. (1999), "Variable length Markov
+chains. Ann. Statist." 27 (2)
+480-513 \doi{10.1214/aos/1018031204}
 }
 \seealso{
 \code{\link[=cutoff]{cutoff()}}, \code{\link[=prune]{prune()}} and \code{\link[=tune_vlmc]{tune_vlmc()}}

@@ -37,7 +37,7 @@ water-heater and an air-conditioner.}
 \source{
 Individual household electric power consumption, 2012, G. Hebrail and A. Berard,
 UC Irvine Machine Learning repository.
-\url{https://doi.org/10.24432/C58K54}
+\doi{10.24432/C58K54}
 }
 \usage{
 powerconsumption

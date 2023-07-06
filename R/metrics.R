@@ -27,10 +27,10 @@
 #'
 #' @seealso [metrics.vlmc()], [contexts.covlmc()]
 #' @references
-#' David J. Hand and Robert J. Till (2001). A Simple Generalisation of the Area
+#' David J. Hand and Robert J. Till (2001). "A Simple Generalisation of the Area
 #' Under the ROC Curve for Multiple Class Classification
-#' Problems. _Machine Learning_ 45(2), p. 171--186. DOI:
-#'  [10.1023/A:1010920819831](http://dx.doi.org/10.1023/A:1010920819831).
+#' Problems." _Machine Learning_ 45(2), p. 171--186. DOI:
+#'  \doi{10.1023/A:1010920819831}.
 #' @examples
 #' pc <- powerconsumption[powerconsumption$week == 5, ]
 #' breaks <- c(

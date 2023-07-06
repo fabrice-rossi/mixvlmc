@@ -100,8 +100,11 @@ draw(m_cov_nnet)
 }
 \references{
 \itemize{
-\item \href{https://dx.doi.org/10.1214/aos/1018031204}{Bühlmann, P. and Wyner, A. J. (1999), Variable length Markov chains. Ann. Statist. 27 (2) 480-513}
-\item \href{https://doi.org/10.1111/jtsa.12615}{Zanin Zambom, A., Kim, S. and Lopes Garcia, N. (2022), Variable length Markov chain with exogenous covariates. J. Time Ser. Anal., 43 (2) 312-328}
+\item Bühlmann, P. and Wyner, A. J. (1999), "Variable length Markov chains." Ann.
+Statist. 27 (2) 480-513 \doi{10.1214/aos/1018031204}
+\item Zanin Zambom, A., Kim, S. and Lopes Garcia, N. (2022), "Variable length Markov chain
+with exogenous covariates." J. Time Ser. Anal., 43 (2)
+312-328 \doi{10.1111/jtsa.12615}
 }
 }
 \seealso{

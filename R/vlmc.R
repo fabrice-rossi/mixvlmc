@@ -266,9 +266,9 @@ prune.vlmc <- function(vlmc, alpha = 0.05, cutoff = NULL, ...) {
 #' draw(robust_model)
 #' @export
 #' @seealso [cutoff()], [prune()] and [tune_vlmc()]
-#' @references [Bühlmann, P. and Wyner, A. J. (1999), Variable length Markov
-#'   chains. Ann. Statist. 27 (2)
-#'   480-513](https://dx.doi.org/10.1214/aos/1018031204)
+#' @references Bühlmann, P. and Wyner, A. J. (1999), "Variable length Markov
+#'   chains. Ann. Statist." 27 (2)
+#'   480-513 \doi{10.1214/aos/1018031204}
 vlmc <- function(x, alpha = 0.05, cutoff = NULL, min_size = 2, max_depth = 100, prune = TRUE, keep_match = FALSE) {
   # data conversion
   nx <- to_dts(x)
