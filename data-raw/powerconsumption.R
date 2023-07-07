@@ -46,6 +46,7 @@ powerconsumption[, `:=`(
 powerconsumption[, `:=`(Date = NULL, by_10 = NULL)]
 setcolorder(powerconsumption, c("year", "month", "month_day", "hour", "minute"))
 powerconsumption <- powerconsumption[year == 2008, ][, year := NULL]
+setDF(powerconsumption)
 setnames(powerconsumption, str_replace(str_to_lower(names(powerconsumption)), "global_", ""))
 
 usethis::use_data(powerconsumption, overwrite = TRUE)
