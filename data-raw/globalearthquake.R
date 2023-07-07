@@ -34,5 +34,6 @@ globalearthquake[, `:=`(
   week_day = wday(Date),
   year_day = yday(Date)
 )]
+setDF(globalearthquake)
 
 usethis::use_data(globalearthquake, overwrite = TRUE)
