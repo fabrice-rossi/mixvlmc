@@ -4,5 +4,6 @@ includes data derived from data sets with different open licences:
 * powerconsumption is derived from the "Individual household electric power
   consumption" data set available under Creative Commons Attribution 4.0
   International
+* globalearthquake is derived from the Earthquake Catalog data set of USGS which is in the Public Domain.
 
 Full copies of the license agreements used by the data sets are included under `inst/misc`.

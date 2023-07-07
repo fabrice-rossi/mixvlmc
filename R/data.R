@@ -56,17 +56,17 @@
 #' Significant Earthquake Dataset
 #'
 #' A data set containing Earthquake that have occured during the period of
-#' 1900-2020 with GPS coordinates and magnitudes.
+#' 1900-2022 with GPS coordinates and magnitudes.
 #'
 #' This is a compiled version of the full data set available on
 #' \href{https://earthquake.usgs.gov/}{U.S. Geological Survey Earthquake Events}
-#' (USGS) which are in the
+#' (USGS) which is in the
 #' \href{https://www.usgs.gov/information-policies-and-instructions/copyrights-and-credits}{public domain}.
 #'
-#' The data set contains only the earthquake between 1900 and 2000
+#' The data set contains only the earthquake between 1900 and 2022
 #' with a magnitude higher than 5.
 #'
-#' @format A data frame with 14159 rows and 4 variables:
+#' @format A data frame with 98785 rows and 12 variables:
 #' \describe{
 #' \item{date_time}{Date and time in POSIXct format}
 #' \item{latitude}{latitude of the earthquake, from -90° to 90°}
