@@ -84,7 +84,9 @@
     
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/fabrice-rossi/mixvlmc" class="external-link">mixvlmc</a></span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/fabrice-rossi/mixvlmc" class="external-link">mixvlmc</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/hypertidy/geodist" class="external-link">geodist</a></span><span class="op">)</span> <span class="co">## used in the earth quake example</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span> <span class="co">## used in the earth quake example</span></span></code></pre></div>
 <p>A <a href="https://en.wikipedia.org/wiki/Markov_chain" class="external-link">Markov
 chain</a> is a probabilistic model for time series in which the
 probability of the next state depends only on finite memory of previous
@@ -394,6 +396,102 @@ demonstrated below:</p>
 criterion.</p>
 </div>
 <div class="section level3">
+<h3 id="model-choice-representation">Model choice representation<a class="anchor" aria-label="anchor" href="#model-choice-representation"></a>
+</h3>
+<p>The object returned by <code><a href="../reference/tune_vlmc.html">tune_vlmc()</a></code> contains a summary of
+the fitting process. Let us consider a realistic example using the
+<code>globalearthquake</code> data set included in the package. In this
+simple example we extract from the data set the earth quakes that took
+place within a 2,000 km radius around the <a href="https://en.wikipedia.org/wiki/List_of_geographic_centers_of_the_United_States" class="external-link">centre
+of California</a>.</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">California_centre</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>longitude <span class="op">=</span> <span class="op">-</span><span class="fl">119.449444</span>, latitude <span class="op">=</span> <span class="fl">37.166111</span><span class="op">)</span></span>
+<span><span class="va">distances</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/geodist/man/geodist.html" class="external-link">geodist</a></span><span class="op">(</span><span class="va">globalearthquake</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"longitude"</span>, <span class="st">"latitude"</span><span class="op">)</span><span class="op">]</span>,</span>
+<span>  <span class="va">California_centre</span>,</span>
+<span>  measure <span class="op">=</span> <span class="st">"geodesic"</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">California_earth_quakes</span> <span class="op">&lt;-</span> <span class="va">globalearthquake</span><span class="op">[</span><span class="va">distances</span> <span class="op">&lt;</span> <span class="fl">2e6</span>, <span class="op">]</span> <span class="co">## distances are in meters</span></span></code></pre></div>
+<p>Then we study this collection at the week level, building a binary
+sequence of weeks with or without earthquake(s).</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">California_weeks</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">globalearthquake</span><span class="op">$</span><span class="va">nbweeks</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">California_weeks</span><span class="op">[</span><span class="va">California_earth_quakes</span><span class="op">$</span><span class="va">nbweeks</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">1</span></span></code></pre></div>
+<p>And finally we adjust automatically a VLMC.</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">California_weeks_earth_quakes_model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tune_vlmc.html">tune_vlmc</a></span><span class="op">(</span><span class="va">California_weeks</span><span class="op">)</span></span></code></pre></div>
+<p>The resulting model remains relatively simple with an interesting
+increase of the risk of observing an earth quake after 6 weeks after the
+last one.</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/draw.html">draw</a></span><span class="op">(</span><span class="fu"><a href="../reference/as_vlmc.html">as_vlmc</a></span><span class="op">(</span><span class="va">California_weeks_earth_quakes_model</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; * (0.7988, 0.2012)</span></span>
+<span><span class="co">#&gt; +-- 0 (0.8166, 0.1834)</span></span>
+<span><span class="co">#&gt; |   +-- 0 (0.8268, 0.1732)</span></span>
+<span><span class="co">#&gt; |   |   '-- 0 (0.8332, 0.1668)</span></span>
+<span><span class="co">#&gt; |   |       '-- 0 (0.8398, 0.1602)</span></span>
+<span><span class="co">#&gt; |   |           +-- 0 (0.8517, 0.1483)</span></span>
+<span><span class="co">#&gt; |   |           |   '-- 0 (0.8598, 0.1402)</span></span>
+<span><span class="co">#&gt; |   |           |       '-- 1 (0.7847, 0.2153)</span></span>
+<span><span class="co">#&gt; |   |           '-- 1 (0.7766, 0.2234)</span></span>
+<span><span class="co">#&gt; |   '-- 1 (0.771, 0.229)</span></span>
+<span><span class="co">#&gt; '-- 1 (0.7281, 0.2719)</span></span></code></pre></div>
+<p>The tuning process can be summarised using the <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code>
+function as follows.</p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">California_weeks_earth_quakes_model</span><span class="op">)</span></span>
+<span><span class="co">#&gt; VLMC tune results</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Best VLMC selected by BIC (6402.617)</span></span>
+<span><span class="co">#&gt; VLMC context tree on 0, 1 </span></span>
+<span><span class="co">#&gt;  cutoff: 5.679 (quantile: 0.000751559901684079)</span></span>
+<span><span class="co">#&gt;  Number of contexts: 8 </span></span>
+<span><span class="co">#&gt;  Maximum context length: 7 </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Pruning results</span></span>
+<span><span class="co">#&gt;     cutoff        alpha depth nb_contexts loglikelihood      AIC      BIC</span></span>
+<span><span class="co">#&gt;   2.191676 3.629154e-02    29         152     -2983.990 6271.980 7300.519</span></span>
+<span><span class="co">#&gt;   2.201782 3.586391e-02    29         139     -2997.384 6272.769 7213.341</span></span>
+<span><span class="co">#&gt;   2.228217 3.477002e-02    29         132     -3002.399 6268.798 7162.003</span></span>
+<span><span class="co">#&gt;   2.279152 3.275949e-02    29         132     -3002.399 6268.798 7162.003</span></span>
+<span><span class="co">#&gt;   2.339072 3.054872e-02    29         132     -3002.399 6268.798 7162.003</span></span>
+<span><span class="co">#&gt;   2.372521 2.938285e-02    29         132     -3002.399 6268.798 7162.003</span></span>
+<span><span class="co">#&gt;   2.381973 2.906186e-02    29         131     -3007.144 6276.288 7162.727</span></span>
+<span><span class="co">#&gt;   2.394852 2.863036e-02    29         130     -3010.365 6280.730 7160.402</span></span>
+<span><span class="co">#&gt;   2.404277 2.831881e-02    29         127     -3013.768 6281.535 7140.907</span></span>
+<span><span class="co">#&gt;   2.416055 2.793443e-02    29         116     -3021.089 6274.179 7059.117</span></span>
+<span><span class="co">#&gt;   2.445039 2.701147e-02    29         114     -3026.248 6280.495 7051.900</span></span>
+<span><span class="co">#&gt;   2.506516 2.515721e-02    29         110     -3033.433 6286.866 7031.203</span></span>
+<span><span class="co">#&gt;   2.577905 2.316872e-02    29         110     -3033.433 6286.866 7031.203</span></span>
+<span><span class="co">#&gt;   2.625968 2.192238e-02    29         108     -3036.860 6289.719 7020.523</span></span>
+<span><span class="co">#&gt;   2.751151 1.899146e-02    29         103     -3040.986 6287.972 6984.942</span></span>
+<span><span class="co">#&gt;   2.893754 1.614045e-02    29         103     -3040.986 6287.972 6984.942</span></span>
+<span><span class="co">#&gt;   3.125676 1.240985e-02    29         103     -3041.203 6288.406 6985.377</span></span>
+<span><span class="co">#&gt;   3.344228 9.703925e-03    29          95     -3049.898 6289.795 6932.632</span></span>
+<span><span class="co">#&gt;   3.417970 8.934162e-03    27          90     -3056.377 6292.754 6901.758</span></span>
+<span><span class="co">#&gt;   3.536173 7.828270e-03    27          87     -3061.796 6297.593 6886.296</span></span>
+<span><span class="co">#&gt;   3.737381 6.256985e-03    27          63     -3082.299 6290.599 6716.901</span></span>
+<span><span class="co">#&gt;   4.077262 4.295389e-03    27          45     -3104.913 6299.826 6604.328</span></span>
+<span><span class="co">#&gt;   4.382147 3.071849e-03    27          43     -3110.517 6307.033 6598.002</span></span>
+<span><span class="co">#&gt;   4.507405 2.678006e-03    10          26     -3129.277 6310.554 6486.489</span></span>
+<span><span class="co">#&gt;   4.628051 2.347121e-03    10          21     -3138.370 6318.739 6460.840</span></span>
+<span><span class="co">#&gt;   4.763629 2.024423e-03    10          14     -3149.107 6326.214 6420.948</span></span>
+<span><span class="co">#&gt;   5.090995 1.418191e-03     7          11     -3156.238 6334.476 6408.910</span></span>
+<span><span class="co">#&gt;   5.678601 7.515599e-04     7           8     -3166.241 6348.483 6402.617</span></span>
+<span><span class="co">#&gt;   6.040782 5.092285e-04     5           6     -3176.888 6365.776 6406.377</span></span>
+<span><span class="co">#&gt;   6.183282 4.370913e-04     5           6     -3177.148 6366.296 6406.896</span></span>
+<span><span class="co">#&gt;  10.764714 3.484403e-06     1           2     -3197.821 6399.643 6413.176</span></span>
+<span><span class="co">#&gt;  26.426030 3.596414e-13     0           0     -3221.590 6443.180 6443.180</span></span></code></pre></div>
+<p>in addition, a summary data frame is accessible in the
+<code>results</code> component of the object. This can be used to build
+e.g. graphical representation of the model selection process for
+instance as follows</p>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">California_weeks_earth_quakes_model</span><span class="op">$</span><span class="va">results</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">alpha</span>, y <span class="op">=</span> <span class="va">BIC</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p><img src="variable-length-markov-chains_files/figure-html/unnamed-chunk-16-1.png" width="672" style="display: block; margin: auto;"></p>
+</div>
+<div class="section level3">
 <h3 id="diagnostics">Diagnostics<a class="anchor" aria-label="anchor" href="#diagnostics"></a>
 </h3>
 <p>The package provides numerous ways to analyse a VLMC. Basic functions
@@ -410,7 +508,7 @@ model.</li>
 </ul>
 <p>For instance, the large model obtained above has the following
 characteristics:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/states.html">states</a></span><span class="op">(</span><span class="va">model_large</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 0 1 2</span></span>
 <span><span class="fu"><a href="../reference/depth.html">depth</a></span><span class="op">(</span><span class="va">model_large</span><span class="op">)</span></span>
@@ -418,7 +516,7 @@ characteristics:</p>
 <span><span class="fu"><a href="../reference/context_number.html">context_number</a></span><span class="op">(</span><span class="va">model_large</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 6</span></span></code></pre></div>
 <p>VLMC objects support classical statistical functions such as:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/logLik.html" class="external-link">logLik</a></span><span class="op">(</span><span class="va">model_large</span><span class="op">)</span></span>
 <span><span class="co">#&gt; 'log Lik.' -206.1223 (df=12)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/AIC.html" class="external-link">AIC</a></span><span class="op">(</span><span class="va">model_large</span><span class="op">)</span></span>
@@ -431,7 +529,7 @@ characteristics:</p>
 </h3>
 <p>The model can be explored in details by drawing its context tree (see
 <code><a href="../articles/context-trees.html">vignette("context-trees")</a></code> for details) as follows:</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/draw.html">draw</a></span><span class="op">(</span><span class="va">model_large</span><span class="op">)</span></span>
 <span><span class="co">#&gt; * (0.325, 0.345, 0.33)</span></span>
 <span><span class="co">#&gt; '-- 1 (0.3043, 0.4203, 0.2754)</span></span>
@@ -445,7 +543,7 @@ characteristics compared to context trees. In particular, the
 <code><a href="../reference/contexts.html">contexts()</a></code> function can report the log likelihood ratio
 associated to each context as follows (compare to <code><a href="../reference/cutoff.html">cutoff()</a></code>
 above):</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/contexts.html">contexts</a></span><span class="op">(</span><span class="va">model_large</span>, cutoff <span class="op">=</span> <span class="st">"native"</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   context    cutoff</span></span>
 <span><span class="co">#&gt; 1 1, 1, 0 3.4813864</span></span>
@@ -457,7 +555,7 @@ above):</p>
 <p>Notice that by default <code><a href="../reference/contexts.html">contexts()</a></code> uses the reverse
 representation of contexts, but they can be returned in the natural time
 sequence using <code>reverse=FALSE</code>, as in</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/contexts.html">contexts</a></span><span class="op">(</span><span class="va">model_large</span>, cutoff <span class="op">=</span> <span class="st">"quantile"</span>, reverse <span class="op">=</span> <span class="cn">FALSE</span>, frequency <span class="op">=</span> <span class="st">"detailed"</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   context freq  0  1  2     cutoff</span></span>
 <span><span class="co">#&gt; 1 0, 1, 1    9  2  7  0 0.03076473</span></span>
