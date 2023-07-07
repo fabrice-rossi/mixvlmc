@@ -2,9 +2,15 @@
 % Please edit documentation in R/vlmc_as.R
 \name{as_vlmc}
 \alias{as_vlmc}
+\alias{as_vlmc.ctx_tree}
+\alias{as_vlmc.tune_vlmc}
 \title{Convert an object to a Variable Length Markov Chain (VLMC)}
 \usage{
 as_vlmc(x, ...)
+
+\method{as_vlmc}{ctx_tree}(x, ...)
+
+\method{as_vlmc}{tune_vlmc}(x, ...)
 }
 \arguments{
 \item{x}{an object to convert into a vlmc.}
@@ -16,4 +22,24 @@ a vlmc
 }
 \description{
 This generic function converts an object into a vlmc.
+}
+\examples{
+## conversion from a context tree
+dts <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 0)
+dts_ctree <- ctx_tree(dts, min_size = 1, max_depth = 3)
+draw(dts_ctree)
+dts_vlmc <- as_vlmc(dts_ctree)
+class(dts_vlmc)
+draw(dts_vlmc)
+## conversion from the result of tune_vlmc
+dts <- sample(as.factor(c("A", "B", "C")), 100, replace = TRUE)
+tune_result <- tune_vlmc(dts)
+tune_result
+dts_best_vlmc <- as_vlmc(tune_result)
+draw(dts_best_vlmc)
+}
+\seealso{
+\code{\link[=ctx_tree]{ctx_tree()}}
+
+\code{\link[=tune_vlmc]{tune_vlmc()}}
 }

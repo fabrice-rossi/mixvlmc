@@ -539,7 +539,7 @@ count_covlmc_local_context <- function(node) {
 #' @param pseudo_obs number of fake observations of each state to add to the
 #'   observed ones.
 #'
-#' @return a list.
+#' @returns a list.
 #' @export
 #' @examples
 #' dts <- rep(c(0, 1), 100)
@@ -572,7 +572,7 @@ covlmc_control <- function(pseudo_obs = 1) {
 #'   [prune.covlmc()]).
 #' @param control a list with control parameters, see [covlmc_control()].
 #' @param ... arguments passed to [covlmc_control()].
-#' @return a fitted covlmc model.
+#' @returns a fitted covlmc model.
 #'
 #' @details
 #'
@@ -615,11 +615,11 @@ covlmc_control <- function(pseudo_obs = 1) {
 #'
 #' @references
 #'
-#' - [Bühlmann, P. and Wyner, A. J. (1999), Variable length Markov chains. Ann.
-#' Statist. 27 (2) 480-513](https://dx.doi.org/10.1214/aos/1018031204)
-#' - [Zanin Zambom, A., Kim, S. and Lopes Garcia, N. (2022), Variable length Markov chain
-#' with exogenous covariates. J. Time Ser. Anal., 43 (2)
-#' 312-328](https://doi.org/10.1111/jtsa.12615)
+#' - Bühlmann, P. and Wyner, A. J. (1999), "Variable length Markov chains." Ann.
+#' Statist. 27 (2) 480-513 \doi{10.1214/aos/1018031204}
+#' - Zanin Zambom, A., Kim, S. and Lopes Garcia, N. (2022), "Variable length Markov chain
+#' with exogenous covariates." J. Time Ser. Anal., 43 (2)
+#' 312-328 \doi{10.1111/jtsa.12615}
 #' @export
 #' @examples
 #' pc <- powerconsumption[powerconsumption$week == 5, ]
@@ -683,7 +683,7 @@ covlmc <- function(x, covariate, alpha = 0.05, min_size = 5, max_depth = 100, ke
 #' This function returns `TRUE` for VLMC models with covariates and `FALSE` for other objects.
 #'
 #' @param x an R object.
-#' @return `TRUE` for VLMC models with covariates.
+#' @returns `TRUE` for VLMC models with covariates.
 #' @export
 #' @examples
 #' pc <- powerconsumption[powerconsumption$week == 5, ]
@@ -732,7 +732,7 @@ assertthat::on_failure(is_covlmc) <- function(call, env) {
 #' @param raw specify whether the returned values should be limit values computed in the model or
 #'  modified values that guarantee pruning (see details)
 #' @param ... additional arguments for the cutoff function.
-#' @return a vector of cut off values, `NULL` is none can be computed
+#' @returns a vector of cut off values, `NULL` is none can be computed
 #'
 #' @examples
 #' pc <- powerconsumption[powerconsumption$week == 5, ]
@@ -820,7 +820,7 @@ cutoff.covlmc <- function(vlmc, mode = c("quantile", "native"), raw = FALSE, ...
 #' @param cutoff not supported by the vlmc with covariates.
 #' @param ... additional arguments for the prune function.
 #'
-#' @return a pruned covlmc.
+#' @returns a pruned covlmc.
 #' @examples
 #' pc <- powerconsumption[powerconsumption$week == 5, ]
 #' dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1))))

@@ -5,15 +5,17 @@
 #' @param x an object to convert into a covlmc.
 #' @param ... additional arguments for conversion functions.
 #'
-#' @return a covlmc
+#' @returns a covlmc
 #' @export
 as_covlmc <- function(x, ...) {
   UseMethod("as_covlmc")
 }
 
-#' @inherit as_covlmc
 #' @export
+#' @rdname as_covlmc
+#' @seealso [tune_covlmc()]
 #' @examples
+#' ## conversion from the results of tune_covlmc
 #' pc <- powerconsumption[powerconsumption$week == 5, ]
 #' dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1))))
 #' dts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))

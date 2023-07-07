@@ -6,10 +6,11 @@
 #' @param ct a context tree.
 #' @param ... additional arguments for the trim function.
 #'
-#' @return a trimmed context tree.
+#' @returns a trimmed context tree.
 #' @export
 #'
 #' @examples
+#' ## context tree trimming
 #' dts <- sample(as.factor(c("A", "B", "C")), 1000, replace = TRUE)
 #' dts_tree <- ctx_tree(dts, max_depth = 10, min_size = 5, keep_position = TRUE)
 #' print(object.size(dts_tree))

@@ -3,7 +3,7 @@
 #' This function returns the total number of contexts of a VLMC with covariates.
 #'
 #' @param ct a fitted covlmc model.
-#' @return the number of contexts present in the VLMC with covariates.
+#' @returns the number of contexts present in the VLMC with covariates.
 #'
 #' @examples
 #' pc <- powerconsumption[powerconsumption$week == 5, ]
@@ -89,7 +89,7 @@ covlmc_context_extractor <- function(path, ct, vals, control, is_leaf, p_summary
 #' This function returns the different contexts present in a VLMC with
 #' covariates, possibly with some associated data.
 #'
-#' @return the list of the contexts represented in this tree or a data.frame
+#' @returns the list of the contexts represented in this tree or a data.frame
 #'   with more content.
 #' @inherit contexts.ctx_tree
 #' @param model specifies whether to include the model associated to a each

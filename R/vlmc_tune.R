@@ -33,7 +33,7 @@
 #'   When `save="all"`, the function returns all the models considered during the
 #'   selection process.
 #'
-#' @return a list with the following components:
+#' @returns a list with the following components:
 #'
 #'   - `best_model`: the optimal VLMC
 #'   - `criterion`: the criterion used to select the optimal VLMC

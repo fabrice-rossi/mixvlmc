@@ -120,7 +120,7 @@ grow_ctx_tree <- function(x, vals, min_size, max_depth, covsize = 0, keep_match 
 #' @param keep_position logical (default: TRUE). Should the context tree keep
 #'   the position of the contexts.
 #'
-#' @return a context tree (of class `ctx_tree`).
+#' @returns a context tree (of class `ctx_tree`).
 #' @export
 #'
 #' @examples
@@ -143,7 +143,7 @@ ctx_tree <- function(x, min_size = 2, max_depth = 10, keep_position = FALSE) {
 #' This function returns `TRUE` for context trees and `FALSE` for other objects.
 #'
 #' @param x an R object.
-#' @return `TRUE` for context trees.
+#' @returns `TRUE` for context trees.
 #' @export
 #' @examples
 #' dts <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 0)
@@ -178,13 +178,13 @@ print.ctx_tree <- function(x, ...) {
 #' This function returns the state space of a context tree.
 #'
 #' @param ct a context tree.
-#' @return the context space of the tree.
+#' @returns the state space of the context tree.
 #'
 #' @export
 #' @examples
 #' dts <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 0)
 #' dts_ctree <- ctx_tree(dts, min_size = 1, max_depth = 2)
-#' # should be c(0, 1)
+#' ## should be c(0, 1)
 #' states(dts_ctree)
 states <- function(ct) {
   assertthat::assert_that(is_ctx_tree(ct))
@@ -205,13 +205,13 @@ rec_depth <- function(ct) {
 #' longest context represented in the tree.
 #'
 #' @param ct a context tree.
-#' @return the depth of the tree.
+#' @returns the depth of the tree.
 #'
 #' @export
 #' @examples
 #' dts <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 0)
 #' dts_ctree <- ctx_tree(dts, min_size = 1, max_depth = 3)
-#' # should be 3
+#' ## should be 3
 #' depth(dts_ctree)
 depth <- function(ct) {
   assertthat::assert_that(is_ctx_tree(ct))
@@ -236,7 +236,7 @@ rec_context_number <- function(ct, count_context = count_local_context) {
 #'
 #' @param ct a context tree.
 #'
-#' @return the number of contexts of the tree.
+#' @returns the number of contexts of the tree.
 #' @export
 #' @examples
 #' dts <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 0)

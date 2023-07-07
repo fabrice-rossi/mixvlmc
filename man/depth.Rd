@@ -19,6 +19,6 @@ longest context represented in the tree.
 \examples{
 dts <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 0)
 dts_ctree <- ctx_tree(dts, min_size = 1, max_depth = 3)
-# should be 3
+## should be 3
 depth(dts_ctree)
 }

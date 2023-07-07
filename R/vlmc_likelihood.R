@@ -62,11 +62,11 @@ logLik.vlmc <- function(object, ...) {
 #' @param newdata an optional discrete time series.
 #' @param ... additional parameters for loglikelihood.
 #'
-#' @return the log-likelihood of the VLMC with a nobs attribute that accounts for the number of data included in the likelihood calculation.
+#' @returns the log-likelihood of the VLMC with a nobs attribute that accounts for the number of data included in the likelihood calculation.
 #' @seealso [stats::logLik]
 #'
 #' @examples
-#' # Likelihood for a fitted VLMC.
+#' ## Likelihood for a fitted VLMC.
 #' pc <- powerconsumption[powerconsumption$week == 5, ]
 #' breaks <- c(
 #'   0,
@@ -80,7 +80,7 @@ logLik.vlmc <- function(object, ...) {
 #' ll
 #' attr(ll, "nobs")
 #'
-#' # Likelihood for a new time series with previously fitted VLMC.
+#' ## Likelihood for a new time series with previously fitted VLMC.
 #' pc_new <- powerconsumption[powerconsumption$week == 11, ]
 #' dts_new <- cut(pc_new$active_power, breaks = breaks, labels = labels)
 #' ll_new <- loglikelihood(m_nocovariate, newdata = dts_new)

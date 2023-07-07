@@ -10,7 +10,7 @@
 #' @param open_ct characters used to start each node specific text representation.
 #' @param close_ct characters used to end each node specific text representation.
 #'
-#' @return a list
+#' @returns a list
 #' @export
 #'
 #' @examples
@@ -102,7 +102,7 @@ rec_draw <- function(label, prefix, ct, vals, control, node2txt, params) {
 #' @param control a list of low level control parameters of the text
 #'   representation. See details and [draw_control()].
 #' @param ... additional arguments for draw.
-#' @return the context tree (invisibly).
+#' @returns the context tree (invisibly).
 #' @examples
 #' dts <- sample(c(0, 1), 100, replace = TRUE)
 #' ctree <- ctx_tree(dts, min_size = 10, max_depth = 2)

@@ -38,11 +38,24 @@ a (conditional) probability estimator. We use Hand and Till (2001) multiclass
 AUC in case of a state space with more than 2 states
 }
 }
+\examples{
+pc <- powerconsumption[powerconsumption$week == 5, ]
+breaks <- c(
+  0,
+  median(powerconsumption$active_power, na.rm = TRUE),
+  max(powerconsumption$active_power, na.rm = TRUE)
+)
+labels <- c(0, 1)
+dts <- cut(pc$active_power, breaks = breaks, labels = labels)
+model <- vlmc(dts)
+metrics(model)
+
+}
 \references{
-David J. Hand and Robert J. Till (2001). A Simple Generalisation of the Area
+David J. Hand and Robert J. Till (2001). "A Simple Generalisation of the Area
 Under the ROC Curve for Multiple Class Classification
-Problems. \emph{Machine Learning} 45(2), p. 171--186. DOI:
-\href{http://dx.doi.org/10.1023/A:1010920819831}{10.1023/A:1010920819831}.
+Problems." \emph{Machine Learning} 45(2), p. 171--186. DOI:
+\doi{10.1023/A:1010920819831}.
 }
 \seealso{
 \code{\link[=metrics.vlmc]{metrics.vlmc()}}, \code{\link[=contexts.covlmc]{contexts.covlmc()}}

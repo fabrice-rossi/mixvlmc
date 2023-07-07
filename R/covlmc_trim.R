@@ -1,9 +1,13 @@
-rec_trim_covlmc <- function(ct, keep_model) {
+rec_trim_covlmc <- function(ct, keep_model, vals) {
   ct$match <- NULL
   ct$cache <- NULL
   if (!is.null(ct$model)) {
     ct$model$data <- NULL
     ct$model$metrics$roc <- NULL
+    ml <- glm_levels(ct$model$model, vals)
+    if (!identical(ml, vals)) {
+      ct$model_levels <- ml
+    }
     if (keep_model) {
       ct$model$model <- glm_trim(ct$model$model)
     } else {
@@ -13,7 +17,7 @@ rec_trim_covlmc <- function(ct, keep_model) {
   if (!is.null(ct$children)) {
     for (k in seq_along(ct$children)) {
       if (length(ct$children[[k]]) > 0) {
-        ct$children[[k]] <- rec_trim_covlmc(ct$children[[k]], keep_model)
+        ct$children[[k]] <- rec_trim_covlmc(ct$children[[k]], keep_model, vals)
       }
     }
   }
@@ -38,7 +42,7 @@ rec_trim_covlmc <- function(ct, keep_model) {
 #' @param keep_model specifies whether to keep the internal models (or not)
 #' @param ... additional arguments for the trim function.
 #'
-#' @return a trimmed context tree.
+#' @returns a trimmed context tree.
 #' @export
 #'
 #' @examples
@@ -52,7 +56,7 @@ rec_trim_covlmc <- function(ct, keep_model) {
 #' t_m_cov <- trim(m_cov)
 #' print(object.size(t_m_cov), units = "Mb")
 trim.covlmc <- function(ct, keep_model = FALSE, ...) {
-  pre_res <- rec_trim_covlmc(ct, keep_model)
+  pre_res <- rec_trim_covlmc(ct, keep_model, ct$vals)
   pre_res$x <- NULL
   pre_res$covariate <- NULL
   pre_res$trimmed <- ifelse(keep_model, "non_model", "full")

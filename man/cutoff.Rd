@@ -2,9 +2,12 @@
 % Please edit documentation in R/vlmc.R
 \name{cutoff}
 \alias{cutoff}
+\alias{cutoff.vlmc}
 \title{Cut off values for pruning the context tree of a VLMC}
 \usage{
 cutoff(vlmc, mode = c("quantile", "native"), raw = FALSE, ...)
+
+\method{cutoff}{vlmc}(vlmc, mode = c("quantile", "native"), raw = FALSE, ...)
 }
 \arguments{
 \item{vlmc}{a fitted VLMC model.}

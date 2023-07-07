@@ -44,7 +44,7 @@ path_df_extractor <- function(path, ct, vals, control, is_leaf, p_summary) {
 #' @param p_summary summary of the parent of the current node
 #' @param summarize summarizing function to compute the summary submitted to the children
 #'
-#' @return a list or a data frame with the contexts and additional information
+#' @returns a list or a data frame with the contexts and additional information
 #' @details the contexts extractor proceeds as follows:
 #'   1. if the ct has children:
 #'      1. it applies the summarize function to itself (summarize(ct)).
@@ -130,7 +130,7 @@ contexts_extractor <- function(ct, reverse, extractor, control, summarize = no_s
 #' @param reverse logical (defaults to FALSE). See details.
 #' @param ... additional arguments for the contexts function.
 #'
-#' @return The list of the contexts represented in this tree or a data.frame
+#' @returns The list of the contexts represented in this tree or a data.frame
 #'   with more content.
 #' @examples
 #' dts <- sample(as.factor(c("A", "B", "C")), 100, replace = TRUE)

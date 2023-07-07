@@ -125,13 +125,13 @@ logLik.covlmc <- function(object, ...) {
 #' @param newcov an optional data frame with the new values for the covariates.
 #' @param ... additional parameters for loglikelihood.
 #'
-#' @return the log-likelihood of the VLMC with a nobs attribute that accounts
+#' @returns the log-likelihood of the VLMC with a nobs attribute that accounts
 #'   for the number of data included in the likelihood calculation.
 #' @seealso [stats::logLik]
 #'
 #' @examples
 #'
-#' # Likelihood for a fitted VLMC with covariates.
+#' ## Likelihood for a fitted VLMC with covariates.
 #' pc <- powerconsumption[powerconsumption$week == 5, ]
 #' breaks <- c(
 #'   0,
@@ -146,7 +146,8 @@ logLik.covlmc <- function(object, ...) {
 #' ll
 #' attr(ll, "nobs")
 #'
-#' # Likelihood for new time series and covariates with previously fitted VLMC with covariates
+#' ## Likelihood for new time series and covariates with previously
+#' ## fitted VLMC with covariates
 #' pc_new <- powerconsumption[powerconsumption$week == 11, ]
 #' dts_new <- cut(pc_new$active_power, breaks = breaks, labels = labels)
 #' dts_cov_new <- data.frame(day_night = (pc_new$hour >= 7 & pc_new$hour <= 17))

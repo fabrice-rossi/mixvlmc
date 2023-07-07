@@ -3,7 +3,7 @@
 #' This function returns `TRUE` for VLMC models and `FALSE` for other objects.
 #'
 #' @param x an R object.
-#' @return `TRUE` for VLMC models.
+#' @returns `TRUE` for VLMC models.
 #' @export
 #' @examples
 #' pc <- powerconsumption[powerconsumption$week == 5, ]
@@ -56,7 +56,7 @@ kl_div <- function(p, q) {
 #' @param raw specify whether the returned values should be limit values computed in the model or
 #'  modified values that guarantee pruning (see details)
 #' @param ... additional arguments for the cutoff function.
-#' @return a vector of cut off values.
+#' @returns a vector of cut off values.
 #' @examples
 #' pc <- powerconsumption[powerconsumption$week == 5, ]
 #' dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.25, 0.5, 0.75, 1))))
@@ -71,7 +71,7 @@ cutoff <- function(vlmc, mode = c("quantile", "native"), raw = FALSE, ...) {
   UseMethod("cutoff")
 }
 
-#' @inherit cutoff
+#' @rdname cutoff
 #' @export
 cutoff.vlmc <- function(vlmc, mode = c("quantile", "native"), raw = FALSE, ...) {
   mode <- match.arg(mode)
@@ -175,7 +175,7 @@ prune_ctx_tree <- function(tree, alpha = 0.05, cutoff = NULL, verbose = FALSE) {
 #'   precedence over `alpha` if specified.
 #' @param ... additional arguments for the prune function.
 #'
-#' @return a pruned VLMC
+#' @returns a pruned VLMC
 #' @seealso [cutoff()] and [tune_vlmc()]
 #' @export
 #' @examples
@@ -193,7 +193,7 @@ prune <- function(vlmc, alpha = 0.05, cutoff = NULL, ...) {
   UseMethod("prune")
 }
 
-#' @inherit prune
+#' @rdname prune
 #' @export
 prune.vlmc <- function(vlmc, alpha = 0.05, cutoff = NULL, ...) {
   if (is.null(cutoff)) {
@@ -250,7 +250,7 @@ prune.vlmc <- function(vlmc, alpha = 0.05, cutoff = NULL, ...) {
 #' @param prune logical: specify whether the context tree should be pruned
 #'   (default behaviour).
 #' @param keep_match logical: specify whether to keep the context matches (default to FALSE)
-#' @return a fitted vlmc model.
+#' @returns a fitted vlmc model.
 #' @examples
 #' pc <- powerconsumption[powerconsumption$week == 5, ]
 #' dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.25, 0.5, 0.75, 1))))
@@ -266,9 +266,9 @@ prune.vlmc <- function(vlmc, alpha = 0.05, cutoff = NULL, ...) {
 #' draw(robust_model)
 #' @export
 #' @seealso [cutoff()], [prune()] and [tune_vlmc()]
-#' @references [Bühlmann, P. and Wyner, A. J. (1999), Variable length Markov
-#'   chains. Ann. Statist. 27 (2)
-#'   480-513](https://dx.doi.org/10.1214/aos/1018031204)
+#' @references Bühlmann, P. and Wyner, A. J. (1999), "Variable length Markov
+#'   chains. Ann. Statist." 27 (2)
+#'   480-513 \doi{10.1214/aos/1018031204}
 vlmc <- function(x, alpha = 0.05, cutoff = NULL, min_size = 2, max_depth = 100, prune = TRUE, keep_match = FALSE) {
   # data conversion
   nx <- to_dts(x)

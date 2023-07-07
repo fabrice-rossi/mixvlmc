@@ -9,6 +9,7 @@ draw_covlmc_model <- function(coefficients, p_value, hsize, names, lev, params) 
       }
     } else {
       if (isTRUE(params$with_state)) {
+        lev <- as.character(lev)
         lev[1] <- stringr::str_c("(", lev[1], ")")
         coeffs <- pp_mat(coefficients, params$digits, sep = params$time_sep, groups = hsize, colnames = names, rownames = lev, rn_sep = params$level_sep)
       } else {
@@ -108,7 +109,16 @@ covlmc_node2txt <- function(node, vals, params) {
     digits <- 2
   }
   if (!is.null(node$model)) {
-    draw_covlmc_model(node$model$coefficients, node$model$p_value, node$model$hsize, node$model$var_names, glm_levels(node$model$model, vals), params)
+    if (!is.null(node$model$model)) {
+      model_levels <- glm_levels(node$model$model, vals)
+    } else {
+      ## if the COVLMC has been trimmed
+      model_levels <- node[["model_levels"]]
+      if (is.null(model_levels)) {
+        model_levels <- vals
+      }
+    }
+    draw_covlmc_model(node$model$coefficients, node$model$p_value, node$model$hsize, node$model$var_names, model_levels, params)
   } else if (!is.null(node$p_value) && isTRUE(params$p_value)) {
     stringr::str_c("collapsing:", signif(node$p_value, params$digits), sep = " ")
   } else if (!is.null(node$merged_p_value) && isTRUE(params$p_value)) {

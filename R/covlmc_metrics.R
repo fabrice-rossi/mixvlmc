@@ -19,7 +19,7 @@ covlmc_predictive_extractor <- function(path, ct, vals, control, is_leaf, p_summ
 
 #' @inherit metrics
 #' @title Predictive quality metrics for VLMC with covariates
-#' @return An object of class `metrics.covlmc` with the following components:
+#' @returns An object of class `metrics.covlmc` with the following components:
 #'
 #'  - `accuracy`: the accuracy of the predictions
 #'  - `conf_mat`: the confusion matrix of the predictions, with predicted values
@@ -28,6 +28,19 @@ covlmc_predictive_extractor <- function(path, ct, vals, control, is_leaf, p_summ
 #'
 #'  The object has a print method that recalls basic information about the model
 #'  together with the values of the components above.
+#' @examples
+#' pc <- powerconsumption[powerconsumption$week == 5, ]
+#' breaks <- c(
+#'   0,
+#'   median(powerconsumption$active_power, na.rm = TRUE),
+#'   max(powerconsumption$active_power, na.rm = TRUE)
+#' )
+#' labels <- c(0, 1)
+#' dts <- cut(pc$active_power, breaks = breaks, labels = labels)
+#' dts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
+#' m_cov <- covlmc(dts, dts_cov, min_size = 5)
+#' metrics(m_cov)
+#'
 #' @exportS3Method
 metrics.covlmc <- function(model, ...) {
   if (!is.null(model$trimmed)) {
