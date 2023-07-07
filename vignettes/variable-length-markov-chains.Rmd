@@ -15,12 +15,17 @@ editor_options:
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  fig.width = 7,
+  fig.height = 7,
+  fig.align = "center"
 )
 ```
 
 ```{r setup}
 library(mixvlmc)
+library(geodist) ## used in the earth quake example
+library(ggplot2) ## used in the earth quake example
 ```
 
 A [Markov chain](https://en.wikipedia.org/wiki/Markov_chain) is a
@@ -285,6 +290,50 @@ model_opt
 ```
 
 We obtain directly an optimal model according to the BIC criterion. 
+
+### Model choice representation
+The object returned by `tune_vlmc()` contains a summary of the fitting process. 
+Let us consider a realistic example using the `globalearthquake` data set included
+in the package. In this simple example we extract from the data set the earth quakes
+that took place within a 2,000 km radius around the [centre of California](https://en.wikipedia.org/wiki/List_of_geographic_centers_of_the_United_States). 
+```{r}
+California_centre <- data.frame(longitude = -119.449444, latitude = 37.166111)
+distances <- geodist(globalearthquake[, c("longitude", "latitude")],
+  California_centre,
+  measure = "geodesic"
+)
+California_earth_quakes <- globalearthquake[distances < 2e6, ] ## distances are in meters
+```
+Then we study this collection at the week level, building a binary sequence
+of weeks with or without earthquake(s).
+```{r}
+California_weeks <- rep(0, max(globalearthquake$nbweeks))
+California_weeks[California_earth_quakes$nbweeks] <- 1
+```
+And finally we adjust automatically a VLMC.
+```{r}
+California_weeks_earth_quakes_model <- tune_vlmc(California_weeks)
+```
+The resulting model remains relatively simple with an interesting increase of the 
+risk of observing an earth quake after 6 weeks after the last one. 
+```{r}
+draw(as_vlmc(California_weeks_earth_quakes_model))
+```
+
+The tuning process can be summarised using the `summary()` function as follows.
+```{r}
+summary(California_weeks_earth_quakes_model)
+```
+
+in addition, a summary data frame is accessible in the `results` component of the
+object. This can be used to build e.g. graphical representation of the model
+selection process for instance as follows
+```{r fig.height=4}
+ggplot(California_weeks_earth_quakes_model$results, aes(x = alpha, y = BIC)) +
+  geom_line() +
+  geom_point()
+```
+
 
 ### Diagnostics
 The package provides numerous ways to analyse a VLMC. Basic functions include
