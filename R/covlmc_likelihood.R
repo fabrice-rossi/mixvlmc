@@ -166,6 +166,9 @@ loglikelihood.covlmc <- function(vlmc, newdata, newcov, ...) {
     if (isTRUE(vlmc$trimmed == "full")) {
       stop("loglikelihood calculation for new data is not supported by fully trimmed covlmc")
     }
+    assertthat::assert_that((typeof(newdata) == typeof(vlmc$vals)) && (class(newdata) == class(vlmc$vals)),
+      msg = "newdata is not compatible with the model state space"
+    )
     assertthat::assert_that(!missing(newcov),
       msg = "Need new covariate values (newcov) with new data (newdata)"
     )

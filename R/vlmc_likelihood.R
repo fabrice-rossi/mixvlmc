@@ -99,6 +99,9 @@ loglikelihood.vlmc <- function(vlmc, newdata, ...) {
     pre_res <- rec_loglikelihood_vlmc(vlmc)
     attr(pre_res, "nobs") <- sum(vlmc$f_by)
   } else {
+    assertthat::assert_that((typeof(newdata) == typeof(vlmc$vals)) && (class(newdata) == class(vlmc$vals)),
+      msg = "newdata is not compatible with the model state space"
+    )
     nx <- to_dts(newdata, vlmc$vals)
     nvlmc <- match_ctx(vlmc, nx$ix)
     pre_res <- rec_loglikelihood_vlmc(nvlmc)
