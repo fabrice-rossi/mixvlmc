@@ -59,7 +59,7 @@
 #' 1900-2022 with GPS coordinates and magnitudes.
 #'
 #' This is a compiled version of the full data set available on
-#' \href{https://earthquake.usgs.gov/}{U.S. Geological Survey Earthquake Events}
+#' \href{https://www.usgs.gov/programs/earthquake-hazards}{U.S. Geological Survey Earthquake Events}
 #' (USGS) which is in the
 #' \href{https://www.usgs.gov/information-policies-and-instructions/copyrights-and-credits}{public domain}.
 #'
@@ -84,6 +84,6 @@
 #'
 #' @source
 #'    Earthquake Catalog, U.S. Geological Survey, Department of the Interior.
-#'    <https://earthquake.usgs.gov/>
+#'    <https://www.usgs.gov/programs/earthquake-hazards>
 #'
 "globalearthquake"

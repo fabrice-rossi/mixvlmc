@@ -23,7 +23,7 @@ A data frame with 98785 rows and 12 variables:
 }
 \source{
 Earthquake Catalog, U.S. Geological Survey, Department of the Interior.
-\url{https://earthquake.usgs.gov/}
+\url{https://www.usgs.gov/programs/earthquake-hazards}
 }
 \usage{
 globalearthquake
@@ -34,7 +34,7 @@ A data set containing Earthquake that have occured during the period of
 }
 \details{
 This is a compiled version of the full data set available on
-\href{https://earthquake.usgs.gov/}{U.S. Geological Survey Earthquake Events}
+\href{https://www.usgs.gov/programs/earthquake-hazards}{U.S. Geological Survey Earthquake Events}
 (USGS) which is in the
 \href{https://www.usgs.gov/information-policies-and-instructions/copyrights-and-credits}{public domain}.
 
