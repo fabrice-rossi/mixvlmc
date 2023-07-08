@@ -45,6 +45,7 @@ match_context_co <- function(tree, ctx) {
 #' @param init an optional initial sequence for the time series
 #' @param ... additional arguments.
 #'
+#' @returns a simulated discrete time series of the same type as the one used to build the covlmc.
 #' @export
 #' @examples
 #' pc <- powerconsumption[powerconsumption$week == 5, ]

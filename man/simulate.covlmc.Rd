@@ -19,6 +19,9 @@
 
 \item{...}{additional arguments.}
 }
+\value{
+a simulated discrete time series of the same type as the one used to build the covlmc.
+}
 \description{
 This function simulates a time series from the distribution estimated by the
 given covlmc object.
