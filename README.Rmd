@@ -35,7 +35,12 @@ criteria.
 
 ## Installation
 
-The package is only available from GitHub:
+The package can be installed from CRAN with:
+```{r, eval = FALSE}
+install.packages("mixvlmc")
+```
+
+The development version is available from GitHub:
 
 ```{r, eval = FALSE}
 # install.packages("devtools")
