@@ -1,4 +1,9 @@
 url: https://fabrice-rossi.github.io/mixvlmc/
 template:
   bootstrap: 5
-
+development:
+  mode: auto
+news:
+ releases:
+ - text: "mixvlmc 0.1.1"
+   href: https://fabrice-rossi.github.io/blog/posts/mixvlmc-0-1.html
