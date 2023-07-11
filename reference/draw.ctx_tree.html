@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">mixvlmc</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.1</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -30,8 +30,14 @@
     <a class="dropdown-item" href="../articles/variable-length-markov-chains.html">Variable length Markov chains (VLMC)</a>
   </div>
 </li>
-<li class="nav-item">
-  <a class="nav-link" href="../news/index.html">Changelog</a>
+<li class="nav-item dropdown">
+  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-news">News</a>
+  <div class="dropdown-menu" aria-labelledby="dropdown-news">
+    <h6 class="dropdown-header" data-toc-skip>Releases</h6>
+    <a class="external-link dropdown-item" href="https://fabrice-rossi.github.io/blog/posts/mixvlmc-0-1.html">mixvlmc 0.1.1</a>
+    <div class="dropdown-divider"></div>
+    <a class="dropdown-item" href="../news/index.html">Changelog</a>
+  </div>
 </li>
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
@@ -110,28 +116,26 @@ tree.</p>
 <span class="r-in"><span><span class="va">ctree_c</span> <span class="op">&lt;-</span> <span class="fu"><a href="ctx_tree.html">ctx_tree</a></span><span class="op">(</span><span class="va">dts_c</span>, min_size <span class="op">=</span> <span class="fl">10</span>, max_depth <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="draw.html">draw</a></span><span class="op">(</span><span class="va">ctree_c</span>, frequency <span class="op">=</span> <span class="st">"total"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> * (100)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> +-- A (33)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |   +-- A (10)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> +-- A (32)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |   +-- A (13)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> |   '-- B (10)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |   '-- CD (13)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> '-- B (38)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |   +-- A (14)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |   '-- B (13)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |   '-- CD (10)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> '-- CD (28)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     '-- B (15)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> '-- B (29)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |   '-- CD (14)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> '-- CD (38)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     +-- A (13)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     '-- B (10)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     '-- CD (15)</span>
 <span class="r-in"><span><span class="fu"><a href="draw.html">draw</a></span><span class="op">(</span><span class="va">ctree_c</span>, frequency <span class="op">=</span> <span class="st">"detailed"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> * (33,39,28)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> +-- A (10,14,9)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |   +-- A (3,5,2)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |   '-- B (2,3,5)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |   '-- CD (5,6,2)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> '-- B (10,13,15)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |   +-- A (4,3,7)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |   '-- B (3,5,5)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |   '-- CD (3,4,3)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> '-- CD (13,11,4)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     '-- B (8,4,3)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> * (33,29,38)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> +-- A (14,5,13)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |   +-- A (7,1,5)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |   '-- B (3,2,5)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> '-- B (10,9,10)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |   '-- CD (6,6,2)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> '-- CD (9,14,15)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     +-- A (3,5,5)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     '-- B (3,2,5)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     '-- CD (3,7,5)</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
