@@ -1,3 +1,5 @@
+# mixvlmc (development version)
+
 # mixvlmc 0.1.1
 
 * Added missing documentation about the return values of `simulate.vlmc` and
