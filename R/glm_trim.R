@@ -9,7 +9,9 @@ glm_trim.default <- function(model) {
 
 #' @exportS3Method
 glm_trim.glm <- function(model) {
-  butcher::butcher(model)
+  model <- butcher::butcher(model)
+  attr(model$formula, ".Environment") <- NULL
+  model
 }
 
 #' @exportS3Method

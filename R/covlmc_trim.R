@@ -34,8 +34,9 @@ rec_trim_covlmc <- function(ct, keep_model, vals) {
 #' [simulate.covlmc()], [metrics.covlmc()]  and [prune.covlmc()] cannot be used at all.
 #'
 #' Called with `keep_model` set to `TRUE`, the trimming process is less complete. In
-#' particular internal models are simplified using [butcher::butcher()]. This saves
-#' less memory but enables the use of [loglikelihood.covlmc()] for new data as
+#' particular internal models are simplified using [butcher::butcher()] and some
+#' additional minor reductions. This saves less memory but enables the use of
+#' [loglikelihood.covlmc()] for new data as
 #' well as the use of [simulate.covlmc()].
 #'
 #' @param ct a context tree.
