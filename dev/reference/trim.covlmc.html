@@ -97,8 +97,9 @@ further usability of the model. In particular <code><a href="loglikelihood.covlm
 for new data, <code><a href="contexts.covlmc.html">contexts.covlmc()</a></code> do not support model extraction, and
 <code><a href="simulate.covlmc.html">simulate.covlmc()</a></code>, <code><a href="metrics.covlmc.html">metrics.covlmc()</a></code>  and <code><a href="prune.covlmc.html">prune.covlmc()</a></code> cannot be used at all.</p>
 <p>Called with <code>keep_model</code> set to <code>TRUE</code>, the trimming process is less complete. In
-particular internal models are simplified using <code><a href="https://butcher.tidymodels.org/reference/butcher.html" class="external-link">butcher::butcher()</a></code>. This saves
-less memory but enables the use of <code><a href="loglikelihood.covlmc.html">loglikelihood.covlmc()</a></code> for new data as
+particular internal models are simplified using <code><a href="https://butcher.tidymodels.org/reference/butcher.html" class="external-link">butcher::butcher()</a></code> and some
+additional minor reductions. This saves less memory but enables the use of
+<code><a href="loglikelihood.covlmc.html">loglikelihood.covlmc()</a></code> for new data as
 well as the use of <code><a href="simulate.covlmc.html">simulate.covlmc()</a></code>.</p>
     </div>
 
