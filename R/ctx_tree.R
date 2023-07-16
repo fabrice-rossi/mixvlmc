@@ -128,7 +128,7 @@ grow_ctx_tree <- function(x, vals, min_size, max_depth, covsize = 0, keep_match 
 #' ## get all contexts of length 2
 #' dts_ctree <- ctx_tree(dts, min_size = 1, max_depth = 2)
 #' draw(dts_ctree)
-ctx_tree <- function(x, min_size = 2, max_depth = 10, keep_position = FALSE) {
+ctx_tree <- function(x, min_size = 2, max_depth = 100, keep_position = FALSE) {
   nx <- to_dts(x)
   ix <- nx$ix
   vals <- nx$vals
