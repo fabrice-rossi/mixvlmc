@@ -558,7 +558,7 @@ covlmc_control <- function(pseudo_obs = 1) {
 #' This function fits a  Variable Length Markov Chain with covariates (coVLMC)
 #' to a discrete time series coupled with a time series of covariates.
 #'
-#' @param x a discrete time series; can be numeric, character or factor.
+#' @param x a discrete time series; can be numeric, character, factor or logical.
 #' @param covariate a data frame of covariates.
 #' @param alpha number in (0,1) (default: 0.05) cut off value in the pruning
 #'   phase (in quantile scale).

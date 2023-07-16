@@ -15,7 +15,7 @@ vlmc(
 )
 }
 \arguments{
-\item{x}{a discrete time series; can be numeric, character or factor.}
+\item{x}{a discrete time series; can be numeric, character, factor or logical.}
 
 \item{alpha}{number in (0,1] (default: 0.05) cut off value in quantile scale
 in the pruning phase.}

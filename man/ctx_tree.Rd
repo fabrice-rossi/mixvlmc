@@ -4,10 +4,10 @@
 \alias{ctx_tree}
 \title{Build a context tree for a discrete time series}
 \usage{
-ctx_tree(x, min_size = 2, max_depth = 10, keep_position = FALSE)
+ctx_tree(x, min_size = 2, max_depth = 100, keep_position = TRUE)
 }
 \arguments{
-\item{x}{a discrete time series; can be numeric, character or factor.}
+\item{x}{a discrete time series; can be numeric, character, factor or logical.}
 
 \item{min_size}{integer >= 1 (default: 2). Minimum number of observations for
 a context to be included in the tree.}

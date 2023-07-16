@@ -16,7 +16,7 @@ covlmc(
 )
 }
 \arguments{
-\item{x}{a discrete time series; can be numeric, character or factor.}
+\item{x}{a discrete time series; can be numeric, character, factor or logical.}
 
 \item{covariate}{a data frame of covariates.}
 
