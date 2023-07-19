@@ -1,3 +1,4 @@
+Rcpp::loadModule("suffixtree", TRUE)
 .onLoad <- function(libname, pkgname) {
   current_op <- options()
   ## default options

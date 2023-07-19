@@ -47,10 +47,13 @@ BEGIN_RCPP
 END_RCPP
 }
 
+RcppExport SEXP _rcpp_module_boot_suffixtree();
+
 static const R_CallMethodDef CallEntries[] = {
     {"_mixvlmc_after", (DL_FUNC) &_mixvlmc_after, 1},
     {"_mixvlmc_before", (DL_FUNC) &_mixvlmc_before, 1},
     {"_mixvlmc_forward_match_all_ctx_counts", (DL_FUNC) &_mixvlmc_forward_match_all_ctx_counts, 4},
+    {"_rcpp_module_boot_suffixtree", (DL_FUNC) &_rcpp_module_boot_suffixtree, 0},
     {NULL, NULL, 0}
 };
 

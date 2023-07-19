@@ -47,6 +47,7 @@ Suggests:
     geodist,
     ggplot2,
     knitr,
+    methods,
     rmarkdown,
     testthat (>= 3.0.0),
     tibble
