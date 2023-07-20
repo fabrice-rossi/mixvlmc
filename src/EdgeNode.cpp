@@ -1,5 +1,7 @@
+#include <algorithm>
 #include "EdgeNode.h"
 #include "utils.h"
+
 using namespace Rcpp;
 
 EdgeNode::EdgeNode(EdgeNode* _parent, int s, int e)
@@ -97,4 +99,33 @@ void EdgeNode::compute_counts(int first,
       }
     }
   }
+}
+
+void EdgeNode::subsequences(int min_counts,
+                            int max_length,
+                            const Rcpp::IntegerVector& x,
+                            std::vector<int>& pre,
+                            std::vector<SubSequence*>& subs) const {
+  if(total_count >= min_counts) {
+    size_t before = pre.size();
+    if(start >= 0) {
+      int the_end = std::min((int)x.size(), end);
+      for(int i = start; i < the_end; i++) {
+        pre.push_back(x[i]);
+        if(pre.size() <= (size_t)max_length) {
+          subs.push_back(new SubSequence(pre, counts));
+        } else {
+          break;
+        }
+      }
+    }
+    if(pre.size() < (size_t)max_length) {
+      for(auto child : children) {
+        child.second->subsequences(min_counts, max_length, x, pre, subs);
+      }
+    }
+    pre.resize(before);
+  }
+  // if total_count is too small, this is also the case for the children
+  // so we stop recursion here
 }

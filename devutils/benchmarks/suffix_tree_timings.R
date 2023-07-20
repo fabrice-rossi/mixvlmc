@@ -35,3 +35,17 @@ st_all_counts <- bench::mark(
   build_suffix_tree(sample(0:50, 50000, replace = TRUE))$compute_counts(0),
   check = FALSE
 )
+
+find_sub_seq <- function(x) {
+  tree <- build_suffix_tree(x)
+  tree$compute_counts(0)
+  tree$subsequences(5, 500)
+}
+
+st_sub_seq <- bench::mark(
+  find_sub_seq(sample(0:3, 10000, replace = TRUE)),
+  find_sub_seq(sample(0:50, 10000, replace = TRUE)),
+  find_sub_seq(sample(0:3, 50000, replace = TRUE)),
+  find_sub_seq(sample(0:50, 50000, replace = TRUE)),
+  check = FALSE
+)

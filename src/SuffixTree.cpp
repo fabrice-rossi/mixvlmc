@@ -290,6 +290,33 @@ class SuffixTree {
       return IntegerVector{};
     }
   }
+
+  // extract sub sequences based on length and counts constraints
+  // to be extracted, a sub sequence must:
+  // - be of length smaller or equal to max_length, unless max_length is
+  // negative in this latter case, length is not taken into account
+  // - have at least min_counts occurrences
+  List subsequences(int min_counts, int max_length) {
+    if(!has_counts) {
+      stop(
+          "subsequences cannot be used if compute_counts has not been called "
+          "before");
+    }
+    std::vector<SubSequence*>* ctxs = new std::vector<SubSequence*>{};
+    std::vector<int> pre{};
+    pre.reserve(x.size());
+    if(max_length <= 0) {
+      max_length = x.size();
+    }
+    root->subsequences(min_counts, max_length, x, pre, *ctxs);
+    int nb = (int)ctxs->size();
+    List the_contexts(nb);
+    for(int i = 0; i < nb; i++) {
+      the_contexts[i] = (*ctxs)[i]->sequence();
+    }
+    delete ctxs;
+    return the_contexts;
+  }
 };
 
 SuffixTree* build_suffix_tree(const IntegerVector& x) {
@@ -312,6 +339,8 @@ RCPP_MODULE(suffixtree) {
       .method("compute_counts", &SuffixTree::compute_counts,
               "Compute the counts")
       .method("counts", &SuffixTree::counts,
-              "Return the counts associated to a subsequence");
+              "Return the counts associated to a subsequence")
+      .method("subsequences", &SuffixTree::subsequences,
+              "Return subsequences that fulfill specified conditions");
   function("build_suffix_tree", &build_suffix_tree);
 }

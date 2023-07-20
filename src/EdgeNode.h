@@ -1,6 +1,7 @@
 #ifndef EDGENODE_H
 #define EDGENODE_H
 #include <Rcpp.h>
+#include "SubSequence.h"
 
 //' @name EdgeNode
 //' Suffix tree edge and node representation
@@ -30,7 +31,7 @@ class EdgeNode {
 
   // detailed counts of elements before the occurrences of the
   // sequence represented by this node.
-  std::unordered_map<int, int> *counts;
+  std::unordered_map<int, int>* counts;
 
   // Depth of the node, i.e. length of the sequence it represents
   // Computed post hoc.
@@ -68,10 +69,17 @@ class EdgeNode {
   // compute the counts of the values
   // that are before each instance of subsequence represented
   // by this node using an additional first term for the
-  // longest suffix. Compute depth abd total counts as a by product.
-  void compute_counts(int first,
-                      const Rcpp::IntegerVector& x,
-                      int cdepth);
+  // longest suffix. Compute depth and total counts as a by product.
+  void compute_counts(int first, const Rcpp::IntegerVector& x, int cdepth);
+
+  // insert in subs (recursively) all subsequences of length at most
+  // max_length that appear at least min_counts time in the original
+  // sequence (x)
+  void subsequences(int min_counts,
+                    int max_length,
+                    const Rcpp::IntegerVector& x,
+                    std::vector<int>& pre,
+                    std::vector<SubSequence*>& subs) const;
 };
 
 #endif
