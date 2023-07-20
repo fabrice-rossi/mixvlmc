@@ -291,6 +291,20 @@ class SuffixTree {
     }
   }
 
+  std::vector<SubSequence*>* raw_subsequences(int min_counts,
+                                              int max_length,
+                                              bool only_ctx) {
+    std::vector<SubSequence*>* ctxs = new std::vector<SubSequence*>{};
+    std::vector<int> pre{};
+    pre.reserve(x.size());
+    if(max_length <= 0) {
+      max_length = x.size();
+    }
+    root->subsequences(min_counts, max_length, only_ctx, x, max_x + 1, pre,
+                       *ctxs);
+    return ctxs;
+  }
+
   // extract sub sequences based on length and counts constraints
   // to be extracted, a sub sequence must:
   // - be of length smaller or equal to max_length, unless max_length is
@@ -302,13 +316,26 @@ class SuffixTree {
           "subsequences cannot be used if compute_counts has not been called "
           "before");
     }
-    std::vector<SubSequence*>* ctxs = new std::vector<SubSequence*>{};
-    std::vector<int> pre{};
-    pre.reserve(x.size());
-    if(max_length <= 0) {
-      max_length = x.size();
+    std::vector<SubSequence*>* ctxs =
+        raw_subsequences(min_counts, max_length, false);
+    int nb = (int)ctxs->size();
+    List the_contexts(nb);
+    for(int i = 0; i < nb; i++) {
+      the_contexts[i] = (*ctxs)[i]->sequence();
     }
-    root->subsequences(min_counts, max_length, x, pre, *ctxs);
+    delete ctxs;
+    return the_contexts;
+  }
+
+  // extract contexts based on length and counts constraints. A context
+  // is a subsequence s that fulfils the constraints and in addition
+  // such that among all the possible subsequence st (for t in the value
+  // space) there is at least one that is not itself a subsequence.
+  // The empty context is a potential candidate while it is never
+  // returned by the subsequences method.
+  List contexts(int min_counts, int max_length) {
+    std::vector<SubSequence*>* ctxs =
+        raw_subsequences(min_counts, max_length, true);
     int nb = (int)ctxs->size();
     List the_contexts(nb);
     for(int i = 0; i < nb; i++) {
@@ -341,6 +368,8 @@ RCPP_MODULE(suffixtree) {
       .method("counts", &SuffixTree::counts,
               "Return the counts associated to a subsequence")
       .method("subsequences", &SuffixTree::subsequences,
-              "Return subsequences that fulfill specified conditions");
+              "Return subsequences that fulfill specified conditions")
+      .method("contexts", &SuffixTree::contexts,
+              "Return contexts that fulfill specified conditions");
   function("build_suffix_tree", &build_suffix_tree);
 }

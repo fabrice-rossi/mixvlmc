@@ -74,10 +74,13 @@ class EdgeNode {
 
   // insert in subs (recursively) all subsequences of length at most
   // max_length that appear at least min_counts time in the original
-  // sequence (x)
-  void subsequences(int min_counts,
+  // sequence (x). It only_ctx is true, the subsequences must be contexts
+  // in addition. Returns true if it is a subsequence.
+  bool subsequences(int min_counts,
                     int max_length,
+                    bool only_ctx,
                     const Rcpp::IntegerVector& x,
+                    int nb_vals,
                     std::vector<int>& pre,
                     std::vector<SubSequence*>& subs) const;
 };
