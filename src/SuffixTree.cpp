@@ -1,6 +1,7 @@
 #include <Rcpp.h>
 #include <vector>
 #include "EdgeNode.h"
+#include "Position.h"
 using namespace Rcpp;
 
 //' @name SuffixTree
@@ -176,61 +177,9 @@ class SuffixTree {
 
   void print_tree() const { root->print_tree("", x, x.size() + 1); }
 
-  bool is_suffix(const IntegerVector& y) const {
-    auto current = root;
-    int y_pos = 0;
-    while(y_pos < y.length()) {
-      // try to progress along an edge
-      if(auto child = current->children.find(y[y_pos]);
-         child != current->children.end()) {
-        current = child->second;
-        int el = current->edge_length();
-        int move = std::min(el, (int)(y.length() - y_pos));
-        for(int k = 1; k < move; k++) {
-          if(y[y_pos + k] != x[current->start + k]) {
-            return false;
-          }
-        }
-        int new_from = y_pos + move;
-        if(new_from == y.length()) {
-          // we need to be at the end of the edge followed by a negative node
-          // or the end of the edge must be a sentinel
-          if(el > move + 1) {
-            // that are additional characters on the edge, this is not a match
-            return false;
-          }
-          if(el == move + 1) {
-            if(current->end > x.length()) {
-              // we have reached a sentinel
-              return true;
-            } else {
-              return false;
-            }
-          }
-          if(auto child = current->children.find(-1);
-             child != current->children.end()) {
-            // there is an edge with a sentinel
-            return true;
-          } else {
-            return false;
-          }
-        } else {
-          // let's progress
-          y_pos = new_from;
-        }
-      } else {
-        // no edge -> not a suffix
-        return false;
-      }
-    }
-    return true;
-  }
-
-  int count_occurrences(const IntegerVector& y) {
-    if(!has_total_count) {
-      root->compute_total_count();
-      has_total_count = true;
-    }
+  // find the position of y in x expressed as a Position object.
+  // Returns a valid Position if y is found and an invalid one if not.
+  Position find_subsequence(const IntegerVector& y) const {
     auto current = root;
     int y_pos = 0;
     while(y_pos < y.length()) {
@@ -243,24 +192,70 @@ class SuffixTree {
         for(int k = 1; k < move; k++) {
           if(y[y_pos + k] != x[current->start + k]) {
             // not found!
-            return 0;
+            return Position{};
           }
         }
         int new_from = y_pos + move;
         if(new_from == y.length()) {
           // found!
-          return current->total_count;
+          return Position{current, move - 1};
         } else {
           // let's progress
           y_pos = new_from;
         }
       } else {
-        // no edge -> not a suffix
-        return 0;
+        // no edge -> not found
+        return Position{};
       }
     }
-    return 0;  // default case
+    return Position{};  // default case
   }
+
+  // test whether a subsequence is a suffix or not
+  bool is_suffix(const IntegerVector& y) const {
+    Position where = find_subsequence(y);
+    if(where.is_valid()) {
+      // we need to be at the end of the edge followed by a negative node
+      // or the end of the edge must be a sentinel
+      int el = where.node->edge_length();
+      if(where.edge == el - 1) {
+        // end of the edge. Let's check for a sentinel node
+        if(auto child = where.node->children.find(-1);
+           child != where.node->children.end()) {
+          // there is an edge with a sentinel
+          return true;
+        } else {
+          return false;
+        }
+      } else if(where.edge == el - 2) {
+        // is there a sentinel symbol?
+        return where.node->end >= x.length();
+      } else {
+        // nope, too many remaining symbols
+        return false;
+      }
+    } else {
+      return false;
+    }
+  }
+
+  int count_occurrences(const IntegerVector& y) {
+    if(!has_total_count) {
+      root->compute_total_count();
+      has_total_count = true;
+    }
+    Position where = find_subsequence(y);
+    if(where.is_valid()) {
+      return where.node->total_count;
+    } else {
+      return 0;
+    }
+  }
+
+  // compute recursively the counts of the values
+  // that are before each instance of subsequence represented
+  // in the suffix tree using an additional first term
+  void compute_counts(int first) { root->compute_counts(first, x, 0); }
 };
 
 SuffixTree* build_suffix_tree(const IntegerVector& x) {

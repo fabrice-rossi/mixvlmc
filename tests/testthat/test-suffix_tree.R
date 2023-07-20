@@ -25,9 +25,16 @@ test_that("the suffix tree does not contain non suffix", {
       pre_suffix <- x[l:1000]
       pre_suffix <- pre_suffix[-sample(2:length(pre_suffix), 1)]
       if (identical(pre_suffix, x[(l + 1):1000])) {
-        all_ok <- tree$is_suffix(pre_suffix)
+        all_ok <- all_ok & tree$is_suffix(pre_suffix)
       } else {
-        all_ok <- !tree$is_suffix(pre_suffix)
+        all_ok <- all_ok & (!tree$is_suffix(pre_suffix))
+      }
+      # test an almost suffix
+      pre_suffix <- x[l:999]
+      if (identical(pre_suffix, x[(l + 1):1000])) {
+        all_ok <- all_ok & tree$is_suffix(pre_suffix)
+      } else {
+        all_ok <- all_ok & (!tree$is_suffix(pre_suffix))
       }
       if (!all_ok) {
         break
