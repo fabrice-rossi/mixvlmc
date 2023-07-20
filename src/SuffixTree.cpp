@@ -2,6 +2,7 @@
 #include <vector>
 #include "EdgeNode.h"
 #include "Position.h"
+#include "utils.h"
 using namespace Rcpp;
 
 //' @name SuffixTree
@@ -22,10 +23,15 @@ class SuffixTree {
   int number_of_nodes;
   int max_x;
   bool has_total_count;
+  bool has_counts;
 
  public:
   SuffixTree()
-      : sentinel(-1), number_of_nodes(0), max_x(-1), has_total_count(false) {
+      : sentinel(-1),
+        number_of_nodes(0),
+        max_x(-1),
+        has_total_count(false),
+        has_counts(false) {
     root = new EdgeNode(nullptr, -1, -1);
   }
 
@@ -39,11 +45,16 @@ class SuffixTree {
     }
   }
 
+  void invalidate() {
+    has_total_count = false;
+    has_counts = false;
+  }
+
   void insert(const IntegerVector& x_) {
+    invalidate();
     x = x_;
     number_of_nodes = 0;
     max_x = -1;
-    has_total_count = false;
     // we use a "virtual" sentinel to avoid modifying x
     int nx = x.size() + 1;
     // representation of the active position in the suffix tree
@@ -255,7 +266,30 @@ class SuffixTree {
   // compute recursively the counts of the values
   // that are before each instance of subsequence represented
   // in the suffix tree using an additional first term
-  void compute_counts(int first) { root->compute_counts(first, x, 0); }
+  // compute total counts on the fly
+  void compute_counts(int first) {
+    if(!has_counts) {
+      root->compute_counts(first, x, 0);
+      has_total_count = true;
+      has_counts = true;
+    }
+  }
+
+  // return the counts associated to a subsequence as computed by a call
+  // to compute_counts. Returns an empty IntegerVector if the subsequence
+  // is not found.
+  IntegerVector counts(const IntegerVector& y) const {
+    if(!has_counts) {
+      stop(
+          "counts cannot be used if compute_counts has not been called before");
+    }
+    Position where = find_subsequence(y);
+    if(where.is_valid()) {
+      return map_to_counts(where.node->counts, max_x);
+    } else {
+      return IntegerVector{};
+    }
+  }
 };
 
 SuffixTree* build_suffix_tree(const IntegerVector& x) {
@@ -274,6 +308,10 @@ RCPP_MODULE(suffixtree) {
       .method("is_suffix", &SuffixTree::is_suffix,
               "Test if a NumericVector is a suffix")
       .method("count_occurrences", &SuffixTree::count_occurrences,
-              "Count the occurrences of a NumericVector in the original one");
+              "Count the occurrences of a NumericVector in the original one")
+      .method("compute_counts", &SuffixTree::compute_counts,
+              "Compute the counts")
+      .method("counts", &SuffixTree::counts,
+              "Return the counts associated to a subsequence");
   function("build_suffix_tree", &build_suffix_tree);
 }

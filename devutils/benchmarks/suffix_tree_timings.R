@@ -27,3 +27,11 @@ st_count <- bench::mark(
   x_sft$count_occurrences(sample(0:9, 5, replace = TRUE)),
   check = FALSE
 )
+
+st_all_counts <- bench::mark(
+  build_suffix_tree(sample(0:3, 10000, replace = TRUE))$compute_counts(0),
+  build_suffix_tree(sample(0:50, 10000, replace = TRUE))$compute_counts(0),
+  build_suffix_tree(sample(0:3, 50000, replace = TRUE))$compute_counts(0),
+  build_suffix_tree(sample(0:50, 50000, replace = TRUE))$compute_counts(0),
+  check = FALSE
+)

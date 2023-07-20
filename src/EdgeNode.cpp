@@ -1,4 +1,5 @@
 #include "EdgeNode.h"
+#include "utils.h"
 using namespace Rcpp;
 
 EdgeNode::EdgeNode(EdgeNode* _parent, int s, int e)
@@ -6,12 +7,16 @@ EdgeNode::EdgeNode(EdgeNode* _parent, int s, int e)
       start(s),
       end(e),
       suffix(nullptr),
-      total_count(0)
- {}
+      total_count(0),
+      counts(nullptr),
+      depth(0) {}
 
 EdgeNode::~EdgeNode() {
   for(auto child : children) {
     delete child.second;
+  }
+  if(counts != nullptr) {
+    delete counts;
   }
 }
 
@@ -36,13 +41,15 @@ void EdgeNode::print_tree(std::string pre,
   if(suffix != nullptr) {
     Rcout << pre << "sf " << suffix << "\n";
   }
+  if(counts != nullptr) {
+    Rcout << pre << counts_to_string(counts) << "\n";
+  }
   for(auto child : children) {
     Rcout << pre << " [" << child.first << "] -> "
           << child.second->edge_label(x, cend);
     Rcout << " (" << (child.second->start) << " - " << (child.second->end)
-          << ") ";
-    Rcout << child.second << "\n";
-    child.second->print_tree(pre + " ", x, cend);
+          << ")\n";
+    child.second->print_tree(pre + "  ", x, cend);
   }
 }
 
@@ -58,3 +65,36 @@ void EdgeNode::compute_total_count() {
   }
 }
 
+void EdgeNode::compute_counts(int first,
+                              const Rcpp::IntegerVector& x,
+                              int cdepth) {
+  depth = cdepth + edge_length();
+  counts = new std::unordered_map<int, int>{};
+  if(children.size() == 0) {
+    // this is a leaf, therefore a suffix which has a single
+    // preceding character at position nx-depth
+    int pos = x.size() - depth;
+    int val;
+    if(pos >= 0) {
+      val = x[pos];
+    } else {
+      val = first;
+    }
+    (*counts)[val] = 1;
+    total_count = 1;
+  } else {
+    total_count = 0;
+    for(auto child : children) {
+      child.second->compute_counts(first, x, depth);
+      total_count += child.second->total_count;
+      // update counts
+      for(auto count : *(child.second->counts)) {
+        if(auto current = counts->find(count.first); current != counts->end()) {
+          current->second += count.second;
+        } else {
+          (*counts)[count.first] = count.second;
+        }
+      }
+    }
+  }
+}

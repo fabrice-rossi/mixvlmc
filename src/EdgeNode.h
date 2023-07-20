@@ -28,6 +28,14 @@ class EdgeNode {
   // and the node itself. Computed post hoc.
   int total_count;
 
+  // detailed counts of elements before the occurrences of the
+  // sequence represented by this node.
+  std::unordered_map<int, int> *counts;
+
+  // Depth of the node, i.e. length of the sequence it represents
+  // Computed post hoc.
+  int depth;
+
   EdgeNode(EdgeNode* _parent, int s, int e);
 
   ~EdgeNode();
@@ -54,8 +62,16 @@ class EdgeNode {
 
   // computes the number of occurrences of the string represented by a node.
   // This is to be called only on a full suffix tree where
-  // each leaf corresponds to a suffix ended by a sentinel
+  // each leaf corresponds to a suffix ended by a sentinel.
   void compute_total_count();
+
+  // compute the counts of the values
+  // that are before each instance of subsequence represented
+  // by this node using an additional first term for the
+  // longest suffix. Compute depth abd total counts as a by product.
+  void compute_counts(int first,
+                      const Rcpp::IntegerVector& x,
+                      int cdepth);
 };
 
 #endif
