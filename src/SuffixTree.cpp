@@ -342,12 +342,14 @@ class SuffixTree {
     return the_contexts;
   }
 
-  void prune(int min_counts, int max_length) {
+  int prune(int min_counts, int max_length) {
     if(max_length <= 0) {
       max_length = x.size();
     }
     max_depth = 0; // we need to recompute max_depth
-    root->prune(min_counts, max_length, max_depth);
+    int nb_ctx = 0;
+    root->prune(min_counts, max_length, max_x +1, max_depth, nb_ctx);
+    return nb_ctx;
   }
 
   int depth() const {

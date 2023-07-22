@@ -198,7 +198,11 @@ bool EdgeNode::subsequences(int min_counts,
   return is_sub;
 }
 
-bool EdgeNode::prune(int min_counts, int max_length, int& mdepth) {
+bool EdgeNode::prune(int min_counts,
+                     int max_length,
+                     int nb_vals,
+                     int& mdepth,
+                     int& nb_ctx) {
   if(total_count >= min_counts) {
     if(depth > max_length) {
       // depth based pruning
@@ -219,6 +223,7 @@ bool EdgeNode::prune(int min_counts, int max_length, int& mdepth) {
           delete child.second;
         }
         children.clear();
+        nb_ctx += allowance;
         return false;
       }
     } else {
@@ -226,20 +231,26 @@ bool EdgeNode::prune(int min_counts, int max_length, int& mdepth) {
       if(depth > mdepth) {
         mdepth = depth;
       }
+      int nb_sub = 0;
       for(auto child = children.begin(); child != children.end();) {
         if(child->first < 0) {
           // this a sentinel node, we can remove it safely
           delete child->second;
           child = children.erase(child);
         } else {
-          bool result = child->second->prune(min_counts, max_length, mdepth);
+          bool result = child->second->prune(min_counts, max_length, nb_vals,
+                                             mdepth, nb_ctx);
           if(result) {
             delete child->second;
             child = children.erase(child);
           } else {
             ++child;
+            nb_sub++;
           }
         }
+      }
+      if(nb_sub < nb_vals) {
+        nb_ctx++;
       }
       return false;
     }

@@ -90,8 +90,13 @@ class EdgeNode {
 
   // prune recursively the suffix tree based on the same rules as above in
   // terms of min_counts and max_length. Updates maximal depth on the fly.
-  // sentinels nodes are always removed during this pruning phase.
-  bool prune(int min_counts, int max_length, int& mdepth);
+  // sentinels nodes are always removed during this pruning phase. The
+  // number of contexts is computed on the fly (based on the above definition).
+  bool prune(int min_counts,
+             int max_length,
+             int nb_vals,
+             int& mdepth,
+             int& nb_ctx);
 };
 
 #endif
