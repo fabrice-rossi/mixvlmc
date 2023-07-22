@@ -77,8 +77,12 @@ void EdgeNode::compute_total_count() {
 
 void EdgeNode::compute_counts(int first,
                               const Rcpp::IntegerVector& x,
-                              int cdepth) {
+                              int cdepth,
+                              int& mdepth) {
   depth = cdepth + edge_length();
+  if(depth > mdepth) {
+    mdepth = depth;
+  }
   counts = new std::unordered_map<int, int>{};
   if(children.size() == 0) {
     // this is a leaf, therefore a suffix which has a single
@@ -95,7 +99,7 @@ void EdgeNode::compute_counts(int first,
   } else {
     total_count = 0;
     for(auto child : children) {
-      child.second->compute_counts(first, x, depth);
+      child.second->compute_counts(first, x, depth, mdepth);
       total_count += child.second->total_count;
       // update counts
       for(auto count : *(child.second->counts)) {

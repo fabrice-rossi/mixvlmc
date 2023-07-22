@@ -69,8 +69,12 @@ class EdgeNode {
   // compute the counts of the values
   // that are before each instance of subsequence represented
   // by this node using an additional first term for the
-  // longest suffix. Compute depth and total counts as a by product.
-  void compute_counts(int first, const Rcpp::IntegerVector& x, int cdepth);
+  // longest suffix. Compute depth, total counts and maximal depth as a by
+  // product.
+  void compute_counts(int first,
+                      const Rcpp::IntegerVector& x,
+                      int cdepth,
+                      int& mdepth);
 
   // insert in subs (recursively) all subsequences of length at most
   // max_length that appear at least min_counts time in the original

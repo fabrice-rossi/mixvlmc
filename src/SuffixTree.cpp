@@ -24,6 +24,7 @@ class SuffixTree {
   int max_x;
   bool has_total_count;
   bool has_counts;
+  int max_depth;
 
  public:
   SuffixTree()
@@ -31,7 +32,8 @@ class SuffixTree {
         number_of_nodes(0),
         max_x(-1),
         has_total_count(false),
-        has_counts(false) {
+        has_counts(false),
+        max_depth(0) {
     root = new EdgeNode(nullptr, -1, -1);
   }
 
@@ -269,7 +271,7 @@ class SuffixTree {
   // compute total counts on the fly
   void compute_counts(int first) {
     if(!has_counts) {
-      root->compute_counts(first, x, 0);
+      root->compute_counts(first, x, 0, max_depth);
       has_total_count = true;
       has_counts = true;
     }
@@ -344,6 +346,23 @@ class SuffixTree {
     delete ctxs;
     return the_contexts;
   }
+
+  void prune(int min_counts, int max_length) {
+    if(max_length <= 0) {
+      max_length = x.size();
+    }
+    max_depth = 0; // we need to recompute max_depth
+    root->prune(min_counts, max_length, max_depth);
+  }
+
+  int depth() const {
+    if(has_counts) {
+      return max_depth;
+    } else {
+      stop("depth is available only when counts have been calculated");
+    }
+  }
+
 };
 
 SuffixTree* build_suffix_tree(const IntegerVector& x) {
