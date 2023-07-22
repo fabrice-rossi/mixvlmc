@@ -348,6 +348,48 @@ class SuffixTree {
     return the_contexts;
   }
 
+  // extract contexts as above but returned them in a more detailed
+  // format (as data frame) including frequencies
+  List detailed_contexts(int min_counts, int max_length) {
+    std::vector<SubSequence*>* ctxs =
+        raw_subsequences(min_counts, max_length, true);
+    int nb = (int)ctxs->size();
+    List the_contexts(nb);
+    std::vector<IntegerVector> counts;
+    for(int k = 0; k <= max_x + 1; k++) {
+      IntegerVector x(nb);
+      counts.push_back(x);
+    }
+    StringVector row_names{nb};
+    StringVector col_names{max_x + 3};
+    for(int i = 0; i < nb; i++) {
+      the_contexts[i] = (*ctxs)[i]->sequence();
+      auto val = (*ctxs)[i]->counts(max_x);
+      int total = 0;
+      for(int k = 1; k <= max_x + 1; k++) {
+        (counts[k])[i] = val[k - 1];
+        total += val[k - 1];
+      }
+      counts[0][i] = total;
+      row_names[i] = std::to_string(i + 1);
+    }
+    List res(max_x + 3);
+    res[0] = the_contexts;
+    col_names[0] = "context";
+    col_names[1] = "freq";
+    for(int k = 0; k <= max_x + 1; k++) {
+      res[k + 1] = counts[k];
+    }
+    for(int k = 2; k <= max_x + 2; k++) {
+      col_names[k] = std::to_string(k - 2);
+    }
+    delete ctxs;
+    res.attr("row.names") = row_names;
+    res.attr("names") = col_names;
+    res.attr("class") = "data.frame";
+    return res;
+  }
+
   int prune(int min_counts, int max_length) {
     if(max_length <= 0) {
       max_length = x.size();
@@ -393,6 +435,8 @@ RCPP_MODULE(suffixtree) {
               "Return subsequences that fulfill specified conditions")
       .method("contexts", &SuffixTree::contexts,
               "Return contexts that fulfill specified conditions")
+      .method("detailed_contexts", &SuffixTree::detailed_contexts,
+              "Return detailed contexts that fulfill specified conditions")
       .method("prune", &SuffixTree::prune,
               "Prune the suffix tree based on the specified conditions")
       .method("depth", &SuffixTree::depth, "Return the depth of the tree");
