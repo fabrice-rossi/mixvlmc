@@ -46,7 +46,7 @@ std::string EdgeNode::edge_label(const IntegerVector& x, int current) const {
 void EdgeNode::print_tree(std::string pre,
                           const IntegerVector& x,
                           int cend) const {
-  Rcout << pre << this;
+  Rcout << pre << this << " ~ " << depth;
   Rcout << "\n";
   if(suffix != nullptr) {
     Rcout << pre << "sf " << suffix << "\n";
@@ -196,4 +196,55 @@ bool EdgeNode::subsequences(int min_counts,
   // if total_count is too small, this is also the case for the children
   // so we stop recursion here
   return is_sub;
+}
+
+bool EdgeNode::prune(int min_counts, int max_length, int& mdepth) {
+  if(total_count >= min_counts) {
+    if(depth > max_length) {
+      // depth based pruning
+      // we have to insert explicit nodes if a part of the edge is kept
+      if(depth - edge_length() + 1 > max_length) {
+        // nothing to keep
+        return true;
+      } else {
+        // part of the edge should be kept
+        // we do that by reducing the end counter
+        int allowance = max_length - depth + edge_length();
+        depth = depth - edge_length() + allowance;
+        if(depth > mdepth) {
+          mdepth = depth;
+        }
+        end = start + allowance;
+        for(auto child : children) {
+          delete child.second;
+        }
+        children.clear();
+        return false;
+      }
+    } else {
+      // recursive processing
+      if(depth > mdepth) {
+        mdepth = depth;
+      }
+      for(auto child = children.begin(); child != children.end();) {
+        if(child->first < 0) {
+          // this a sentinel node, we can remove it safely
+          delete child->second;
+          child = children.erase(child);
+        } else {
+          bool result = child->second->prune(min_counts, max_length, mdepth);
+          if(result) {
+            delete child->second;
+            child = children.erase(child);
+          } else {
+            ++child;
+          }
+        }
+      }
+      return false;
+    }
+  } else {
+    // count based pruning
+    return true;
+  }
 }

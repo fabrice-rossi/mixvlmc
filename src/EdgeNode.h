@@ -87,6 +87,11 @@ class EdgeNode {
                     int nb_vals,
                     std::vector<int>& pre,
                     std::vector<SubSequence*>& subs) const;
+
+  // prune recursively the suffix tree based on the same rules as above in
+  // terms of min_counts and max_length. Updates maximal depth on the fly.
+  // sentinels nodes are always removed during this pruning phase.
+  bool prune(int min_counts, int max_length, int& mdepth);
 };
 
 #endif

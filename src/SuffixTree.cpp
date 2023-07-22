@@ -389,6 +389,9 @@ RCPP_MODULE(suffixtree) {
       .method("subsequences", &SuffixTree::subsequences,
               "Return subsequences that fulfill specified conditions")
       .method("contexts", &SuffixTree::contexts,
-              "Return contexts that fulfill specified conditions");
+              "Return contexts that fulfill specified conditions")
+      .method("prune", &SuffixTree::prune,
+              "Prune the suffix tree based on the specified conditions")
+      .method("depth", &SuffixTree::depth, "Return the depth of the tree");
   function("build_suffix_tree", &build_suffix_tree);
 }
