@@ -20,7 +20,6 @@ class SuffixTree {
   EdgeNode* root;
   IntegerVector x;
   int sentinel;
-  int number_of_nodes;
   int max_x;
   bool has_total_count;
   bool has_counts;
@@ -29,7 +28,6 @@ class SuffixTree {
  public:
   SuffixTree()
       : sentinel(-1),
-        number_of_nodes(0),
         max_x(-1),
         has_total_count(false),
         has_counts(false),
@@ -55,7 +53,6 @@ class SuffixTree {
   void insert(const IntegerVector& x_) {
     invalidate();
     x = x_;
-    number_of_nodes = 0;
     max_x = -1;
     // we use a "virtual" sentinel to avoid modifying x
     int nx = x.size() + 1;
@@ -130,7 +127,6 @@ class SuffixTree {
                                                   current->start + a_length);
               // new edge node for the edge starting in x[i]
               EdgeNode* new_node = new EdgeNode(break_node, i, nx);
-              number_of_nodes++;
               break_node->children[current_val] = new_node;
               int end = current->start + a_length;
               if(end < nx - 1) {
@@ -164,7 +160,6 @@ class SuffixTree {
           // there is no edge starting with x[i] in the current node, so we add
           // it
           EdgeNode* new_node = new EdgeNode(active, i, nx);
-          number_of_nodes++;
           active->children[a_edge] = new_node;
           // this is an explicit insertion
           new_suffix--;
