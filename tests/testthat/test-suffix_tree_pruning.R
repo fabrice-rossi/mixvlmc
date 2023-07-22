@@ -3,7 +3,7 @@ test_that("the suffix tree pruning is equivalent to context selection", {
   for (k in 1:9) {
     x <- sample(0:k, 10000, replace = TRUE)
     x_rev <- rev(x)
-    tree <- build_suffix_tree(x_rev[-1])
+    tree <- build_suffix_tree(x_rev[-1], k + 1)
     tree$compute_counts(x_rev[1])
     ctx_before <- tree$contexts(2, length(x) / 10)
     tree$prune(2, length(x) / 10)
@@ -32,7 +32,7 @@ test_that("the suffix tree pruning reports the correct number of contexts", {
   for (k in 1:9) {
     x <- sample(0:k, 10000, replace = TRUE)
     x_rev <- rev(x)
-    tree <- build_suffix_tree(x_rev[-1])
+    tree <- build_suffix_tree(x_rev[-1], k + 1)
     nb_ctx <- tree$prune(2, length(x) / 10)
     ctx <- tree$contexts(1, -1)
     expect_equal(nb_ctx, length(ctx))

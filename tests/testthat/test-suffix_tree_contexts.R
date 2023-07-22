@@ -3,7 +3,7 @@ test_that("the suffix tree extracts contexts of the correct length", {
   for (k in 1:9) {
     x <- sample(0:k, 1000, replace = TRUE)
     x_rev <- rev(x)
-    tree <- build_suffix_tree(x_rev[-1])
+    tree <- build_suffix_tree(x_rev[-1], k + 1)
     tree$compute_counts(x_rev[1])
     ctxs <- tree$contexts(2, 10)
     expect_true(all(sapply(ctxs, length) <= 10))
@@ -16,7 +16,7 @@ test_that("the suffix tree extracts all contexts and only them", {
   for (k in 1:9) {
     x <- sample(0:k, 1000, replace = TRUE)
     x_rev <- rev(x)
-    tree <- build_suffix_tree(x_rev[-1])
+    tree <- build_suffix_tree(x_rev[-1], k + 1)
     tree$compute_counts(x_rev[1])
     ctxs <- tree$contexts(2, 10)
     r_tree <- ctx_tree(x, min_size = 2, max_depth = 10)

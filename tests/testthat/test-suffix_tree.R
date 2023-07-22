@@ -2,7 +2,7 @@ test_that("the suffix tree contains all the suffixes", {
   withr::local_seed(10)
   for (k in 1:10) {
     x <- sample(0:k, 1000, replace = TRUE)
-    tree <- build_suffix_tree(x)
+    tree <- build_suffix_tree(x, k + 1)
     all_suffixes <- TRUE
     for (i in seq_along(x)) {
       if (!tree$is_suffix(x[i:length(x)])) {
@@ -18,7 +18,7 @@ test_that("the suffix tree does not contain non suffix", {
   withr::local_seed(10)
   for (k in 1:10) {
     x <- sample(0:k, 1000, replace = TRUE)
-    tree <- build_suffix_tree(x)
+    tree <- build_suffix_tree(x, k + 1)
     all_ok <- TRUE
     for (l in 1:998) {
       # let's remove an integer randomly
@@ -47,8 +47,8 @@ test_that("the suffix tree does not contain non suffix", {
 test_that("the suffix tree counts correctly subsequences", {
   withr::local_seed(10)
   for (k in 1:10) {
-    x <- sample(1:(k + 1), 100 * (ceiling(k / 3)), replace = TRUE)
-    tree <- build_suffix_tree(x)
+    x <- sample(0:k, 100 * (ceiling(k / 3)), replace = TRUE)
+    tree <- build_suffix_tree(x, k + 1)
     xt <- tabulate(x, nbins = k + 1)
     for (j in 1:k) {
       expect_equal(tree$count_occurrences(j), xt[j])
@@ -62,7 +62,7 @@ test_that("the suffix tree counts correctly subsequences", {
         all_ok <- FALSE
         break
       }
-      tmp <- sample(1:(k + 1), length(x) / 10, replace = TRUE)
+      tmp <- sample(0:k, length(x) / 10, replace = TRUE)
       if (tree$count_occurrences(tmp) !=
         count_occurrences(x, tmp)) {
         all_ok <- FALSE

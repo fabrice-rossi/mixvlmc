@@ -2,7 +2,7 @@ test_that("the suffix tree counts correctly the preceeding values of a subsequen
   withr::local_seed(10)
   for (k in 1:10) {
     x <- sample(0:k, 1000, replace = TRUE)
-    tree <- build_suffix_tree(x[2:length(x)])
+    tree <- build_suffix_tree(x[2:length(x)], nb_vals = k + 1)
     tree$compute_counts(x[1])
     valid_counts <- TRUE
     for (i in 1:200) {

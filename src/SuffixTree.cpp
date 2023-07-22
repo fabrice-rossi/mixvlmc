@@ -50,7 +50,7 @@ class SuffixTree {
     has_counts = false;
   }
 
-  void insert(const IntegerVector& x_) {
+  void insert(const IntegerVector& x_, int nb_vals) {
     invalidate();
     x = x_;
     max_x = -1;
@@ -79,6 +79,11 @@ class SuffixTree {
       }
       if(current_val > max_x) {
         max_x = current_val;
+        if(max_x >= nb_vals) {
+          stop("x contains values larger than expected: value " +
+               std::to_string(max_x) + ", expected maximum " +
+               std::to_string(nb_vals - 1));
+        }
       }
       // let us add a new suffix (ending with x[i])
       new_suffix++;
@@ -181,6 +186,7 @@ class SuffixTree {
         }
       }
     }
+    max_x = nb_vals - 1;
   }
 
   void print_tree() const { root->print_tree("", x, x.size() + 1); }
@@ -346,9 +352,9 @@ class SuffixTree {
     if(max_length <= 0) {
       max_length = x.size();
     }
-    max_depth = 0; // we need to recompute max_depth
+    max_depth = 0;  // we need to recompute max_depth
     int nb_ctx = 0;
-    root->prune(min_counts, max_length, max_x +1, max_depth, nb_ctx);
+    root->prune(min_counts, max_length, max_x + 1, max_depth, nb_ctx);
     return nb_ctx;
   }
 
@@ -362,9 +368,9 @@ class SuffixTree {
 
 };
 
-SuffixTree* build_suffix_tree(const IntegerVector& x) {
+SuffixTree* build_suffix_tree(const IntegerVector& x, int nb_vals) {
   SuffixTree* tree = new SuffixTree();
-  tree->insert(x);
+  tree->insert(x, nb_vals);
   return tree;
 }
 
