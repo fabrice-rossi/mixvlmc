@@ -98,6 +98,10 @@ class EdgeNode {
              int& mdepth,
              int& nb_ctx);
 
+  // build a flat representation of the tree where contexts are
+  // stored in the tree_structure vector as the list of the
+  // indices of there children. The tree_counts vector
+  // contains the counts associated to each context.
   int flatten(const Rcpp::IntegerVector& x,
               int nb_vals,
               std::vector<Rcpp::IntegerVector>& tree_structure,
