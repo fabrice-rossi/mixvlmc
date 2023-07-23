@@ -97,6 +97,11 @@ class EdgeNode {
              int nb_vals,
              int& mdepth,
              int& nb_ctx);
+
+  int flatten(const Rcpp::IntegerVector& x,
+              int nb_vals,
+              std::vector<Rcpp::IntegerVector>& tree_structure,
+              std::vector<Rcpp::IntegerVector>& tree_counts) const;
 };
 
 #endif

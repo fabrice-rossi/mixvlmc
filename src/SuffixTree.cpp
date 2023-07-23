@@ -408,6 +408,24 @@ class SuffixTree {
     }
   }
 
+  List representation() {
+    std::vector<Rcpp::IntegerVector> tree_structure{};
+    std::vector<Rcpp::IntegerVector> tree_counts{};
+    root->flatten(x, max_x + 1, tree_structure, tree_counts);
+    int nb = (int)tree_structure.size();
+    List preres(nb);
+    for(int k = 0; k < nb; k++) {
+      if(tree_structure[k].size() > 0) {
+        List val = List::create(Named("children") = tree_structure[k],
+                                Named("f_by") = tree_counts[k]);
+        preres[k] = val;
+      } else {
+        List val = List::create(Named("f_by") = tree_counts[k]);
+        preres[k] = val;
+      }
+    }
+    return preres;
+  }
 };
 
 SuffixTree* build_suffix_tree(const IntegerVector& x, int nb_vals) {
@@ -439,6 +457,8 @@ RCPP_MODULE(suffixtree) {
               "Return detailed contexts that fulfill specified conditions")
       .method("prune", &SuffixTree::prune,
               "Prune the suffix tree based on the specified conditions")
+      .method("representation", &SuffixTree::representation,
+              "Return a representation in R of the tree")
       .method("depth", &SuffixTree::depth, "Return the depth of the tree");
   function("build_suffix_tree", &build_suffix_tree);
 }

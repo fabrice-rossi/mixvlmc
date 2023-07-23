@@ -259,3 +259,42 @@ bool EdgeNode::prune(int min_counts,
     return true;
   }
 }
+
+int EdgeNode::flatten(const Rcpp::IntegerVector& x,
+                      int nb_vals,
+                      std::vector<Rcpp::IntegerVector>& tree_structure,
+                      std::vector<Rcpp::IntegerVector>& tree_counts) const {
+  IntegerVector f_by = map_to_counts(counts, nb_vals - 1);
+  int pos = tree_structure.size();
+  int the_end = end;
+  if(the_end > x.size()) {
+    // sentinel, no children
+    the_end = x.size();
+  }
+  int sub_pos = pos;
+  for(int i = start; i < the_end - 1; i++) {
+    IntegerVector t_children(nb_vals, R_NaInt);
+    tree_counts.push_back(f_by);
+    t_children[x[i + 1]] = sub_pos + 2; // +1 for R
+    tree_structure.push_back(t_children);  // in position sub_pos
+    sub_pos++;
+  }
+  if(children.size() > 0) {
+    IntegerVector t_children(nb_vals, R_NaInt);
+    tree_structure.push_back(t_children);
+    tree_counts.push_back(f_by);
+    int child_pos = tree_structure.size() - 1;
+    for(auto child : children) {
+      if(child.first >= 0) {
+        t_children[child.first] =
+            child.second->flatten(x, nb_vals, tree_structure, tree_counts);
+      }
+    }
+    tree_structure[child_pos] = t_children;
+  } else {
+    IntegerVector empty{};
+    tree_structure.push_back(empty);
+    tree_counts.push_back(f_by);
+  }
+  return pos + 1 ; // +1 for R
+}
