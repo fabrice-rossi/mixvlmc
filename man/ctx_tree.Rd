@@ -4,7 +4,13 @@
 \alias{ctx_tree}
 \title{Build a context tree for a discrete time series}
 \usage{
-ctx_tree(x, min_size = 2, max_depth = 100, keep_position = TRUE)
+ctx_tree(
+  x,
+  min_size = 2,
+  max_depth = 100,
+  keep_position = TRUE,
+  backend = c("R", "C++")
+)
 }
 \arguments{
 \item{x}{a discrete time series; can be numeric, character, factor or logical.}
@@ -17,9 +23,12 @@ be included in the tree.}
 
 \item{keep_position}{logical (default: TRUE). Should the context tree keep
 the position of the contexts.}
+
+\item{backend}{"R" or "C++" (default: "R"). Specifies the implementation used
+to represent the context tree and to built it. See details.}
 }
 \value{
-a context tree (of class \code{ctx_tree}).
+a context tree (of class that inherits from \code{ctx_tree}).
 }
 \description{
 This function builds a context tree for a time series.
@@ -30,6 +39,23 @@ than \code{max_depth} that appear at least \code{min_size} times in the time ser
 stores the frequencies of the states that follow each context. Optionally,
 the positions of the contexts in the time series can be stored in the tree.
 }
+\section{Back ends}{
+
+
+Two back ends are available to compute context trees:
+\itemize{
+\item the "R" back end represents the tree in pure R data structures (nested lists)
+that be easily processed further in pure R (C++ helper functions are used to
+speed up the construction).
+\item the "C++" back end represents the tree with C++ classes. The tree is built
+with an optimised suffix tree algorithm which speeds up the construction by
+at least a factor 10 in standard settings. As the tree is kept outside of
+R direct reach, context trees built with the C++ back end cannot be saved
+directly with e.g. \code{saveRDS}. In addition the C++ back end is experimental
+and does not support match position saving.
+}
+}
+
 \examples{
 dts <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 0)
 ## get all contexts of length 2

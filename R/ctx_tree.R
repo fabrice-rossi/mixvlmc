@@ -119,8 +119,23 @@ grow_ctx_tree <- function(x, vals, min_size, max_depth, covsize = 0, keep_match 
 #'   be included in the tree.
 #' @param keep_position logical (default: TRUE). Should the context tree keep
 #'   the position of the contexts.
+#' @param backend "R" or "C++" (default: "R"). Specifies the implementation used
+#'   to represent the context tree and to built it. See details.
+#' @section Back ends:
 #'
-#' @returns a context tree (of class `ctx_tree`).
+#' Two back ends are available to compute context trees:
+#'
+#' - the "R" back end represents the tree in pure R data structures (nested lists)
+#'   that be easily processed further in pure R (C++ helper functions are used to
+#'   speed up the construction).
+#' - the "C++" back end represents the tree with C++ classes. The tree is built
+#'   with an optimised suffix tree algorithm which speeds up the construction by
+#'   at least a factor 10 in standard settings. As the tree is kept outside of
+#'   R direct reach, context trees built with the C++ back end cannot be saved
+#'   directly with e.g. `saveRDS`. In addition the C++ back end is experimental
+#'   and does not support match position saving.
+#'
+#' @returns a context tree (of class that inherits from `ctx_tree`).
 #' @export
 #'
 #' @examples
@@ -128,14 +143,26 @@ grow_ctx_tree <- function(x, vals, min_size, max_depth, covsize = 0, keep_match 
 #' ## get all contexts of length 2
 #' dts_ctree <- ctx_tree(dts, min_size = 1, max_depth = 2)
 #' draw(dts_ctree)
-ctx_tree <- function(x, min_size = 2, max_depth = 100, keep_position = TRUE) {
+ctx_tree <- function(x, min_size = 2, max_depth = 100, keep_position = TRUE,
+                     backend = c("R", "C++")) {
+  backend <- match.arg(backend)
+  if (backend == "C++" && keep_position) {
+    warning("The C++ back end does not support `keep_position = TRUE`.")
+  }
   nx <- to_dts(x)
   ix <- nx$ix
   vals <- nx$vals
   if (length(vals) > max(10, 0.05 * length(x))) {
     warning(paste0("x as numerous unique values (", length(vals), ")"))
   }
-  grow_ctx_tree(ix, vals, min_size = min_size, max_depth = max_depth, keep_match = keep_position, compute_stats = TRUE)
+  if (backend == "R") {
+    grow_ctx_tree(ix, vals, min_size = min_size, max_depth = max_depth, keep_match = keep_position, compute_stats = TRUE)
+  } else {
+    cpp_tree <- build_suffix_tree(rev(ix)[-1], length(nx$vals))
+    cpp_tree$compute_counts(ix[length(ix)])
+    nb_ctx <- cpp_tree$prune(min_size, max_depth)
+    new_ctx_tree_st(vals, cpp_tree, nb_ctx)
+  }
 }
 
 #' Test if the object is a context tree
