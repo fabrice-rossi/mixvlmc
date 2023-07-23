@@ -95,6 +95,7 @@ class EdgeNode {
   bool prune(int min_counts,
              int max_length,
              int nb_vals,
+             int nx,
              int& mdepth,
              int& nb_ctx);
 

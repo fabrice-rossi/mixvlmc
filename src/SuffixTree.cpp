@@ -391,12 +391,15 @@ class SuffixTree {
   }
 
   int prune(int min_counts, int max_length) {
+    if(!has_counts) {
+      stop("prune cannot be used if the counts have not been computed");
+    }
     if(max_length <= 0) {
       max_length = x.size();
     }
     max_depth = 0;  // we need to recompute max_depth
     int nb_ctx = 0;
-    root->prune(min_counts, max_length, max_x + 1, max_depth, nb_ctx);
+    root->prune(min_counts, max_length, max_x + 1, x.size(), max_depth, nb_ctx);
     return nb_ctx;
   }
 

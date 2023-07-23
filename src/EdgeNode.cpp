@@ -201,6 +201,7 @@ bool EdgeNode::subsequences(int min_counts,
 bool EdgeNode::prune(int min_counts,
                      int max_length,
                      int nb_vals,
+                     int nx,
                      int& mdepth,
                      int& nb_ctx) {
   if(total_count >= min_counts) {
@@ -227,6 +228,14 @@ bool EdgeNode::prune(int min_counts,
         return false;
       }
     } else {
+      if(edge_length() > 1) {
+        // count intermediate contexts
+        if(end > nx) {
+          nb_ctx += edge_length() - 2;
+        } else {
+          nb_ctx += edge_length() - 1;
+        }
+      }
       // recursive processing
       if(depth > mdepth) {
         mdepth = depth;
@@ -239,7 +248,7 @@ bool EdgeNode::prune(int min_counts,
           child = children.erase(child);
         } else {
           bool result = child->second->prune(min_counts, max_length, nb_vals,
-                                             mdepth, nb_ctx);
+                                             nx, mdepth, nb_ctx);
           if(result) {
             delete child->second;
             child = children.erase(child);
