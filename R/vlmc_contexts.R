@@ -22,7 +22,7 @@ vlmc_context_extractor <-
         } else {
           lres <- res
         }
-        fake_data <- generate_fake_data(lres$freq, lres[, -(1:2), drop = FALSE], vals)
+        fake_data <- generate_fake_data(lres$freq, lres[, 3:(2 + length(vals)), drop = FALSE], vals)
         local_m <- main_metrics(fake_data$response, fake_data$predictor)
         local_m$roc <- NULL
         local_m$conf_mat <- NULL
@@ -84,7 +84,7 @@ vlmc_context_extractor <-
 #' contexts(model, cutoff = "quantile")
 #' @export
 contexts.vlmc <- function(ct, type = c("auto", "list", "data.frame"), reverse = TRUE, frequency = NULL,
-                          counts = c("desc", "local"), cutoff = NULL, metrics = FALSE, ...) {
+                          positions = FALSE, counts = c("desc", "local"), cutoff = NULL, metrics = FALSE, ...) {
   type <- match.arg(type)
   counts <- match.arg(counts)
   if (is.null(cutoff) && counts == "desc" && !metrics) {
@@ -97,7 +97,7 @@ contexts.vlmc <- function(ct, type = c("auto", "list", "data.frame"), reverse = 
     if (!is.null(cutoff)) {
       assertthat::assert_that(cutoff %in% c("quantile", "native"))
     }
-    control <- list(frequency = frequency, counts = counts, p_value = !is.null(cutoff), metrics = metrics)
+    control <- list(frequency = frequency, counts = counts, p_value = !is.null(cutoff), metrics = metrics, positions = positions)
     preres <- contexts_extractor(ct, reverse, vlmc_context_extractor, control, vlmc_parent_summary)
     if (!is.null(cutoff)) {
       if ((cutoff == "quantile")) {

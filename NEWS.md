@@ -1,5 +1,9 @@
 # mixvlmc (development version)
 
+## New features
+* `contexts` can now report the positions of each context in the original time
+  series
+
 ## Minor improvements and bug fixes
 * Fix documentation: all models can be adjusted on time series of logical values
 * Synchronize `ctx_tree` documentation and its default value

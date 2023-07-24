@@ -62,3 +62,32 @@ test_that("basic count consistency", {
   totals <- apply(full_ctx[3:5], 1, sum)
   expect_equal(full_ctx$freq, totals)
 })
+
+test_that("contexts positions are valid", {
+  dts <- sample(c("A", "B", "C"), 100, replace = TRUE)
+  dts_tree <- ctx_tree(dts, max_depth = 4, keep_position = TRUE)
+  full_ctx <- contexts(dts_tree, frequency = "detailed", positions = TRUE)
+  ## check first the consistency (we remove matches at the end of the dts)
+  expect_equal(
+    sapply(full_ctx[["positions"]], \(x) length(x[x != length(dts)])),
+    full_ctx$freq
+  )
+  ## then we check all the matches
+  all_valid <- TRUE
+  for (k in 1:nrow(full_ctx)) {
+    positions <- full_ctx[["positions"]][[k]]
+    ctx <- rev(full_ctx[["context"]][[k]])
+    for (pos in positions) {
+      for (l in seq_along(ctx)) {
+        if (ctx[l] != dts[pos - length(ctx) + l]) {
+          all_valid <- FALSE
+          break
+        }
+      }
+      if (!all_valid) {
+        break
+      }
+    }
+    expect_true(all_valid)
+  }
+})

@@ -1,6 +1,6 @@
 test_that("context format is consistent", {
   dts <- sample(c("A", "B", "C"), 100, replace = TRUE)
-  model <- vlmc(dts, alpha = 0.5)
+  model <- vlmc(dts, alpha = 0.5, keep_match = TRUE)
   raw_ctx <- contexts(model, type = "data.frame")
   expect_named(raw_ctx, c("context"))
   freq_ctx <- contexts(model, frequency = "total")
@@ -13,6 +13,8 @@ test_that("context format is consistent", {
   expect_named(ctx_co, c("context", "cutoff"))
   m_full_ctx_co <- contexts(model, frequency = "detailed", cutoff = "native", metrics = TRUE)
   expect_named(m_full_ctx_co, c("context", "freq", "A", "B", "C", "cutoff", "accuracy", "auc"))
+  m_super_full_ctx_co <- contexts(model, frequency = "detailed", positions = TRUE, cutoff = "native", metrics = TRUE)
+  expect_named(m_super_full_ctx_co, c("context", "freq", "A", "B", "C", "positions", "cutoff", "accuracy", "auc"))
 })
 
 test_that("context cut off are consistent", {

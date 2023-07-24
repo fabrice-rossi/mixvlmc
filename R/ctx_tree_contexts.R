@@ -3,7 +3,18 @@ frequency_context_extractor <-
     if ((is_leaf && !is.null(ct[["f_by"]])) ||
       (!is_leaf && nb_sub_tree(ct) < length(vals))) {
       if (is.null(control[["frequency"]])) {
-        data.frame(context = I(list(path)))
+        if (isFALSE(control[["positions"]])) {
+          data.frame(context = I(list(path)))
+        } else {
+          if (is.null(ct[["match"]])) {
+            stop("Cannot report positions if they were not saved")
+          } else {
+            data.frame(
+              context = I(list(path)),
+              positions = I(list(ct[["match"]] + length(path)))
+            )
+          }
+        }
       } else {
         res <- data.frame(
           context = I(list(path)),
@@ -15,13 +26,20 @@ frequency_context_extractor <-
           res <-
             cbind(res, data.frame(freq_by_val, check.names = FALSE))
         }
+        if (isTRUE(control[["positions"]])) {
+          if (is.null(ct[["match"]])) {
+            stop("Cannot report positions if they were not saved")
+          } else {
+            res[["positions"]] <- list(ct[["match"]] + length(path))
+          }
+        }
         if (!is_leaf && isTRUE(control$counts == "local")) {
           ## remove sub counts
           for (child in ct$children) {
             if (!is.null(child[["f_by"]])) {
               res$freq <- res$freq - sum(child[["f_by"]])
               if (control$frequency == "detailed") {
-                res[, -(1:2)] <- res[, -(1:2)] - child[["f_by"]]
+                res[, -(1:2)] <- res[, 3:(2 + length(vals)), drop = FALSE] - child[["f_by"]]
               }
             }
           }
@@ -39,6 +57,11 @@ frequency_context_extractor <-
 #'   `"total"` gives the number of occurrences of each context in the original
 #'   sequence. `"detailed"` includes in addition the break down of these
 #'   occurrences into all the possible states.
+#' @param positions logical (defaults to FALSE). Specify whether the positions
+#'   of each context in the time series used to build the context tree should
+#'   be reported in a `positions` column of the result data frame. The
+#'   availability of the positions depends on the way the context
+#'   tree was built. See details for the definition of a position.
 #' @details The default result for `type="auto"` (or `type="list"`) and
 #'   `frequency=NULL` is the list of all contexts.
 #'
@@ -50,6 +73,12 @@ frequency_context_extractor <-
 #'   added per state in the context space. Each column records the number of
 #'   times a given context is followed by the corresponding value in the
 #'   original series.
+#'
+#' @section Positions: A position of a context `ctx` in the time series `x` is an
+#'   index value `t` such that the context ends with `x[t]`. Thus `x[t+1]` is after
+#'   the context. For instance if `x=c(0, 0, 1, 1)` and `ctx=c(0, 1)` (in standard
+#'   state order), then the position of `ctx` in `x` is 3.
+#'
 #' @examples
 #' dts <- sample(as.factor(c("A", "B", "C")), 100, replace = TRUE)
 #' dts_tree <- ctx_tree(dts, max_depth = 3, min_size = 5)
@@ -57,9 +86,11 @@ frequency_context_extractor <-
 #' contexts(dts_tree, frequency = "total")
 #' contexts(dts_tree, frequency = "detailed")
 #' @export
-contexts.ctx_tree <- function(ct, type = c("auto", "list", "data.frame"), reverse = TRUE, frequency = NULL, ...) {
+contexts.ctx_tree <- function(ct, type = c("auto", "list", "data.frame"),
+                              reverse = TRUE, frequency = NULL,
+                              positions = FALSE, ...) {
   type <- match.arg(type)
-  if (is.null(frequency)) {
+  if (is.null(frequency) && isFALSE(positions)) {
     basic_extractor <- switch(type,
       "auto" = path_list_extractor,
       "list" = path_list_extractor,
@@ -68,8 +99,10 @@ contexts.ctx_tree <- function(ct, type = c("auto", "list", "data.frame"), revers
     contexts_extractor(ct, reverse, basic_extractor, NULL)
   } else {
     assertthat::assert_that(type %in% c("auto", "data.frame"))
-    assertthat::assert_that(frequency %in% c("total", "detailed"))
-    control <- list(frequency = frequency)
+    if (!is.null(frequency)) {
+      assertthat::assert_that(frequency %in% c("total", "detailed"))
+    }
+    control <- list(frequency = frequency, positions = positions)
     contexts_extractor(ct, reverse, frequency_context_extractor, control)
   }
 }

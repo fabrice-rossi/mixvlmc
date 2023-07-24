@@ -129,7 +129,7 @@ covlmc_context_extractor <- function(path, ct, vals, control, is_leaf, p_summary
 #' contexts(m_cov, model = "full")
 #' @export
 contexts.covlmc <- function(ct, type = c("auto", "list", "data.frame"), reverse = TRUE, frequency = NULL,
-                            counts = c("desc", "local"), model = NULL, hsize = FALSE, metrics = FALSE,
+                            positions = FALSE, counts = c("desc", "local"), model = NULL, hsize = FALSE, metrics = FALSE,
                             merging = FALSE, ...) {
   type <- match.arg(type)
   counts <- match.arg(counts)
@@ -148,7 +148,8 @@ contexts.covlmc <- function(ct, type = c("auto", "list", "data.frame"), reverse 
     }
     control <- list(
       frequency = frequency, counts = counts, model = model,
-      hsize = hsize, metrics = metrics, merging = merging
+      hsize = hsize, metrics = metrics, merging = merging,
+      positions = positions
     )
     preres <- contexts_extractor(ct, reverse, covlmc_context_extractor, control, no_summary)
     rownames(preres) <- 1:nrow(preres)
