@@ -17,6 +17,8 @@ test_that("context format is consistent", {
   expect_named(full_ctx_model, c("context", "freq", "A", "B", "C", "coef"))
   full_ctx_model_hsize <- contexts(model, frequency = "detailed", model = "coef", hsize = TRUE)
   expect_named(full_ctx_model_hsize, c("context", "freq", "A", "B", "C", "coef", "hsize"))
+  super_full_ctx_model_hsize <- contexts(model, frequency = "detailed", positions = TRUE, model = "coef", hsize = TRUE)
+  expect_named(super_full_ctx_model_hsize, c("context", "freq", "A", "B", "C", "positions", "coef", "hsize"))
   ctx_model <- contexts(model, model = "full")
   expect_named(ctx_model, c("context", "model"))
   ctx_model_with_metrics <- contexts(model, model = "full", metrics = TRUE)

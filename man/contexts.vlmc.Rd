@@ -9,6 +9,7 @@
   type = c("auto", "list", "data.frame"),
   reverse = TRUE,
   frequency = NULL,
+  positions = FALSE,
   counts = c("desc", "local"),
   cutoff = NULL,
   metrics = FALSE,
@@ -20,13 +21,19 @@
 
 \item{type}{result type (see details).}
 
-\item{reverse}{logical (defaults to FALSE). See details.}
+\item{reverse}{logical (defaults to TRUE). See details.}
 
 \item{frequency}{specifies the counts to be included in the result
 data.frame. The default value of \code{NULL} does not include anything.
 \code{"total"} gives the number of occurrences of each context in the original
 sequence. \code{"detailed"} includes in addition the break down of these
 occurrences into all the possible states.}
+
+\item{positions}{logical (defaults to FALSE). Specify whether the positions
+of each context in the time series used to build the context tree should
+be reported in a \code{positions} column of the result data frame. The
+availability of the positions depends on the way the context
+tree was built. See details for the definition of a position.}
 
 \item{counts}{specifies how the counts reported by \code{frequency} are computed.
 The default value \code{"desc"} includes both counts that are specific to the
@@ -80,6 +87,13 @@ reported by \code{context.vlmc}.
 \item values are not modified to induce pruning, contrarily to the default
 behaviour of \code{\link[=cutoff]{cutoff()}}
 }
+}
+
+\section{Positions}{
+ A position of a context \code{ctx} in the time series \code{x} is an
+index value \code{t} such that the context ends with \code{x[t]}. Thus \code{x[t+1]} is after
+the context. For instance if \code{x=c(0, 0, 1, 1)} and \code{ctx=c(0, 1)} (in standard
+state order), then the position of \code{ctx} in \code{x} is 3.
 }
 
 \section{State order in a context}{
