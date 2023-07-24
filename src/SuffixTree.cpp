@@ -278,6 +278,42 @@ class SuffixTree {
       has_total_count = true;
       has_counts = true;
       has_positions = keep_position;
+      if(keep_position) {
+        add_initial_match(first);
+      }
+    }
+  }
+
+  void add_initial_match(int first) {
+    if(!has_positions) {
+      stop("add_initial_match cannot be called directly");
+    }
+    // we find the nodes that encode sequences of the form first, x[0], x[1],
+    // etc. and add -1 to the matched position of those nodes
+    auto current = root;
+    int x_pos = -1;
+    while(x_pos < x.length()) {
+      // try to progress along an edge
+      int val = first;
+      if(x_pos >= 0) {
+        val = x[x_pos];
+      }
+      if(auto child = current->children.find(val);
+         child != current->children.end()) {
+        current = child->second;
+        current->positions->push_back(-1);
+        int el = current->edge_length();
+        int move = std::min(el, (int)(x.length() - x_pos));
+        for(int k = 1; k < move; k++) {
+          if(x[x_pos + k] != x[current->start + k]) {
+            // not more
+            break;
+          }
+        }
+        x_pos += move;
+      } else {
+        break;
+      }
     }
   }
 
