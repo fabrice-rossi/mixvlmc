@@ -11,7 +11,7 @@ contexts(ct, type = c("auto", "list", "data.frame"), reverse = TRUE, ...)
 
 \item{type}{result type (see details).}
 
-\item{reverse}{logical (defaults to FALSE). See details.}
+\item{reverse}{logical (defaults to TRUE). See details.}
 
 \item{...}{additional arguments for the contexts function.}
 }

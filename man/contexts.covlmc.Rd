@@ -22,7 +22,7 @@
 
 \item{type}{result type (see details).}
 
-\item{reverse}{logical (defaults to FALSE). See details.}
+\item{reverse}{logical (defaults to TRUE). See details.}
 
 \item{frequency}{specifies the counts to be included in the result
 data.frame. The default value of \code{NULL} does not include anything.
