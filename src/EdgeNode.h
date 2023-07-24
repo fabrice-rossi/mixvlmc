@@ -33,6 +33,10 @@ class EdgeNode {
   // sequence represented by this node.
   std::unordered_map<int, int>* counts;
 
+  // positions of the sequence(s) represented by this node in
+  // the original sequence
+  std::vector<int>* positions;
+
   // Depth of the node, i.e. length of the sequence it represents
   // Computed post hoc.
   int depth;
@@ -70,9 +74,12 @@ class EdgeNode {
   // that are before each instance of subsequence represented
   // by this node using an additional first term for the
   // longest suffix. Compute depth, total counts and maximal depth as a by
-  // product.
+  // product. Keep the positions of each subsequence if keep_position is
+  // true. This can lead to a quadratic memory occupation with respect
+  // to the length of the original sequence.
   void compute_counts(int first,
                       const Rcpp::IntegerVector& x,
+                      bool keep_position,
                       int cdepth,
                       int& mdepth);
 

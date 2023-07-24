@@ -19,6 +19,7 @@ EdgeNode::EdgeNode(EdgeNode* _parent, int s, int e)
       suffix(nullptr),
       total_count(0),
       counts(nullptr),
+      positions(nullptr),
       depth(0) {}
 
 EdgeNode::~EdgeNode() {
@@ -27,6 +28,9 @@ EdgeNode::~EdgeNode() {
   }
   if(counts != nullptr) {
     delete counts;
+  }
+  if(positions != nullptr) {
+    delete positions;
   }
 }
 
@@ -54,6 +58,14 @@ void EdgeNode::print_tree(std::string pre,
   if(counts != nullptr) {
     Rcout << pre << counts_to_string(counts) << "\n";
   }
+  if(positions != nullptr) {
+    Rcout << pre << "{";
+    int np = (int)positions->size() - 1;
+    for(int i = 0; i < np; i++) {
+      Rcout << (*positions)[i] << ", ";
+    }
+    Rcout << (*positions)[np] << "}\n";
+  }
   for(auto child : children) {
     Rcout << pre << " [" << child.first << "] -> "
           << child.second->edge_label(x, cend);
@@ -77,6 +89,7 @@ void EdgeNode::compute_total_count() {
 
 void EdgeNode::compute_counts(int first,
                               const Rcpp::IntegerVector& x,
+                              bool keep_position,
                               int cdepth,
                               int& mdepth) {
   depth = cdepth + edge_length();
@@ -84,10 +97,16 @@ void EdgeNode::compute_counts(int first,
     mdepth = depth;
   }
   counts = new std::unordered_map<int, int>{};
+  if(keep_position) {
+    positions = new std::vector<int>{};
+  }
   if(children.size() == 0) {
     // this is a leaf, therefore a suffix which has a single
     // preceding character at position nx-depth
     int pos = x.size() - depth;
+    if(keep_position) {
+      positions->push_back(pos + 1);
+    }
     int val;
     if(pos >= 0) {
       val = x[pos];
@@ -99,8 +118,12 @@ void EdgeNode::compute_counts(int first,
   } else {
     total_count = 0;
     for(auto child : children) {
-      child.second->compute_counts(first, x, depth, mdepth);
+      child.second->compute_counts(first, x, keep_position, depth, mdepth);
       total_count += child.second->total_count;
+      if(keep_position) {
+        positions->insert(positions->end(), child.second->positions->begin(),
+                          child.second->positions->end());
+      }
       // update counts
       for(auto count : *(child.second->counts)) {
         if(auto current = counts->find(count.first); current != counts->end()) {
@@ -284,7 +307,7 @@ int EdgeNode::flatten(const Rcpp::IntegerVector& x,
   for(int i = start; i < the_end - 1; i++) {
     IntegerVector t_children(nb_vals, R_NaInt);
     tree_counts.push_back(f_by);
-    t_children[x[i + 1]] = sub_pos + 2; // +1 for R
+    t_children[x[i + 1]] = sub_pos + 2;    // +1 for R
     tree_structure.push_back(t_children);  // in position sub_pos
     sub_pos++;
   }
@@ -305,5 +328,5 @@ int EdgeNode::flatten(const Rcpp::IntegerVector& x,
     tree_structure.push_back(empty);
     tree_counts.push_back(f_by);
   }
-  return pos + 1 ; // +1 for R
+  return pos + 1;  // +1 for R
 }

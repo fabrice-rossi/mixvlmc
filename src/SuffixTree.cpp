@@ -23,6 +23,7 @@ class SuffixTree {
   int max_x;
   bool has_total_count;
   bool has_counts;
+  bool has_positions;
   int max_depth;
 
  public:
@@ -31,6 +32,7 @@ class SuffixTree {
         max_x(-1),
         has_total_count(false),
         has_counts(false),
+        has_positions(false),
         max_depth(0) {
     root = new EdgeNode(nullptr, -1, -1);
   }
@@ -270,11 +272,12 @@ class SuffixTree {
   // that are before each instance of subsequence represented
   // in the suffix tree using an additional first term
   // compute total counts on the fly
-  void compute_counts(int first) {
+  void compute_counts(int first, bool keep_position) {
     if(!has_counts) {
-      root->compute_counts(first, x, 0, max_depth);
+      root->compute_counts(first, x, keep_position, 0, max_depth);
       has_total_count = true;
       has_counts = true;
+      has_positions = keep_position;
     }
   }
 
@@ -294,9 +297,35 @@ class SuffixTree {
     }
   }
 
+  // return the positions associated to a subsequence as computed by a call
+  // to compute_counts with position saving.
+  // Returns an empty IntegerVector if the subsequence is not found.
+  IntegerVector positions(const IntegerVector& y) const {
+    if(!has_positions) {
+      stop("positions cannot be used if positions have not been saved");
+    }
+    Position where = find_subsequence(y);
+    if(where.is_valid()) {
+      if(where.node->positions == nullptr) {
+        stop(
+            "Internal error in positions: I should have positions but I do "
+            "not!");
+      }
+      return IntegerVector(where.node->positions->begin(),
+                           where.node->positions->end());
+    } else {
+      return IntegerVector{};
+    }
+  }
+
   std::vector<SubSequence*>* raw_subsequences(int min_counts,
                                               int max_length,
                                               bool only_ctx) {
+    if(!has_counts) {
+      stop(
+          "subsequences and contexts cannot be used if compute_counts has not "
+          "been called before");
+    }
     std::vector<SubSequence*>* ctxs = new std::vector<SubSequence*>{};
     std::vector<int> pre{};
     pre.reserve(x.size());
@@ -314,11 +343,6 @@ class SuffixTree {
   // negative in this latter case, length is not taken into account
   // - have at least min_counts occurrences
   List subsequences(int min_counts, int max_length) {
-    if(!has_counts) {
-      stop(
-          "subsequences cannot be used if compute_counts has not been called "
-          "before");
-    }
     std::vector<SubSequence*>* ctxs =
         raw_subsequences(min_counts, max_length, false);
     int nb = (int)ctxs->size();
@@ -449,9 +473,11 @@ RCPP_MODULE(suffixtree) {
       .method("count_occurrences", &SuffixTree::count_occurrences,
               "Count the occurrences of a NumericVector in the original one")
       .method("compute_counts", &SuffixTree::compute_counts,
-              "Compute the counts")
+              "Compute the counts possibly keeping the match positions")
       .method("counts", &SuffixTree::counts,
               "Return the counts associated to a subsequence")
+      .method("positions", &SuffixTree::positions,
+              "Return the positions of a subsequence")
       .method("subsequences", &SuffixTree::subsequences,
               "Return subsequences that fulfill specified conditions")
       .method("contexts", &SuffixTree::contexts,

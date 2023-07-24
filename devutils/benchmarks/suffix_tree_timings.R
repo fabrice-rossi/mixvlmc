@@ -29,16 +29,16 @@ st_count <- bench::mark(
 )
 
 st_all_counts <- bench::mark(
-  build_suffix_tree(sample(0:3, 10000, replace = TRUE), 4)$compute_counts(0),
-  build_suffix_tree(sample(0:50, 10000, replace = TRUE), 51)$compute_counts(0),
-  build_suffix_tree(sample(0:3, 50000, replace = TRUE), 4)$compute_counts(0),
-  build_suffix_tree(sample(0:50, 50000, replace = TRUE), 51)$compute_counts(0),
+  build_suffix_tree(sample(0:3, 10000, replace = TRUE), 4)$compute_counts(0, FALSE),
+  build_suffix_tree(sample(0:50, 10000, replace = TRUE), 51)$compute_counts(0, FALSE),
+  build_suffix_tree(sample(0:3, 50000, replace = TRUE), 4)$compute_counts(0, FALSE),
+  build_suffix_tree(sample(0:50, 50000, replace = TRUE), 51)$compute_counts(0, FALSE),
   check = FALSE
 )
 
 find_sub_seq <- function(x, nb_vals) {
   tree <- build_suffix_tree(x, nb_vals)
-  tree$compute_counts(0)
+  tree$compute_counts(0, FALSE)
   tree$subsequences(5, 500)
 }
 
@@ -50,10 +50,20 @@ st_sub_seq <- bench::mark(
   check = FALSE
 )
 
+st_ctx <- function(x, nb_vals, with_match) {
+  tree <- build_suffix_tree(x, nb_vals)
+  tree$compute_counts(0, with_match)
+  tree$contexts(2, 1000)
+}
+
 st_contexts <- bench::mark(
-  build_suffix_tree(sample(0:3, 10000, replace = TRUE), 4)$contexts(2, 1000),
-  build_suffix_tree(sample(0:50, 10000, replace = TRUE), 51)$contexts(2, 1000),
-  build_suffix_tree(sample(0:3, 50000, replace = TRUE), 4)$contexts(2, 1000),
-  build_suffix_tree(sample(0:50, 50000, replace = TRUE), 51)$contexts(2, 1000),
+  st_ctx(sample(0:3, 10000, replace = TRUE), 4, FALSE),
+  st_ctx(sample(0:3, 10000, replace = TRUE), 4, TRUE),
+  st_ctx(sample(0:50, 10000, replace = TRUE), 51, FALSE),
+  st_ctx(sample(0:50, 10000, replace = TRUE), 51, TRUE),
+  st_ctx(sample(0:3, 50000, replace = TRUE), 4, FALSE),
+  st_ctx(sample(0:3, 50000, replace = TRUE), 4, TRUE),
+  st_ctx(sample(0:50, 50000, replace = TRUE), 51, FALSE),
+  st_ctx(sample(0:50, 50000, replace = TRUE), 51, TRUE),
   check = FALSE
 )

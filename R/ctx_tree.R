@@ -146,9 +146,6 @@ grow_ctx_tree <- function(x, vals, min_size, max_depth, covsize = 0, keep_match 
 ctx_tree <- function(x, min_size = 2, max_depth = 100, keep_position = TRUE,
                      backend = c("R", "C++")) {
   backend <- match.arg(backend)
-  if (backend == "C++" && keep_position) {
-    warning("The C++ back end does not support `keep_position = TRUE`.")
-  }
   nx <- to_dts(x)
   ix <- nx$ix
   vals <- nx$vals
@@ -159,7 +156,7 @@ ctx_tree <- function(x, min_size = 2, max_depth = 100, keep_position = TRUE,
     grow_ctx_tree(ix, vals, min_size = min_size, max_depth = max_depth, keep_match = keep_position, compute_stats = TRUE)
   } else {
     cpp_tree <- build_suffix_tree(rev(ix)[-1], length(nx$vals))
-    cpp_tree$compute_counts(ix[length(ix)])
+    cpp_tree$compute_counts(ix[length(ix)], keep_position)
     nb_ctx <- cpp_tree$prune(min_size, max_depth)
     new_ctx_tree_st(vals, cpp_tree, nb_ctx)
   }
