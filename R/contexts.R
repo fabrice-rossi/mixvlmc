@@ -127,7 +127,7 @@ contexts_extractor <- function(ct, reverse, extractor, control, summarize = no_s
 #'
 #' @param ct a context tree.
 #' @param type result type (see details).
-#' @param reverse logical (defaults to FALSE). See details.
+#' @param reverse logical (defaults to TRUE). See details.
 #' @param ... additional arguments for the contexts function.
 #'
 #' @returns The list of the contexts represented in this tree or a data.frame
