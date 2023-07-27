@@ -6,8 +6,8 @@
 \usage{
 ctx_tree(
   x,
-  min_size = 2,
-  max_depth = 100,
+  min_size = 2L,
+  max_depth = 100L,
   keep_position = TRUE,
   backend = c("R", "C++")
 )

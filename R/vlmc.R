@@ -103,7 +103,7 @@ prune_ctx_tree <- function(tree, alpha = 0.05, cutoff = NULL, verbose = FALSE) {
     c_probs <- tree$f_by / sum(tree$f_by)
     if (!is.null(tree$children)) {
       subtrees <- vector(mode = "list", length(tree$children))
-      nb_pruned <- 0
+      nb_pruned <- 0L
       for (v in seq_along(tree$children)) {
         subtrees[[v]] <- recurse_prune_kl_ctx_tree(tree$children[[v]], c_probs, c(ctx, v - 1), K)
         if (!is.null(subtrees[[v]][["kl"]])) {
@@ -113,7 +113,7 @@ prune_ctx_tree <- function(tree, alpha = 0.05, cutoff = NULL, verbose = FALSE) {
               cat(paste("pruning", paste(c(ctx, v - 1), sep = "", collapse = ""), subtrees[[v]]$kl), "\n")
             }
             subtrees[[v]] <- list()
-            nb_pruned <- nb_pruned + 1
+            nb_pruned <- nb_pruned + 1L
           } else {
             subtrees[[v]] <- subtrees[[v]]$tree
           }
@@ -269,7 +269,7 @@ prune.vlmc <- function(vlmc, alpha = 0.05, cutoff = NULL, ...) {
 #' @references Bühlmann, P. and Wyner, A. J. (1999), "Variable length Markov
 #'   chains. Ann. Statist." 27 (2)
 #'   480-513 \doi{10.1214/aos/1018031204}
-vlmc <- function(x, alpha = 0.05, cutoff = NULL, min_size = 2, max_depth = 100, prune = TRUE, keep_match = FALSE) {
+vlmc <- function(x, alpha = 0.05, cutoff = NULL, min_size = 2L, max_depth = 100L, prune = TRUE, keep_match = FALSE) {
   # data conversion
   nx <- to_dts(x)
   ix <- nx$ix
