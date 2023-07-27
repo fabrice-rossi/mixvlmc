@@ -1,7 +1,7 @@
 ##  context tree representation
 nb_sub_tree <- function(ct) {
   if (is.null(ct) || is.null(ct$children) || length(ct$children) == 0) {
-    0
+    0L
   } else {
     sum(sapply(ct$children, length) > 0)
   }
@@ -10,15 +10,15 @@ nb_sub_tree <- function(ct) {
 count_local_context <- function(node) {
   if (is.null(node$children)) {
     if (is.null(node[["f_by"]])) {
-      0
+      0L
     } else {
-      1
+      1L
     }
   } else {
     if (nb_sub_tree(node) < length(node$children)) {
-      1
+      1L
     } else {
-      0
+      0L
     }
   }
 }
@@ -27,10 +27,10 @@ rec_stats_ctx_tree <- function(ct, count_context = count_local_context) {
   if (is.null(ct$children)) {
     ## this is a leaf
     ## depth = 0
-    c(0, count_context(ct))
+    c(0L, count_context(ct))
   } else {
     subresults <- sapply(ct$children, rec_stats_ctx_tree, count_context)
-    dp <- 1 + max(subresults[1, ])
+    dp <- 1L + max(subresults[1, ])
     nb <- sum(subresults[2, ]) + count_context(ct)
     c(dp, nb)
   }
@@ -55,18 +55,18 @@ new_ctx_tree <- function(vals, root = NULL, compute_stats = TRUE,
   preres
 }
 
-grow_ctx_tree <- function(x, vals, min_size, max_depth, covsize = 0, keep_match = FALSE, all_children = FALSE,
+grow_ctx_tree <- function(x, vals, min_size, max_depth, covsize = 0L, keep_match = FALSE, all_children = FALSE,
                           compute_stats = FALSE) {
   recurse_ctx_tree <- function(x, nb_vals, d, from, f_by) {
     if (d < max_depth) {
       fmatch <- forward_match_all_ctx_counts(x, nb_vals, d, from)
       children <- vector(mode = "list", nb_vals)
-      nb_children <- 0
+      nb_children <- 0L
       d_max <- FALSE
       for (v in 1:nb_vals) {
         ## we look at the descendants hence the target depth is d + 1
-        if (sum(fmatch$counts[v, ]) >= min_size * (1 + covsize * (d + 1))) {
-          children[[v]] <- recurse_ctx_tree(x, nb_vals, d + 1, fmatch$positions[[v]], fmatch$counts[v, ])
+        if (sum(fmatch$counts[v, ]) >= min_size * (1L + covsize * (d + 1L))) {
+          children[[v]] <- recurse_ctx_tree(x, nb_vals, d + 1L, fmatch$positions[[v]], fmatch$counts[v, ])
           nb_children <- nb_children + 1
           if (isTRUE(children[[v]]$max_depth)) {
             d_max <- TRUE
@@ -96,7 +96,7 @@ grow_ctx_tree <- function(x, vals, min_size, max_depth, covsize = 0, keep_match 
       result
     }
   }
-  pre_res <- recurse_ctx_tree(x, length(vals), 0, NULL, table(x))
+  pre_res <- recurse_ctx_tree(x, length(vals), 0L, NULL, table(x))
   if (is.null(pre_res$max_depth)) {
     pre_res$max_depth <- FALSE
   }
@@ -128,7 +128,7 @@ grow_ctx_tree <- function(x, vals, min_size, max_depth, covsize = 0, keep_match 
 #' ## get all contexts of length 2
 #' dts_ctree <- ctx_tree(dts, min_size = 1, max_depth = 2)
 #' draw(dts_ctree)
-ctx_tree <- function(x, min_size = 2, max_depth = 100, keep_position = TRUE) {
+ctx_tree <- function(x, min_size = 2L, max_depth = 100L, keep_position = TRUE) {
   nx <- to_dts(x)
   ix <- nx$ix
   vals <- nx$vals
@@ -193,9 +193,9 @@ states <- function(ct) {
 
 rec_depth <- function(ct) {
   if (is.null(ct$children)) {
-    0
+    0L
   } else {
-    1 + max(sapply(ct$children, rec_depth))
+    1L + max(sapply(ct$children, rec_depth))
   }
 }
 

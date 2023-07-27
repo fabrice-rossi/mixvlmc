@@ -8,8 +8,8 @@ vlmc(
   x,
   alpha = 0.05,
   cutoff = NULL,
-  min_size = 2,
-  max_depth = 100,
+  min_size = 2L,
+  max_depth = 100L,
   prune = TRUE,
   keep_match = FALSE
 )

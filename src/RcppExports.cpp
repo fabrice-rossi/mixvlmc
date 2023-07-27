@@ -33,15 +33,15 @@ BEGIN_RCPP
 END_RCPP
 }
 // forward_match_all_ctx_counts
-List forward_match_all_ctx_counts(NumericVector x, int nb_vals, int depth, Nullable<NumericVector> nv_from);
+List forward_match_all_ctx_counts(IntegerVector x, int nb_vals, int depth, Nullable<IntegerVector> nv_from);
 RcppExport SEXP _mixvlmc_forward_match_all_ctx_counts(SEXP xSEXP, SEXP nb_valsSEXP, SEXP depthSEXP, SEXP nv_fromSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< NumericVector >::type x(xSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type x(xSEXP);
     Rcpp::traits::input_parameter< int >::type nb_vals(nb_valsSEXP);
     Rcpp::traits::input_parameter< int >::type depth(depthSEXP);
-    Rcpp::traits::input_parameter< Nullable<NumericVector> >::type nv_from(nv_fromSEXP);
+    Rcpp::traits::input_parameter< Nullable<IntegerVector> >::type nv_from(nv_fromSEXP);
     rcpp_result_gen = Rcpp::wrap(forward_match_all_ctx_counts(x, nb_vals, depth, nv_from));
     return rcpp_result_gen;
 END_RCPP

@@ -5,6 +5,7 @@
   series
 
 ## Minor improvements and bug fixes
+* Improve type consistency by reporting counts as integers in `contexts` results
 * Fix documentation: all models can be adjusted on time series of logical values
 * Synchronize `ctx_tree` documentation and its default value
 * Synchronize `contexts` documentation and its default value

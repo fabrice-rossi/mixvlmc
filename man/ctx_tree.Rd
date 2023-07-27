@@ -4,7 +4,7 @@
 \alias{ctx_tree}
 \title{Build a context tree for a discrete time series}
 \usage{
-ctx_tree(x, min_size = 2, max_depth = 100, keep_position = TRUE)
+ctx_tree(x, min_size = 2L, max_depth = 100L, keep_position = TRUE)
 }
 \arguments{
 \item{x}{a discrete time series; can be numeric, character, factor or logical.}

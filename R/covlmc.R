@@ -633,7 +633,7 @@ covlmc_control <- function(pseudo_obs = 1) {
 #' )
 #' draw(m_cov_nnet)
 #' @seealso [cutoff.covlmc()] and [prune.covlmc()] for post-pruning.
-covlmc <- function(x, covariate, alpha = 0.05, min_size = 5, max_depth = 100, keep_data = TRUE, control = covlmc_control(...), ...) {
+covlmc <- function(x, covariate, alpha = 0.05, min_size = 5L, max_depth = 100L, keep_data = TRUE, control = covlmc_control(...), ...) {
   assertthat::assert_that(is.data.frame(covariate))
   assertthat::assert_that(nrow(covariate) == length(x))
   # data conversion
@@ -652,7 +652,7 @@ covlmc <- function(x, covariate, alpha = 0.05, min_size = 5, max_depth = 100, ke
   ## of grow_ctx_tree is to multiply min_size by 1+depth*covsize in order to
   ## work without modification or test is covsize==0
   ctx_tree <- grow_ctx_tree(ix, vals,
-    min_size = min_size * (length(vals) - 1), max_depth = max_depth,
+    min_size = min_size * (length(vals) - 1L), max_depth = max_depth,
     covsize = desc$cov_size, keep_match = TRUE, all_children = TRUE
   )
   if (length(vals) > 2) {

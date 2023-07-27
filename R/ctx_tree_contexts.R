@@ -108,15 +108,15 @@ contexts.ctx_tree <- function(ct, type = c("auto", "list", "data.frame"),
 }
 
 rec_match_context <- function(tree, d, ctx) {
-  if (length(ctx) == 0) {
+  if (length(ctx) == 0L) {
     list(tree = tree, depth = d)
   } else {
     if (is.null(tree$children)) {
       list(tree = tree, depth = d)
     } else {
       cand <- tree$children[[ctx[1]]]
-      if (length(cand) > 0) {
-        rec_match_context(cand, d + 1, ctx[-1])
+      if (length(cand) > 0L) {
+        rec_match_context(cand, d + 1L, ctx[-1])
       } else {
         list(tree = tree, depth = d)
       }
@@ -125,5 +125,5 @@ rec_match_context <- function(tree, d, ctx) {
 }
 
 match_context <- function(tree, ctx) {
-  rec_match_context(tree, 0, ctx)
+  rec_match_context(tree, 0L, ctx)
 }

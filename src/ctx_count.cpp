@@ -34,19 +34,19 @@ using namespace Rcpp;
 //' @noRd
 //[[Rcpp::export]]
 List forward_match_all_ctx_counts(
-    NumericVector x,
+    IntegerVector x,
     int nb_vals,
     int depth = 0,
-    Nullable<NumericVector> nv_from = R_NilValue) {
+    Nullable<IntegerVector> nv_from = R_NilValue) {
   int nx = x.size();
   std::vector<std::vector<int>> result;
   for(int i = 0; i < nb_vals; i++) {
     result.push_back(std::vector<int>());
   }
   // filled with 0s
-  NumericMatrix counts(nb_vals, nb_vals);
+  IntegerMatrix counts(nb_vals, nb_vals);
   if(nv_from.isNotNull()) {
-    NumericVector from(nv_from);
+    IntegerVector from(nv_from);
     int nv = from.size();
     for(int i = 0; i < nv; i++) {
       int pos = from[i] - 1;
