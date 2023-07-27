@@ -9,7 +9,7 @@ node_fit_glm_full_rank_with_data <- function(local_mm, d, target, dim_cov, nb_va
   if (nrow(local_mm) > 0) {
     local_glm <- fit_glm(target, local_mm, nb_vals, control)
     while (is_glm_low_rank(local_glm)) {
-      d <- d - 1
+      d <- d - 1L
       local_mm <- local_mm[, -seq(ncol(local_mm), by = -1, length.out = dim_cov), drop = FALSE]
       local_glm <- fit_glm(target, local_mm, nb_vals, control)
     }
@@ -72,13 +72,13 @@ node_fit_glm_with_data <- function(local_mm, d, target, dim_cov, alpha, nb_vals,
       h0mm <- local_mm[, -seq(ncol(local_mm), by = -1, length.out = dim_cov), drop = FALSE]
       H0_full_rank_model <- node_fit_glm_full_rank_with_data(
         h0mm,
-        d - 1, target,
+        d - 1L, target,
         dim_cov, nb_vals, control
       )
       full_rank_model$H0 <- FALSE
       H0_full_rank_model$H0 <- TRUE
       lambda <- 2 * (full_rank_model$likelihood - H0_full_rank_model$likelihood)
-      df <- (full_rank_model$hsize - H0_full_rank_model$hsize) * dim_cov * (nb_vals - 1)
+      df <- (full_rank_model$hsize - H0_full_rank_model$hsize) * dim_cov * (nb_vals - 1L)
       p_value <-
         stats::pchisq(as.numeric(lambda), df = df, lower.tail = FALSE)
       if (is.na(p_value)) {
@@ -145,7 +145,7 @@ node_prune_model <- function(model, cov_dim, nb_vals, alpha, keep_data = FALSE, 
         if (keep_data) {
           current_data <- list(local_mm = h0mm, target = target)
         }
-        hsize <- hsize - 1
+        hsize <- hsize - 1L
       } else {
         ## H0 is rejected, we break the loop
         if (verbose) {
@@ -234,38 +234,38 @@ ctx_tree_fit_glm <- function(tree, y, covariate, alpha, control, assume_model = 
         ## let's get the models
         submodels <-
           vector(mode = "list", length = length(tree$children))
-        nb_models <- 0
-        nb_children <- 0
-        nb_rejected <- 0
-        nb_prunable <- 0
-        max_hsize <- 0
+        nb_models <- 0L
+        nb_children <- 0L
+        nb_rejected <- 0L
+        nb_prunable <- 0L
+        max_hsize <- 0L
         pr_candidates <- c()
         ll_H0 <- 0
         for (v in seq_along(tree$children)) {
           if (ctx_tree_exists(tree$children[[v]])) {
-            nb_children <- nb_children + 1
+            nb_children <- nb_children + 1L
             submodels[[v]] <-
-              recurse_ctx_tree_fit_glm(tree$children[[v]], c(ctx, v), d + 1, y, covariate)
+              recurse_ctx_tree_fit_glm(tree$children[[v]], c(ctx, v), d + 1L, y, covariate)
             if (!is.null(submodels[[v]][["model"]])) {
-              nb_models <- nb_models + 1
+              nb_models <- nb_models + 1L
               prunable <- submodels[[v]][["prunable"]]
               if (isTRUE(prunable)) {
                 if (assume_model) {
-                  if (submodels[[v]][["model"]]$hsize == d + 1) {
-                    nb_rejected <- nb_rejected + 1
+                  if (submodels[[v]][["model"]]$hsize == d + 1L) {
+                    nb_rejected <- nb_rejected + 1L
                   } else {
                     pr_candidates <- c(pr_candidates, v)
-                    nb_prunable <- nb_prunable + 1
+                    nb_prunable <- nb_prunable + 1L
                     ll_H0 <-
                       ll_H0 + submodels[[v]][["model"]]$likelihood
                     max_hsize <- max(max_hsize, submodels[[v]][["model"]]$hsize)
                   }
                 } else {
                   if (!submodels[[v]][["model"]]$H0) {
-                    nb_rejected <- nb_rejected + 1
+                    nb_rejected <- nb_rejected + 1L
                   } else {
                     pr_candidates <- c(pr_candidates, v)
-                    nb_prunable <- nb_prunable + 1
+                    nb_prunable <- nb_prunable + 1L
                     ll_H0 <-
                       ll_H0 + submodels[[v]][["model"]]$likelihood
                     max_hsize <- max(max_hsize, submodels[[v]][["model"]]$hsize)
@@ -344,7 +344,7 @@ ctx_tree_fit_glm <- function(tree, y, covariate, alpha, control, assume_model = 
             ## prepare the data set
             ## we need to reextract the data as models can use different history sizes
             ## shift the index by one to account for the reduced history
-            full_index <- 1 + unlist(lapply(submodels[pr_candidates], function(x) x$match))
+            full_index <- 1L + unlist(lapply(submodels[pr_candidates], function(x) x$match))
             if (verbose) {
               print(paste("call to glm with d=", d, sep = ""))
             }
@@ -371,23 +371,23 @@ ctx_tree_fit_glm <- function(tree, y, covariate, alpha, control, assume_model = 
               actual_model <- local_model$H1_model
             }
           }
-          local_df <- (1 + ncol(covariate) * actual_model$hsize) * (nb_vals - 1)
-          sub_df <- 0
+          local_df <- (1L + ncol(covariate) * actual_model$hsize) * (nb_vals - 1L)
+          sub_df <- 0L
           for (v in pr_candidates) {
-            sub_df <- sub_df + (1 + ncol(covariate) * submodels[[v]][["model"]]$hsize) * (nb_vals - 1)
+            sub_df <- sub_df + (1L + ncol(covariate) * submodels[[v]][["model"]]$hsize) * (nb_vals - 1L)
             if (verbose) {
               print(paste(v, submodels[[v]][["model"]]$hsize, actual_model$hsize))
             }
             if (submodels[[v]][["model"]]$hsize == actual_model$hsize) {
               local_data <- submodels[[v]][["model"]]$data
             } else {
-              local_data <- prepare_glm(covariate, 1 + submodels[[v]]$match, max_hsize, y, d - max_hsize)
+              local_data <- prepare_glm(covariate, 1L + submodels[[v]]$match, max_hsize, y, d - max_hsize)
               if (verbose) {
                 print("preparing local data")
                 print(paste(ctx, collapse = ", "))
                 for (tmp in 1:5) {
-                  print(y[(tree$match[tmp] + 1):(tree$match[tmp] + d + 1)])
-                  print(y[(submodels[[v]]$match[tmp] + 1):(submodels[[v]]$match[tmp] + d + 1)])
+                  print(y[(tree$match[tmp] + 1L):(tree$match[tmp] + d + 1L)])
+                  print(y[(submodels[[v]]$match[tmp] + 1L):(submodels[[v]]$match[tmp] + d + 1L)])
                   print("")
                 }
               }
@@ -506,7 +506,7 @@ ctx_tree_fit_glm <- function(tree, y, covariate, alpha, control, assume_model = 
         result
       }
     }
-  result <- recurse_ctx_tree_fit_glm(tree, c(), 0, y, covariate)
+  result <- recurse_ctx_tree_fit_glm(tree, c(), 0L, y, covariate)
   result$vals <- tree$vals
   result
 }
