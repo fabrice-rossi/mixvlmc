@@ -306,7 +306,19 @@ class SuffixTree {
         int move = std::min(el, (int)(x.length() - x_pos));
         for(int k = 1; k < move; k++) {
           if(x[x_pos + k] != x[current->start + k]) {
-            // not more
+            // we need to break the edge to avoid introducing fake matches
+            EdgeNode* end_of_edge =
+                new EdgeNode(current, current->start + k, current->end);
+            end_of_edge->positions = new std::vector<int>(
+                current->positions->begin(), current->positions->end());
+            end_of_edge->positions->pop_back();
+            end_of_edge->total_count = current->total_count;
+            end_of_edge->counts = new std::unordered_map<int, int>(
+                current->counts->begin(), current->counts->end());
+            end_of_edge->children = current->children;
+            current->children.clear();
+            current->children[x[current->start + k]] = end_of_edge;
+            current->end = current->start + k;
             break;
           }
         }
