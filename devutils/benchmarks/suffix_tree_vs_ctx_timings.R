@@ -19,3 +19,11 @@ st_contexts_vs_R <- bench::mark(
   contexts(ctx_tree(x, min_size = 5, max_depth = 100)),
   check = FALSE
 )
+
+st_full_ctx_vs_r <- bench::mark(
+  contexts(ctx_tree(x, min_size = 2, max_depth = 1000, backend = "C++"), frequency = "detailed", position = TRUE),
+  contexts(ctx_tree(x, min_size = 2, max_depth = 1000), frequency = "detailed", position = TRUE),
+  contexts(ctx_tree(x, min_size = 5, max_depth = 100, backend = "C++"), frequency = "detailed", position = TRUE),
+  contexts(ctx_tree(x, min_size = 5, max_depth = 100), frequency = "detailed", position = TRUE),
+  check = FALSE
+)
