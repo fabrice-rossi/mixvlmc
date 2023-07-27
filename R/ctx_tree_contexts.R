@@ -103,7 +103,11 @@ contexts.ctx_tree <- function(ct, type = c("auto", "list", "data.frame"),
       assertthat::assert_that(frequency %in% c("total", "detailed"))
     }
     control <- list(frequency = frequency, positions = positions)
-    contexts_extractor(ct, reverse, frequency_context_extractor, control)
+    pre_res <- contexts_extractor(ct, reverse, frequency_context_extractor, control)
+    if (positions) {
+      pre_res$positions <- I(pre_res$positions)
+    }
+    pre_res
   }
 }
 
