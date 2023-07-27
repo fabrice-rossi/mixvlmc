@@ -90,6 +90,7 @@ class EdgeNode {
   bool subsequences(int min_counts,
                     int max_length,
                     bool only_ctx,
+                    bool with_position,
                     const Rcpp::IntegerVector& x,
                     int nb_vals,
                     std::vector<int>& pre,

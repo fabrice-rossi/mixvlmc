@@ -39,6 +39,7 @@ IntegerVector SubSequence::positions() const {
   if(p_positions == nullptr) {
     return IntegerVector();
   } else {
+    std::sort(p_positions->rbegin(), p_positions->rend());
     return IntegerVector(p_positions->begin(), p_positions->end());
   }
 }

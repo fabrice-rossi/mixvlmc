@@ -368,11 +368,15 @@ class SuffixTree {
 
   std::vector<SubSequence*>* raw_subsequences(int min_counts,
                                               int max_length,
-                                              bool only_ctx) {
+                                              bool only_ctx,
+                                              bool with_position) {
     if(!has_counts) {
       stop(
           "subsequences and contexts cannot be used if compute_counts has not "
           "been called before");
+    }
+    if(with_position && !has_positions) {
+      stop("cannot report positions if they were not saved");
     }
     std::vector<SubSequence*>* ctxs = new std::vector<SubSequence*>{};
     std::vector<int> pre{};
@@ -380,8 +384,8 @@ class SuffixTree {
     if(max_length <= 0) {
       max_length = x.size();
     }
-    root->subsequences(min_counts, max_length, only_ctx, x, max_x + 1, pre,
-                       *ctxs);
+    root->subsequences(min_counts, max_length, only_ctx, with_position, x,
+                       max_x + 1, pre, *ctxs);
     return ctxs;
   }
 
@@ -392,7 +396,7 @@ class SuffixTree {
   // - have at least min_counts occurrences
   List subsequences(int min_counts, int max_length) {
     std::vector<SubSequence*>* ctxs =
-        raw_subsequences(min_counts, max_length, false);
+        raw_subsequences(min_counts, max_length, false, false);
     int nb = (int)ctxs->size();
     List the_contexts(nb);
     for(int i = 0; i < nb; i++) {
@@ -410,7 +414,7 @@ class SuffixTree {
   // returned by the subsequences method.
   List contexts(int min_counts, int max_length) {
     std::vector<SubSequence*>* ctxs =
-        raw_subsequences(min_counts, max_length, true);
+        raw_subsequences(min_counts, max_length, true, false);
     int nb = (int)ctxs->size();
     List the_contexts(nb);
     for(int i = 0; i < nb; i++) {
@@ -421,39 +425,61 @@ class SuffixTree {
   }
 
   // extract contexts as above but returned them in a more detailed
-  // format (as data frame) including frequencies
-  List detailed_contexts(int min_counts, int max_length) {
+  // format (as data frame) including frequencies and positions
+  List detailed_contexts(int min_counts,
+                         int max_length,
+                         bool with_detail,
+                         bool with_positions) {
     std::vector<SubSequence*>* ctxs =
-        raw_subsequences(min_counts, max_length, true);
+        raw_subsequences(min_counts, max_length, true, with_positions);
     int nb = (int)ctxs->size();
     List the_contexts(nb);
     std::vector<IntegerVector> counts;
-    for(int k = 0; k <= max_x + 1; k++) {
+    int nb_stats = 1;
+    if(with_detail) {
+      nb_stats += max_x + 1;
+    }
+    for(int k = 0; k < nb_stats; k++) {
       IntegerVector x(nb);
       counts.push_back(x);
     }
-    StringVector row_names{nb};
-    StringVector col_names{max_x + 3};
+    IntegerVector row_names(nb);
     for(int i = 0; i < nb; i++) {
       the_contexts[i] = (*ctxs)[i]->sequence();
       auto val = (*ctxs)[i]->counts(max_x);
       int total = 0;
       for(int k = 1; k <= max_x + 1; k++) {
-        (counts[k])[i] = val[k - 1];
+        if(with_detail) {
+          (counts[k])[i] = val[k - 1];
+        }
         total += val[k - 1];
       }
       counts[0][i] = total;
-      row_names[i] = std::to_string(i + 1);
+      row_names[i] = i + 1;
     }
-    List res(max_x + 3);
+    int nb_cols = nb_stats + 1;
+    if(with_positions) {
+      nb_cols++;
+    }
+    List res(nb_cols);
+    StringVector col_names(nb_cols);
+    if(with_positions) {
+      List the_positions(nb);
+      for(int i = 0; i < nb; i++) {
+        the_positions[i] = ((int)x.size() - (*ctxs)[i]->positions());
+      }
+      res[nb_cols - 1] = the_positions;
+      col_names[nb_cols - 1] = "positions";
+    }
     res[0] = the_contexts;
+    res[1] = counts[0];
     col_names[0] = "context";
     col_names[1] = "freq";
-    for(int k = 0; k <= max_x + 1; k++) {
-      res[k + 1] = counts[k];
-    }
-    for(int k = 2; k <= max_x + 2; k++) {
-      col_names[k] = std::to_string(k - 2);
+    if(with_detail) {
+      for(int k = 0; k <= max_x; k++) {
+        res[k + 2] = counts[k + 1];
+        col_names[k + 2] = std::to_string(k);
+      }
     }
     delete ctxs;
     res.attr("row.names") = row_names;
