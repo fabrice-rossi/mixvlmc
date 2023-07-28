@@ -30,3 +30,24 @@ test_that("pp_mat obeys its contract", {
     expect_true(all(stringr::str_length(mm_pp) <= ncol(mm) * (1 + mwidth) - 1))
   }
 })
+
+test_that("KL based criterion is computed identical in R and C++", {
+  withr::local_seed(0)
+  for (k in 1:10) {
+    all_equal <- TRUE
+    for (rep in 1:10) {
+      a_counts <- sample(0:1000, k + 2, replace = TRUE)
+      b_counts <- sample(0:1000, k + 2, replace = TRUE)
+      p_counts <- pmax(a_counts, b_counts)
+      c_counts <- pmin(a_counts, b_counts)
+      if (!all.equal(
+        kl_div(c_counts / sum(c_counts), p_counts / sum(p_counts)),
+        kl_crit(c_counts, p_counts) / sum(c_counts)
+      )) {
+        all_equal <- FALSE
+        break
+      }
+      expect_true(all_equal)
+    }
+  }
+})

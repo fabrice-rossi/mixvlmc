@@ -9,4 +9,11 @@ std::string counts_to_string(const std::unordered_map<int, int>* counts);
 Rcpp::IntegerVector map_to_counts(std::unordered_map<int, int>* counts,
                                   int max);
 
+// computes the Kullback-Liebler divergence based criterion used by the
+// context algorithm using directly the couts maps
+double kl_criterion(const std::unordered_map<int, int>* c_counts,
+                    int c_total,
+                    const std::unordered_map<int, int>* p_counts,
+                    int p_total);
+
 #endif
