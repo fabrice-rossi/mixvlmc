@@ -157,8 +157,9 @@ ctx_tree <- function(x, min_size = 2L, max_depth = 100L, keep_position = TRUE,
   } else {
     cpp_tree <- build_suffix_tree(rev(ix)[-1], length(nx$vals))
     cpp_tree$compute_counts(ix[length(ix)], keep_position)
-    nb_ctx <- cpp_tree$prune(min_size, max_depth)
-    new_ctx_tree_st(vals, cpp_tree, nb_ctx)
+    cpp_tree$prune(min_size, max_depth)
+    nb_ctx <- cpp_tree$nb_contexts()
+    new_ctx_tree_cpp(vals, cpp_tree)
   }
 }
 

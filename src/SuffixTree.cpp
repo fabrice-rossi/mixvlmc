@@ -25,6 +25,17 @@ class SuffixTree {
   bool has_counts;
   bool has_positions;
   int max_depth;
+  int nb_ctx;
+
+  SuffixTree(EdgeNode* _root)
+      : root(_root),
+        sentinel(-1),
+        max_x(-1),
+        has_total_count(false),
+        has_counts(false),
+        has_positions(false),
+        max_depth(0),
+        nb_ctx(0) {}
 
  public:
   SuffixTree()
@@ -33,11 +44,26 @@ class SuffixTree {
         has_total_count(false),
         has_counts(false),
         has_positions(false),
-        max_depth(0) {
+        max_depth(0),
+        nb_ctx(0) {
     root = new EdgeNode(nullptr, -1, -1);
   }
 
   ~SuffixTree() { delete root; }
+
+  SuffixTree* clone_from_root(EdgeNode* new_root,
+                              int _max_depth,
+                              int _nb_ctx) const {
+    SuffixTree* nt = new SuffixTree(new_root);
+    nt->x = x;
+    nt->max_x = max_x;
+    nt->has_total_count = has_total_count;
+    nt->has_counts = has_counts;
+    nt->has_positions = has_positions;
+    nt->max_depth = _max_depth;
+    nt->nb_ctx = _nb_ctx;
+    return nt;
+  }
 
   int x_at(int pos) const {
     if(pos >= x.size()) {
@@ -50,6 +76,8 @@ class SuffixTree {
   void invalidate() {
     has_total_count = false;
     has_counts = false;
+    has_positions = false;
+    nb_ctx = 0;
   }
 
   void insert(const IntegerVector& x_, int nb_vals) {
@@ -488,7 +516,7 @@ class SuffixTree {
     return res;
   }
 
-  int prune(int min_counts, int max_length) {
+  void prune(int min_counts, int max_length) {
     if(!has_counts) {
       stop("prune cannot be used if the counts have not been computed");
     }
@@ -496,9 +524,22 @@ class SuffixTree {
       max_length = x.size();
     }
     max_depth = 0;  // we need to recompute max_depth
-    int nb_ctx = 0;
+    nb_ctx = 0;
     root->prune(min_counts, max_length, max_x + 1, x.size(), max_depth, nb_ctx);
-    return nb_ctx;
+  }
+
+  SuffixTree* clone_prune(int min_counts, int max_length) const {
+    if(!has_counts) {
+      stop("prune cannot be used if the counts have not been computed");
+    }
+    if(max_length <= 0) {
+      max_length = x.size();
+    }
+    int n_max_depth = 0;  // we need to recompute max_depth
+    int nb_ctx = 0;
+    EdgeNode* new_root = root->clone_prune(min_counts, max_length, max_x + 1,
+                                           x.size(), n_max_depth, nb_ctx);
+    return clone_from_root(new_root, n_max_depth, nb_ctx);
   }
 
   int depth() const {
@@ -506,6 +547,14 @@ class SuffixTree {
       return max_depth;
     } else {
       stop("depth is available only when counts have been calculated");
+    }
+  }
+
+  int nb_contexts() const {
+    if(nb_ctx > 0) {
+      return nb_ctx;
+    } else {
+      stop("nb_contexts is only avaiable if the tree was pruned");
     }
   }
 
@@ -560,8 +609,13 @@ RCPP_MODULE(suffixtree) {
               "Return detailed contexts that fulfill specified conditions")
       .method("prune", &SuffixTree::prune,
               "Prune the suffix tree based on the specified conditions")
+      .method("clone_prune", &SuffixTree::clone_prune,
+              "Prune the suffix tree based on the specified conditions and "
+              "return a clone")
       .method("representation", &SuffixTree::representation,
               "Return a representation in R of the tree")
-      .method("depth", &SuffixTree::depth, "Return the depth of the tree");
+      .method("depth", &SuffixTree::depth, "Return the depth of the tree")
+      .method("nb_contexts", &SuffixTree::nb_contexts,
+              "Return the number of contexts of the tree");
   function("build_suffix_tree", &build_suffix_tree);
 }

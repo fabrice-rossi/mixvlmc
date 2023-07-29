@@ -34,6 +34,21 @@ EdgeNode::~EdgeNode() {
   }
 }
 
+EdgeNode* EdgeNode::clone_no_relatives() const {
+  EdgeNode* result = new EdgeNode(nullptr, start, end);
+  result->total_count = total_count;
+  if(counts != nullptr) {
+    result->counts =
+        new std::unordered_map<int, int>(counts->begin(), counts->end());
+  }
+  if(positions != nullptr) {
+    result->positions =
+        new std::vector<int>(positions->begin(), positions->end());
+  }
+  result->depth = depth;
+  return result;
+}
+
 std::string EdgeNode::edge_label(const IntegerVector& x, int current) const {
   std::string res = "";
   int size = std::min(end, current + 1);
@@ -294,6 +309,70 @@ bool EdgeNode::prune(int min_counts,
   } else {
     // count based pruning
     return true;
+  }
+}
+
+EdgeNode* EdgeNode::clone_prune(int min_counts,
+                                int max_length,
+                                int nb_vals,
+                                int nx,
+                                int& mdepth,
+                                int& nb_ctx) const {
+  if(total_count >= min_counts) {
+    if(depth > max_length) {
+      // depth based pruning
+      // we have to insert explicit nodes if a part of the edge is kept
+      if(depth - edge_length() + 1 > max_length) {
+        // nothing to keep
+        return nullptr;
+      } else {
+        // part of the edge should be kept
+        // we do that by reducing the end counter
+        int allowance = max_length - depth + edge_length();
+        EdgeNode* result = clone_no_relatives();
+        result->end = start + allowance;
+        result->depth = depth - edge_length() + allowance;
+        if(result->depth > mdepth) {
+          mdepth = result->depth;
+        }
+        nb_ctx += allowance;
+        return result;
+      }
+    } else {
+      EdgeNode* result = clone_no_relatives();
+      if(edge_length() > 1) {
+        // count intermediate contexts
+        if(end > nx) {
+          nb_ctx += edge_length() - 2;
+        } else {
+          nb_ctx += edge_length() - 1;
+        }
+      }
+      // recursive processing
+      if(depth > mdepth) {
+        mdepth = depth;
+      }
+      int nb_sub = 0;
+      for(auto child = children.begin(); child != children.end();++child) {
+        if(child->first >= 0) {
+          // we ignore sentinel nodes
+          EdgeNode* new_child = child->second->clone_prune(
+              min_counts, max_length, nb_vals, nx, mdepth, nb_ctx);
+          if(new_child != nullptr) {
+            result->children[child->first] = new_child;
+            new_child->parent = result;
+            nb_sub++;
+          }
+        }
+      }
+      if(nb_sub < nb_vals) {
+        nb_ctx++;
+      }
+      return result;
+    }
+  } else {
+    // count based pruning
+    return nullptr;
   }
 }
 

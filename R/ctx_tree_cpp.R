@@ -1,8 +1,8 @@
-new_ctx_tree_st <- function(vals, suffix_tree, st_nb_ctx, ..., class = character()) {
+new_ctx_tree_cpp <- function(vals, suffix_tree, ..., class = character()) {
   assertthat::assert_that(inherits(suffix_tree, "Rcpp_SuffixTree"))
   root <- list(
     root = suffix_tree, vals = vals, depth = suffix_tree$depth(),
-    nb_ctx = st_nb_ctx
+    nb_ctx = suffix_tree$nb_contexts()
   )
   preres <- structure(root, ..., class = c(class, "ctx_tree_cpp", "ctx_tree"))
   preres

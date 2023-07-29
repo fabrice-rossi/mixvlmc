@@ -45,6 +45,8 @@ class EdgeNode {
 
   ~EdgeNode();
 
+  EdgeNode* clone_no_relatives() const;
+
   void setSuffix(EdgeNode* suffix_) { suffix = suffix_; }
 
   // compute the current edge length: most edges are open ended and thus
@@ -106,6 +108,16 @@ class EdgeNode {
              int nx,
              int& mdepth,
              int& nb_ctx);
+
+  // return a new collection of EdgeNodes (a tree) using the same
+  // pruning rules as above. The clone is a deep one, fully independant
+  // from the original tree.
+  EdgeNode* clone_prune(int min_counts,
+                        int max_length,
+                        int nb_vals,
+                        int nx,
+                        int& mdepth,
+                        int& nb_ctx) const;
 
   // build a flat representation of the tree where contexts are
   // stored in the tree_structure vector as the list of the

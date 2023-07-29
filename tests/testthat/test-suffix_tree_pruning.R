@@ -34,7 +34,8 @@ test_that("the suffix tree pruning reports the correct number of contexts", {
     x_rev <- rev(x)
     tree <- build_suffix_tree(x_rev[-1], k + 1)
     tree$compute_counts(x_rev[1], FALSE)
-    nb_ctx <- tree$prune(2, length(x) / 10)
+    tree$prune(2, length(x) / 10)
+    nb_ctx <- tree$nb_contexts()
     ctx <- tree$contexts(1, -1)
     expect_equal(nb_ctx, length(ctx))
   }
