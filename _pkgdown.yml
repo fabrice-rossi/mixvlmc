@@ -3,6 +3,9 @@ template:
   bootstrap: 5
 development:
   mode: auto
+authors:
+  Fabrice Rossi:
+    href: "https://fabrice-rossi.github.io/"
 articles:
 - title: Getting started
   navbar: Getting started
