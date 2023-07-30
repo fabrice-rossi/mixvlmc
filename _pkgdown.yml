@@ -3,6 +3,21 @@ template:
   bootstrap: 5
 development:
   mode: auto
+authors:
+  Fabrice Rossi:
+    href: "https://fabrice-rossi.github.io/"
+articles:
+- title: Getting started
+  navbar: Getting started
+  contents:
+  - context-trees
+  - variable-length-markov-chains
+  - covlmc
+- title: Advanced topics
+  navbar: Advanced topics
+  contents:
+  - sampling
+
 news:
  releases:
  - text: "mixvlmc 0.1.1"
