@@ -1,0 +1,74 @@
+---
+title: "Implementation Notes"
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+This document contains some implementation notes for the `mixvlmc`
+package.
+
+## Suffix tree
+
+The package uses suffix trees to build efficiently context trees. Suffix
+trees are constructed from the integer representation of the discrete
+time series, assuming that they contain only non negative integers. As a
+consequence, negative values can be used as sentinels. 
+
+Following [Garivier's paper](https://dx.doi.org/10.1109/TIT.2006.881742) we build 
+the suffix tree of the reverse sequence (in other words the prefix tree).
+
+### Representation
+
+The suffix tree is represented by a main C++ class `SuffixTree` which
+uses `EdgeNode` objects internally. As indicated by the name, an
+`EdgeNode` represents both a node in the suffix tree and the edge used
+to reach it from another node.
+
+An `EdgeNode` contains:
+
+-   a compact representation of the subsequence that labels its edge
+    using `start` and `end` as the position of this subsequence in the
+    main one. `start` is included in the subsequence `end` is not.
+    During the construction of the suffix tree `end` can be set to `n+1`
+    where `n` is the length of the main sequence. This is the classical
+    trick used to represent open ended edges;
+-   a dictionary of its `children` (if any): this maps an element of the
+    sequence to (a pointer to) the corresponding child `NodeEdge`;
+-   a `suffix` pointer that represents a suffix link;
+-   a `parent` pointer that points to the parent node (used during node expansion);
+-   a `counts` pointer to a map that maps values to the number of times the subsequence
+    represented by the current node (from the root) is preceded by this value
+    in the original sequence;
+-   an integer `total_count` which gives the number of occurrences of the subsequence when      preceded by another value;
+-   an integer `depth` that gives the length of the subsequence represented by this node;
+-   a `positions` pointer that points to a vector of positions of the subsequence
+   in the orginal sequence.
+    
+Notice that only the `start`, `end`, `suffix` and `parent` are set during the 
+suffix tree construction. 
+
+### Construction
+
+The suffix tree is constructed using [Ukkonen's algorithm](https://doi.org/10.1007%2FBF01206331). More precisely, for a sequence
+`x`, we build the suffix tree of `rev(x)[-1]`: the tree contains all the prefixes
+of `x` without its last value. This guarantees that all subsequences detected by
+the tree appeared followed by at least one value, which makes them potential
+contexts. Notice that following a link in the suffix tree corresponds to extending
+a context into the past which is exactly what is needed for the pratical use of
+the suffix tree as a context tree. 
+
+### Counts
+
+After the construction of the suffix tree, the `compute_counts` method is used
+to compute the number of occurrences of each subsequence represented by the 
+suffix tree as well as the distribution of the values that follow them in the 
+original sequence, as proposed in [Garivier's paper](https://dx.doi.org/10.1109/TIT.2006.881742). The method uses `rev(x)[1]`,
+that is the last value of `x` to include this final value in the counts. 

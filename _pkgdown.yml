@@ -17,6 +17,10 @@ articles:
   navbar: Advanced topics
   contents:
   - sampling
+- title: Implementation
+  desc: This article documents implementation details.
+  contents:
+  - articles/implementation
 
 news:
  releases:
