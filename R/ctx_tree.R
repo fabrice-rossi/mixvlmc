@@ -132,8 +132,7 @@ grow_ctx_tree <- function(x, vals, min_size, max_depth, covsize = 0L, keep_match
 #'   with an optimised suffix tree algorithm which speeds up the construction by
 #'   at least a factor 10 in standard settings. As the tree is kept outside of
 #'   R direct reach, context trees built with the C++ back end cannot be saved
-#'   directly with e.g. `saveRDS`. In addition the C++ back end is experimental
-#'   and does not support match position saving.
+#'   directly with e.g. `saveRDS`. In addition the C++ back end is experimental.
 #'
 #' @returns a context tree (of class that inherits from `ctx_tree`).
 #' @export

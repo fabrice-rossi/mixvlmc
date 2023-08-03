@@ -51,8 +51,7 @@ speed up the construction).
 with an optimised suffix tree algorithm which speeds up the construction by
 at least a factor 10 in standard settings. As the tree is kept outside of
 R direct reach, context trees built with the C++ back end cannot be saved
-directly with e.g. \code{saveRDS}. In addition the C++ back end is experimental
-and does not support match position saving.
+directly with e.g. \code{saveRDS}. In addition the C++ back end is experimental.
 }
 }
 
