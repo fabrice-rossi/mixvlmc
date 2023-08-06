@@ -98,12 +98,21 @@ class EdgeNode {
                     std::vector<int>& pre,
                     std::vector<SubSequence*>& subs) const;
 
-  // prune recursively the suffix tree based on the same rules as above in
-  // terms of min_counts and max_length. Updates maximal depth on the fly.
+  // prune recursively the suffix tree based on:
+  // - min_counts: a subsequence must appear at least min_counts times to
+  //   be kept
+  // - max_length: a subsequence cannot exceed max_length to be kept
+  // - K: if a subsequence pass the previous two criteria, its preceding
+  //   value distribution is tested against the one of its parent node. If
+  //   the kl based criterion is smaller than K, the node is tentatively pruned.
+  //   Only nodes without children are effectively pruned.
+  //   This test is conducted only if K>0.
+  // Updates maximal depth on the fly.
   // sentinels nodes are always removed during this pruning phase. The
   // number of contexts is computed on the fly (based on the above definition).
   bool prune(int min_counts,
              int max_length,
+             double K,
              int nb_vals,
              int nx,
              int& mdepth,

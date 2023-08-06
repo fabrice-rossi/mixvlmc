@@ -525,7 +525,21 @@ class SuffixTree {
     }
     max_depth = 0;  // we need to recompute max_depth
     nb_ctx = 0;
-    root->prune(min_counts, max_length, max_x + 1, x.size(), max_depth, nb_ctx);
+    root->prune(min_counts, max_length, -1, max_x + 1, x.size(), max_depth,
+                nb_ctx);
+  }
+
+  void prune_context(int min_counts, int max_length, double K) {
+    if(!has_counts) {
+      stop("prune cannot be used if the counts have not been computed");
+    }
+    if(max_length <= 0) {
+      max_length = x.size();
+    }
+    max_depth = 0;  // we need to recompute max_depth
+    nb_ctx = 0;
+    root->prune(min_counts, max_length, K, max_x + 1, x.size(), max_depth,
+                nb_ctx);
   }
 
   SuffixTree* clone_prune(int min_counts, int max_length) const {
@@ -608,6 +622,8 @@ RCPP_MODULE(suffixtree) {
       .method("detailed_contexts", &SuffixTree::detailed_contexts,
               "Return detailed contexts that fulfill specified conditions")
       .method("prune", &SuffixTree::prune,
+              "Prune the suffix tree based on the specified conditions")
+      .method("prune_context", &SuffixTree::prune_context,
               "Prune the suffix tree based on the specified conditions")
       .method("clone_prune", &SuffixTree::clone_prune,
               "Prune the suffix tree based on the specified conditions and "

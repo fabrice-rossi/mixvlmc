@@ -243,6 +243,7 @@ bool EdgeNode::subsequences(int min_counts,
 
 bool EdgeNode::prune(int min_counts,
                      int max_length,
+                     double K,
                      int nb_vals,
                      int nx,
                      int& mdepth,
@@ -256,33 +257,40 @@ bool EdgeNode::prune(int min_counts,
         return true;
       } else {
         // part of the edge should be kept
-        // we do that by reducing the end counter
-        int allowance = max_length - depth + edge_length();
+        // we do that by reducing the end counter.
+        // This depends on K. If K>0, we will never keep
+        // implicit nodes, so we can directly set end to start+1 (and test for
+        // criterion based prunability)
+        // if K<=0, we may keep implicit nodes up to the maximum depth.
+        // in any case, we remove all the children
+        for(auto child : children) {
+          delete child.second;
+        }
+        children.clear();
+        int allowance;
+        if(K <= 0) {
+          allowance = max_length - depth + edge_length();
+        } else {
+          if(parent != nullptr) {
+            double crit = kl_criterion(counts, total_count, parent->counts,
+                                       parent->total_count);
+            if(crit < K) {
+              // prune
+              return true;
+            }
+          }
+          allowance = 1;
+        }
         depth = depth - edge_length() + allowance;
         if(depth > mdepth) {
           mdepth = depth;
         }
         end = start + allowance;
-        for(auto child : children) {
-          delete child.second;
-        }
-        children.clear();
         nb_ctx += allowance;
         return false;
       }
     } else {
-      if(edge_length() > 1) {
-        // count intermediate contexts
-        if(end > nx) {
-          nb_ctx += edge_length() - 2;
-        } else {
-          nb_ctx += edge_length() - 1;
-        }
-      }
       // recursive processing
-      if(depth > mdepth) {
-        mdepth = depth;
-      }
       int nb_sub = 0;
       for(auto child = children.begin(); child != children.end();) {
         if(child->first < 0) {
@@ -290,7 +298,7 @@ bool EdgeNode::prune(int min_counts,
           delete child->second;
           child = children.erase(child);
         } else {
-          bool result = child->second->prune(min_counts, max_length, nb_vals,
+          bool result = child->second->prune(min_counts, max_length, K, nb_vals,
                                              nx, mdepth, nb_ctx);
           if(result) {
             delete child->second;
@@ -301,8 +309,33 @@ bool EdgeNode::prune(int min_counts,
           }
         }
       }
+      if(nb_sub == 0 && K > 0 && parent != nullptr) {
+        // potential pruning
+        double crit = kl_criterion(counts, total_count, parent->counts,
+                                   parent->total_count);
+        if(crit < K) {
+          // prune
+          return true;
+        } else {
+          // even if we do not prune, when nb_sub==0, we do not keep implicit
+          // nodes
+          end = start + 1;
+        }
+      }
+      if(edge_length() > 1) {
+        // count intermediate contexts
+        if(end > nx) {
+          nb_ctx += edge_length() - 2;
+        } else {
+          nb_ctx += edge_length() - 1;
+        }
+      }
       if(nb_sub < nb_vals) {
+        // potential
         nb_ctx++;
+      }
+      if(depth > mdepth) {
+        mdepth = depth;
       }
       return false;
     }
@@ -353,7 +386,7 @@ EdgeNode* EdgeNode::clone_prune(int min_counts,
         mdepth = depth;
       }
       int nb_sub = 0;
-      for(auto child = children.begin(); child != children.end();++child) {
+      for(auto child = children.begin(); child != children.end(); ++child) {
         if(child->first >= 0) {
           // we ignore sentinel nodes
           EdgeNode* new_child = child->second->clone_prune(
