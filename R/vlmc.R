@@ -250,6 +250,21 @@ prune.vlmc <- function(vlmc, alpha = 0.05, cutoff = NULL, ...) {
 #' @param prune logical: specify whether the context tree should be pruned
 #'   (default behaviour).
 #' @param keep_match logical: specify whether to keep the context matches (default to FALSE)
+#' @param backend "R" or "C++" (default: "R"). Specifies the implementation used
+#'   to represent the context tree and to built it. See details.
+#' @section Back ends:
+#'
+#' Two back ends are available to compute context trees:
+#'
+#' - the "R" back end represents the tree in pure R data structures (nested lists)
+#'   that be easily processed further in pure R (C++ helper functions are used to
+#'   speed up the construction).
+#' - the "C++" back end represents the tree with C++ classes. The tree is built
+#'   with an optimised suffix tree algorithm which speeds up the construction by
+#'   at least a factor 10 in standard settings. As the tree is kept outside of
+#'   R direct reach, context trees built with the C++ back end cannot be saved
+#'   directly with e.g. `saveRDS`. In addition the C++ back end is experimental.
+#'
 #' @returns a fitted vlmc model.
 #' @examples
 #' pc <- powerconsumption[powerconsumption$week == 5, ]
@@ -269,21 +284,13 @@ prune.vlmc <- function(vlmc, alpha = 0.05, cutoff = NULL, ...) {
 #' @references Bühlmann, P. and Wyner, A. J. (1999), "Variable length Markov
 #'   chains. Ann. Statist." 27 (2)
 #'   480-513 \doi{10.1214/aos/1018031204}
-vlmc <- function(x, alpha = 0.05, cutoff = NULL, min_size = 2L, max_depth = 100L, prune = TRUE, keep_match = FALSE) {
+vlmc <- function(x, alpha = 0.05, cutoff = NULL, min_size = 2L, max_depth = 100L,
+                 prune = TRUE, keep_match = FALSE, backend = c("R", "C++")) {
+  backend <- match.arg(backend)
   # data conversion
   nx <- to_dts(x)
   ix <- nx$ix
   vals <- nx$vals
-  if (length(vals) > max(10, 0.05 * length(x))) {
-    warning(paste0("x as numerous unique values (", length(vals), ")"))
-  }
-  ctx_tree <- grow_ctx_tree(ix, vals, min_size = min_size, max_depth = max_depth, compute_stats = !prune, keep_match = keep_match)
-  result <- ctx_tree
-  if (prune) {
-    result <- prune_ctx_tree(ctx_tree, alpha = alpha, cutoff = cutoff)
-  } else {
-    result <- new_ctx_tree(result$vals, result, class = "vlmc")
-  }
   if (is.null(cutoff)) {
     if (is.null(alpha) || !is.numeric(alpha) || alpha <= 0 || alpha > 1) {
       stop("the alpha parameter must be in (0, 1]")
@@ -295,6 +302,27 @@ vlmc <- function(x, alpha = 0.05, cutoff = NULL, min_size = 2L, max_depth = 100L
       stop("the cutoff parameter must be a non negative number")
     }
     alpha <- to_quantile(cutoff, length(vals))
+  }
+  if (length(vals) > max(10, 0.05 * length(x))) {
+    warning(paste0("x as numerous unique values (", length(vals), ")"))
+  }
+  if (backend == "R") {
+    ctx_tree <- grow_ctx_tree(ix, vals, min_size = min_size, max_depth = max_depth, compute_stats = !prune, keep_match = keep_match)
+    result <- ctx_tree
+    if (prune) {
+      result <- prune_ctx_tree(ctx_tree, alpha = alpha, cutoff = cutoff)
+    } else {
+      result <- new_ctx_tree(result$vals, result, class = "vlmc")
+    }
+  } else {
+    cpp_tree <- build_suffix_tree(rev(ix)[-1], length(nx$vals))
+    cpp_tree$compute_counts(ix[length(ix)], keep_match)
+    if (prune) {
+      cpp_tree$prune_context(min_size, max_depth, cutoff)
+    } else {
+      cpp_tree$prune(min_size, max_depth)
+    }
+    result <- new_ctx_tree_cpp(vals, cpp_tree, class = c("vlmc_cpp", "vlmc"))
   }
   result$alpha <- alpha
   result$cutoff <- cutoff

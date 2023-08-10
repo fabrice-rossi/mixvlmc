@@ -11,7 +11,8 @@ vlmc(
   min_size = 2L,
   max_depth = 100L,
   prune = TRUE,
-  keep_match = FALSE
+  keep_match = FALSE,
+  backend = c("R", "C++")
 )
 }
 \arguments{
@@ -34,6 +35,9 @@ growing phase of the context tree.}
 (default behaviour).}
 
 \item{keep_match}{logical: specify whether to keep the context matches (default to FALSE)}
+
+\item{backend}{"R" or "C++" (default: "R"). Specifies the implementation used
+to represent the context tree and to built it. See details.}
 }
 \value{
 a fitted vlmc model.
@@ -60,6 +64,22 @@ Any VLMC model can be pruned after construction, \code{prune=FALSE} is a
 convenience parameter to avoid setting \code{alpha=1} (which essentially prevents
 any pruning). Automated model selection is provided by \code{\link[=tune_vlmc]{tune_vlmc()}}.
 }
+\section{Back ends}{
+
+
+Two back ends are available to compute context trees:
+\itemize{
+\item the "R" back end represents the tree in pure R data structures (nested lists)
+that be easily processed further in pure R (C++ helper functions are used to
+speed up the construction).
+\item the "C++" back end represents the tree with C++ classes. The tree is built
+with an optimised suffix tree algorithm which speeds up the construction by
+at least a factor 10 in standard settings. As the tree is kept outside of
+R direct reach, context trees built with the C++ back end cannot be saved
+directly with e.g. \code{saveRDS}. In addition the C++ back end is experimental.
+}
+}
+
 \examples{
 pc <- powerconsumption[powerconsumption$week == 5, ]
 dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.25, 0.5, 0.75, 1))))
