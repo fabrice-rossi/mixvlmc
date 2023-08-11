@@ -42,10 +42,13 @@
 <li class="active nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
+    <h6 class="dropdown-header" data-toc-skip>Getting started</h6>
     <a class="dropdown-item" href="../articles/context-trees.html">Context trees</a>
-    <a class="dropdown-item" href="../articles/covlmc.html">Variable Length Markov Chains with Covariates (COVLMC)</a>
-    <a class="dropdown-item" href="../articles/sampling.html">Sampling from (CO)VLMC</a>
     <a class="dropdown-item" href="../articles/variable-length-markov-chains.html">Variable length Markov chains (VLMC)</a>
+    <a class="dropdown-item" href="../articles/covlmc.html">Variable Length Markov Chains with Covariates (COVLMC)</a>
+    <div class="dropdown-divider"></div>
+    <h6 class="dropdown-header" data-toc-skip>Advanced topics</h6>
+    <a class="dropdown-item" href="../articles/sampling.html">Sampling from (CO)VLMC</a>
   </div>
 </li>
 <li class="nav-item dropdown">
@@ -135,7 +138,7 @@ influence of the starting values.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">best_vlmc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tune_vlmc.html">tune_vlmc</a></span><span class="op">(</span><span class="va">dts</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/draw.html">draw</a></span><span class="op">(</span><span class="fu"><a href="../reference/as_vlmc.html">as_vlmc</a></span><span class="op">(</span><span class="va">best_vlmc</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; * (0.508, 0.492)</span></span></code></pre></div>
+<span><span class="co">#&gt; * (0.478, 0.522)</span></span></code></pre></div>
 <p>Simulating a sequence using the model is done via the standard
 <code><a href="https://rdrr.io/r/stats/simulate.html" class="external-link">stats::simulate()</a></code> function as follows:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
@@ -160,7 +163,7 @@ the <code>init</code> parameter, for instance:</p>
 0\)</span>:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dts_sample_2</span></span>
-<span><span class="co">#&gt;  [1] 0 0 0 0 0 1 1 0 1 0</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1] 0 0 0 1 0 1 1 1 0 1</span></span></code></pre></div>
 <p>This provides an alternative to dropping the initial values of the
 simulated time series by setting those values to the one observed in the
 data set. Notice that this practice has no theoretical
@@ -390,7 +393,7 @@ covariates.</p>
 
     <footer><div class="pkgdown-footer-left">
   <p></p>
-<p>Developed by Fabrice Rossi.</p>
+<p>Developed by <a href="https://fabrice-rossi.github.io/" class="external-link">Fabrice Rossi</a>.</p>
 </div>
 
 <div class="pkgdown-footer-right">

@@ -26,10 +26,13 @@ contexts."><meta name="robots" content="noindex"><!-- mathjax --><script src="ht
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
+    <h6 class="dropdown-header" data-toc-skip>Getting started</h6>
     <a class="dropdown-item" href="../articles/context-trees.html">Context trees</a>
-    <a class="dropdown-item" href="../articles/covlmc.html">Variable Length Markov Chains with Covariates (COVLMC)</a>
-    <a class="dropdown-item" href="../articles/sampling.html">Sampling from (CO)VLMC</a>
     <a class="dropdown-item" href="../articles/variable-length-markov-chains.html">Variable length Markov chains (VLMC)</a>
+    <a class="dropdown-item" href="../articles/covlmc.html">Variable Length Markov Chains with Covariates (COVLMC)</a>
+    <div class="dropdown-divider"></div>
+    <h6 class="dropdown-header" data-toc-skip>Advanced topics</h6>
+    <a class="dropdown-item" href="../articles/sampling.html">Sampling from (CO)VLMC</a>
   </div>
 </li>
 <li class="nav-item dropdown">
@@ -160,19 +163,19 @@ reverse to <code>FALSE</code> for the reverse convention.</p>
 <span class="r-in"><span><span class="va">dts_tree</span> <span class="op">&lt;-</span> <span class="fu"><a href="ctx_tree.html">ctx_tree</a></span><span class="op">(</span><span class="va">dts</span>, max_depth <span class="op">=</span> <span class="fl">3</span>, min_size <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="contexts.html">contexts</a></span><span class="op">(</span><span class="va">dts_tree</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] A A</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] A A A</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Levels: A B C</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[2]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] A B A</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] A A</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Levels: A B C</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[3]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] A B B</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] A B</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Levels: A B C</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[4]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] A B</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] A C C</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Levels: A B C</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[5]]</span>
@@ -180,7 +183,7 @@ reverse to <code>FALSE</code> for the reverse convention.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Levels: A B C</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[6]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] B A A</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] B A C</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Levels: A B C</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[7]]</span>
@@ -192,73 +195,67 @@ reverse to <code>FALSE</code> for the reverse convention.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Levels: A B C</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[9]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] B B C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Levels: A B C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[10]]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] B B</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Levels: A B C</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[11]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] B C B</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Levels: A B C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[12]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [[10]]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] B C</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Levels: A B C</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[13]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [[11]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] C A C</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Levels: A B C</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [[12]]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] C A</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Levels: A B C</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[14]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] C B A</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Levels: A B C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[15]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [[13]]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] C B</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Levels: A B C</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[16]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [[14]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] C C A</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Levels: A B C</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [[15]]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] C C</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Levels: A B C</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span><span class="fu"><a href="contexts.html">contexts</a></span><span class="op">(</span><span class="va">dts_tree</span>, frequency <span class="op">=</span> <span class="st">"total"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    context freq</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1     A, A   11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2  A, B, A    5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3  A, B, B    5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4     A, B   11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5     A, C   10</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6  B, A, A    5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7     B, A   13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8  B, B, B    8</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9  B, B, C    6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10    B, B   17</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11 B, C, B    5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 12    B, C   10</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 13    C, A    8</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 14 C, B, A    5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 15    C, B   11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 16    C, C    7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  A, A, A    6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2     A, A   12</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3     A, B    8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  A, C, C    7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5     A, C   12</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6  B, A, C    5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7     B, A    8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8  B, B, B    7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9     B, B   14</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10    B, C   10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11 C, A, C    5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12    C, A   12</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13    C, B    9</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14 C, C, A    8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15    C, C   13</span>
 <span class="r-in"><span><span class="fu"><a href="contexts.html">contexts</a></span><span class="op">(</span><span class="va">dts_tree</span>, frequency <span class="op">=</span> <span class="st">"detailed"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    context freq A B C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1     A, A   11 3 5 3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2  A, B, A    5 3 0 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3  A, B, B    5 1 3 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4     A, B   11 4 4 3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5     A, C   10 4 4 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6  B, A, A    5 1 2 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7     B, A   13 5 3 5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8  B, B, B    8 3 3 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9  B, B, C    6 1 4 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10    B, B   17 5 8 4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11 B, C, B    5 0 3 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 12    B, C   10 1 6 3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 13    C, A    8 3 3 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 14 C, B, A    5 3 1 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 15    C, B   11 4 5 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 16    C, C    7 3 2 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  A, A, A    6 2 0 4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2     A, A   12 6 2 4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3     A, B    8 4 1 3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  A, C, C    7 2 3 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5     A, C   12 2 5 5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6  B, A, C    5 2 3 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7     B, A    8 2 4 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8  B, B, B    7 2 3 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9     B, B   14 3 7 4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10    B, C   10 3 4 3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11 C, A, C    5 1 0 4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12    C, A   12 2 2 8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13    C, B    9 3 4 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14 C, C, A    8 5 2 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15    C, C   13 7 3 3</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
@@ -266,7 +263,7 @@ reverse to <code>FALSE</code> for the reverse convention.</p>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p><p>Developed by Fabrice Rossi.</p>
+  <p></p><p>Developed by <a href="https://fabrice-rossi.github.io/" class="external-link">Fabrice Rossi</a>.</p>
 </div>
 
 <div class="pkgdown-footer-right">

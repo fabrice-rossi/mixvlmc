@@ -24,10 +24,13 @@
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
+    <h6 class="dropdown-header" data-toc-skip>Getting started</h6>
     <a class="dropdown-item" href="../articles/context-trees.html">Context trees</a>
-    <a class="dropdown-item" href="../articles/covlmc.html">Variable Length Markov Chains with Covariates (COVLMC)</a>
-    <a class="dropdown-item" href="../articles/sampling.html">Sampling from (CO)VLMC</a>
     <a class="dropdown-item" href="../articles/variable-length-markov-chains.html">Variable length Markov chains (VLMC)</a>
+    <a class="dropdown-item" href="../articles/covlmc.html">Variable Length Markov Chains with Covariates (COVLMC)</a>
+    <div class="dropdown-divider"></div>
+    <h6 class="dropdown-header" data-toc-skip>Advanced topics</h6>
+    <a class="dropdown-item" href="../articles/sampling.html">Sampling from (CO)VLMC</a>
   </div>
 </li>
 <li class="nav-item dropdown">
@@ -116,26 +119,53 @@ tree.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">dts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A"</span>, <span class="st">"B"</span>, <span class="st">"C"</span><span class="op">)</span>, <span class="fl">500</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="vlmc.html">vlmc</a></span><span class="op">(</span><span class="va">dts</span>, alpha <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="draw.html">draw</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> * (0.34, 0.348, 0.312)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> '-- B (0.3526, 0.3584, 0.289)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     '-- B (0.2903, 0.3548, 0.3548)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         '-- B (0.3182, 0.4091, 0.2727)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             '-- B (0.3333, 0.3333, 0.3333)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                 '-- A (0, 1, 0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> * (0.352, 0.344, 0.304)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> +-- A (0.3429, 0.2686, 0.3886)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |   '-- B (0.3016, 0.3333, 0.3651)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |       '-- C (0.2308, 0.3846, 0.3846)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |           '-- B (0.1667, 0.8333, 0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> '-- B (0.3721, 0.3605, 0.2674)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |   '-- B (0.3065, 0.3871, 0.3065)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |       '-- C (0.1905, 0.4286, 0.381)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |           '-- A (0.09091, 0.4545, 0.4545)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |               '-- C (0.2, 0, 0.8)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> '-- C (0.3421, 0.4079, 0.25)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     '-- A (0.3235, 0.3676, 0.3088)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         '-- C (0.1905, 0.381, 0.4286)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             '-- A (0.2727, 0.4545, 0.2727)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                 '-- B (0.6, 0, 0.4)</span>
 <span class="r-in"><span><span class="fu"><a href="draw.html">draw</a></span><span class="op">(</span><span class="va">model</span>, prob <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> * (170, 174, 156)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> '-- B (61, 62, 50)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     '-- B (18, 22, 22)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         '-- B (7, 9, 6)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             '-- B (3, 3, 3)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                 '-- A (0, 3, 0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> * (176, 172, 152)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> +-- A (60, 47, 68)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |   '-- B (19, 21, 23)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |       '-- C (6, 10, 10)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |           '-- B (1, 5, 0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> '-- B (64, 62, 46)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |   '-- B (19, 24, 19)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |       '-- C (4, 9, 8)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |           '-- A (1, 5, 5)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |               '-- C (1, 0, 4)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> '-- C (52, 62, 38)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     '-- A (22, 25, 21)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         '-- C (4, 8, 9)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             '-- A (3, 5, 3)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                 '-- B (3, 0, 2)</span>
 <span class="r-in"><span><span class="fu"><a href="draw.html">draw</a></span><span class="op">(</span><span class="va">model</span>, prob <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> *</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> +-- A</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |   '-- B</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |       '-- C</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |           '-- B</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> '-- B</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     '-- B</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         '-- B</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             '-- B</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                 '-- A</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |   '-- B</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |       '-- C</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |           '-- A</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |               '-- C</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> '-- C</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     '-- A</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         '-- C</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             '-- A</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                 '-- B</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
@@ -143,7 +173,7 @@ tree.</p>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p><p>Developed by Fabrice Rossi.</p>
+  <p></p><p>Developed by <a href="https://fabrice-rossi.github.io/" class="external-link">Fabrice Rossi</a>.</p>
 </div>
 
 <div class="pkgdown-footer-right">

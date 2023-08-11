@@ -6,7 +6,7 @@ articles:
   covlmc: covlmc.html
   sampling: sampling.html
   variable-length-markov-chains: variable-length-markov-chains.html
-last_built: 2023-07-27T19:37Z
+last_built: 2023-08-11T15:30Z
 urls:
   reference: https://fabrice-rossi.github.io/mixvlmc/reference
   article: https://fabrice-rossi.github.io/mixvlmc/articles
