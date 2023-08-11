@@ -1,0 +1,10 @@
+test_that("the likelihood calculations in logLik give identical results for R and C++ backends", {
+  x <- sample(c("A", "B", "C"), 1000, replace = TRUE)
+  r_vlmc <- vlmc(x, alpha = 0.05)
+  cpp_vlmc <- vlmc(x, alpha = 0.05, backend = "C++")
+  expect_identical(logLik(r_vlmc), logLik(cpp_vlmc))
+  data_set <- build_markov_chain(1000, 3, seed = 0)
+  r_vlmc <- vlmc(data_set$x)
+  cpp_vlmc <- vlmc(data_set$x, backend = "C++")
+  expect_identical(logLik(r_vlmc), logLik(cpp_vlmc))
+})
