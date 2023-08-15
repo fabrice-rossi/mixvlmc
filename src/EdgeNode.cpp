@@ -17,6 +17,7 @@ EdgeNode::EdgeNode(EdgeNode* _parent, int s, int e)
       start(s),
       end(e),
       suffix(nullptr),
+      reverse(nullptr),
       total_count(0),
       counts(nullptr),
       positions(nullptr),
@@ -25,6 +26,9 @@ EdgeNode::EdgeNode(EdgeNode* _parent, int s, int e)
 EdgeNode::~EdgeNode() {
   for(auto child : children) {
     delete child.second;
+  }
+  if(reverse != nullptr) {
+    delete reverse;
   }
   if(counts != nullptr) {
     delete counts;
@@ -72,6 +76,11 @@ void EdgeNode::print_tree(std::string pre,
   }
   if(counts != nullptr) {
     Rcout << pre << counts_to_string(counts) << "\n";
+  }
+  if(reverse != nullptr) {
+    for(auto rev : *reverse) {
+      Rcout << pre << rev.first << " -> " << rev.second << "\n";
+    }
   }
   if(positions != nullptr) {
     Rcout << pre << "{";
@@ -484,6 +493,36 @@ void EdgeNode::make_explicit(const Rcpp::IntegerVector& x) {
   for(auto child : children) {
     if(child.first >= 0) {
       child.second->make_explicit(x);
+    }
+  }
+}
+
+void EdgeNode::compute_reverse(
+    const Rcpp::IntegerVector& x,
+    const std::unordered_map<int, EdgeNode*>* parent_map) {
+  // should check for existing map
+  reverse = new std::unordered_map<int, EdgeNode*>{};
+  if(start < x.size()) {
+    for(auto prev : *parent_map) {
+      if(depth == prev.second->depth) {
+        // full matching, maybe be increased
+        if(auto child = prev.second->children.find(x[start]);
+           child != prev.second->children.end()) {
+          // success, we can extend the match
+          (*reverse)[prev.first] = child->second;
+        } else {
+          // nope
+          (*reverse)[prev.first] = prev.second;
+        }
+      } else {
+        // partial matching, no luck
+        (*reverse)[prev.first] = prev.second;
+      }
+    }
+  }
+  for(auto child : children) {
+    if(child.first >= 0) {
+      child.second->compute_reverse(x, reverse);
     }
   }
 }

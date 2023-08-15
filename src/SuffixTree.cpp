@@ -25,6 +25,7 @@ class SuffixTree {
   bool has_counts;
   bool has_positions;
   bool full_explicit;
+  bool has_reverse;
   int max_depth;
   int nb_ctx;
 
@@ -36,6 +37,7 @@ class SuffixTree {
         has_counts(false),
         has_positions(false),
         full_explicit(false),
+        has_reverse(false),
         max_depth(0),
         nb_ctx(0) {}
 
@@ -47,6 +49,7 @@ class SuffixTree {
         has_counts(false),
         has_positions(false),
         full_explicit(false),
+        has_reverse(false),
         max_depth(0),
         nb_ctx(0) {
     root = new EdgeNode(nullptr, -1, -1);
@@ -64,6 +67,7 @@ class SuffixTree {
     nt->has_counts = has_counts;
     nt->has_positions = has_positions;
     nt->full_explicit = full_explicit;
+    nt->has_reverse = has_reverse;
     nt->max_depth = _max_depth;
     nt->nb_ctx = _nb_ctx;
     return nt;
@@ -82,6 +86,7 @@ class SuffixTree {
     has_counts = false;
     has_positions = false;
     full_explicit = false;
+    has_reverse = false;
     nb_ctx = 0;
   }
 
@@ -601,6 +606,27 @@ class SuffixTree {
     full_explicit = true;
   }
 
+  void compute_reverse() {
+    if(!has_counts) {
+      stop("reverse links can only be computed on suffix trees with counts");
+    }
+    if(!full_explicit) {
+      stop("reverse links calculation is limited to fully explicit trees");
+    }
+    // root case
+    root->reverse = new std::unordered_map<int, EdgeNode*>{};
+    for(auto forward : root->children) {
+      if(forward.first >= 0) {
+        (*(root->reverse))[forward.first] = forward.second;
+      }
+    }
+    for(auto child : root->children) {
+      if(child.first >= 0) {
+        child.second->compute_reverse(x, root->reverse);
+      }
+    }
+    has_reverse = true;
+  }
 };
 
 SuffixTree* build_suffix_tree(const IntegerVector& x, int nb_vals) {
@@ -643,6 +669,8 @@ RCPP_MODULE(suffixtree) {
               "Return a representation in R of the tree")
       .method("make_explicit", &SuffixTree::make_explicit,
               "Make all nodes explicit")
+      .method("compute_reverse", &SuffixTree::compute_reverse,
+              "Compute reverse links")
       .method("depth", &SuffixTree::depth, "Return the depth of the tree")
       .method("nb_contexts", &SuffixTree::nb_contexts,
               "Return the number of contexts of the tree");

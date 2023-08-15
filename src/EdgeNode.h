@@ -25,6 +25,11 @@ class EdgeNode {
   // such that w=av and v is represented by the node P, that suffix points to P
   EdgeNode* suffix;
 
+  // reverse map: if this map represents w and a is a key of the map, then
+  // the value associated to a points to an EdgeNode that represents aw' where
+  // w' is a maximal prefix of w such that aw' appears in the original sequence
+  std::unordered_map<int, EdgeNode*>* reverse;
+
   // number of occurrences of the sequence represented by the path to this node
   // and the node itself. Computed post hoc.
   int total_count;
@@ -140,6 +145,9 @@ class EdgeNode {
   // make all nodes explicit
   void make_explicit(const Rcpp::IntegerVector& x);
 
+  // compute the reverse maps recursively
+  void compute_reverse(const Rcpp::IntegerVector& x,
+                       const std::unordered_map<int, EdgeNode*>* parent_map);
 };
 
 #endif
