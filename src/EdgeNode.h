@@ -136,6 +136,10 @@ class EdgeNode {
               int nb_vals,
               std::vector<Rcpp::IntegerVector>& tree_structure,
               std::vector<Rcpp::IntegerVector>& tree_counts) const;
+
+  // make all nodes explicit
+  void make_explicit(const Rcpp::IntegerVector& x);
+
 };
 
 #endif

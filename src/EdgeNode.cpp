@@ -447,3 +447,43 @@ int EdgeNode::flatten(const Rcpp::IntegerVector& x,
   }
   return pos + 1;  // +1 for R
 }
+
+void EdgeNode::make_explicit(const Rcpp::IntegerVector& x) {
+  if(edge_length() > 1) {
+    // insert explicit nodes
+    int el = edge_length() - 1;
+    int base_depth = parent->depth + 1;
+    EdgeNode* previous = parent;
+    int from = x[start];
+    int pos = start;
+    for(int i = 0; i < el; i++) {
+      EdgeNode* node = new EdgeNode(previous, pos, pos + 1);
+      previous->children[from] = node;
+      node->total_count = total_count;
+      node->depth = base_depth + i;
+      if(counts != nullptr) {
+        node->counts =
+            new std::unordered_map<int, int>(counts->begin(), counts->end());
+      }
+      if(positions != nullptr) {
+        node->positions =
+            new std::vector<int>(positions->begin(), positions->end());
+      }
+      previous = node;
+      pos++;
+      if(pos < x.size()) {
+        from = x[pos];
+      } else {
+        from = -1;  // sentinel
+      }
+    }
+    start = end - 1;
+    parent = previous;
+    previous->children[from] = this;
+  }
+  for(auto child : children) {
+    if(child.first >= 0) {
+      child.second->make_explicit(x);
+    }
+  }
+}

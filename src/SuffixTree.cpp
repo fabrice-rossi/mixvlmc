@@ -24,6 +24,7 @@ class SuffixTree {
   bool has_total_count;
   bool has_counts;
   bool has_positions;
+  bool full_explicit;
   int max_depth;
   int nb_ctx;
 
@@ -34,6 +35,7 @@ class SuffixTree {
         has_total_count(false),
         has_counts(false),
         has_positions(false),
+        full_explicit(false),
         max_depth(0),
         nb_ctx(0) {}
 
@@ -44,6 +46,7 @@ class SuffixTree {
         has_total_count(false),
         has_counts(false),
         has_positions(false),
+        full_explicit(false),
         max_depth(0),
         nb_ctx(0) {
     root = new EdgeNode(nullptr, -1, -1);
@@ -60,6 +63,7 @@ class SuffixTree {
     nt->has_total_count = has_total_count;
     nt->has_counts = has_counts;
     nt->has_positions = has_positions;
+    nt->full_explicit = full_explicit;
     nt->max_depth = _max_depth;
     nt->nb_ctx = _nb_ctx;
     return nt;
@@ -77,6 +81,7 @@ class SuffixTree {
     has_total_count = false;
     has_counts = false;
     has_positions = false;
+    full_explicit = false;
     nb_ctx = 0;
   }
 
@@ -590,6 +595,12 @@ class SuffixTree {
     }
     return preres;
   }
+
+  void make_explicit() {
+    root->make_explicit(x);
+    full_explicit = true;
+  }
+
 };
 
 SuffixTree* build_suffix_tree(const IntegerVector& x, int nb_vals) {
@@ -630,6 +641,8 @@ RCPP_MODULE(suffixtree) {
               "return a clone")
       .method("representation", &SuffixTree::representation,
               "Return a representation in R of the tree")
+      .method("make_explicit", &SuffixTree::make_explicit,
+              "Make all nodes explicit")
       .method("depth", &SuffixTree::depth, "Return the depth of the tree")
       .method("nb_contexts", &SuffixTree::nb_contexts,
               "Return the number of contexts of the tree");
