@@ -636,9 +636,11 @@ class SuffixTree {
     }
     // root case
     root->reverse = new std::unordered_map<int, EdgeNode*>{};
-    for(auto forward : root->children) {
-      if(forward.first >= 0) {
-        (*(root->reverse))[forward.first] = forward.second;
+    for(int i = 0; i <= max_x; i++) {
+      if(auto child = root->children.find(i); child != root->children.end()) {
+        (*(root->reverse))[i] = child->second;
+      } else {
+        (*(root->reverse))[i] = root;
       }
     }
     for(auto child : root->children) {
