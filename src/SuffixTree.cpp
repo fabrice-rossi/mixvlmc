@@ -678,6 +678,29 @@ class SuffixTree {
       return IntegerVector();
     }
   }
+  // loglikelihood calculation
+  double loglikelihood(const IntegerVector& y) const {
+    if(!has_reverse) {
+      stop("cannot compute likelihood without reverse links");
+    }
+    double result = 0;
+    EdgeNode* current = root;
+    int ny = y.size();
+    for(int i = 0; i < ny; i++) {
+      if(auto child = current->counts->find(y[i]);
+         child != current->counts->end()) {
+        if(child->second == 0) {
+          return -std::numeric_limits<double>::infinity();
+        } else {
+          result += log(((double)child->second) / current->total_count);
+        }
+      } else {
+        return -std::numeric_limits<double>::infinity();
+      }
+      current = (*(current->reverse))[y[i]];
+    }
+    return result;
+  }
 };
 
 SuffixTree* build_suffix_tree(const IntegerVector& x, int nb_vals) {
@@ -727,6 +750,9 @@ RCPP_MODULE(suffixtree) {
       .method("print_context", &SuffixTree::print_context, "Print a context")
       .method("depth", &SuffixTree::depth, "Return the depth of the tree")
       .method("nb_contexts", &SuffixTree::nb_contexts,
-              "Return the number of contexts of the tree");
+              "Return the number of contexts of the tree")
+      .method("loglikelihood", &SuffixTree::loglikelihood,
+              "Return the loglikelihood of a new sequence when the tree is "
+              "interpreted as a VLMC");
   function("build_suffix_tree", &build_suffix_tree);
 }
