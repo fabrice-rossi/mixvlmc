@@ -328,6 +328,7 @@ bool EdgeNode::prune(int min_counts,
         } else {
           // even if we do not prune, when nb_sub==0, we do not keep implicit
           // nodes
+          depth = depth - edge_length() + 1;
           end = start + 1;
         }
       }
