@@ -648,6 +648,33 @@ class SuffixTree {
     }
     has_reverse = true;
   }
+
+  IntegerVector extend_left(const IntegerVector& y, int v) {
+    if(!has_reverse) {
+      stop("cannot extend to the left without reverse links");
+    }
+    if(y.size() == 0) {
+      if(auto child = root->children.find(v); child != root->children.end()) {
+        IntegerVector result(1);
+        result[0] = v;
+        return result;
+      } else {
+        return IntegerVector();
+      }
+    }
+    Position pos = find_subsequence(y);
+    if(pos.is_valid()) {
+      std::vector<int> res{};
+      EdgeNode* current = (*(pos.node->reverse))[v];
+      while(current != nullptr && current->start >= 0) {
+        res.push_back(x[current->start]);
+        current = current->parent;
+      }
+      return IntegerVector(res.rbegin(), res.rend());
+    } else {
+      return IntegerVector();
+    }
+  }
 };
 
 SuffixTree* build_suffix_tree(const IntegerVector& x, int nb_vals) {
@@ -692,6 +719,8 @@ RCPP_MODULE(suffixtree) {
               "Make all nodes explicit")
       .method("compute_reverse", &SuffixTree::compute_reverse,
               "Compute reverse links")
+      .method("extend_left", &SuffixTree::extend_left,
+              "Extend a subsequence to the left")
       .method("print_context", &SuffixTree::print_context, "Print a context")
       .method("depth", &SuffixTree::depth, "Return the depth of the tree")
       .method("nb_contexts", &SuffixTree::nb_contexts,
