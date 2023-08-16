@@ -265,6 +265,27 @@ class SuffixTree {
     return Position{};  // default case
   }
 
+  void print_context(const IntegerVector& y) const {
+    Position pos = find_subsequence(y);
+    if(pos.is_valid()) {
+      Rcout << pos.node << " [" << pos.edge << "]  ~ " << pos.node->depth
+            << "\n";
+      if(pos.node->suffix != nullptr) {
+        Rcout << "sf " << pos.node->suffix << "\n";
+      }
+      if(pos.node->counts != nullptr) {
+        Rcout << counts_to_string(pos.node->counts) << "\n";
+      }
+      if(pos.node->reverse != nullptr) {
+        for(auto rev : *(pos.node->reverse)) {
+          Rcout << rev.first << " -> " << rev.second << "\n";
+        }
+      }
+    } else {
+      Rcout << "Not found\n";
+    }
+  }
+
   // test whether a subsequence is a suffix or not
   bool is_suffix(const IntegerVector& y) const {
     Position where = find_subsequence(y);
@@ -671,6 +692,7 @@ RCPP_MODULE(suffixtree) {
               "Make all nodes explicit")
       .method("compute_reverse", &SuffixTree::compute_reverse,
               "Compute reverse links")
+      .method("print_context", &SuffixTree::print_context, "Print a context")
       .method("depth", &SuffixTree::depth, "Return the depth of the tree")
       .method("nb_contexts", &SuffixTree::nb_contexts,
               "Return the number of contexts of the tree");
