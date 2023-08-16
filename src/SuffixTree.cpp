@@ -275,6 +275,7 @@ class SuffixTree {
       }
       if(pos.node->counts != nullptr) {
         Rcout << counts_to_string(pos.node->counts) << "\n";
+        Rcout << pos.node->total_count << "\n";
       }
       if(pos.node->reverse != nullptr) {
         for(auto rev : *(pos.node->reverse)) {
