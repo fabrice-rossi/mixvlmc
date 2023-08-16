@@ -573,7 +573,7 @@ class SuffixTree {
     if(nb_ctx > 0) {
       return nb_ctx;
     } else {
-      stop("nb_contexts is only avaiable if the tree was pruned");
+      stop("nb_contexts is only available if the tree was pruned");
     }
   }
 

@@ -6,7 +6,7 @@ test_that("the suffix tree clone pruning gives two independant suffix trees", {
     tree <- build_suffix_tree(x_rev[-1], k + 1)
     tree$compute_counts(x_rev[1], FALSE)
     pruned_tree <- tree$clone_prune(2, length(x) / 10)
-    expect_error(tree$nb_contexts(), "nb_contexts is only avaiable if the tree was pruned")
+    expect_error(tree$nb_contexts(), "nb_contexts is only available if the tree was pruned")
     expect_no_error(pruned_tree$nb_contexts())
     expect_lt(pruned_tree$depth(), tree$depth())
     before_pruned_ctx <- pruned_tree$contexts(1, -1)

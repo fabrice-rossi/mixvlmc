@@ -119,7 +119,7 @@ class EdgeNode {
              int& nb_ctx);
 
   // return a new collection of EdgeNodes (a tree) using the same
-  // pruning rules as above. The clone is a deep one, fully independant
+  // pruning rules as above. The clone is a deep one, fully independent
   // from the original tree.
   EdgeNode* clone_prune(int min_counts,
                         int max_length,
