@@ -43,5 +43,5 @@ match_ctx <- function(tree, x, keep_match = FALSE) {
       result
     }
   }
-  recurse_match_ctx(tree, x, length(tree$vals), 0, NULL, table(x))
+  recurse_match_ctx(tree, x, length(tree$vals), 0, NULL, tabulate(x + 1, nbins = length(tree$vals)))
 }
