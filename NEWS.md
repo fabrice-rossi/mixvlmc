@@ -5,6 +5,7 @@
   series
 
 ## Minor improvements and bug fixes
+* Fixed a bug in the likelihood calculation for internal context nodes
 * Improved type consistency by reporting counts as integers in `contexts` results
 * Fixed documentation: all models can be adjusted on time series of logical values
 * Synchronized `ctx_tree` documentation and its default value

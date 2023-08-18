@@ -7,7 +7,8 @@ local_loglikelihood_vlmc <- function(model_counts, data_counts = NULL) {
     probs <- model_counts / sc
     sum(data_counts * ifelse(probs > 0, log(probs), 0))
   } else {
-    0
+    ## should never happen when called from rec_loglikelihood_vlmc
+    NA
   }
 }
 
@@ -29,11 +30,11 @@ rec_loglikelihood_vlmc <- function(tree) {
       sub_counts <- rowSums(sapply(tree$children[sub_trees], function(x) x$f_by))
       loc_counts <- tree$f_by - sub_counts
       if (is.null(tree$data_f_by)) {
-        sub_ll <- sub_ll + local_loglikelihood_vlmc(loc_counts)
+        sub_ll <- sub_ll + local_loglikelihood_vlmc(tree$f_by, loc_counts)
       } else {
         data_sub_counts <- rowSums(sapply(tree$children[sub_trees], function(x) x$data_f_by))
         data_loc_counts <- tree$data_f_by - data_sub_counts
-        sub_ll <- sub_ll + local_loglikelihood_vlmc(loc_counts, data_loc_counts)
+        sub_ll <- sub_ll + local_loglikelihood_vlmc(tree$f_by, data_loc_counts)
       }
     }
     sub_ll
