@@ -210,6 +210,15 @@ prune.vlmc <- function(vlmc, alpha = 0.05, cutoff = NULL, ...) {
   }
   result$alpha <- alpha
   result$cutoff <- cutoff
+  ## recompute the extended_ll
+  if (depth(result) > 0) {
+    result$ix <- result$ix[1:min(depth(result), length(result$ix))]
+    ivlmc <- match_ctx(result, result$ix)
+    result$extended_ll <- rec_loglikelihood_vlmc(ivlmc, TRUE)
+  } else {
+    result$extended_ll <- 0
+  }
+
   ## preserve the construction information
   result$max_depth <- vlmc$max_depth
   result
@@ -324,8 +333,16 @@ vlmc <- function(x, alpha = 0.05, cutoff = NULL, min_size = 2L, max_depth = 100L
     }
     result <- new_ctx_tree_cpp(vals, cpp_tree, class = c("vlmc_cpp", "vlmc"))
   }
+  ## prepare for loglikelihoodcalculation
   result$alpha <- alpha
   result$cutoff <- cutoff
+  if (depth(result) > 0) {
+    result$ix <- ix[1:min(depth(result), length(x))]
+    ivlmc <- match_ctx(result, result$ix)
+    result$extended_ll <- rec_loglikelihood_vlmc(ivlmc, TRUE)
+  } else {
+    result$extended_ll <- 0
+  }
   result
 }
 

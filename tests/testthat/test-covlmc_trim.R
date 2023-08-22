@@ -21,8 +21,8 @@ test_that("trimming removes only what it should remove", {
     )
     ## still usable with keep_mode==TRUE
     expect_equal(
-      loglikelihood(m_cov, dts, dts_cov),
-      loglikelihood(t_m_cov_model, dts, dts_cov)
+      loglikelihood(m_cov, newdata = dts, newcov = dts_cov),
+      loglikelihood(t_m_cov_model, newdata = dts, newcov = dts_cov)
     )
     expect_no_error(contexts(t_m_cov_model, hsize = TRUE, model = "full"))
     expect_equal(
@@ -35,7 +35,7 @@ test_that("trimming removes only what it should remove", {
       "Full model extraction is not supported by fully trimmed covlmc"
     )
     expect_error(
-      loglikelihood(t_m_cov, dts, dts_cov),
+      loglikelihood(t_m_cov, newdata = dts, newcov = dts_cov),
       "loglikelihood calculation for new data is not supported by fully trimmed covlmc"
     )
     expect_error(

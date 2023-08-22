@@ -242,8 +242,10 @@ informed by asymptotic analysis.
 
 In practice, it is recommended to start with a conservative value of
 `cutoff` (or `alpha`) and to use a penalized criterion to find the
-best model in a way that balances likelihood and complexity. A conservative
-value of `cutoff` is a small one, while `alpha` should be high to be conservative. A possible choice is to use the BIC inspired `cutoff` 
+best model in a way that balances likelihood and complexity (see
+`vignette("likelihood")` for details on likelihood calculation for VLMC). A
+conservative value of `cutoff` is a small one, while `alpha` should be high to
+be conservative. A possible choice is to use the BIC inspired `cutoff` 
 divided by a fixed value, for instance $\frac{1}{4}(|S|-1)\log n$.
 
 Once a "large" model has been obtained, two functions can be used to
