@@ -34,6 +34,7 @@ log-likelihood for this (new) discrete time series."><meta name="robots" content
     <a class="dropdown-item" href="../articles/covlmc.html">Variable Length Markov Chains with Covariates (COVLMC)</a>
     <div class="dropdown-divider"></div>
     <h6 class="dropdown-header" data-toc-skip>Advanced topics</h6>
+    <a class="dropdown-item" href="../articles/likelihood.html">Likelihood calculation</a>
     <a class="dropdown-item" href="../articles/sampling.html">Sampling from (CO)VLMC</a>
   </div>
 </li>
@@ -75,16 +76,32 @@ log-likelihood for this (new) discrete time series.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">loglikelihood</span><span class="op">(</span><span class="va">vlmc</span>, <span class="va">newdata</span>, <span class="va">...</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">loglikelihood</span><span class="op">(</span></span>
+<span>  <span class="va">vlmc</span>,</span>
+<span>  initial <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"truncated"</span>, <span class="st">"specific"</span>, <span class="st">"extended"</span><span class="op">)</span>,</span>
+<span>  <span class="va">newdata</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for vlmc</span></span>
-<span><span class="fu">loglikelihood</span><span class="op">(</span><span class="va">vlmc</span>, <span class="va">newdata</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">loglikelihood</span><span class="op">(</span></span>
+<span>  <span class="va">vlmc</span>,</span>
+<span>  initial <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"truncated"</span>, <span class="st">"specific"</span>, <span class="st">"extended"</span><span class="op">)</span>,</span>
+<span>  <span class="va">newdata</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>vlmc</dt>
 <dd><p>the vlmc representation.</p></dd>
+
+
+<dt>initial</dt>
+<dd><p>specifies the likelihood function, more precisely the way the
+first few observations for which contexts cannot be calculated are integrated
+in the likelihood. See below for details.</p></dd>
 
 
 <dt>newdata</dt>
@@ -99,16 +116,49 @@ log-likelihood for this (new) discrete time series.</p>
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     
 
-<p>the log-likelihood of the VLMC with a nobs attribute that accounts for the number of data included in the likelihood calculation.</p>
-    </div>
+<p>an object of class <code>logLikMixVLMC</code> and <code>logLik</code>. This is a number,
+the log-likelihood of the (CO)VLMC with the following attributes:</p><ul><li><p><code>df</code>: the number of parameters used by the VLMC for this likelihood calculation</p></li>
+<li><p><code>nobs</code>: the number of observations included in this likelihood calculation</p></li>
+<li><p><code>initial</code>: the value of the <code>initial</code> parameter used to compute this likelihood</p></li>
+</ul></div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>For VLMC objects, the method <code>loglikelihood.vlmc</code> will be used. For VLMC with covariables, <code>loglikelihood.covlmc</code>
+    <p>The definition of the likelihood function depends on the value of the
+<code>initial</code> parameters, see the section below as well as the dedicated
+vignette: <code><a href="../articles/likelihood.html">vignette("likelihood", package = "mixvlmc")</a></code>.</p>
+<p>For VLMC objects, the method <code>loglikelihood.vlmc</code> will be used. For VLMC with covariables, <code>loglikelihood.covlmc</code>
 will instead be called. For more informations on <code>loglikelihood</code> methods, use <code>methods(loglikelihood)</code> and their associated documentation.</p>
     </div>
     <div class="section level2">
+    <h2 id="likelihood-calculation">likelihood calculation<a class="anchor" aria-label="anchor" href="#likelihood-calculation"></a></h2>
+    
+
+
+<p>In a (CO)VLMC of <code><a href="depth.html">depth()</a></code>=k, we need k past values in order to compute the
+context of a given observation. As a consequence, in a time series <code>x</code>, the
+contexts of <code>x[1]</code> to <code>x[k]</code> are unknown. Depending on the value of <code>initial</code>
+different likelihood functions are used to tackle this difficulty:</p><ul><li><p><code>initial=="truncated"</code> (default): the likelihood is computed using only
+<code>x[(k+1):length(x)]</code></p></li>
+<li><p><code>initial=="specific"</code>: the likelihood is computed on the full time series
+using a specific context for the initial values, <code>x[1]</code> to <code>x[k]</code>. Each of
+the specific context is unique, leading to a perfect likelihood of 1 (0 in
+log scale). Thus the numerical value of the likelihood is identical as the
+one obtained with <code>initial=="truncated"</code> but it is computed on <code>length(x)</code>
+with a model with more parameters than in this previous case.</p></li>
+<li><p><code>initial=="relaxed"</code>: the likelihood is computed on the full time series
+using a relaxed context matching for the initial values, <code>x[1]</code> to <code>x[k]</code>.
+This can be seen as a compromised between the two other possibilities:
+the relaxed context matching needs in general to turn internal nodes
+of the context tree into actual context, increasing the number of parameters,
+but not as much as with "specific". However, the likelihood of say <code>x[1]</code>
+with an empty context is generally not 1 and thus the full likelihood is
+smaller than the one computed with "specific".</p></li>
+</ul><p>See the dedicated vignette for a more mathematically oriented discussion:
+<code><a href="../articles/likelihood.html">vignette("likelihood", package = "mixvlmc")</a></code>.</p>
+    </div>
+    <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><a href="https://rdrr.io/r/stats/logLik.html" class="external-link">stats::logLik</a></p></div>
+    <div class="dont-index"><p><code><a href="https://rdrr.io/r/stats/logLik.html" class="external-link">stats::logLik()</a></code></p></div>
     </div>
 
     <div class="section level2">
@@ -125,23 +175,62 @@ will instead be called. For more informations on <code>loglikelihood</code> meth
 <span class="r-in"><span><span class="va">m_nocovariate</span> <span class="op">&lt;-</span> <span class="fu"><a href="vlmc.html">vlmc</a></span><span class="op">(</span><span class="va">dts</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">ll</span> <span class="op">&lt;-</span> <span class="fu">loglikelihood</span><span class="op">(</span><span class="va">m_nocovariate</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">ll</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -198.3655</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"nobs")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1008</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 'log Lik.' -207.9581 (df= 69, nb obs.= 945, initial="truncated")</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">ll</span>, <span class="st">"nobs"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1008</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 945</span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">ll</span>, <span class="st">"df"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 69</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Likelihood for a new time series with previously fitted VLMC.</span></span></span>
 <span class="r-in"><span><span class="va">pc_new</span> <span class="op">&lt;-</span> <span class="va">powerconsumption</span><span class="op">[</span><span class="va">powerconsumption</span><span class="op">$</span><span class="va">week</span> <span class="op">==</span> <span class="fl">11</span>, <span class="op">]</span></span></span>
 <span class="r-in"><span><span class="va">dts_new</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cut.html" class="external-link">cut</a></span><span class="op">(</span><span class="va">pc_new</span><span class="op">$</span><span class="va">active_power</span>, breaks <span class="op">=</span> <span class="va">breaks</span>, labels <span class="op">=</span> <span class="va">labels</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">ll_new</span> <span class="op">&lt;-</span> <span class="fu">loglikelihood</span><span class="op">(</span><span class="va">m_nocovariate</span>, newdata <span class="op">=</span> <span class="va">dts_new</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">ll_new</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -206.4154</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"nobs")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1008</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 'log Lik.' -240.5671 (df= 69, nb obs.= 945, initial="truncated")</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/attributes.html" class="external-link">attributes</a></span><span class="op">(</span><span class="va">ll_new</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $nobs</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 945</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $df</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 69</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $initial</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "truncated"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $class</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "logLikMixVLMC" "logLik"       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-in"><span><span class="va">ll_new_specific</span> <span class="op">&lt;-</span> <span class="fu">loglikelihood</span><span class="op">(</span><span class="va">m_nocovariate</span>, initial <span class="op">=</span> <span class="st">"specific"</span>, newdata <span class="op">=</span> <span class="va">dts_new</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">ll_new_specific</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 'log Lik.' -240.5671 (df= 132, nb obs.= 1008, initial="specific")</span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/attributes.html" class="external-link">attributes</a></span><span class="op">(</span><span class="va">ll_new_specific</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $nobs</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1008</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $df</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 132</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $initial</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "specific"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $class</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "logLikMixVLMC" "logLik"       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-in"><span><span class="va">ll_new_extended</span> <span class="op">&lt;-</span> <span class="fu">loglikelihood</span><span class="op">(</span><span class="va">m_nocovariate</span>, initial <span class="op">=</span> <span class="st">"extended"</span>, newdata <span class="op">=</span> <span class="va">dts_new</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">ll_new_extended</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 'log Lik.' -254.0705 (df= 71, nb obs.= 1008, initial="extended")</span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/attributes.html" class="external-link">attributes</a></span><span class="op">(</span><span class="va">ll_new_extended</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $nobs</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1008</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $df</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 71</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $initial</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "extended"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $class</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "logLikMixVLMC" "logLik"       </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 </code></pre></div>

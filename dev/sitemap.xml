@@ -13,6 +13,9 @@
     <loc>https://fabrice-rossi.github.io/mixvlmc/dev/articles/index.html</loc>
   </url>
   <url>
+    <loc>https://fabrice-rossi.github.io/mixvlmc/dev/articles/likelihood.html</loc>
+  </url>
+  <url>
     <loc>https://fabrice-rossi.github.io/mixvlmc/dev/articles/sampling.html</loc>
   </url>
   <url>
@@ -98,6 +101,12 @@
   </url>
   <url>
     <loc>https://fabrice-rossi.github.io/mixvlmc/dev/reference/is_vlmc.html</loc>
+  </url>
+  <url>
+    <loc>https://fabrice-rossi.github.io/mixvlmc/dev/reference/logLik.covlmc.html</loc>
+  </url>
+  <url>
+    <loc>https://fabrice-rossi.github.io/mixvlmc/dev/reference/logLik.vlmc.html</loc>
   </url>
   <url>
     <loc>https://fabrice-rossi.github.io/mixvlmc/dev/reference/loglikelihood.covlmc.html</loc>
