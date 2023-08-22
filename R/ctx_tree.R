@@ -255,3 +255,17 @@ context_number.ctx_tree <- function(ct) {
     rec_context_number(ct)
   }
 }
+
+is_full_node <- function(node) {
+  if (is.null(node)) {
+    FALSE
+  } else if (is.null(node$children)) {
+    FALSE
+  } else {
+    sum(sapply(node$children, length) > 0) == length(node$children)
+  }
+}
+
+count_full_nodes <- function(ct) {
+  rec_context_number(ct, \(x) as.integer(is_full_node(x)))
+}
