@@ -4,10 +4,20 @@
 \alias{loglikelihood.covlmc}
 \title{Log-Likelihood of a VLMC with covariates}
 \usage{
-\method{loglikelihood}{covlmc}(vlmc, newdata, newcov, ...)
+\method{loglikelihood}{covlmc}(
+  vlmc,
+  initial = c("truncated", "specific", "extended"),
+  newdata,
+  newcov,
+  ...
+)
 }
 \arguments{
-\item{vlmc}{the vlmc representation.}
+\item{vlmc}{the covlmc representation.}
+
+\item{initial}{specifies the likelihood function, more precisely the way the
+first few observations for which contexts cannot be calculated are integrated
+in the likelihood. See below for details.}
 
 \item{newdata}{an optional discrete time series.}
 
@@ -16,20 +26,59 @@
 \item{...}{additional parameters for loglikelihood.}
 }
 \value{
-the log-likelihood of the VLMC with a nobs attribute that accounts
-for the number of data included in the likelihood calculation.
+an object of class \code{logLikMixVLMC} and \code{logLik}. This is a number,
+the log-likelihood of the (CO)VLMC with the following attributes:
+\itemize{
+\item \code{df}: the number of parameters used by the VLMC for this likelihood calculation
+\item \code{nobs}: the number of observations included in this likelihood calculation
+\item \code{initial}: the value of the \code{initial} parameter used to compute this likelihood
+}
 }
 \description{
 This function evaluates the log-likelihood of a VLMC with covariates fitted
 on a discrete time series. When the optional arguments \code{newdata} is
 provided, the function evaluates instead the log-likelihood for this (new)
 discrete time series on the new covariates which must be provided through the
-newcov parameter.
+\code{newcov} parameter.
 }
 \details{
-For VLMC with covariables, the method \code{loglikelihood.covlmc} will be used. For VLMC objects, \code{loglikelihood.vlmc}
+The definition of the likelihood function depends on the value of the
+\code{initial} parameters, see the section below as well as the dedicated
+vignette: \code{vignette("likelihood", package = "mixvlmc")}.
+
+For VLMC objects, the method \code{loglikelihood.vlmc} will be used. For VLMC with covariables, \code{loglikelihood.covlmc}
 will instead be called. For more informations on \code{loglikelihood} methods, use \code{methods(loglikelihood)} and their associated documentation.
 }
+\section{likelihood calculation}{
+
+
+In a (CO)VLMC of \code{\link[=depth]{depth()}}=k, we need k past values in order to compute the
+context of a given observation. As a consequence, in a time series \code{x}, the
+contexts of \code{x[1]} to \code{x[k]} are unknown. Depending on the value of \code{initial}
+different likelihood functions are used to tackle this difficulty:
+\itemize{
+\item \code{initial=="truncated"} (default): the likelihood is computed using only
+\code{x[(k+1):length(x)]}
+\item \code{initial=="specific"}: the likelihood is computed on the full time series
+using a specific context for the initial values, \code{x[1]} to \code{x[k]}. Each of
+the specific context is unique, leading to a perfect likelihood of 1 (0 in
+log scale). Thus the numerical value of the likelihood is identical as the
+one obtained with \code{initial=="truncated"} but it is computed on \code{length(x)}
+with a model with more parameters than in this previous case.
+\item \code{initial=="relaxed"}: the likelihood is computed on the full time series
+using a relaxed context matching for the initial values, \code{x[1]} to \code{x[k]}.
+This can be seen as a compromised between the two other possibilities:
+the relaxed context matching needs in general to turn internal nodes
+of the context tree into actual context, increasing the number of parameters,
+but not as much as with "specific". However, the likelihood of say \code{x[1]}
+with an empty context is generally not 1 and thus the full likelihood is
+smaller than the one computed with "specific".
+}
+
+See the dedicated vignette for a more mathematically oriented discussion:
+\code{vignette("likelihood", package = "mixvlmc")}.
+}
+
 \examples{
 
 ## Likelihood for a fitted VLMC with covariates.
@@ -58,5 +107,5 @@ attributes(ll_new)
 
 }
 \seealso{
-\link[stats:logLik]{stats::logLik}
+\code{\link[stats:logLik]{stats::logLik()}}
 }

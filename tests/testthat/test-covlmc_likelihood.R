@@ -8,7 +8,7 @@ test_that("the likelihood calculation is valid", {
     withr::local_options(mixvlmc.predictive = engine)
     x_covlmc <- covlmc(x, df_y, min_size = 5, alpha = 0.01)
     expect_equal(as.numeric(logLik(x_covlmc)), as.numeric(loglikelihood(x_covlmc)))
-    expect_equal(loglikelihood(x_covlmc, x, newcov = df_y), loglikelihood(x_covlmc))
+    expect_equal(loglikelihood(x_covlmc, newdata = x, newcov = df_y), loglikelihood(x_covlmc))
   }
 })
 
@@ -17,5 +17,5 @@ test_that("likelihood calculation on real data", {
   dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1))))
   dts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
   m_cov <- covlmc(dts, dts_cov, min_size = 5)
-  expect_identical(loglikelihood(m_cov, dts, dts_cov), loglikelihood(m_cov), tolerance = 1e-7)
+  expect_identical(loglikelihood(m_cov, newdata = dts, newcov = dts_cov), loglikelihood(m_cov), tolerance = 1e-7)
 })

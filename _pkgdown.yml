@@ -16,6 +16,7 @@ articles:
 - title: Advanced topics
   navbar: Advanced topics
   contents:
+  - likelihood
   - sampling
 
 news:
