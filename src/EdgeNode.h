@@ -151,6 +151,10 @@ class EdgeNode {
 
   // counts the number of full nodes in the subtree
   int count_full_nodes(int nb_vals) const;
+
+  // compute the log likelihood of the subtree when it is interpreted as
+  // a vlmc
+  double loglikelihood(int nb_vals) const;
 };
 
 #endif

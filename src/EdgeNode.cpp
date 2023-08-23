@@ -542,3 +542,27 @@ int EdgeNode::count_full_nodes(int nb_vals) const {
   }
   return local;
 }
+
+double EdgeNode::loglikelihood(int nb_vals) const {
+  std::vector<int> lcounts(nb_vals, 0);
+  for(auto count : *counts) {
+    if(count.second > 0) {
+      lcounts[count.first] = count.second;
+    }
+  }
+  double ll = 0.0;
+  for(auto child : children) {
+    if(child.first >= 0) {
+      ll += child.second->loglikelihood(nb_vals);
+      for(auto count : *(child.second->counts)) {
+        lcounts[count.first] -= count.second;
+      }
+    }
+  }
+  for(int i = 0; i < nb_vals; i++) {
+    if(lcounts[i] > 0) {
+      ll += lcounts[i] * log(((double)(*counts)[i]) / total_count);
+    }
+  }
+  return ll;
+}
