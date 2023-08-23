@@ -1,47 +1,52 @@
-rec_loglikelihood_vlmc_cpp <- function(tree, ct) {
-  if (is.null(ct$f_by)) {
-    # place holder list
-    NA
-  } else if (is.null(ct$children)) {
-    ## simple leaf case
-    local_loglikelihood_vlmc(ct$f_by, ct$data_f_by)
-  } else {
-    ## recursive case
-    all_ll <- rep(NA, length(ct$children))
-    for (v in seq_along(ct$children)) {
-      child_idx <- ct$children[[v]]
-      if (!is.na(child_idx)) {
-        all_ll[v] <- rec_loglikelihood_vlmc_cpp(tree, tree[[child_idx]])
-      }
-    }
-    sub_ll <- sum(all_ll, na.rm = TRUE)
-    ## is the node a valid context
-    if (anyNA(all_ll)) {
-      ## let us add the local contribution
-      sub_trees <- which(!is.na(ct$children))
-      sub_counts <- rowSums(sapply(tree[ct$children[sub_trees]], function(x) x$f_by))
-      loc_counts <- ct$f_by - sub_counts
-      if (is.null(ct$data_f_by)) {
-        sub_ll <- sub_ll + local_loglikelihood_vlmc(loc_counts)
-      } else {
-        data_sub_counts <- rowSums(sapply(tree[ct$children[sub_trees]], function(x) x$data_f_by))
-        data_loc_counts <- ct$data_f_by - data_sub_counts
-        sub_ll <- sub_ll + local_loglikelihood_vlmc(loc_counts, data_loc_counts)
-      }
-    }
-    sub_ll
-  }
-}
-
+#' @inherit logLik.vlmc
 #' @export
-logLik.vlmc_cpp <- function(object, ...) {
-  if (extptr_is_null(object$root$.pointer)) {
-    stop("Missing C++ representation!\nThis object was probably restored from a saved object.\n")
-  }
-  ct_r <- object$root$representation()
-  ll <- rec_loglikelihood_vlmc_cpp(ct_r, ct_r[[1]])
-  attr(ll, "df") <- object$nb_ctx * (length(object$vals) - 1)
-  attr(ll, "nobs") <- sum(ct_r[[1]]$f_by)
+logLik.vlmc_cpp <- function(object, initial = c("truncated", "specific", "extended"), ...) {
+  ll <- loglikelihood(object, initial)
   class(ll) <- "logLik"
   ll
+}
+
+#' @inherit loglikelihood
+#' @export
+loglikelihood.vlmc_cpp <- function(vlmc,
+                                   initial = c("truncated", "specific", "extended"),
+                                   newdata, ...) {
+  if (extptr_is_null(vlmc$root$.pointer)) {
+    stop("Missing C++ representation!\nThis object was probably restored from a saved object.\n")
+  }
+  initial <- match.arg(initial)
+  if (missing(newdata)) {
+    pre_res <- vlmc$root$logLik()
+    if (initial != "extended" && depth(vlmc) != 0) {
+      pre_res <- pre_res - vlmc$extended_ll
+    }
+    attr(pre_res, "nobs") <- vlmc$data_size
+    if (initial == "truncated") {
+      attr(pre_res, "nobs") <- max(0, attr(pre_res, "nobs") - depth(vlmc))
+    }
+  } else {
+    assertthat::assert_that((typeof(newdata) == typeof(vlmc$vals)) && (class(newdata) == class(vlmc$vals)),
+      msg = "newdata is not compatible with the model state space"
+    )
+    nx <- to_dts(newdata, vlmc$vals)
+    if (initial == "extended") {
+      pre_res <- vlmc$root$loglikelihood(nx$ix, TRUE, FALSE)
+    } else {
+      pre_res <- vlmc$root$loglikelihood(nx$ix, FALSE, FALSE)
+    }
+    if (initial == "truncated") {
+      attr(pre_res, "nobs") <- max(0, length(newdata) - depth(vlmc))
+    } else {
+      attr(pre_res, "nobs") <- length(newdata)
+    }
+  }
+  ctx_nb <- context_number(vlmc)
+  if (initial == "specific") {
+    ctx_nb <- ctx_nb + depth(vlmc)
+  } else if (initial == "extended") {
+    ctx_nb <- ctx_nb + vlmc$root$count_full_nodes()
+  }
+  attr(pre_res, "df") <- ctx_nb * (length(vlmc$vals) - 1)
+  attr(pre_res, "initial") <- initial
+  structure(pre_res, class = c("logLikMixVLMC", "logLik"))
 }

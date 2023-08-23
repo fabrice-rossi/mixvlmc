@@ -679,7 +679,9 @@ class SuffixTree {
     }
   }
   // loglikelihood calculation
-  double loglikelihood(const IntegerVector& y) const {
+  double loglikelihood(const IntegerVector& y,
+                       bool extended,
+                       bool verbose) const {
     if(!has_reverse) {
       stop("cannot compute likelihood without reverse links");
     }
@@ -687,19 +689,55 @@ class SuffixTree {
     EdgeNode* current = root;
     int ny = y.size();
     for(int i = 0; i < ny; i++) {
-      if(auto child = current->counts->find(y[i]);
-         child != current->counts->end()) {
-        if(child->second == 0) {
-          return -std::numeric_limits<double>::infinity();
+      if(extended || i >= max_depth) {
+        if(auto child = current->counts->find(y[i]);
+           child != current->counts->end()) {
+          if(child->second == 0) {
+            if(verbose) {
+              Rcout << i << " " << y[i]
+                    << " zero occurrence (should not happen)!\n";
+            }
+            return -std::numeric_limits<double>::infinity();
+          } else {
+            if(verbose) {
+              Rcout << y[i] << ": " << current << " -> " << child->second << "/"
+                    << current->total_count << "\n";
+            }
+            result += log(((double)child->second) / current->total_count);
+          }
         } else {
-          result += log(((double)child->second) / current->total_count);
+          if(verbose) {
+            Rcout << current << " " << i << " " << y[i]
+                  << " not found in counts!\n";
+          }
+          return -std::numeric_limits<double>::infinity();
         }
-      } else {
-        return -std::numeric_limits<double>::infinity();
       }
+      // we take the reverse link
       current = (*(current->reverse))[y[i]];
+      // let's find out if we can increase the match
+      int max_ctx = std::min(i + 1, max_depth);
+      int pos = i - current->depth;
+      while(current->depth < max_ctx) {
+        if(auto child = current->children.find(y[pos]);
+           child != current->children.end()) {
+          current = child->second;
+          pos--;
+        } else {
+          break;
+        }
+      }
     }
     return result;
+  }
+
+  int count_full_nodes() const { return root->count_full_nodes(max_x + 1); }
+
+  double default_loglikelihood() const {
+    if(!has_counts) {
+      stop("log likelihood can only be computed on suffix trees with counts");
+    }
+    return root->loglikelihood(max_x + 1);
   }
 };
 
@@ -753,6 +791,11 @@ RCPP_MODULE(suffixtree) {
               "Return the number of contexts of the tree")
       .method("loglikelihood", &SuffixTree::loglikelihood,
               "Return the loglikelihood of a new sequence when the tree is "
-              "interpreted as a VLMC");
+              "interpreted as a VLMC")
+      .method("count_full_nodes", &SuffixTree::count_full_nodes,
+              "Return the number of full nodes in the suffix tree")
+      .method("logLik", &SuffixTree::default_loglikelihood,
+              "Return the extended loglikelihood of the tree interpreted as a "
+              "VLMC");
   function("build_suffix_tree", &build_suffix_tree);
 }

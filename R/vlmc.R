@@ -332,14 +332,21 @@ vlmc <- function(x, alpha = 0.05, cutoff = NULL, min_size = 2L, max_depth = 100L
       cpp_tree$prune(min_size, max_depth)
     }
     result <- new_ctx_tree_cpp(vals, cpp_tree, class = c("vlmc_cpp", "vlmc"))
+    result$root$make_explicit()
+    result$root$compute_reverse()
+    result$data_size <- length(x)
   }
-  ## prepare for loglikelihoodcalculation
+  ## prepare for loglikelihood calculation
   result$alpha <- alpha
   result$cutoff <- cutoff
   if (depth(result) > 0) {
     result$ix <- ix[1:min(depth(result), length(x))]
-    ivlmc <- match_ctx(result, result$ix)
-    result$extended_ll <- rec_loglikelihood_vlmc(ivlmc, TRUE)
+    if (backend == "R") {
+      ivlmc <- match_ctx(result, result$ix)
+      result$extended_ll <- rec_loglikelihood_vlmc(ivlmc, TRUE)
+    } else {
+      result$extended_ll <- result$root$loglikelihood(result$ix, TRUE, FALSE)
+    }
   } else {
     result$extended_ll <- 0
   }
