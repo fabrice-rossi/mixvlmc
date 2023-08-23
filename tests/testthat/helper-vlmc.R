@@ -40,11 +40,16 @@ slow_loglikelihood <- function(model, x, initial = c("truncated", "specific", "e
       for (i in seq_along(x)) {
         subtree <- match_context(model, ctx)
         if (verbose) {
+          if (subtree$depth > 0) {
+            matched_ctx <- paste(model$vals[ctx[1:subtree$depth]], collapse = "")
+          } else {
+            matched_ctx <- ""
+          }
           cat(paste(
             x[i], "<-",
             stringr::str_pad(paste(model$vals[ctx], collapse = ""), max_depth, side = "right"),
             "matched to",
-            stringr::str_pad(paste(model$vals[ctx[1:subtree$depth]], collapse = ""), max_depth, side = "right"),
+            stringr::str_pad(matched_ctx, max_depth, side = "right"),
             "with counts",
             paste(subtree$tree$f_by, collapse = " ")
           ), "\n")
