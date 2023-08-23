@@ -148,6 +148,9 @@ class EdgeNode {
   // compute the reverse maps recursively
   void compute_reverse(const Rcpp::IntegerVector& x,
                        const std::unordered_map<int, EdgeNode*>* parent_map);
+
+  // counts the number of full nodes in the subtree
+  int count_full_nodes(int nb_vals) const;
 };
 
 #endif

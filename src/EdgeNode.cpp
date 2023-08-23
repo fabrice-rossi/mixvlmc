@@ -527,3 +527,18 @@ void EdgeNode::compute_reverse(
     }
   }
 }
+
+int EdgeNode::count_full_nodes(int nb_vals) const {
+  int local;
+  if((int)children.size() == nb_vals) {
+    local = 1;
+  } else {
+    local = 0;
+  }
+  for(auto child : children) {
+    if(child.first >= 0) {
+      local += child.second->count_full_nodes(nb_vals);
+    }
+  }
+  return local;
+}
