@@ -718,6 +718,11 @@ assertthat::on_failure(is_covlmc) <- function(call, env) {
 #' the largest value returned by the function is guaranteed to produce the least
 #' pruned tree consistent with the reference one.
 #'
+#' For large COVLMC, some cut off values can be almost identical, with a
+#' difference of the order of the machine epsilon value. The `tolerance` parameter
+#' is used to keep only values that are different enough. This is done in the
+#' quantile scale, before transformations implemented when `raw` is `FALSE`.
+#'
 #' Notice that the loglikelihood scale is not directly useful in coVLMC as
 #' the differences in model sizes are not constant through the pruning process.
 #' As a consequence, the "native" scale is not supported by this function.
@@ -731,6 +736,8 @@ assertthat::on_failure(is_covlmc) <- function(call, env) {
 #'   For covlmc, only the quantile scale is supported.
 #' @param raw specify whether the returned values should be limit values computed in the model or
 #'  modified values that guarantee pruning (see details)
+#' @param tolerance specify the minimum separation between two consecutive values of
+#'  the cut off in native mode (before any transformation). See details.
 #' @param ... additional arguments for the cutoff function.
 #' @returns a vector of cut off values, `NULL` is none can be computed
 #'
@@ -744,7 +751,8 @@ assertthat::on_failure(is_covlmc) <- function(call, env) {
 #' draw(m_cov)
 #' cutoff(m_cov)
 #' @export
-cutoff.covlmc <- function(vlmc, mode = c("quantile", "native"), raw = FALSE, ...) {
+cutoff.covlmc <- function(vlmc, mode = c("quantile", "native"), raw = FALSE,
+                          tolerance = .Machine$double.eps^0.5, ...) {
   mode <- match.arg(mode)
   if (mode == "native") {
     stop("native mode is not supported by covlmc objects")
@@ -782,7 +790,7 @@ cutoff.covlmc <- function(vlmc, mode = c("quantile", "native"), raw = FALSE, ...
   if (is.null(preres)) {
     NULL
   } else {
-    preres <- unique(sort(preres, decreasing = TRUE))
+    preres <- relaxed_unique(sort(preres, decreasing = TRUE), tolerance)
     if (!raw) {
       preres <- before(preres)
       preres[preres < 0] <- 0

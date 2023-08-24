@@ -4,7 +4,13 @@
 \alias{cutoff.covlmc}
 \title{Cutoff values for pruning the context tree of a VLMC with covariates}
 \usage{
-\method{cutoff}{covlmc}(vlmc, mode = c("quantile", "native"), raw = FALSE, ...)
+\method{cutoff}{covlmc}(
+  vlmc,
+  mode = c("quantile", "native"),
+  raw = FALSE,
+  tolerance = .Machine$double.eps^0.5,
+  ...
+)
 }
 \arguments{
 \item{vlmc}{a fitted covlmc model.}
@@ -15,6 +21,9 @@ For covlmc, only the quantile scale is supported.}
 
 \item{raw}{specify whether the returned values should be limit values computed in the model or
 modified values that guarantee pruning (see details)}
+
+\item{tolerance}{specify the minimum separation between two consecutive values of
+the cut off in native mode (before any transformation). See details.}
 
 \item{...}{additional arguments for the cutoff function.}
 }
@@ -33,6 +42,11 @@ during the construction of the initial model, while all pruning opportunities
 are computed during the construction of a VLMC context tree. Nevertheless,
 the largest value returned by the function is guaranteed to produce the least
 pruned tree consistent with the reference one.
+
+For large COVLMC, some cut off values can be almost identical, with a
+difference of the order of the machine epsilon value. The \code{tolerance} parameter
+is used to keep only values that are different enough. This is done in the
+quantile scale, before transformations implemented when \code{raw} is \code{FALSE}.
 
 Notice that the loglikelihood scale is not directly useful in coVLMC as
 the differences in model sizes are not constant through the pruning process.

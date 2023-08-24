@@ -45,6 +45,11 @@ kl_div <- function(p, q) {
 #' Setting the `raw` parameter to `TRUE` removes this operation on the values and
 #' asks the function to return the relevant log likelihood ratios.
 #'
+#' For large VLMC, some log likelihood ratios can be almost identical, with a
+#' difference of the order of the machine epsilon value. The `tolerance` parameter
+#' is used to keep only values that are different enough. This is done in the
+#' native scale, before transformations implemented when `raw` is `FALSE`.
+#'
 #' As automated model selection is provided by [tune_vlmc()], the direct use of `cutoff`
 #' should be reserved to advanced exploration of the set of trees that can be
 #' obtained from a complex one, e.g. to implement model selection techniques that
@@ -55,6 +60,8 @@ kl_div <- function(p, q) {
 #'  or expressed in a "quantile" scale of a chi-squared distribution (defaults to "quantile").
 #' @param raw specify whether the returned values should be limit values computed in the model or
 #'  modified values that guarantee pruning (see details)
+#' @param tolerance specify the minimum separation between two consecutive values of
+#'  the cut off in native mode (before any transformation). See details.
 #' @param ... additional arguments for the cutoff function.
 #' @returns a vector of cut off values.
 #' @examples
@@ -67,13 +74,15 @@ kl_div <- function(p, q) {
 #' draw(model_2)
 #' @seealso [prune()] and [tune_vlmc()]
 #' @export
-cutoff <- function(vlmc, mode = c("quantile", "native"), raw = FALSE, ...) {
+cutoff <- function(vlmc, mode = c("quantile", "native"), raw = FALSE,
+                   tolerance = .Machine$double.eps^0.5, ...) {
   UseMethod("cutoff")
 }
 
 #' @rdname cutoff
 #' @export
-cutoff.vlmc <- function(vlmc, mode = c("quantile", "native"), raw = FALSE, ...) {
+cutoff.vlmc <- function(vlmc, mode = c("quantile", "native"), raw = FALSE,
+                        tolerance = .Machine$double.eps^0.5, ...) {
   mode <- match.arg(mode)
   recurse_kl_cutoff <- function(vlmc, p_probs) {
     c_probs <- vlmc$f_by / sum(vlmc$f_by)
@@ -94,7 +103,10 @@ cutoff.vlmc <- function(vlmc, mode = c("quantile", "native"), raw = FALSE, ...) 
       local_kl
     }
   }
-  pre_result <- unique(sort(recurse_kl_cutoff(vlmc, vlmc$f_by / sum(vlmc$f_by))))
+  pre_result <- relaxed_unique(
+    sort(recurse_kl_cutoff(vlmc, vlmc$f_by / sum(vlmc$f_by))),
+    tolerance
+  )
   guaranteed_pruning(pre_result, length(vlmc$vals), mode, raw)
 }
 
