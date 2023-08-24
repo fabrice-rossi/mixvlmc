@@ -24,3 +24,10 @@ guaranteed_pruning <- function(raw_cutoff, space_size, mode, raw) {
     to_quantile(cutoff, space_size)
   }
 }
+
+## this function returns a vector of unique values using a relaxed the notion of
+## uniqueness to account for rounding errors. The function assumes its input
+## to be sorted
+relaxed_unique <- function(x, tol = .Machine$double.eps^0.5) {
+  x[c(TRUE, abs(diff(x)) >= tol)]
+}
