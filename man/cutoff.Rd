@@ -22,7 +22,13 @@ cutoff(
   ...
 )
 
-\method{cutoff}{vlmc_cpp}(vlmc, mode = c("quantile", "native"), raw = FALSE, ...)
+\method{cutoff}{vlmc_cpp}(
+  vlmc,
+  mode = c("quantile", "native"),
+  raw = FALSE,
+  tolerance = .Machine$double.eps^0.5,
+  ...
+)
 }
 \arguments{
 \item{vlmc}{a fitted VLMC model.}

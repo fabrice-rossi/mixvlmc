@@ -67,12 +67,12 @@ test_that("cut off values do not depend (much) on the backend", {
     ## we compare only raw values to avoid introducing additional rounding
     ## errors
     expect_equal(
-      relaxed_unique(cutoff(cpp_tree, raw = TRUE)),
-      relaxed_unique(cutoff(r_tree, raw = TRUE))
+      cutoff(cpp_tree, raw = TRUE),
+      cutoff(r_tree, raw = TRUE)
     )
     expect_equal(
-      relaxed_unique(cutoff(cpp_tree, mode = "native", raw = TRUE)),
-      relaxed_unique(cutoff(r_tree, mode = "native", raw = TRUE))
+      cutoff(cpp_tree, mode = "native", raw = TRUE),
+      cutoff(r_tree, mode = "native", raw = TRUE)
     )
   }
 })
