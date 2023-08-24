@@ -67,7 +67,7 @@ class SuffixTree {
     nt->has_counts = has_counts;
     nt->has_positions = has_positions;
     nt->full_explicit = full_explicit;
-    nt->has_reverse = has_reverse;
+    nt->has_reverse = false;
     nt->max_depth = _max_depth;
     nt->nb_ctx = _nb_ctx;
     return nt;
@@ -583,9 +583,27 @@ class SuffixTree {
     }
     int n_max_depth = 0;  // we need to recompute max_depth
     int nb_ctx = 0;
-    EdgeNode* new_root = root->clone_prune(min_counts, max_length, max_x + 1,
-                                           x.size(), n_max_depth, nb_ctx);
+    EdgeNode* new_root = root->clone_prune(
+        min_counts, max_length, -1, max_x + 1, x.size(), n_max_depth, nb_ctx);
     return clone_from_root(new_root, n_max_depth, nb_ctx);
+  }
+
+  SuffixTree* clone_prune_context(int min_counts,
+                                  int max_length,
+                                  double K) const {
+    if(!has_counts) {
+      stop("prune cannot be used if the counts have not been computed");
+    }
+    if(max_length <= 0) {
+      max_length = x.size();
+    }
+    int n_max_depth = 0;  // we need to recompute max_depth
+    int nb_ctx = 0;
+    EdgeNode* new_root = root->clone_prune(min_counts, max_length, K, max_x + 1,
+                                           x.size(), n_max_depth, nb_ctx);
+    SuffixTree* result = clone_from_root(new_root, n_max_depth, nb_ctx);
+    result->compute_reverse();
+    return result;
   }
 
   int depth() const {
@@ -775,6 +793,9 @@ RCPP_MODULE(suffixtree) {
       .method("prune_context", &SuffixTree::prune_context,
               "Prune the suffix tree based on the specified conditions")
       .method("clone_prune", &SuffixTree::clone_prune,
+              "Prune the suffix tree based on the specified conditions and "
+              "return a clone")
+      .method("clone_prune_context", &SuffixTree::clone_prune_context,
               "Prune the suffix tree based on the specified conditions and "
               "return a clone")
       .method("representation", &SuffixTree::representation,

@@ -128,6 +128,7 @@ class EdgeNode {
   // from the original tree.
   EdgeNode* clone_prune(int min_counts,
                         int max_length,
+                        double K,
                         int nb_vals,
                         int nx,
                         int& mdepth,
