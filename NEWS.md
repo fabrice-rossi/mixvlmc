@@ -6,6 +6,8 @@
 * the log likelihood calculations performed by `logLik` and `loglikelihood` have
   been revised, expanded to include three possible definitions of the likelihood 
   function, and documented in a new vignette
+* `cutoff` uses a new `tolerance` parameter to avoid reporting cut off values
+  that are almost identical due to numerical imprecision 
   
 ## Minor improvements and bug fixes
 * Fixed a bug in the likelihood calculation for internal context nodes

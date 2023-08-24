@@ -5,9 +5,21 @@
 \alias{cutoff.vlmc}
 \title{Cut off values for pruning the context tree of a VLMC}
 \usage{
-cutoff(vlmc, mode = c("quantile", "native"), raw = FALSE, ...)
+cutoff(
+  vlmc,
+  mode = c("quantile", "native"),
+  raw = FALSE,
+  tolerance = .Machine$double.eps^0.5,
+  ...
+)
 
-\method{cutoff}{vlmc}(vlmc, mode = c("quantile", "native"), raw = FALSE, ...)
+\method{cutoff}{vlmc}(
+  vlmc,
+  mode = c("quantile", "native"),
+  raw = FALSE,
+  tolerance = .Machine$double.eps^0.5,
+  ...
+)
 }
 \arguments{
 \item{vlmc}{a fitted VLMC model.}
@@ -17,6 +29,9 @@ or expressed in a "quantile" scale of a chi-squared distribution (defaults to "q
 
 \item{raw}{specify whether the returned values should be limit values computed in the model or
 modified values that guarantee pruning (see details)}
+
+\item{tolerance}{specify the minimum separation between two consecutive values of
+the cut off in native mode (before any transformation). See details.}
 
 \item{...}{additional arguments for the cutoff function.}
 }
@@ -38,6 +53,11 @@ parameter in "quantile" scale).
 
 Setting the \code{raw} parameter to \code{TRUE} removes this operation on the values and
 asks the function to return the relevant log likelihood ratios.
+
+For large VLMC, some log likelihood ratios can be almost identical, with a
+difference of the order of the machine epsilon value. The \code{tolerance} parameter
+is used to keep only values that are different enough. This is done in the
+native scale, before transformations implemented when \code{raw} is \code{FALSE}.
 
 As automated model selection is provided by \code{\link[=tune_vlmc]{tune_vlmc()}}, the direct use of \code{cutoff}
 should be reserved to advanced exploration of the set of trees that can be
