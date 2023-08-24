@@ -47,3 +47,14 @@ prune.vlmc_cpp <- function(vlmc, alpha = 0.05, cutoff = NULL, ...) {
   result$max_depth <- vlmc$max_depth
   result
 }
+
+#' @rdname cutoff
+#' @export
+cutoff.vlmc_cpp <- function(vlmc, mode = c("quantile", "native"), raw = FALSE, ...) {
+  if (extptr_is_null(vlmc$root$.pointer)) {
+    stop("Missing C++ representation!\nThis object was probably restored from a saved object.\n")
+  }
+  mode <- match.arg(mode)
+  pre_result <- vlmc$root$cutoff()
+  guaranteed_pruning(pre_result, length(vlmc$vals), mode, raw)
+}

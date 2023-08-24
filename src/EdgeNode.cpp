@@ -454,6 +454,29 @@ EdgeNode* EdgeNode::clone_prune(int min_counts,
   }
 }
 
+double EdgeNode::cutoff(std::set<double>& co) const {
+  double local_kl = 0;
+  if(parent != nullptr) {
+    local_kl =
+        kl_criterion(counts, total_count, parent->counts, parent->total_count);
+  }
+  double max_kl_child = 0;
+  for(auto child : children) {
+    if(child.first >= 0) {
+      double child_kl = child.second->cutoff(co);
+      if(child_kl > max_kl_child) {
+        max_kl_child = child_kl;
+      }
+    }
+  }
+  if(local_kl > max_kl_child) {
+    co.insert(local_kl);
+    return local_kl;
+  } else {
+    return max_kl_child;
+  }
+}
+
 int EdgeNode::flatten(const Rcpp::IntegerVector& x,
                       int nb_vals,
                       std::vector<Rcpp::IntegerVector>& tree_structure,

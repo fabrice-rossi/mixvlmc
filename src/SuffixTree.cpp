@@ -622,6 +622,18 @@ class SuffixTree {
     }
   }
 
+  NumericVector cutoff() const {
+    std::set<double> values;
+    root->cutoff(values);
+    NumericVector res(values.size());
+    int i = 0;
+    for(auto val : values) {
+      res[i] = val;
+      i++;
+    }
+    return res;
+  }
+
   List representation() {
     std::vector<Rcpp::IntegerVector> tree_structure{};
     std::vector<Rcpp::IntegerVector> tree_counts{};
@@ -798,6 +810,8 @@ RCPP_MODULE(suffixtree) {
       .method("clone_prune_context", &SuffixTree::clone_prune_context,
               "Prune the suffix tree based on the specified conditions and "
               "return a clone")
+      .method("cutoff", &SuffixTree::cutoff,
+              "Return significant cut off values")
       .method("representation", &SuffixTree::representation,
               "Return a representation in R of the tree")
       .method("make_explicit", &SuffixTree::make_explicit,

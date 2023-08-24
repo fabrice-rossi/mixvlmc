@@ -134,6 +134,9 @@ class EdgeNode {
                         int& mdepth,
                         int& nb_ctx) const;
 
+  // compute significant cut off values
+  double cutoff(std::set<double>& co) const;
+
   // build a flat representation of the tree where contexts are
   // stored in the tree_structure vector as the list of the
   // indices of there children. The tree_counts vector
