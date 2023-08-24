@@ -29,5 +29,5 @@ guaranteed_pruning <- function(raw_cutoff, space_size, mode, raw) {
 ## uniqueness to account for rounding errors. The function assumes its input
 ## to be sorted
 relaxed_unique <- function(x, tol = .Machine$double.eps^0.5) {
-  x[c(TRUE, diff(x) >= tol)]
+  x[c(TRUE, abs(diff(x)) >= tol)]
 }
