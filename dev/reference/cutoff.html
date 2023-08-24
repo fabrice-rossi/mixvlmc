@@ -73,10 +73,22 @@ valid pruned trees of the context tree of a VLMC. Pruning is implemented by the 
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">cutoff</span><span class="op">(</span><span class="va">vlmc</span>, mode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"quantile"</span>, <span class="st">"native"</span><span class="op">)</span>, raw <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">cutoff</span><span class="op">(</span></span>
+<span>  <span class="va">vlmc</span>,</span>
+<span>  mode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"quantile"</span>, <span class="st">"native"</span><span class="op">)</span>,</span>
+<span>  raw <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  tolerance <span class="op">=</span> <span class="va">.Machine</span><span class="op">$</span><span class="va">double.eps</span><span class="op">^</span><span class="fl">0.5</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for vlmc</span></span>
-<span><span class="fu">cutoff</span><span class="op">(</span><span class="va">vlmc</span>, mode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"quantile"</span>, <span class="st">"native"</span><span class="op">)</span>, raw <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">cutoff</span><span class="op">(</span></span>
+<span>  <span class="va">vlmc</span>,</span>
+<span>  mode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"quantile"</span>, <span class="st">"native"</span><span class="op">)</span>,</span>
+<span>  raw <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  tolerance <span class="op">=</span> <span class="va">.Machine</span><span class="op">$</span><span class="va">double.eps</span><span class="op">^</span><span class="fl">0.5</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -93,6 +105,11 @@ or expressed in a "quantile" scale of a chi-squared distribution (defaults to "q
 <dt>raw</dt>
 <dd><p>specify whether the returned values should be limit values computed in the model or
 modified values that guarantee pruning (see details)</p></dd>
+
+
+<dt>tolerance</dt>
+<dd><p>specify the minimum separation between two consecutive values of
+the cut off in native mode (before any transformation). See details.</p></dd>
 
 
 <dt>...</dt>
@@ -116,6 +133,10 @@ parameter that was used to build the reference model (or smaller values of the <
 parameter in "quantile" scale).</p>
 <p>Setting the <code>raw</code> parameter to <code>TRUE</code> removes this operation on the values and
 asks the function to return the relevant log likelihood ratios.</p>
+<p>For large VLMC, some log likelihood ratios can be almost identical, with a
+difference of the order of the machine epsilon value. The <code>tolerance</code> parameter
+is used to keep only values that are different enough. This is done in the
+native scale, before transformations implemented when <code>raw</code> is <code>FALSE</code>.</p>
 <p>As automated model selection is provided by <code><a href="tune_vlmc.html">tune_vlmc()</a></code>, the direct use of <code>cutoff</code>
 should be reserved to advanced exploration of the set of trees that can be
 obtained from a complex one, e.g. to implement model selection techniques that
