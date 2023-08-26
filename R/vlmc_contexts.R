@@ -104,6 +104,9 @@ contexts.vlmc <- function(ct, type = c("auto", "list", "data.frame"), reverse = 
         preres$cutoff <- to_quantile(preres$cutoff, length(ct$vals))
       }
     }
+    if(positions) {
+      preres$positions <- I(preres$positions)
+    }
     preres
   }
 }
