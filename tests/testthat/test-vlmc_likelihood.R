@@ -55,3 +55,13 @@ test_that("loglikelihood supports short sequences", {
   x_tree <- vlmc(x, alpha = 0.05)
   expect_no_warning(loglikelihood(x_tree, newdata = x[1]))
 })
+
+test_that("the loglikelihood prints as expected", {
+  withr::local_seed(0)
+  x <- sample(c("A", "B", "C"), 1000, replace = TRUE)
+  x_tree <- vlmc(x, alpha = 0.05)
+  for (initial in c("truncated", "specific", "extended")) {
+    x_tree_ll <- loglikelihood(x_tree, initial = initial)
+    expect_snapshot(print(x_tree_ll))
+  }
+})
