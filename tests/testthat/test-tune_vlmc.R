@@ -48,3 +48,17 @@ test_that("tune_vlmc find a large enough max_depth", {
     expect_equal(t_vlmc, t_vlmc_auto)
   }
 })
+
+test_that("print works as expected", {
+  data_set <- build_markov_chain(500, 3, seed = 0)
+  t_vlmc_auto <- tune_vlmc(data_set$x, max_depth = 2)
+  expect_snapshot_output(print(t_vlmc_auto))
+})
+
+test_that("summary works as expected", {
+  skip_on_ci()
+  skip_on_cran()
+  data_set <- build_markov_chain(500, 3, seed = 0)
+  t_vlmc_auto <- tune_vlmc(data_set$x, max_depth = 2)
+  expect_snapshot_output(print(summary(t_vlmc_auto)))
+})
