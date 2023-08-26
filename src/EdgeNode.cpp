@@ -160,30 +160,26 @@ void EdgeNode::compute_counts(int first,
   }
 }
 
-bool EdgeNode::subsequences(int min_counts,
-                            int max_length,
-                            bool only_ctx,
-                            bool with_position,
+bool EdgeNode::subsequences(const ExtractionConditions& when,
+                            const ExtractionContent& what,
                             const Rcpp::IntegerVector& x,
                             int nb_vals,
                             std::vector<int>& pre,
                             std::vector<SubSequence*>& subs) const {
   bool is_sub = false;
-  if(total_count >= min_counts) {
+  if(total_count >= when.min_counts) {
     // let us first handle the root
     if(start < 0) {
       int nb_sub = 0;
       for(auto child : children) {
         if(child.first >= 0 &&
-           child.second->subsequences(min_counts, max_length, only_ctx,
-                                      with_position, x, nb_vals, pre, subs)) {
+           child.second->subsequences(when, what, x, nb_vals, pre, subs)) {
           nb_sub++;
         }
       }
-      if(only_ctx && nb_sub < nb_vals) {
+      if(when.only_ctx && nb_sub < nb_vals) {
         // we consider the empty context
-        subs.push_back(
-            new SubSequence(pre, counts, with_position ? positions : nullptr));
+        subs.push_back(new SubSequence(pre, this, what));
         return true;
       } else {
         return false;
@@ -201,10 +197,9 @@ bool EdgeNode::subsequences(int min_counts,
       bool ml_reached = false;
       for(int i = start; i < the_end; i++) {
         pre.push_back(x[i]);
-        if(pre.size() <= (size_t)max_length) {
+        if(pre.size() <= (size_t)when.max_length) {
           // always contexts
-          subs.push_back(new SubSequence(pre, counts,
-                                         with_position ? positions : nullptr));
+          subs.push_back(new SubSequence(pre, this, what));
         } else {
           ml_reached = true;
           break;
@@ -214,31 +209,28 @@ bool EdgeNode::subsequences(int min_counts,
         // add the final element of the edge
         pre.push_back(x[the_end]);
         // conditional inclusion only, see below
-        if(pre.size() < (size_t)max_length) {
+        if(pre.size() < (size_t)when.max_length) {
           // we may have longer subsequences
           // we will keep this subsequence
           is_sub = true;
           int nb_sub = 0;
           for(auto child : children) {
             // do not recurse in sentinel nodes
-            if(child.first >= 0 && child.second->subsequences(
-                                       min_counts, max_length, only_ctx,
-                                       with_position, x, nb_vals, pre, subs)) {
+            if(child.first >= 0 &&
+               child.second->subsequences(when, what, x, nb_vals, pre, subs)) {
               nb_sub++;
             }
           }
           // the current subsequence is a context if all subsequences should be
           // added or if some of the potential longer subsequences have not
           // been included
-          if((!only_ctx) || nb_sub < nb_vals) {
+          if((!when.only_ctx) || nb_sub < nb_vals) {
             // this is context/subsequence
-            subs.push_back(new SubSequence(
-                pre, counts, with_position ? positions : nullptr));
+            subs.push_back(new SubSequence(pre, this, what));
           }
-        } else if(pre.size() == (size_t)max_length) {
+        } else if(pre.size() == (size_t)when.max_length) {
           // no child tested
-          subs.push_back(new SubSequence(pre, counts,
-                                         with_position ? positions : nullptr));
+          subs.push_back(new SubSequence(pre, this, what));
           is_sub = true;
         }
       }

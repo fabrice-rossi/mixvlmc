@@ -25,22 +25,20 @@ contexts.ctx_tree_cpp <- function(ct, type = c("auto", "list", "data.frame"), re
     with_freq <- FALSE
     if (!is.null(frequency)) {
       assertthat::assert_that(frequency %in% c("total", "detailed"))
-      with_freq <- frequency == "detailed"
     }
-    pre_res <- ct$root$detailed_contexts(1, -1, with_freq, positions)
-    pre_res$context <- I(ctx_recode(pre_res$context, reverse, ct$vals))
-    if (positions) {
-      pre_res$positions <- I(pre_res$positions)
-    }
-    if (is.null(frequency)) {
-      pre_res[-2]
-    } else {
+    pre_res <- ct$root$full_contexts(1, -1, positions, FALSE, FALSE)
+    res <- data.frame(context = I(ctx_recode(pre_res$context, reverse, ct$vals)))
+    if (!is.null(frequency)) {
       if (frequency == "detailed") {
-        names_pre_res <- names(pre_res)
-        names_pre_res[3:(2 + length(ct$vals))] <- ct$vals
-        names(pre_res) <- names_pre_res
+        res <- cbind(res, pre_res$counts)
+        names(res)[3:(2 + length(ct$vals))] <- ct$vals
+      } else {
+        res$freq <- pre_res$counts$freq
       }
-      pre_res
     }
+    if (positions) {
+      res$positions <- I(pre_res$positions)
+    }
+    res
   }
 }

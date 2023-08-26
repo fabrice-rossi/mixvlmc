@@ -1,6 +1,7 @@
 #ifndef EDGENODE_H
 #define EDGENODE_H
 #include <Rcpp.h>
+#include "ExtractionConditions.h"
 #include "SubSequence.h"
 
 //' @name EdgeNode
@@ -94,10 +95,8 @@ class EdgeNode {
   // max_length that appear at least min_counts time in the original
   // sequence (x). It only_ctx is true, the subsequences must be contexts
   // in addition. Returns true if it is a subsequence.
-  bool subsequences(int min_counts,
-                    int max_length,
-                    bool only_ctx,
-                    bool with_position,
+  bool subsequences(const ExtractionConditions& when,
+                    const ExtractionContent& what,
                     const Rcpp::IntegerVector& x,
                     int nb_vals,
                     std::vector<int>& pre,

@@ -426,26 +426,23 @@ class SuffixTree {
     }
   }
 
-  std::vector<SubSequence*>* raw_subsequences(int min_counts,
-                                              int max_length,
-                                              bool only_ctx,
-                                              bool with_position) {
+  std::vector<SubSequence*>* raw_subsequences(ExtractionConditions& when,
+                                              const ExtractionContent& what) {
     if(!has_counts) {
       stop(
           "subsequences and contexts cannot be used if compute_counts has not "
           "been called before");
     }
-    if(with_position && !has_positions) {
+    if(what.with_position && !has_positions) {
       stop("cannot report positions if they were not saved");
     }
     std::vector<SubSequence*>* ctxs = new std::vector<SubSequence*>{};
     std::vector<int> pre{};
     pre.reserve(x.size());
-    if(max_length <= 0) {
-      max_length = x.size();
+    if(when.max_length <= 0) {
+      when.max_length = x.size();
     }
-    root->subsequences(min_counts, max_length, only_ctx, with_position, x,
-                       max_x + 1, pre, *ctxs);
+    root->subsequences(when, what, x, max_x + 1, pre, *ctxs);
     return ctxs;
   }
 
@@ -455,8 +452,9 @@ class SuffixTree {
   // negative in this latter case, length is not taken into account
   // - have at least min_counts occurrences
   List subsequences(int min_counts, int max_length) {
-    std::vector<SubSequence*>* ctxs =
-        raw_subsequences(min_counts, max_length, false, false);
+    ExtractionConditions when(min_counts, max_length, false);
+    ExtractionContent what(false, false, false, false);
+    std::vector<SubSequence*>* ctxs = raw_subsequences(when, what);
     int nb = (int)ctxs->size();
     List the_contexts(nb);
     for(int i = 0; i < nb; i++) {
@@ -473,8 +471,9 @@ class SuffixTree {
   // The empty context is a potential candidate while it is never
   // returned by the subsequences method.
   List contexts(int min_counts, int max_length) {
-    std::vector<SubSequence*>* ctxs =
-        raw_subsequences(min_counts, max_length, true, false);
+    ExtractionConditions when(min_counts, max_length, true);
+    ExtractionContent what(false, false, false, false);
+    std::vector<SubSequence*>* ctxs = raw_subsequences(when, what);
     int nb = (int)ctxs->size();
     List the_contexts(nb);
     for(int i = 0; i < nb; i++) {
@@ -485,66 +484,104 @@ class SuffixTree {
   }
 
   // extract contexts as above but returned them in a more detailed
-  // format (as data frame) including frequencies and positions
-  List detailed_contexts(int min_counts,
-                         int max_length,
-                         bool with_detail,
-                         bool with_positions) {
-    std::vector<SubSequence*>* ctxs =
-        raw_subsequences(min_counts, max_length, true, with_positions);
+  // format (as data frame) including frequencies, positions and cutoff
+  // values
+  List full_contexts(int min_counts,
+                     int max_length,
+                     bool with_positions,
+                     bool with_cutoff,
+                     bool with_local_counts) {
+    ExtractionConditions when(min_counts, max_length, true);
+    ExtractionContent what(with_positions, with_cutoff, with_local_counts,
+                           false);
+    std::vector<SubSequence*>* ctxs = raw_subsequences(when, what);
     int nb = (int)ctxs->size();
     List the_contexts(nb);
+    IntegerVector row_names(nb);
     std::vector<IntegerVector> counts;
-    int nb_stats = 1;
-    if(with_detail) {
-      nb_stats += max_x + 1;
+    StringVector count_names(max_x + 2);
+    count_names[0] = "freq";
+    for(int k = 0; k <= max_x; k++) {
+      count_names[k + 1] = std::to_string(k);
     }
-    for(int k = 0; k < nb_stats; k++) {
+    for(int k = 0; k <= max_x + 1; k++) {
       IntegerVector x(nb);
       counts.push_back(x);
     }
-    IntegerVector row_names(nb);
-    for(int i = 0; i < nb; i++) {
-      the_contexts[i] = (*ctxs)[i]->sequence();
-      auto val = (*ctxs)[i]->counts(max_x);
-      int total = 0;
-      for(int k = 1; k <= max_x + 1; k++) {
-        if(with_detail) {
-          (counts[k])[i] = val[k - 1];
-        }
-        total += val[k - 1];
+    std::vector<IntegerVector> l_counts;
+    if(with_local_counts) {
+      for(int k = 0; k <= max_x + 1; k++) {
+        IntegerVector x(nb);
+        l_counts.push_back(x);
       }
-      counts[0][i] = total;
+    }
+    NumericVector cutoff;
+    if(with_cutoff) {
+      cutoff = NumericVector(nb);
+    }
+    for(int i = 0; i < nb; i++) {
+      auto sub_seq = (*ctxs)[i];
+      the_contexts[i] = sub_seq->sequence();
+      sub_seq->insert_counts(counts, i);
+      if(with_local_counts) {
+        sub_seq->insert_local_counts(l_counts, i);
+      }
+      if(with_cutoff) {
+        cutoff[i] = sub_seq->cut_off();
+      }
       row_names[i] = i + 1;
     }
-    int nb_cols = nb_stats + 1;
+    int nb_cols = 2;
+    List list_counts(max_x + 2);
+    for(int k = 0; k <= max_x + 1; k++) {
+      list_counts[k] = counts[k];
+    }
+    list_counts.attr("row.names") = row_names;
+    list_counts.attr("names") = count_names;
+    list_counts.attr("class") = "data.frame";
+    if(with_local_counts) {
+      nb_cols++;
+    }
+    if(with_cutoff) {
+      nb_cols++;
+    }
     if(with_positions) {
       nb_cols++;
     }
     List res(nb_cols);
     StringVector col_names(nb_cols);
+    res[0] = the_contexts;
+    res[1] = list_counts;
+    col_names[0] = "context";
+    col_names[1] = "counts";
+    int next_col = 2;
+    if(with_local_counts) {
+      List list_local_counts(max_x + 2);
+      for(int k = 0; k <= max_x + 1; k++) {
+        list_local_counts[k] = l_counts[k];
+      }
+      res[next_col] = list_local_counts;
+      col_names[next_col] = "local_counts";
+      list_local_counts.attr("row.names") = row_names;
+      list_local_counts.attr("names") = count_names;
+      list_local_counts.attr("class") = "data.frame";
+      next_col++;
+    }
     if(with_positions) {
       List the_positions(nb);
       for(int i = 0; i < nb; i++) {
         the_positions[i] = ((int)x.size() - (*ctxs)[i]->positions());
       }
-      res[nb_cols - 1] = the_positions;
-      col_names[nb_cols - 1] = "positions";
+      res[next_col] = the_positions;
+      col_names[next_col] = "positions";
+      next_col++;
     }
-    res[0] = the_contexts;
-    res[1] = counts[0];
-    col_names[0] = "context";
-    col_names[1] = "freq";
-    if(with_detail) {
-      for(int k = 0; k <= max_x; k++) {
-        res[k + 2] = counts[k + 1];
-        col_names[k + 2] = std::to_string(k);
-      }
+    if(with_cutoff) {
+      res[next_col] = cutoff;
+      col_names[next_col] = "cutoff";
     }
     delete ctxs;
-    res.attr("row.names") = row_names;
     res.attr("names") = col_names;
-    res.attr("class") = "data.frame";
     return res;
   }
 
@@ -798,7 +835,7 @@ RCPP_MODULE(suffixtree) {
               "Return subsequences that fulfill specified conditions")
       .method("contexts", &SuffixTree::contexts,
               "Return contexts that fulfill specified conditions")
-      .method("detailed_contexts", &SuffixTree::detailed_contexts,
+      .method("full_contexts", &SuffixTree::full_contexts,
               "Return detailed contexts that fulfill specified conditions")
       .method("prune", &SuffixTree::prune,
               "Prune the suffix tree based on the specified conditions")

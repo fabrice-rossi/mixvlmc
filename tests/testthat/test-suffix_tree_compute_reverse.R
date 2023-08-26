@@ -4,8 +4,6 @@ test_that("reverse links are computed correctly", {
     x <- sample(0:k, 5000, replace = TRUE)
     r_model <- vlmc(x, alpha = 0.1)
     cpp_model <- vlmc(x, alpha = 0.1, backend = "C++")
-    cpp_model$root$make_explicit()
-    cpp_model$root$compute_reverse()
     ctxs <- contexts(cpp_model)
     all_valid <- TRUE
     for (i in seq_along(ctxs)) {
