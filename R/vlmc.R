@@ -327,6 +327,12 @@ vlmc <- function(x, alpha = 0.05, cutoff = NULL, min_size = 2L, max_depth = 100L
   } else {
     result$extended_ll <- 0
   }
+  if (keep_match) {
+    ## handle the case where the root is context
+    if (!is_full_node(result)) {
+      result$match <- 0:(length(x) - 1)
+    }
+  }
   result
 }
 
