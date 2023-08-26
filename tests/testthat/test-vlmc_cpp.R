@@ -76,3 +76,10 @@ test_that("cut off values do not depend (much) on the backend", {
     )
   }
 })
+
+test_that("printing works as expected", {
+  withr::local_seed(0)
+  x <- sample(c("A", "B", "C"), 1000, replace = TRUE)
+  x_model <- vlmc(x, alpha = 0.05, backend = "C++")
+  expect_snapshot(print(x_model))
+})

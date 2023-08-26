@@ -4,7 +4,7 @@ print.vlmc_cpp <- function(x, ...) {
     "VLMC context tree on",
     paste(x$vals, collapse = ", ")
   ), "[C++]\n")
-  cat(paste(" cutoff: ", signif(x$cutoff, 4), " (quantile: ", x$alpha, ")\n", sep = ""))
+  cat(paste(" cutoff: ", signif(x$cutoff, 4), " (quantile: ", signif(x$alpha, 4), ")\n", sep = ""))
   if (!is.null(x$nb_ctx)) {
     cat(paste(" Number of contexts:", x$nb_ctx, "\n"))
   }
