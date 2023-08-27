@@ -229,6 +229,15 @@ prune.vlmc <- function(vlmc, alpha = 0.05, cutoff = NULL, ...) {
   } else {
     result$extended_ll <- 0
   }
+  ## preserve match information
+  result$keep_match <- vlmc$keep_match
+  result$data_size <- vlmc$data_size
+  if (result$keep_match) {
+    ## handle the case where the root is context
+    if (!is_full_node(result)) {
+      result$match <- 0:(result$data_size - 1)
+    }
+  }
   ## preserve the construction information
   result$max_depth <- vlmc$max_depth
   result
@@ -325,6 +334,8 @@ vlmc <- function(x, alpha = 0.05, cutoff = NULL, min_size = 2L, max_depth = 100L
   } else {
     result$extended_ll <- 0
   }
+  result$keep_match <- keep_match
+  result$data_size <- length(x)
   if (keep_match) {
     ## handle the case where the root is context
     if (!is_full_node(result)) {
