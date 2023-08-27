@@ -9,6 +9,13 @@ test_that("vlmc estimation works on super simple case", {
   expect_identical(x_vlmc_ctx[[2]], 1)
 })
 
+test_that("vlmc reports correctly the empty context if it exists", {
+  withr::local_seed(0)
+  dts <- sample(0:1, size = 100, replace = TRUE)
+  empty_vlmc <- vlmc(dts, max_depth = 0)
+  expect_equal(context_number(empty_vlmc), 1L)
+})
+
 test_that("post pruning is equivalent to direct pruning (alpha)", {
   pc <- powerconsumption[powerconsumption$week == 5, ]
   dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.25, 0.5, 0.75, 1))))
