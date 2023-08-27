@@ -19,7 +19,7 @@ print.summary.vlmc <- function(x, ...) {
     "VLMC context tree on",
     paste(x$state_space, collapse = ", ")
   ), "\n")
-  cat(paste(" Cutoff: ", signif(x$cutoff, 4), " (quantile: ", x$alpha, ")\n", sep = ""))
+  cat(paste(" Cutoff: ", signif(x$cutoff, 4), " (quantile: ", signif(x$alpha, 4), ")\n", sep = ""))
   cat(paste(" Number of contexts:", x$nb, "\n"))
   cat(paste(" Maximum context length:", x$depth, "\n"))
   cat(paste(" Average context length:", signif(x$avg_depth, 4), "\n"))
