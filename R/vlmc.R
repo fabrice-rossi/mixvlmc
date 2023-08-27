@@ -152,8 +152,7 @@ prune_ctx_tree <- function(tree, alpha = 0.05, cutoff = NULL, verbose = FALSE) {
   pre_res <- recurse_prune_kl_ctx_tree(tree, tree$f_by / sum(tree$f_by), c(), K)
   if (!is.null(pre_res$kl)) {
     # empty result
-    pre_res <- new_ctx_tree(tree$vals, class = "vlmc")
-    pre_res$f_by <- tree$f_by
+    pre_res <- new_ctx_tree(tree$vals, list(f_by = tree$f_by), class = "vlmc")
   } else {
     ## compute stats
     pre_res <- new_ctx_tree(pre_res$vals, pre_res, class = "vlmc")
@@ -230,7 +229,6 @@ prune.vlmc <- function(vlmc, alpha = 0.05, cutoff = NULL, ...) {
   } else {
     result$extended_ll <- 0
   }
-
   ## preserve the construction information
   result$max_depth <- vlmc$max_depth
   result
