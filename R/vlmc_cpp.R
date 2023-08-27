@@ -33,7 +33,8 @@ prune.vlmc_cpp <- function(vlmc, alpha = 0.05, cutoff = NULL, ...) {
   }
   pre_result <- vlmc$root$clone_prune_context(1L, -1L, cutoff)
   result <- new_ctx_tree_cpp(vlmc$vals, pre_result, class = c("vlmc_cpp", "vlmc"))
-  result$data_size <- vlmc$data_size
+  ## preserve the construction information
+  result$max_depth <- vlmc$max_depth
   result$alpha <- alpha
   result$cutoff <- cutoff
   ## recompute the extended_ll
@@ -43,8 +44,8 @@ prune.vlmc_cpp <- function(vlmc, alpha = 0.05, cutoff = NULL, ...) {
   } else {
     result$extended_ll <- 0
   }
-  ## preserve the construction information
-  result$max_depth <- vlmc$max_depth
+  result$keep_match <- vlmc$keep_match
+  result$data_size <- vlmc$data_size
   result
 }
 

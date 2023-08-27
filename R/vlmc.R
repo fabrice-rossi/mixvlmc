@@ -353,7 +353,8 @@ vlmc <- function(x, alpha = 0.05, cutoff = NULL, min_size = 2L, max_depth = 100L
     result <- new_ctx_tree_cpp(vals, cpp_tree, class = c("vlmc_cpp", "vlmc"))
     result$root$make_explicit()
     result$root$compute_reverse()
-    result$data_size <- length(x)
+    ## with the C++ backend, max_depth is only used during pruning
+    result$max_depth <- FALSE
   }
   ## prepare for loglikelihood calculation
   result$alpha <- alpha
