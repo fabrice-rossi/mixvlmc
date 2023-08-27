@@ -80,3 +80,11 @@ kl_crit <- function(p, q) {
     .Call('_mixvlmc_kl_crit', PACKAGE = 'mixvlmc', p, q)
 }
 
+mixvlmc_sample <- function(p, n) {
+    .Call('_mixvlmc_mixvlmc_sample', PACKAGE = 'mixvlmc', p, n)
+}
+
+mixvlmc_sample2 <- function(p, n) {
+    .Call('_mixvlmc_mixvlmc_sample2', PACKAGE = 'mixvlmc', p, n)
+}
+

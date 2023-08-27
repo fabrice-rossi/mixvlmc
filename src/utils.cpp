@@ -1,3 +1,4 @@
+#include <algorithm>
 #include "utils.h"
 
 std::string counts_to_string(const std::unordered_map<int, int>* counts) {
@@ -37,4 +38,41 @@ double kl_criterion(const std::unordered_map<int, int>* c_counts,
     }
   }
   return res;
+}
+
+int sample(const std::unordered_map<int, int>* counts, int total) {
+  double bound = total * unif_rand();
+  double current = 0;
+  int last = 0;
+  for(auto count : *counts) {
+    current += count.second;
+    if(current >= bound) {
+      return count.first;
+    }
+    last = count.first;
+  }
+  return last;
+}
+
+int sample2(const std::unordered_map<int, int>* counts, int max, int total) {
+  std::vector<int> vals(max + 1);
+  std::iota(vals.begin(), vals.end(), 0);
+  std::vector<double> probs(max + 1, 0.0);
+  for(auto count : *counts) {
+    if(count.second > 0) {
+      probs[count.first] = ((double)count.second) / total;
+    }
+  }
+  std::stable_sort(vals.begin(), vals.end(),
+            [&probs](int i1, int i2) { return probs[i1] > probs[i2]; });
+  double ru = unif_rand();
+  double current = 0;
+  int i = 0;
+  for(; i <= max; i++) {
+    current += probs[vals[i]];
+    if(current >= ru) {
+      break;
+    }
+  }
+  return vals[i];
 }

@@ -16,4 +16,8 @@ double kl_criterion(const std::unordered_map<int, int>* c_counts,
                     const std::unordered_map<int, int>* p_counts,
                     int p_total);
 
+int sample(const std::unordered_map<int, int>* counts, int total);
+
+int sample2(const std::unordered_map<int, int>* counts, int max, int total);
+
 #endif
