@@ -806,6 +806,56 @@ class SuffixTree {
     }
     return root->loglikelihood(max_x + 1);
   }
+
+  IntegerVector simulate(IntegerVector start, int n, int method) const {
+    if(!has_reverse) {
+      stop("cannot simulate without reverse links");
+    }
+    Nullable<Function> r_sample = R_NilValue;
+    if(method > 1) {
+      r_sample = Nullable(Function("sample.int"));
+    }
+    RNGScope scope;
+    IntegerVector result(n);
+    for(int k = 0; k < start.size(); k++) {
+      result[k] = start[k];
+    }
+    int start_generating = start.size();
+    EdgeNode* current = root;
+    for(int i = 0; i < n; i++) {
+      if(i >= start_generating) {
+        switch(method) {
+          case 0:
+            result[i] = sample(current->counts, current->total_count);
+            break;
+          case 1:
+            result[i] = sample2(current->counts, max_x, current->total_count);
+            break;
+          default:
+            result[i] = Rcpp::as<IntegerVector>(Rcpp::as<Function>(r_sample)(
+                            max_x + 1, (int)1, true,
+                            map_to_counts(current->counts, max_x)))[0] -
+                        1;
+            break;
+        }
+      }
+      // we take the reverse link
+      current = (*(current->reverse))[result[i]];
+      // let's find out if we can increase the match
+      int max_ctx = std::min(i + 1, max_depth);
+      int pos = i - current->depth;
+      while(current->depth < max_ctx) {
+        if(auto child = current->children.find(result[pos]);
+           child != current->children.end()) {
+          current = child->second;
+          pos--;
+        } else {
+          break;
+        }
+      }
+    }
+    return result;
+  }
 };
 
 SuffixTree* build_suffix_tree(const IntegerVector& x, int nb_vals) {
@@ -868,6 +918,8 @@ RCPP_MODULE(suffixtree) {
               "Return the number of full nodes in the suffix tree")
       .method("logLik", &SuffixTree::default_loglikelihood,
               "Return the extended loglikelihood of the tree interpreted as a "
-              "VLMC");
+              "VLMC")
+      .method("simulate", &SuffixTree::simulate,
+              "Simulate a sequence using this VLMC as the generative model");
   function("build_suffix_tree", &build_suffix_tree);
 }
