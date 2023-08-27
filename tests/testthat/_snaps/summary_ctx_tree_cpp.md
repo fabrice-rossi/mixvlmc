@@ -3,7 +3,7 @@
     Code
       summary(dts_tree)
     Output
-      Context tree on 0, 1 
+      Context tree on 0, 1 [C++]
        Number of contexts: 32 
        Maximum context length: 5 
        Average context length: 4.844 
