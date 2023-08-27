@@ -120,41 +120,11 @@ tree.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">dts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A"</span>, <span class="st">"B"</span>, <span class="st">"C"</span><span class="op">)</span>, <span class="fl">500</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="vlmc.html">vlmc</a></span><span class="op">(</span><span class="va">dts</span>, alpha <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="draw.html">draw</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> * (0.348, 0.332, 0.32)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> +-- A (0.3678, 0.3448, 0.2874)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |   '-- C (0.2857, 0.2653, 0.449)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |       '-- A (0.125, 0.5625, 0.3125)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |           '-- C (0.25, 0.75, 0)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> '-- C (0.3082, 0.3522, 0.3396)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     '-- B (0.2545, 0.4182, 0.3273)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         +-- B (0.3889, 0.2222, 0.3889)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         |   '-- C (0, 0.75, 0.25)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         '-- C (0.2353, 0.4706, 0.2941)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             '-- A (0.75, 0, 0.25)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> * (0.374, 0.328, 0.298)</span>
 <span class="r-in"><span><span class="fu"><a href="draw.html">draw</a></span><span class="op">(</span><span class="va">model</span>, prob <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> * (174, 166, 160)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> +-- A (64, 60, 50)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |   '-- C (14, 13, 22)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |       '-- A (2, 9, 5)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |           '-- C (2, 6, 0)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> '-- C (49, 56, 54)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     '-- B (14, 23, 18)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         +-- B (7, 4, 7)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         |   '-- C (0, 3, 1)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         '-- C (4, 8, 5)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             '-- A (3, 0, 1)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> * (187, 164, 149)</span>
 <span class="r-in"><span><span class="fu"><a href="draw.html">draw</a></span><span class="op">(</span><span class="va">model</span>, prob <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> *</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> +-- A</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |   '-- C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |       '-- A</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |           '-- C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> '-- C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     '-- B</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         +-- B</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         |   '-- C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         '-- C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             '-- A</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

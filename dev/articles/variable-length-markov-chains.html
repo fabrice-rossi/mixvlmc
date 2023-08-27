@@ -330,7 +330,7 @@ convergence analysis conducted. For instance a BIC inspired value for
 <span><span class="va">model_theo</span></span>
 <span><span class="co">#&gt; VLMC context tree on 0, 1, 2 </span></span>
 <span><span class="co">#&gt;  cutoff: 5.298 (quantile: 0.005)</span></span>
-<span><span class="co">#&gt;  Number of contexts: 0 </span></span>
+<span><span class="co">#&gt;  Number of contexts: 1 </span></span>
 <span><span class="co">#&gt;  Maximum context length: 0</span></span></code></pre></div>
 <p>The result is a memory less model, as expected based on the way
 <code>x</code> was generated. In this situation, the chosen value of
@@ -380,7 +380,7 @@ using <code><a href="../reference/prune.html">prune()</a></code> as follows:</p>
 <span><span class="va">model_small</span></span>
 <span><span class="co">#&gt; VLMC context tree on 0, 1, 2 </span></span>
 <span><span class="co">#&gt;  cutoff: 3.785 (quantile: 0.02271)</span></span>
-<span><span class="co">#&gt;  Number of contexts: 0 </span></span>
+<span><span class="co">#&gt;  Number of contexts: 1 </span></span>
 <span><span class="co">#&gt;  Maximum context length: 0</span></span></code></pre></div>
 <p>The final model <code>model_small</code> is again the memory less
 model.</p>
@@ -401,7 +401,7 @@ demonstrated below:</p>
 <span><span class="va">model_opt</span></span>
 <span><span class="co">#&gt; VLMC context tree on 0, 1, 2 </span></span>
 <span><span class="co">#&gt;  cutoff: 3.785 (quantile: 0.02271)</span></span>
-<span><span class="co">#&gt;  Number of contexts: 0 </span></span>
+<span><span class="co">#&gt;  Number of contexts: 1 </span></span>
 <span><span class="co">#&gt;  Maximum context length: 0</span></span></code></pre></div>
 <p>We obtain directly an optimal model according to the BIC
 criterion.</p>
@@ -488,7 +488,7 @@ function as follows.</p>
 <span><span class="co">#&gt;   6.040782 5.092285e-04     5           6     -3182.077 6376.155 6416.750</span></span>
 <span><span class="co">#&gt;   6.183282 4.370913e-04     5           6     -3188.213 6388.425 6429.021</span></span>
 <span><span class="co">#&gt;  10.764714 3.484403e-06     1           2     -3202.770 6409.540 6423.073</span></span>
-<span><span class="co">#&gt;  26.426030 3.596414e-13     0           0     -3221.590 6443.180 6443.180</span></span></code></pre></div>
+<span><span class="co">#&gt;  26.426030 3.596414e-13     0           1     -3221.590 6445.180 6451.947</span></span></code></pre></div>
 <p>in addition, a summary data frame is accessible in the
 <code>results</code> component of the object. This can be used to build
 e.g. graphical representation of the model selection process for
