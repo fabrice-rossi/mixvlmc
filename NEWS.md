@@ -10,7 +10,7 @@
   that are almost identical due to numerical imprecision 
   
 ## Minor improvements and bug fixes
-=======
+* Fixed several bugs related to degenerate VLMC (issue #55)
 * Fixed a bug in the likelihood calculation for internal context nodes
 * Improved type consistency by reporting counts as integers in `contexts` results
 * Fixed documentation: all models can be adjusted on time series of logical values

@@ -19,11 +19,11 @@ test_that("vlmc reports correctly the empty context if it exists", {
 test_that("post pruning is equivalent to direct pruning (alpha)", {
   pc <- powerconsumption[powerconsumption$week == 5, ]
   dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.25, 0.5, 0.75, 1))))
-  model <- vlmc(dts, alpha = 0.1)
+  model <- vlmc(dts, alpha = 0.1, keep_match = TRUE)
   cut_off <- cutoff(model)
   for (k in seq_along(cut_off)) {
     pruned_model <- prune(model, alpha = cut_off[k])
-    direct_model <- vlmc(dts, alpha = cut_off[k])
+    direct_model <- vlmc(dts, alpha = cut_off[k], keep_match = TRUE)
     expect_equal(pruned_model, direct_model)
   }
 })
