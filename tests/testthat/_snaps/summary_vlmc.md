@@ -9,3 +9,14 @@
        Maximum context length: 5 
        Average context length: 3.333 
 
+---
+
+    Code
+      summary(model2)
+    Output
+      VLMC context tree on A, B, C 
+       Cutoff: 0.7556 (quantile: 0.4697)
+       Number of contexts: 38 
+       Maximum context length: 5 
+       Average context length: 3.289 
+
