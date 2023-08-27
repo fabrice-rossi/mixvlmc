@@ -9,6 +9,7 @@ tune_vlmc(
   criterion = c("BIC", "AIC"),
   min_size = 2,
   max_depth = 100,
+  backend = c("R", "C++"),
   verbose = 0,
   save = c("best", "initial", "all")
 )
@@ -24,6 +25,9 @@ a context in the growing phase of the initial context tree.}
 
 \item{max_depth}{integer >= 1 (default: 100). Longest context considered in
 growing phase of the initial context tree (see details).}
+
+\item{backend}{"R" or "C++" (default: "R"). Specifies the implementation used
+to represent the context tree and to built it. See \code{\link[=vlmc]{vlmc()}} for details.}
 
 \item{verbose}{integer >= 0 (default: 0). Verbosity level of the pruning process.}
 

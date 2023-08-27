@@ -25,6 +25,8 @@
 #'   a context in the growing phase of the initial context tree.
 #' @param max_depth integer >= 1 (default: 100). Longest context considered in
 #'   growing phase of the initial context tree (see details).
+#' @param backend "R" or "C++" (default: "R"). Specifies the implementation used
+#'   to represent the context tree and to built it. See [vlmc()] for details.
 #' @param verbose integer >= 0 (default: 0). Verbosity level of the pruning process.
 #' @param save specify which BIC models are saved during the pruning process. The default
 #'   value `"best"` asks the function to keep only the best model according to
@@ -50,7 +52,9 @@
 #' dts <- sample(as.factor(c("A", "B", "C")), 100, replace = TRUE)
 #' tune_result <- tune_vlmc(dts)
 #' draw(tune_result$best_model)
-tune_vlmc <- function(x, criterion = c("BIC", "AIC"), min_size = 2, max_depth = 100, verbose = 0,
+tune_vlmc <- function(x, criterion = c("BIC", "AIC"), min_size = 2, max_depth = 100,
+                      backend = c("R", "C++"),
+                      verbose = 0,
                       save = c("best", "initial", "all")) {
   criterion <- match.arg(criterion)
   save <- match.arg(save)
@@ -65,7 +69,10 @@ tune_vlmc <- function(x, criterion = c("BIC", "AIC"), min_size = 2, max_depth = 
     cat("Fitting a vlmc with max_depth=", max_depth, "and cutoff=", cutoff, "\n")
   }
   saved_models <- list()
-  base_model <- vlmc(x, cutoff = cutoff, min_size = min_size, max_depth = max_depth)
+  base_model <- vlmc(x,
+    cutoff = cutoff, min_size = min_size,
+    max_depth = max_depth, backend = backend
+  )
   while (base_model$max_depth) {
     n_max_depth <- min(2 * max_depth, length(x) - 1)
     if (n_max_depth > max_depth) {
