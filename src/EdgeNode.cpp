@@ -39,15 +39,20 @@ EdgeNode::~EdgeNode() {
 }
 
 EdgeNode* EdgeNode::clone_no_relatives() const {
+  EdgeNode* result = clone_only_counts();
+  if(positions != nullptr) {
+    result->positions =
+        new std::vector<int>(positions->begin(), positions->end());
+  }
+  return result;
+}
+
+EdgeNode* EdgeNode::clone_only_counts() const {
   EdgeNode* result = new EdgeNode(nullptr, start, end);
   result->total_count = total_count;
   if(counts != nullptr) {
     result->counts =
-        new std::unordered_map<int, int>(counts->begin(), counts->end());
-  }
-  if(positions != nullptr) {
-    result->positions =
-        new std::vector<int>(positions->begin(), positions->end());
+      new std::unordered_map<int, int>(counts->begin(), counts->end());
   }
   result->depth = depth;
   return result;
@@ -615,4 +620,14 @@ double EdgeNode::loglikelihood(int nb_vals) const {
     }
   }
   return ll;
+}
+
+EdgeNode* EdgeNode::clone_trim() const {
+  EdgeNode* result = clone_only_counts();
+  for(auto child : children) {
+    EdgeNode* new_child = child.second->clone_trim();
+    new_child->parent = result;
+    result->children[child.first] = new_child;
+  }
+  return result;
 }

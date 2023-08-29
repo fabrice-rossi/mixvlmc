@@ -53,6 +53,8 @@ class EdgeNode {
 
   EdgeNode* clone_no_relatives() const;
 
+  EdgeNode* clone_only_counts() const;
+
   void setSuffix(EdgeNode* suffix_) { suffix = suffix_; }
 
   // compute the current edge length: most edges are open ended and thus
@@ -158,6 +160,10 @@ class EdgeNode {
   // compute the log likelihood of the subtree when it is interpreted as
   // a vlmc
   double loglikelihood(int nb_vals) const;
+
+  // clone the current node (and subtree) using less memory
+  // by removing the positions
+  EdgeNode* clone_trim() const ;
 };
 
 #endif

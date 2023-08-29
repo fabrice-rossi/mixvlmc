@@ -856,6 +856,16 @@ class SuffixTree {
     }
     return result;
   }
+
+  bool get_has_positions() const { return has_positions; }
+
+  SuffixTree* trim() {
+    EdgeNode* new_root = root->clone_trim();
+    SuffixTree* result = clone_from_root(new_root, max_depth, nb_ctx);
+    result->has_positions = false;
+    result->compute_reverse();
+    return result;
+  }
 };
 
 SuffixTree* build_suffix_tree(const IntegerVector& x, int nb_vals) {
@@ -920,6 +930,10 @@ RCPP_MODULE(suffixtree) {
               "Return the extended loglikelihood of the tree interpreted as a "
               "VLMC")
       .method("simulate", &SuffixTree::simulate,
-              "Simulate a sequence using this VLMC as the generative model");
+              "Simulate a sequence using this VLMC as the generative model")
+      .property("has_positions", &SuffixTree::get_has_positions,
+                "Does this VLMC store positions?")
+      .method("trim", &SuffixTree::trim,
+              "Reduce the memory usage of the tree by removing positions");
   function("build_suffix_tree", &build_suffix_tree);
 }
