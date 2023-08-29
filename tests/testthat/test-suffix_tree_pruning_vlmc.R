@@ -10,17 +10,6 @@ test_that("the C++ context algorithm selects the same PST as the R implementatio
     ctx_cpp <- tree$contexts(1, -1)
     ctx_r <- contexts(model)
     expect_equal(length(ctx_cpp), length(ctx_r))
-    if (length(ctx_cpp) != length(ctx_r)) {
-      ## no need to match in this case
-      break
-    }
-    all_valid <- TRUE
-    for (l in seq_along(ctx_cpp)) {
-      all_valid <- Position(\(x) identical(x, ctx_cpp[[l]]), ctx_r, nomatch = 0) > 0
-      if (!all_valid) {
-        break
-      }
-    }
-    expect_true(all_valid)
+    expect_true(compare_ctx(ctx_r, ctx_cpp))
   }
 })

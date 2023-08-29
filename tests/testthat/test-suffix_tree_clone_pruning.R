@@ -31,14 +31,6 @@ test_that("the suffix tree clone pruning gives an equivalent result as direct pr
     tree$prune(10, length(x) / 10)
     clone_ctxs <- pruned_tree$contexts(1, -1)
     direct_ctxs <- tree$contexts(1, -1)
-    expect_equal(length(clone_ctxs), length(direct_ctxs))
-    all_valid <- TRUE
-    for (l in seq_along(clone_ctxs)) {
-      all_valid <- Position(\(x) identical(x, clone_ctxs[[l]]), direct_ctxs, nomatch = 0) > 0
-      if (!all_valid) {
-        break
-      }
-    }
-    expect_true(all_valid)
+    expect_true(compare_ctx(clone_ctxs, direct_ctxs))
   }
 })

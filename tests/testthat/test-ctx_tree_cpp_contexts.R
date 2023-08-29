@@ -6,15 +6,7 @@ test_that("the C++ backend find the same contexts as the R one", {
     cpp_ctxs <- contexts(cpp_tree)
     r_tree <- ctx_tree(x, min_size = 2, max_depth = 5 + k)
     r_ctxs <- contexts(r_tree, reverse = TRUE)
-    expect_equal(length(cpp_ctxs), length(r_ctxs))
-    all_valid <- TRUE
-    for (l in seq_along(cpp_ctxs)) {
-      all_valid <- Position(\(x) identical(x, cpp_ctxs[[l]]), r_ctxs, nomatch = 0) > 0
-      if (!all_valid) {
-        break
-      }
-    }
-    expect_true(all_valid)
+    expect_true(compare_ctx(r_ctxs, cpp_ctxs))
   }
 })
 
@@ -65,19 +57,6 @@ test_that("the C++ backend find the same detailed contexts as the R one (up to o
     cpp_ctxs <- contexts(cpp_tree, frequency = "detailed", position = TRUE)
     r_tree <- ctx_tree(x, min_size = 2, max_depth = 5 + k)
     r_ctxs <- contexts(r_tree, frequency = "detailed", position = TRUE)
-    expect_equal(nrow(cpp_ctxs), nrow(r_ctxs))
-    all_valid <- TRUE
-    for (l in seq_along(cpp_ctxs$context)) {
-      pos_in_r <- Position(\(x) identical(x, cpp_ctxs$context[[l]]), r_ctxs$context, nomatch = 0)
-      if (pos_in_r == 0) {
-        all_valid <- FALSE
-        break
-      }
-      all_valid <- all.equal(cpp_ctxs[l, ], r_ctxs[pos_in_r, ], check.attributes = FALSE)
-      if (!all_valid) {
-        break
-      }
-    }
-    expect_true(all_valid)
+    expect_true(compare_ctx(r_ctxs, cpp_ctxs))
   }
 })

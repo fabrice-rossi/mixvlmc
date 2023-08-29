@@ -33,19 +33,6 @@ test_that("contexts do not depend on the backend", {
     cpp_ctxs <- contexts(cpp_model, frequency = "detailed", position = TRUE, cutoff = "native", metrics = TRUE)
     r_model <- vlmc(x, alpha = 0.2, keep_match = TRUE)
     r_ctxs <- contexts(r_model, frequency = "detailed", position = TRUE, cutoff = "native", metrics = TRUE)
-    expect_equal(nrow(cpp_ctxs), nrow(r_ctxs))
-    all_valid <- TRUE
-    for (l in seq_along(cpp_ctxs$context)) {
-      pos_in_r <- Position(\(x) identical(x, cpp_ctxs$context[[l]]), r_ctxs$context, nomatch = 0)
-      if (pos_in_r == 0) {
-        all_valid <- FALSE
-        break
-      }
-      all_valid <- all.equal(cpp_ctxs[l, ], r_ctxs[pos_in_r, ], check.attributes = FALSE)
-      if (!all_valid) {
-        break
-      }
-    }
-    expect_true(all_valid)
+    expect_true(compare_ctx(r_ctxs, cpp_ctxs))
   }
 })
