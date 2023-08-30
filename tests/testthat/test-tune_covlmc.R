@@ -6,9 +6,10 @@ test_that("tune_covlmc obeys is basic contract", {
   df_y <- data.frame(y = y, z = runif(length(y)))
   t_covlmc <- tune_covlmc(x, df_y)
   expect_s3_class(t_covlmc, "tune_covlmc")
-  expect_true(all(c("best_model", "criterion", "results") %in% names(t_covlmc)))
+  expect_true(all(c("best_model", "criterion", "initial", "results") %in% names(t_covlmc)))
   expect_true(is_covlmc(t_covlmc$best_model))
   expect_true(t_covlmc$criterion == "BIC") ## default value
+  expect_true(t_covlmc$initial == "truncated") ## default value
   expect_null(t_covlmc$saved_models)
   expect_s3_class(t_covlmc$results, "data.frame")
 })

@@ -21,6 +21,9 @@
 #' @param x a discrete time series; can be numeric, character, factor and logical.
 #' @param criterion criterion used to select the best model. Either `"BIC"` (default)
 #'   or `"AIC"` (see details).
+#' @param initial specifies the likelihood function, more precisely the way the
+#'   first few observations for which contexts cannot be calculated are integrated
+#'   in the likelihood. See [loglikelihood()] for details.
 #' @param min_size integer >= 1 (default: 2). Minimum number of observations for
 #'   a context in the growing phase of the initial context tree.
 #' @param max_depth integer >= 1 (default: 100). Longest context considered in
@@ -37,6 +40,7 @@
 #'
 #'   - `best_model`: the optimal VLMC
 #'   - `criterion`: the criterion used to select the optimal VLMC
+#'   - `initial`: the likelihood function used to select the optimal VLMC
 #'   - `results`: a data frame with details about the pruning process
 #'   - `saved_models`: a list of intermediate VLMCs if `save="initial"` or
 #'   `save="all"`. It contains an `initial` component with the large VLMC obtained
@@ -50,9 +54,12 @@
 #' dts <- sample(as.factor(c("A", "B", "C")), 100, replace = TRUE)
 #' tune_result <- tune_vlmc(dts)
 #' draw(tune_result$best_model)
-tune_vlmc <- function(x, criterion = c("BIC", "AIC"), min_size = 2, max_depth = 100, verbose = 0,
+tune_vlmc <- function(x, criterion = c("BIC", "AIC"),
+                      initial = c("truncated", "specific", "extended"),
+                      min_size = 2, max_depth = 100, verbose = 0,
                       save = c("best", "initial", "all")) {
   criterion <- match.arg(criterion)
+  initial <- match.arg(initial)
   save <- match.arg(save)
   if (criterion == "BIC") {
     cutoff <- 0.25 * log(length(x))
@@ -109,9 +116,10 @@ tune_vlmc <- function(x, criterion = c("BIC", "AIC"), min_size = 2, max_depth = 
     }
     results$depth[k] <- depth(model)
     results$nb_contexts[k] <- context_number(model)
-    results$loglikelihood[k] <- stats::logLik(model)
-    results$AIC[k] <- stats::AIC(model)
-    results$BIC[k] <- stats::BIC(model)
+    ll <- stats::logLik(model, initial = initial)
+    results$loglikelihood[k] <- ll
+    results$AIC[k] <- stats::AIC(ll)
+    results$BIC[k] <- stats::BIC(ll)
     if (k <= length(cutoffs)) {
       if (verbose > 0) {
         cat("Pruning vlmc with cutoff=", cutoffs[k], "\n")
@@ -128,6 +136,7 @@ tune_vlmc <- function(x, criterion = c("BIC", "AIC"), min_size = 2, max_depth = 
   pre_result <- list(
     best_model = best_model,
     criterion = criterion,
+    initial = initial,
     results = results,
     cutoffs = c(cutoff, cutoffs)
   )
@@ -148,6 +157,8 @@ print.tune_vlmc <- function(x, ...) {
   } else {
     cat(min(x$results$AIC))
   }
+  cat(") with likelihood function \"", x$initial, "\" (", sep = "")
+  cat(loglikelihood(x$best_model))
   cat(")\n")
   invisible(x)
 }

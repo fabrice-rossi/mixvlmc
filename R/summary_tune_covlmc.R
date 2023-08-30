@@ -14,6 +14,8 @@ print.summary.tune_covlmc <- function(x, ...) {
   } else {
     cat(min(x$results$AIC))
   }
+  cat(") with likelihood function \"", x$initial, "\" (", sep = "")
+  cat(loglikelihood(x$best_model))
   cat(")\n")
   print(x$best_model)
   cat("\nPruning results\n")

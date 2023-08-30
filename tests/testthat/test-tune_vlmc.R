@@ -2,9 +2,10 @@ test_that("tune_vlmc obeys is basic contract", {
   data_set <- build_markov_chain(1000, 4, seed = 4)
   t_vlmc <- tune_vlmc(data_set$x)
   expect_s3_class(t_vlmc, "tune_vlmc")
-  expect_true(all(c("best_model", "criterion", "results") %in% names(t_vlmc)))
+  expect_true(all(c("best_model", "criterion", "initial", "results") %in% names(t_vlmc)))
   expect_true(is_vlmc(t_vlmc$best_model))
   expect_true(t_vlmc$criterion == "BIC") ## default value
+  expect_true(t_vlmc$initial == "truncated") ## default value
   expect_null(t_vlmc$saved_models)
   expect_s3_class(t_vlmc$results, "data.frame")
 })

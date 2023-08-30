@@ -23,6 +23,9 @@
 #' @param covariate a data frame of covariates.
 #' @param criterion criterion used to select the best model. Either `"BIC"` (default)
 #'   or `"AIC"` (see details).
+#' @param initial specifies the likelihood function, more precisely the way the
+#'   first few observations for which contexts cannot be calculated are integrated
+#'   in the likelihood. See [loglikelihood()] for details.
 #' @param min_size integer >= 1 (default: 2). Minimum number of observations for
 #'   a context in the growing phase of the initial context tree.
 #' @param max_depth integer >= 1 (default: 100). Longest context considered in
@@ -40,6 +43,7 @@
 #'
 #'   - `best_model`: the optimal VLMC
 #'   - `criterion`: the criterion used to select the optimal VLMC
+#'   - `initial`: the likelihood function used to select the optimal VLMC
 #'   - `results`: a data frame with details about the pruning process
 #'   - `saved_models`: a list of intermediate coVLMCs if `save="initial"` or
 #'   `save="all"`. It contains an `initial` component with the large coVLMC obtained
@@ -65,11 +69,17 @@
 #' dts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
 #' dts_best_model_tune <- tune_covlmc(dts, dts_cov)
 #' draw(as_covlmc(dts_best_model_tune))
-tune_covlmc <- function(x, covariate, criterion = c("BIC", "AIC"), min_size = 5, max_depth = 100,
+tune_covlmc <- function(x, covariate, criterion = c("BIC", "AIC"),
+                        initial = c("truncated", "specific", "extended"),
+                        min_size = 5, max_depth = 100,
                         verbose = 0,
                         save = c("best", "initial", "all"),
                         trimming = c("full", "partial", "none")) {
   criterion <- match.arg(criterion)
+  initial <- match.arg(initial)
+  if (initial == "extended") {
+    stop("log likelihood calculation for COVLMC is limited to truncated and specific likelihood")
+  }
   save <- match.arg(save)
   criterion <- match.arg(criterion)
   trimming <- match.arg(trimming)
@@ -115,13 +125,14 @@ tune_covlmc <- function(x, covariate, criterion = c("BIC", "AIC"), min_size = 5,
         cat("Improving criterion=", best_crit, "\n")
       }
     }
+    ll <- stats::logLik(model, initial = initial)
     a_result <- data.frame(
       alpha = alpha,
       depth = depth(model),
       nb_contexts = context_number(model),
-      loglikelihood = stats::logLik(model),
-      AIC = stats::AIC(model),
-      BIC = stats::BIC(model)
+      loglikelihood = ll,
+      AIC = stats::AIC(ll),
+      BIC = stats::BIC(ll)
     )
     if (is.null(results)) {
       results <- a_result
@@ -154,6 +165,7 @@ tune_covlmc <- function(x, covariate, criterion = c("BIC", "AIC"), min_size = 5,
   pre_result <- list(
     best_model = best_model,
     criterion = criterion,
+    initial = initial,
     results = results
   )
   if (save == "all") {
@@ -173,6 +185,8 @@ print.tune_covlmc <- function(x, ...) {
   } else {
     cat(min(x$results$AIC))
   }
+  cat(") with likelihood function \"", x$initial, "\" (", sep = "")
+  cat(loglikelihood(x$best_model))
   cat(")\n")
   invisible(x)
 }
