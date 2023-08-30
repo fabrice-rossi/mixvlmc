@@ -430,7 +430,7 @@ the full “pruning space” associated to a given data set.</p>
 <span><span class="co">#&gt;  cutoff in quantile scale: 0.1236</span></span>
 <span><span class="co">#&gt;  Number of contexts: 2 </span></span>
 <span><span class="co">#&gt;  Maximum context length: 1 </span></span>
-<span><span class="co">#&gt;  Selected by BIC (245.8001)</span></span></code></pre></div>
+<span><span class="co">#&gt;  Selected by BIC (245.8001) with likelihood function "truncated" (-112.3135)</span></span></code></pre></div>
 <p>and</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/draw.html">draw</a></span><span class="op">(</span><span class="fu"><a href="../reference/as_covlmc.html">as_covlmc</a></span><span class="op">(</span><span class="va">model_tune</span><span class="op">)</span>, model <span class="op">=</span> <span class="st">"full"</span>, p_value <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
@@ -457,7 +457,7 @@ instance <code>min_size=2</code> as follows:</p>
 <span><span class="co">#&gt;  cutoff in quantile scale: 0.01195</span></span>
 <span><span class="co">#&gt;  Number of contexts: 2 </span></span>
 <span><span class="co">#&gt;  Maximum context length: 1 </span></span>
-<span><span class="co">#&gt;  Selected by BIC (245.8001)</span></span></code></pre></div>
+<span><span class="co">#&gt;  Selected by BIC (245.8001) with likelihood function "truncated" (-112.3135)</span></span></code></pre></div>
 <p>and <code>min_size=10</code> as follows:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">model_tune_10</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tune_covlmc.html">tune_covlmc</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">covariates</span>, min_size <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
@@ -466,7 +466,7 @@ instance <code>min_size=2</code> as follows:</p>
 <span><span class="co">#&gt;  cutoff in quantile scale: 0.1236</span></span>
 <span><span class="co">#&gt;  Number of contexts: 2 </span></span>
 <span><span class="co">#&gt;  Maximum context length: 1 </span></span>
-<span><span class="co">#&gt;  Selected by BIC (245.8001)</span></span></code></pre></div>
+<span><span class="co">#&gt;  Selected by BIC (245.8001) with likelihood function "truncated" (-112.3135)</span></span></code></pre></div>
 <p>Here we see no particular effect of the parameter because of the
 simplicity of the problem.</p>
 <p>Let us now come back to the electricity consumption example described
@@ -481,7 +481,7 @@ above. We introduce a very basic day/night covariate as follows:</p>
 <span><span class="co">#&gt;  cutoff in quantile scale: 0.007218</span></span>
 <span><span class="co">#&gt;  Number of contexts: 7 </span></span>
 <span><span class="co">#&gt;  Maximum context length: 3 </span></span>
-<span><span class="co">#&gt;  Selected by BIC (2243.59)</span></span></code></pre></div>
+<span><span class="co">#&gt;  Selected by BIC (2243.59) with likelihood function "truncated" (-1064.74)</span></span></code></pre></div>
 <p>The model selection process can be represented graphically as
 follows:</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
@@ -538,7 +538,7 @@ below:</p>
 <span><span class="co">#&gt;  cutoff in quantile scale: 0.007218</span></span>
 <span><span class="co">#&gt;  Number of contexts: 7 </span></span>
 <span><span class="co">#&gt;  Maximum context length: 3 </span></span>
-<span><span class="co">#&gt;  Selected by BIC (2243.59)</span></span></code></pre></div>
+<span><span class="co">#&gt;  Selected by BIC (2243.59) with likelihood function "truncated" (-1064.74)</span></span></code></pre></div>
 <p>However, increasing the parameter to, e.g., 10 generates a simpler
 but weaker model as show here:</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
@@ -548,7 +548,7 @@ but weaker model as show here:</p>
 <span><span class="co">#&gt;  cutoff in quantile scale: 0.03454</span></span>
 <span><span class="co">#&gt;  Number of contexts: 5 </span></span>
 <span><span class="co">#&gt;  Maximum context length: 2 </span></span>
-<span><span class="co">#&gt;  Selected by BIC (2260.505)</span></span></code></pre></div>
+<span><span class="co">#&gt;  Selected by BIC (2260.505) with likelihood function "truncated" (-1088.409)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="diagnostics">Diagnostics<a class="anchor" aria-label="anchor" href="#diagnostics"></a>

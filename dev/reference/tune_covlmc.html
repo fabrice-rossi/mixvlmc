@@ -80,6 +80,7 @@ by optimizing an information criterion (BIC or AIC).</p>
 <span>  <span class="va">x</span>,</span>
 <span>  <span class="va">covariate</span>,</span>
 <span>  criterion <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"BIC"</span>, <span class="st">"AIC"</span><span class="op">)</span>,</span>
+<span>  initial <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"truncated"</span>, <span class="st">"specific"</span>, <span class="st">"extended"</span><span class="op">)</span>,</span>
 <span>  min_size <span class="op">=</span> <span class="fl">5</span>,</span>
 <span>  max_depth <span class="op">=</span> <span class="fl">100</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="fl">0</span>,</span>
@@ -101,6 +102,12 @@ by optimizing an information criterion (BIC or AIC).</p>
 <dt>criterion</dt>
 <dd><p>criterion used to select the best model. Either <code>"BIC"</code> (default)
 or <code>"AIC"</code> (see details).</p></dd>
+
+
+<dt>initial</dt>
+<dd><p>specifies the likelihood function, more precisely the way the
+first few observations for which contexts cannot be calculated are integrated
+in the likelihood. See <code><a href="loglikelihood.html">loglikelihood()</a></code> for details.</p></dd>
 
 
 <dt>min_size</dt>
@@ -136,6 +143,7 @@ selection process. See details for memory occupation.</p></dd>
 
 <p>a list with the following components:</p><ul><li><p><code>best_model</code>: the optimal VLMC</p></li>
 <li><p><code>criterion</code>: the criterion used to select the optimal VLMC</p></li>
+<li><p><code>initial</code>: the likelihood function used to select the optimal VLMC</p></li>
 <li><p><code>results</code>: a data frame with details about the pruning process</p></li>
 <li><p><code>saved_models</code>: a list of intermediate coVLMCs if <code>save="initial"</code> or
 <code>save="all"</code>. It contains an <code>initial</code> component with the large coVLMC obtained

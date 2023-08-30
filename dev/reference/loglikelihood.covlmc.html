@@ -129,9 +129,8 @@ the log-likelihood of the (CO)VLMC with the following attributes:</p><ul><li><p>
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>The definition of the likelihood function depends on the value of the
 <code>initial</code> parameters, see the section below as well as the dedicated
-vignette: <code><a href="../articles/likelihood.html">vignette("likelihood", package = "mixvlmc")</a></code>.</p>
-<p>For VLMC objects, the method <code>loglikelihood.vlmc</code> will be used. For VLMC with covariables, <code>loglikelihood.covlmc</code>
-will instead be called. For more informations on <code>loglikelihood</code> methods, use <code>methods(loglikelihood)</code> and their associated documentation.</p>
+vignette: <code><a href="../articles/likelihood.html">vignette("likelihood", package = "mixvlmc")</a></code>. VLMC with covariates
+support only <code>"truncated"</code> and <code>"specific"</code> likelihood functions.</p>
     </div>
     <div class="section level2">
     <h2 id="likelihood-calculation">likelihood calculation<a class="anchor" aria-label="anchor" href="#likelihood-calculation"></a></h2>
@@ -156,7 +155,8 @@ the relaxed context matching needs in general to turn internal nodes
 of the context tree into actual context, increasing the number of parameters,
 but not as much as with "specific". However, the likelihood of say <code>x[1]</code>
 with an empty context is generally not 1 and thus the full likelihood is
-smaller than the one computed with "specific".</p></li>
+smaller than the one computed with "specific". The <code>"relaxed"</code> likelihood
+is not supported by <code><a href="covlmc.html">covlmc()</a></code> models.</p></li>
 </ul><p>See the dedicated vignette for a more mathematically oriented discussion:
 <code><a href="../articles/likelihood.html">vignette("likelihood", package = "mixvlmc")</a></code>.</p>
     </div>
