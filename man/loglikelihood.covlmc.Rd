@@ -44,10 +44,8 @@ discrete time series on the new covariates which must be provided through the
 \details{
 The definition of the likelihood function depends on the value of the
 \code{initial} parameters, see the section below as well as the dedicated
-vignette: \code{vignette("likelihood", package = "mixvlmc")}.
-
-For VLMC objects, the method \code{loglikelihood.vlmc} will be used. For VLMC with covariables, \code{loglikelihood.covlmc}
-will instead be called. For more informations on \code{loglikelihood} methods, use \code{methods(loglikelihood)} and their associated documentation.
+vignette: \code{vignette("likelihood", package = "mixvlmc")}. VLMC with covariates
+support only \code{"truncated"} and \code{"specific"} likelihood functions.
 }
 \section{likelihood calculation}{
 
@@ -72,7 +70,8 @@ the relaxed context matching needs in general to turn internal nodes
 of the context tree into actual context, increasing the number of parameters,
 but not as much as with "specific". However, the likelihood of say \code{x[1]}
 with an empty context is generally not 1 and thus the full likelihood is
-smaller than the one computed with "specific".
+smaller than the one computed with "specific". The \code{"relaxed"} likelihood
+is not supported by \code{\link[=covlmc]{covlmc()}} models.
 }
 
 See the dedicated vignette for a more mathematically oriented discussion:

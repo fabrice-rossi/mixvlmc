@@ -138,6 +138,12 @@ logLik.covlmc <- function(object, initial = c("truncated", "specific", "extended
 #' provided, the function evaluates instead the log-likelihood for this (new)
 #' discrete time series on the new covariates which must be provided through the
 #' `newcov` parameter.
+#'
+#' The definition of the likelihood function depends on the value of the
+#' `initial` parameters, see the section below as well as the dedicated
+#' vignette: `vignette("likelihood", package = "mixvlmc")`. VLMC with covariates
+#' support only `"truncated"` and `"specific"` likelihood functions.
+#'
 #' @param vlmc the covlmc representation.
 #' @param newcov an optional data frame with the new values for the covariates.
 #' @inherit loglikelihood
