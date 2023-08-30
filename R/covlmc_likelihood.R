@@ -45,6 +45,7 @@ rec_loglikelihood_covlmc_newdata <- function(tree, d, nb_vals, y, cov, verbose =
         nobs = nrow(glmdata$local_mm)
       )
       if (verbose) {
+        print("Leaf")
         print(all.equal(glmdata$target, tree$model$data$target))
         print(stats::logLik(tree$model$model))
         print(res$nobs)
@@ -52,6 +53,9 @@ rec_loglikelihood_covlmc_newdata <- function(tree, d, nb_vals, y, cov, verbose =
         if (tree$model$hsize > 0) {
           print(utils::head(tree$model$data))
           print(utils::head(glmdata$local_mm))
+        }
+        if (!isTRUE(all.equal(res$ll, tree$model$likelihood))) {
+          print("not the same likelihoods")
         }
       }
       res
@@ -91,11 +95,18 @@ rec_loglikelihood_covlmc_newdata <- function(tree, d, nb_vals, y, cov, verbose =
         print(utils::head(tree$merged_model$data$local_mm))
         print(length(mm_match))
         print(nrow(tree$merged_model$data$local_mm))
+        if (length(mm_match) != nrow(tree$merged_model$data$local_mm)) {
+          print("not the same size")
+        }
       }
       ## update the values
-      sub_ll$ll <- sub_ll$ll + glm_likelihood(tree$merged_model$model, glmdata$local_mm, glmdata$target)
+      merged_ll <- glm_likelihood(tree$merged_model$model, glmdata$local_mm, glmdata$target)
+      sub_ll$ll <- sub_ll$ll + merged_ll
       sub_ll$df <- sub_ll$df + length(tree$megred_model$coefficients)
       sub_ll$nobs <- sub_ll$nobs + nrow(glmdata$local_mm)
+      if (verbose) {
+        print(paste(merged_ll, tree$merged_model$likelihood))
+      }
       sub_ll
     }
   }
