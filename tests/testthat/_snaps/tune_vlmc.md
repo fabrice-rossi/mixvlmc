@@ -4,13 +4,13 @@
      cutoff: 3.379 (quantile: 0.03409)
      Number of contexts: 3 
      Maximum context length: 1 
-     Selected by BIC (980.4549)
+     Selected by BIC (980.4549) with likelihood function "truncated" (-471.5896)
 
 # summary works as expected
 
     VLMC tune results
     
-    Best VLMC selected by BIC (980.4549)
+    Best VLMC selected by BIC (980.4549) with likelihood function "truncated" (-471.5896)
     VLMC context tree on 0, 1, 2 
      cutoff: 3.379 (quantile: 0.03409)
      Number of contexts: 3 

@@ -8,6 +8,7 @@ tune_covlmc(
   x,
   covariate,
   criterion = c("BIC", "AIC"),
+  initial = c("truncated", "specific", "extended"),
   min_size = 5,
   max_depth = 100,
   verbose = 0,
@@ -22,6 +23,10 @@ tune_covlmc(
 
 \item{criterion}{criterion used to select the best model. Either \code{"BIC"} (default)
 or \code{"AIC"} (see details).}
+
+\item{initial}{specifies the likelihood function, more precisely the way the
+first few observations for which contexts cannot be calculated are integrated
+in the likelihood. See \code{\link[=loglikelihood]{loglikelihood()}} for details.}
 
 \item{min_size}{integer >= 1 (default: 2). Minimum number of observations for
 a context in the growing phase of the initial context tree.}
@@ -45,6 +50,7 @@ a list with the following components:
 \itemize{
 \item \code{best_model}: the optimal VLMC
 \item \code{criterion}: the criterion used to select the optimal VLMC
+\item \code{initial}: the likelihood function used to select the optimal VLMC
 \item \code{results}: a data frame with details about the pruning process
 \item \code{saved_models}: a list of intermediate coVLMCs if \code{save="initial"} or
 \code{save="all"}. It contains an \code{initial} component with the large coVLMC obtained

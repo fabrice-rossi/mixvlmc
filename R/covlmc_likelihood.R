@@ -45,6 +45,7 @@ rec_loglikelihood_covlmc_newdata <- function(tree, d, nb_vals, y, cov, verbose =
         nobs = nrow(glmdata$local_mm)
       )
       if (verbose) {
+        print("Leaf")
         print(all.equal(glmdata$target, tree$model$data$target))
         print(stats::logLik(tree$model$model))
         print(res$nobs)
@@ -52,6 +53,9 @@ rec_loglikelihood_covlmc_newdata <- function(tree, d, nb_vals, y, cov, verbose =
         if (tree$model$hsize > 0) {
           print(utils::head(tree$model$data))
           print(utils::head(glmdata$local_mm))
+        }
+        if (!isTRUE(all.equal(res$ll, tree$model$likelihood))) {
+          print("not the same likelihoods")
         }
       }
       res
@@ -70,16 +74,16 @@ rec_loglikelihood_covlmc_newdata <- function(tree, d, nb_vals, y, cov, verbose =
       sub_ll
     } else {
       ## we need to find the matched data
-      mm_match <- tree$match
-      non_merged <- setdiff(seq_along(tree$children), tree$merged)
+      mm_match <- c()
       if (verbose) {
-        print(paste("Removing", non_merged))
+        print("Merged model")
+        print(paste("Keeping", paste(tree$merged, collapse = " ")))
       }
-      for (v in non_merged) {
+      for (v in tree$merged) {
         if (verbose) {
-          print(tree$children[[v]]$match)
+          print(1 + tree$children[[v]]$match)
         }
-        mm_match <- setdiff(mm_match, 1 + tree$children[[v]]$match)
+        mm_match <- c(mm_match, 1 + tree$children[[v]]$match)
       }
       if (verbose) {
         print(mm_match)
@@ -91,11 +95,18 @@ rec_loglikelihood_covlmc_newdata <- function(tree, d, nb_vals, y, cov, verbose =
         print(utils::head(tree$merged_model$data$local_mm))
         print(length(mm_match))
         print(nrow(tree$merged_model$data$local_mm))
+        if (length(mm_match) != nrow(tree$merged_model$data$local_mm)) {
+          print("not the same size")
+        }
       }
       ## update the values
-      sub_ll$ll <- sub_ll$ll + glm_likelihood(tree$merged_model$model, glmdata$local_mm, glmdata$target)
+      merged_ll <- glm_likelihood(tree$merged_model$model, glmdata$local_mm, glmdata$target)
+      sub_ll$ll <- sub_ll$ll + merged_ll
       sub_ll$df <- sub_ll$df + length(tree$megred_model$coefficients)
       sub_ll$nobs <- sub_ll$nobs + nrow(glmdata$local_mm)
+      if (verbose) {
+        print(paste(merged_ll, tree$merged_model$likelihood))
+      }
       sub_ll
     }
   }
@@ -138,6 +149,12 @@ logLik.covlmc <- function(object, initial = c("truncated", "specific", "extended
 #' provided, the function evaluates instead the log-likelihood for this (new)
 #' discrete time series on the new covariates which must be provided through the
 #' `newcov` parameter.
+#'
+#' The definition of the likelihood function depends on the value of the
+#' `initial` parameters, see the section below as well as the dedicated
+#' vignette: `vignette("likelihood", package = "mixvlmc")`. VLMC with covariates
+#' support only `"truncated"` and `"specific"` likelihood functions.
+#'
 #' @param vlmc the covlmc representation.
 #' @param newcov an optional data frame with the new values for the covariates.
 #' @inherit loglikelihood

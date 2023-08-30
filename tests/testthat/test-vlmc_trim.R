@@ -16,3 +16,12 @@ test_that("vlmc trimming preserve core information when needed", {
   )
   expect_true(object.size(trimmed_model) < object.size(model))
 })
+
+test_that("vlmc trimming removes positions", {
+  pc <- powerconsumption[powerconsumption$week == 5, ]
+  dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.25, 0.5, 0.75, 1))))
+  model <- vlmc(dts, keep_match = TRUE)
+  expect_no_error(contexts(model, positions = TRUE))
+  trimmed_model <- trim(model)
+  expect_error(contexts(trimmed_model, positions = TRUE))
+})

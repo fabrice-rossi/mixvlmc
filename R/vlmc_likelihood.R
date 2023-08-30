@@ -126,7 +126,8 @@ logLik.vlmc <- function(object, initial = c("truncated", "specific", "extended")
 #'   of the context tree into actual context, increasing the number of parameters,
 #'   but not as much as with "specific". However, the likelihood of say `x[1]`
 #'   with an empty context is generally not 1 and thus the full likelihood is
-#'   smaller than the one computed with "specific".
+#'   smaller than the one computed with "specific". The `"relaxed"` likelihood
+#'   is not supported by [covlmc()] models.
 #'
 #' See the dedicated vignette for a more mathematically oriented discussion:
 #' `vignette("likelihood", package = "mixvlmc")`.

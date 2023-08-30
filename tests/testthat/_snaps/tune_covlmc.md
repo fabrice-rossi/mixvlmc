@@ -7,7 +7,7 @@
        cutoff in quantile scale: 7.738e-07
        Number of contexts: 3 
        Maximum context length: 1 
-       Selected by BIC (1044.993)
+       Selected by BIC (1044.993) with likelihood function "truncated" (-466.5832)
 
 ---
 
@@ -18,7 +18,7 @@
        cutoff in quantile scale: 0.5
        Number of contexts: 3 
        Maximum context length: 1 
-       Selected by AIC (947.2463)
+       Selected by AIC (947.2463) with likelihood function "truncated" (-449.6231)
 
 # summary works as expected
 
@@ -27,7 +27,7 @@
     Output
       VLMC with covariate tune results
       
-      Best VLMC with covariate selected by BIC (1044.993)
+      Best VLMC with covariate selected by BIC (1044.993) with likelihood function "truncated" (-466.5832)
       VLMC with covariate context tree on A, B, C 
        cutoff in quantile scale: 7.738e-07
        Number of contexts: 3 
@@ -47,7 +47,7 @@
     Output
       VLMC with covariate tune results
       
-      Best VLMC with covariate selected by AIC (947.2463)
+      Best VLMC with covariate selected by AIC (947.2463) with likelihood function "truncated" (-449.6231)
       VLMC with covariate context tree on A, B, C 
        cutoff in quantile scale: 0.5
        Number of contexts: 3 

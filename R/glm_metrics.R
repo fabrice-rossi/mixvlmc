@@ -16,7 +16,20 @@ glm_likelihood.vglm <- function(model, mm, target) {
   } else {
     probs <- VGAM::predictvglm(model, mm, type = "response")
   }
-  sum(log(probs) * stats::model.matrix(~ target - 1))
+  smm <- stats::model.matrix(~ target - 1)
+  if (ncol(smm) != ncol(probs)) {
+    ## degenerate model
+    model_levels <- glm_levels(model)
+    mapper <- match(levels(target), model_levels)
+    for (i in (1:ncol(smm))[is.na(mapper)]) {
+      if (any(smm[, i] == 1)) {
+        return(-Inf)
+      }
+    }
+    sum(log(probs) * smm[, which(!is.na(mapper)), drop = FALSE])
+  } else {
+    sum(log(probs) * smm)
+  }
 }
 
 #' @exportS3Method
