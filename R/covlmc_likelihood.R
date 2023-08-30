@@ -70,16 +70,16 @@ rec_loglikelihood_covlmc_newdata <- function(tree, d, nb_vals, y, cov, verbose =
       sub_ll
     } else {
       ## we need to find the matched data
-      mm_match <- tree$match
-      non_merged <- setdiff(seq_along(tree$children), tree$merged)
+      mm_match <- c()
       if (verbose) {
-        print(paste("Removing", non_merged))
+        print("Merged model")
+        print(paste("Keeping", paste(tree$merged, collapse = " ")))
       }
-      for (v in non_merged) {
+      for (v in tree$merged) {
         if (verbose) {
-          print(tree$children[[v]]$match)
+          print(1 + tree$children[[v]]$match)
         }
-        mm_match <- setdiff(mm_match, 1 + tree$children[[v]]$match)
+        mm_match <- c(mm_match, 1 + tree$children[[v]]$match)
       }
       if (verbose) {
         print(mm_match)
