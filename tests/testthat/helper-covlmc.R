@@ -136,3 +136,21 @@ compare_covlmc <- function(m1, m2) {
   }
   rec_compare_covlmc(m1, m2)
 }
+
+build_degenerate_elec_model <- function(with_new_data = FALSE) {
+  pc_week_15_16 <- powerconsumption[powerconsumption$week %in% c(15, 16), ]
+  elec <- pc_week_15_16$active_power
+  elec_dts <- cut(elec, breaks = c(0, 0.4, 2, 8), labels = c("low", "typical", "high"))
+  elec_cov <- data.frame(day = (pc_week_15_16$hour >= 7 & pc_week_15_16$hour <= 18))
+  elec_tune <- tune_covlmc(elec_dts, elec_cov, min_size = 5)
+  elec_model <- prune(as_covlmc(elec_tune), alpha = 3.961e-10)
+  result <- list(model = elec_model, dts = elec_dts, cov = elec_cov)
+  if (with_new_data) {
+    pc_week_17_18 <- powerconsumption[powerconsumption$week %in% c(17, 18), ]
+    elec_new_dts <- cut(pc_week_17_18$active_power, breaks = c(0, 0.4, 2, 8), labels = c("low", "typical", "high"))
+    elec_new_cov <- data.frame(day = (pc_week_17_18$hour >= 7 & pc_week_17_18$hour <= 18))
+    result$new_cov <- elec_new_cov
+    result$new_dts <- elec_new_dts
+  }
+  result
+}
