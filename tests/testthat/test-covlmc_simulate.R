@@ -100,3 +100,16 @@ test_that("covlmc simulate detects new levels in factors", {
   new_cov$y[2] <- 6
   expect_error(simulate(model, 100, covariate = new_cov), regexp = "Factor y has new levels 5, 6")
 })
+
+test_that("covlmc simulate works correctly with degenerate models", {
+  pc_week_15_16 <- powerconsumption[powerconsumption$week %in% c(15, 16), ]
+  elec <- pc_week_15_16$active_power
+  elec_dts <- cut(elec, breaks = c(0, 0.4, 2, 8), labels = c("low", "typical", "high"))
+  elec_cov <- data.frame(day = (pc_week_15_16$hour >= 7 & pc_week_15_16$hour <= 18))
+  elec_tune <- tune_covlmc(elec_dts, elec_cov, min_size = 5)
+  elec_model <- prune(as_covlmc(elec_tune), alpha = 3.961e-10)
+  pc_week_17_18 <- powerconsumption[powerconsumption$week %in% c(17, 18), ]
+  elec_new_cov <- data.frame(day = (pc_week_17_18$hour >= 7 & pc_week_17_18$hour <= 18))
+  expect_no_error(result <- simulate(elec_model, nsim = nrow(elec_new_cov), covariate = elec_new_cov, seed = 0))
+  expect_equal(length(result), nrow(elec_new_cov))
+})
