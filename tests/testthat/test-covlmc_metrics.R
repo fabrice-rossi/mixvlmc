@@ -61,3 +61,13 @@ test_that("metrics.covlmc works as expected on two state chains", {
   expect_lte(sum(m_metrics$conf_mat), length(dts))
   expect_true(all(colSums(m_metrics$conf_mat) <= table(dts)))
 })
+
+test_that("metrics.covlmc works as expected on degenerate models", {
+  pc_week_15_16 <- powerconsumption[powerconsumption$week %in% c(15, 16), ]
+  elec <- pc_week_15_16$active_power
+  elec_dts <- cut(elec, breaks = c(0, 0.4, 2, 8), labels = c("low", "typical", "high"))
+  elec_cov <- data.frame(day = (pc_week_15_16$hour >= 7 & pc_week_15_16$hour <= 18))
+  elec_tune <- tune_covlmc(elec_dts, elec_cov, min_size = 5)
+  elec_model <- prune(as_covlmc(elec_tune), alpha = 3.961e-10)
+  expect_no_error(metrics(elec_model))
+})
