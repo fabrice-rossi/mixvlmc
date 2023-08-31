@@ -135,7 +135,19 @@ ctx_tree <- function(x, min_size = 2L, max_depth = 100L, keep_position = TRUE) {
   if (length(vals) > max(10, 0.05 * length(x))) {
     warning(paste0("x as numerous unique values (", length(vals), ")"))
   }
-  grow_ctx_tree(ix, vals, min_size = min_size, max_depth = max_depth, keep_match = keep_position, compute_stats = TRUE)
+  result <- grow_ctx_tree(ix, vals, min_size = min_size, max_depth = max_depth, keep_match = keep_position, compute_stats = TRUE)
+  result$keep_match <- keep_position
+  result$data_size <- length(x)
+  if (keep_position) {
+    ## handle the case where the root is context
+    if (!is_full_node(result)) {
+      result$match <- 0:(length(x) - 1)
+    }
+  }
+  if (depth(result) > 0) {
+    result$ix <- ix[1:min(depth(result), length(x))]
+  }
+  result
 }
 
 #' Test if the object is a context tree

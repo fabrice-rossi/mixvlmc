@@ -8,7 +8,7 @@
 \usage{
 as_vlmc(x, ...)
 
-\method{as_vlmc}{ctx_tree}(x, ...)
+\method{as_vlmc}{ctx_tree}(x, alpha, cutoff, ...)
 
 \method{as_vlmc}{tune_vlmc}(x, ...)
 }
@@ -16,12 +16,23 @@ as_vlmc(x, ...)
 \item{x}{an object to convert into a vlmc.}
 
 \item{...}{additional arguments for conversion functions.}
+
+\item{alpha}{cut off parameter applied during the conversion, quantile scale
+(if specified)}
+
+\item{cutoff}{cut off parameter applied during the conversion, native scale
+(if specified)}
 }
 \value{
 a vlmc
 }
 \description{
 This generic function converts an object into a vlmc.
+}
+\details{
+This function converts a context tree into a VLMC. If \code{alpha} or
+\code{cutoff} is specified, it is used to reduce the complexity of the tree as in
+a direct call to \code{\link[=vlmc]{vlmc()}} (\code{\link[=prune]{prune()}}).
 }
 \examples{
 ## conversion from a context tree
