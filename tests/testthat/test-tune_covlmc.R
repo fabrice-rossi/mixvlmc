@@ -90,3 +90,13 @@ test_that("summary works as expected", {
   expect_snapshot(print(summary(bt_covlmc)))
   expect_snapshot(print(summary(at_covlmc)))
 })
+
+
+test_that("tune_vlmc verbosity is adequate", {
+  withr::local_seed(42)
+  x <- sample(c("A", "B", "C"), 500, replace = TRUE)
+  y <- ifelse(runif(length(x)) > 0.5, c(x[-1], sample(c("A", "B", "C"), 1)), c(x[-c(1, 2)], sample(c("A", "B", "C"), 2, replace = TRUE)))
+  y <- as.factor(ifelse(runif(length(x)) > 0.2, y, sample(c("A", "B", "C"), 500, replace = TRUE)))
+  df_y <- data.frame(y = y, z = runif(length(y)))
+  expect_snapshot_output(tune_covlmc(x, df_y, criterion = "BIC", verbose = 1))
+})

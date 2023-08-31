@@ -113,3 +113,63 @@
      21.194476 6.242464e-10     1           2     -495.8001  999.6002 1016.4586
      25.464063 8.731682e-12     0           1     -519.1294 1042.2587 1050.6880
 
+# tune_vlmc verbosity is adequate
+
+    Fitting a vlmc with max_depth= 2 and cutoff= 1.553652 
+    Max depth reached, increasing it to 4 
+    Max depth reached, increasing it to 8 
+    Max depth reached, increasing it to 16 
+    Initial criterion= Inf 
+    Improving criterion= 1506.786 
+    Pruning vlmc with cutoff= 1.56652 
+    Improving criterion= 1462.948 
+    Pruning vlmc with cutoff= 1.59511 
+    Improving criterion= 1442.42 
+    Pruning vlmc with cutoff= 1.617948 
+    Improving criterion= 1433.25 
+    Pruning vlmc with cutoff= 1.629846 
+    Pruning vlmc with cutoff= 1.638429 
+    Improving criterion= 1427.373 
+    Pruning vlmc with cutoff= 1.65907 
+    Improving criterion= 1407.157 
+    Pruning vlmc with cutoff= 1.685882 
+    Improving criterion= 1386.83 
+    Pruning vlmc with cutoff= 1.727358 
+    Improving criterion= 1367.951 
+    Pruning vlmc with cutoff= 1.771785 
+    Improving criterion= 1335.574 
+    Pruning vlmc with cutoff= 1.806683 
+    Improving criterion= 1326.739 
+    Pruning vlmc with cutoff= 1.83337 
+    Improving criterion= 1305.811 
+    Pruning vlmc with cutoff= 1.841439 
+    Improving criterion= 1297.083 
+    Pruning vlmc with cutoff= 1.906938 
+    Improving criterion= 1210.909 
+    Pruning vlmc with cutoff= 1.968433 
+    Improving criterion= 1169.822 
+    Pruning vlmc with cutoff= 2.079931 
+    Improving criterion= 1150.278 
+    Pruning vlmc with cutoff= 2.212651 
+    Improving criterion= 1131.273 
+    Pruning vlmc with cutoff= 2.256204 
+    Improving criterion= 1111.181 
+    Pruning vlmc with cutoff= 2.303889 
+    Improving criterion= 1081.851 
+    Pruning vlmc with cutoff= 2.552296 
+    Improving criterion= 1041.901 
+    Pruning vlmc with cutoff= 2.834259 
+    Improving criterion= 1023.176 
+    Pruning vlmc with cutoff= 2.88031 
+    Improving criterion= 996.5957 
+    Pruning vlmc with cutoff= 3.378896 
+    Improving criterion= 980.4549 
+    Pruning vlmc with cutoff= 8.715379 
+    Pruning vlmc with cutoff= 21.19448 
+    Pruning vlmc with cutoff= 25.46406 
+    VLMC context tree on 0, 1, 2 
+     cutoff: 3.379 (quantile: 0.03409)
+     Number of contexts: 3 
+     Maximum context length: 1 
+     Selected by BIC (980.4549) with likelihood function "truncated" (-471.5896)
+
