@@ -40,11 +40,7 @@ test_that("models are consistent", {
   dts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
   for (engine in c("glm", "multinom")) {
     withr::local_options(mixvlmc.predictive = engine)
-    if (engine == "multinom") {
-      suppressWarnings(expect_warning(m_cov <- covlmc(dts, dts_cov, min_size = 4, keep_data = TRUE, alpha = 0.5)))
-    } else {
-      m_cov <- covlmc(dts, dts_cov, min_size = 4, keep_data = TRUE, alpha = 0.5)
-    }
+    m_cov <- covlmc(dts, dts_cov, min_size = 4, keep_data = TRUE, alpha = 0.5)
     ctx_m_cov_m <- contexts(m_cov, model = "full")
     ctx_m_cov_c <- contexts(m_cov, model = "coef", hsize = TRUE)
     expect_equal(ctx_m_cov_c$coef, lapply(contexts(m_cov, type = "data.frame", model = "full")$model, glm_coef, dts_cov), ignore_attr = TRUE)

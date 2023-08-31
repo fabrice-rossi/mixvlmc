@@ -51,6 +51,7 @@ Suggests:
     rmarkdown,
     testthat (>= 3.0.0),
     tibble,
+    vdiffr,
     waldo
 Config/testthat/edition: 3
 Depends: 

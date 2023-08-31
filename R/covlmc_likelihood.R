@@ -44,7 +44,7 @@ rec_loglikelihood_covlmc_newdata <- function(tree, d, nb_vals, y, cov, verbose =
         df = length(tree$model$coefficients),
         nobs = nrow(glmdata$local_mm)
       )
-      if (verbose) {
+      if (verbose) { # nocov start
         print("Leaf")
         print(all.equal(glmdata$target, tree$model$data$target))
         print(stats::logLik(tree$model$model))
@@ -57,7 +57,7 @@ rec_loglikelihood_covlmc_newdata <- function(tree, d, nb_vals, y, cov, verbose =
         if (!isTRUE(all.equal(res$ll, tree$model$likelihood))) {
           print("not the same likelihoods")
         }
-      }
+      } # nocov end
       res
     }
   } else {
@@ -75,22 +75,22 @@ rec_loglikelihood_covlmc_newdata <- function(tree, d, nb_vals, y, cov, verbose =
     } else {
       ## we need to find the matched data
       mm_match <- c()
-      if (verbose) {
+      if (verbose) { # nocov start
         print("Merged model")
         print(paste("Keeping", paste(tree$merged, collapse = " ")))
-      }
+      } # nocov end
       for (v in tree$merged) {
-        if (verbose) {
+        if (verbose) { # nocov start
           print(1 + tree$children[[v]]$match)
-        }
+        } # nocov end
         mm_match <- c(mm_match, 1 + tree$children[[v]]$match)
       }
-      if (verbose) {
+      if (verbose) { # nocov start
         print(mm_match)
-      }
+      } # nocov end
       ## prepare the data
       glmdata <- prepare_glm(cov, mm_match, tree$merged_model$hsize, y, from = d - tree$merged_model$hsize)
-      if (verbose) {
+      if (verbose) { # nocov start
         print(utils::head(glmdata$local_mm))
         print(utils::head(tree$merged_model$data$local_mm))
         print(length(mm_match))
@@ -98,15 +98,15 @@ rec_loglikelihood_covlmc_newdata <- function(tree, d, nb_vals, y, cov, verbose =
         if (length(mm_match) != nrow(tree$merged_model$data$local_mm)) {
           print("not the same size")
         }
-      }
+      } # nocov end
       ## update the values
       merged_ll <- glm_likelihood(tree$merged_model$model, glmdata$local_mm, glmdata$target)
       sub_ll$ll <- sub_ll$ll + merged_ll
       sub_ll$df <- sub_ll$df + length(tree$megred_model$coefficients)
       sub_ll$nobs <- sub_ll$nobs + nrow(glmdata$local_mm)
-      if (verbose) {
+      if (verbose) { # nocov start
         print(paste(merged_ll, tree$merged_model$likelihood))
-      }
+      } # nocov end
       sub_ll
     }
   }

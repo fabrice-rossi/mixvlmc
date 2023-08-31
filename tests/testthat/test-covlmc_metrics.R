@@ -61,3 +61,8 @@ test_that("metrics.covlmc works as expected on two state chains", {
   expect_lte(sum(m_metrics$conf_mat), length(dts))
   expect_true(all(colSums(m_metrics$conf_mat) <= table(dts)))
 })
+
+test_that("metrics.covlmc works as expected on degenerate models", {
+  d_model <- build_degenerate_elec_model(FALSE)
+  expect_no_error(metrics(d_model$model))
+})

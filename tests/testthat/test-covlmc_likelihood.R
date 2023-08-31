@@ -34,17 +34,16 @@ test_that("likelihood calculation on real data", {
 })
 
 test_that("likelihood calculation on real data with merged models", {
-  pc_week_15_16 <- powerconsumption[powerconsumption$week %in% c(15, 16), ]
-  elec <- pc_week_15_16$active_power
-  elec_dts <- cut(elec, breaks = c(0, 0.4, 2, 8), labels = c("low", "typical", "high"))
-  elec_cov <- data.frame(day = (pc_week_15_16$hour >= 7 & pc_week_15_16$hour <= 18))
-  elec_tune <- tune_covlmc(elec_dts, elec_cov, min_size = 5)
   for (engine in c("glm", "multinom")) {
     withr::local_options(mixvlmc.predictive = engine)
-    model <- prune(elec_tune$best_model, alpha = 3.961e-10)
+    d_model <- build_degenerate_elec_model(FALSE)
     for (initial in c("truncated", "specific")) {
-      expect_identical(loglikelihood(model, newdata = elec_dts, newcov = elec_cov, initial = initial),
-        loglikelihood(model, initial = initial),
+      expect_identical(
+        loglikelihood(d_model$model,
+          newdata = d_model$dts,
+          newcov = d_model$cov, initial = initial
+        ),
+        loglikelihood(d_model$model, initial = initial),
         tolerance = 1e-7
       )
     }

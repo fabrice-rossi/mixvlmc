@@ -124,9 +124,9 @@ node_prune_model <- function(model, cov_dim, nb_vals, alpha, keep_data = FALSE, 
     p_value <- NA
     hsize <- model$hsize
     for (k in 1:nb) {
-      if (verbose) {
+      if (verbose) { # nocov start
         print(paste("node_prune_model", k))
-      }
+      } # nocov end
       h0mm <- local_mm[, -seq(ncol(local_mm), by = -1, length.out = cov_dim * k), drop = FALSE]
       H0_local_glm <- fit_glm(target, h0mm, nb_vals, control)
       if (is_glm_low_rank(H0_local_glm)) {
@@ -148,9 +148,9 @@ node_prune_model <- function(model, cov_dim, nb_vals, alpha, keep_data = FALSE, 
         hsize <- hsize - 1L
       } else {
         ## H0 is rejected, we break the loop
-        if (verbose) {
+        if (verbose) { # nocov start
           print("rejecting H0")
-        }
+        } # nocov end
         ## we need to propagate the p-value
         if (is.null(current_model)) {
           model$p_value <- p_value
@@ -209,25 +209,25 @@ ctx_tree_fit_glm <- function(tree, y, covariate, alpha, control, assume_model = 
           } else if (nb_vals == 2) {
             stop("internal error in ctx_free_fit_glm: missing model with assume_model = TRUE")
           }
-          if (verbose) {
+          if (verbose) { # nocov start
             print("model recomputation is needed")
-          }
+          } # nocov end
         }
         ## let's compute the local model and return it
         ## prunable is true as there is no sub tree
-        if (verbose) {
+        if (verbose) { # nocov start
           print(paste(ctx, collapse = " "))
           print(paste("call to glm with d=", d, sep = ""))
-        }
+        } # nocov end
         res <- list(
           model = node_fit_glm(tree$match, d, y, covariate, alpha, nb_vals, control = control),
           match = tree$match,
           f_by = tree$f_by
         )
         res$prunable <- TRUE
-        if (verbose) {
+        if (verbose) { # nocov start
           print(res$model$hsize)
-        }
+        } # nocov end
         res
       } else {
         ## the recursive part
@@ -275,12 +275,12 @@ ctx_tree_fit_glm <- function(tree, y, covariate, alpha, control, assume_model = 
             }
           }
         }
-        if (verbose) {
+        if (verbose) { # nocov start
           print(paste(
             "children:", nb_children, "models:", nb_models,
             "prunable:", nb_prunable, "rejected:", nb_rejected
           ))
-        }
+        } # nocov end
         ## we have several different possible situations, based on the assumption
         ## that the tree is full
         ## 1) at least one H0 is rejected
@@ -316,17 +316,17 @@ ctx_tree_fit_glm <- function(tree, y, covariate, alpha, control, assume_model = 
           if (!is.null(tree[["cache"]]) && !is.null(tree[["cache"]][["model"]])) {
             local_model <- tree[["cache"]][["model"]]
             p_value <- tree[["cache"]][["p_value"]]
-            if (verbose) {
+            if (verbose) { # nocov start
               print("Reusing cached model")
-            }
+            } # nocov end
           } else {
-            if (verbose) {
+            if (verbose) { # nocov start
               print(paste("fitting a local model (of full rank) with hsize", max_hsize, "at depth", d))
-            }
+            } # nocov end
             local_model <- node_fit_glm(tree$match, max_hsize, y, covariate, alpha, nb_vals, return_all = TRUE, control, d - max_hsize)
-            if (verbose) {
+            if (verbose) { # nocov start
               print(paste(local_model$H1_model$H0, local_model$H1_model$hsize))
-            }
+            } # nocov end
           }
         }
         if (need_merged_model) {
@@ -334,20 +334,20 @@ ctx_tree_fit_glm <- function(tree, y, covariate, alpha, control, assume_model = 
           if (!is.null(tree[["cache"]]) && !is.null(tree[["cache"]][["merged_model"]])) {
             local_model <- tree[["cache"]][["merged_model"]]
             p_value <- tree[["cache"]][["p_value"]]
-            if (verbose) {
+            if (verbose) { # nocov start
               print("Reusing cached model")
-            }
+            } # nocov end
           } else {
-            if (verbose) {
+            if (verbose) { # nocov start
               print(paste("fitting a merged model for:", paste(pr_candidates, collapse = " ")))
-            }
+            } # nocov end
             ## prepare the data set
             ## we need to reextract the data as models can use different history sizes
             ## shift the index by one to account for the reduced history
             full_index <- 1L + unlist(lapply(submodels[pr_candidates], function(x) x$match))
-            if (verbose) {
+            if (verbose) { # nocov start
               print(paste("call to glm with d=", d, sep = ""))
-            }
+            } # nocov end
             local_model <- node_fit_glm(full_index, max_hsize, y, covariate, alpha, nb_vals, return_all = TRUE, control, d - max_hsize)
           }
         }
@@ -375,14 +375,14 @@ ctx_tree_fit_glm <- function(tree, y, covariate, alpha, control, assume_model = 
           sub_df <- 0L
           for (v in pr_candidates) {
             sub_df <- sub_df + (1L + ncol(covariate) * submodels[[v]][["model"]]$hsize) * (nb_vals - 1L)
-            if (verbose) {
+            if (verbose) { # nocov start
               print(paste(v, submodels[[v]][["model"]]$hsize, actual_model$hsize))
-            }
+            } # nocov end
             if (submodels[[v]][["model"]]$hsize == actual_model$hsize) {
               local_data <- submodels[[v]][["model"]]$data
             } else {
-              local_data <- prepare_glm(covariate, 1L + submodels[[v]]$match, max_hsize, y, d - max_hsize)
-              if (verbose) {
+              local_data <- prepare_glm(covariate, 1L + submodels[[v]]$match, actual_model$hsize, y, d - actual_model$hsize)
+              if (verbose) { # nocov start
                 print("preparing local data")
                 print(paste(ctx, collapse = ", "))
                 for (tmp in 1:5) {
@@ -390,7 +390,7 @@ ctx_tree_fit_glm <- function(tree, y, covariate, alpha, control, assume_model = 
                   print(y[(submodels[[v]]$match[tmp] + 1L):(submodels[[v]]$match[tmp] + d + 1L)])
                   print("")
                 }
-              }
+              } # nocov end
             }
             ll_model_H0_sub <- glm_likelihood(actual_model$model, local_data$local_mm, local_data$target)
             if (is.na(ll_model_H0_sub)) {
@@ -400,9 +400,9 @@ ctx_tree_fit_glm <- function(tree, y, covariate, alpha, control, assume_model = 
             ll_model_H0 <- ll_model_H0 + ll_model_H0_sub
             ll_H0 <- ll_H0 + submodels[[v]][["model"]]$likelihood
           }
-          if (verbose) {
+          if (verbose) { # nocov start
             print(paste("# of parameters", local_df, sub_df))
-          }
+          } # nocov end
           lambda <- 2 * (ll_H0 - ll_model_H0)
           p_value <- stats::pchisq(as.numeric(lambda),
             df = sub_df - local_df,
@@ -415,17 +415,17 @@ ctx_tree_fit_glm <- function(tree, y, covariate, alpha, control, assume_model = 
               print(submodels[[v]]$model$model)
             }
           }
-          if (verbose) {
+          if (verbose) { # nocov start
             print(paste(lambda, p_value))
-          }
+          } # nocov end
         }
         ## let prepare first the children to keep
         if (need_local_model) {
           if (!is.na(p_value) && p_value > alpha) {
             ## we remove the prunable subtrees all together
-            if (verbose) {
+            if (verbose) { # nocov start
               print("pruning the subtree")
-            }
+            } # nocov end
             if (is.na(local_model$p_value)) {
               result$model <- local_model$H0_model
             } else {
@@ -437,9 +437,9 @@ ctx_tree_fit_glm <- function(tree, y, covariate, alpha, control, assume_model = 
               result$model$p_value <- local_model$p_value
             }
             result$prunable <- TRUE
-            if (verbose) {
+            if (verbose) { # nocov start
               print(result$model$model)
-            }
+            } # nocov end
           } else {
             ## we throw away the local model and keep the children
             result$children <- submodels
@@ -453,9 +453,9 @@ ctx_tree_fit_glm <- function(tree, y, covariate, alpha, control, assume_model = 
           result$prunable <- FALSE
           if (!is.na(p_value) && p_value > alpha) {
             ## we merge the models
-            if (verbose) {
+            if (verbose) { # nocov start
               print("merging sub models")
-            }
+            } # nocov end
             for (v in pr_candidates) {
               submodels[[v]][["model"]] <- NULL
             }
@@ -487,9 +487,9 @@ ctx_tree_fit_glm <- function(tree, y, covariate, alpha, control, assume_model = 
         ## then we need to back prune each model
         if (is.null(result$merged_model)) {
           if (!is.null(result$children)) {
-            if (verbose) {
+            if (verbose) { # nocov start
               print(paste("Trying to prune covariables", paste(pr_candidates, collapse = " ")))
-            }
+            } # nocov end
             for (v in pr_candidates) {
               result$children[[v]][["model"]] <-
                 node_prune_model(result$children[[v]][["model"]], ncol(covariate), nb_vals, alpha, keep_local_data, control)
@@ -497,9 +497,9 @@ ctx_tree_fit_glm <- function(tree, y, covariate, alpha, control, assume_model = 
           }
         } else {
           if (result$merged_model$H0) {
-            if (verbose) {
+            if (verbose) { # nocov start
               print("Trying to prune the merged model covariables")
-            }
+            } # nocov end
             result$merged_model <- node_prune_model(result$merged_model, ncol(covariate), nb_vals, alpha, keep_local_data, control)
           }
         }

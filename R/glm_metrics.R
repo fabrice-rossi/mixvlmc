@@ -39,7 +39,28 @@ glm_likelihood.multinom <- function(model, mm, target) {
   if (ncol(tm) == 1) {
     sum_log_prob(probs, tm[, 1]) + sum_log_prob(1 - probs, 1 - tm[, 1])
   } else {
-    sum(log(probs) * tm)
+    if (!is.matrix(probs) || ncol(probs) != ncol(tm)) {
+      ## degenerate model
+      model_levels <- glm_levels(model)
+      mapper <- match(levels(target), model_levels)
+      for (i in (1:ncol(tm))[is.na(mapper)]) {
+        if (any(tm[, i] == 1)) {
+          return(-Inf)
+        }
+      }
+      tm_tokeep <- tm[, which(!is.na(mapper)), drop = FALSE]
+      if (!is.matrix(probs)) {
+        ## this should only happen when the model has degenerate to
+        ## a single regression and we should have only two
+        ## columns in tm_tokeep
+        assertthat::assert_that(ncol(tm_tokeep) == 2)
+        sum_log_prob(probs, tm_tokeep[, 2]) + sum_log_prob(1 - probs, 1 - tm_tokeep[, 2])
+      } else {
+        sum(log(probs) * tm)
+      }
+    } else {
+      sum(log(probs) * tm)
+    }
   }
 }
 

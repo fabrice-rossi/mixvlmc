@@ -32,13 +32,36 @@ vgam_warning_ignore <- function(w) {
   }
 }
 
+multinom_warning_ignore_generator <- function(target, target_dist) {
+  missing <- levels(target)[target_dist == 0L]
+  if (length(missing) > 0) {
+    the_msg <- stringr::fixed(
+      stringr::str_replace(
+        ngettext(length(missing),
+          "group %s is empty",
+          "groups %s are empty",
+          domain = "R-nnet"
+        ), stringr::fixed("%s"),
+        paste(sQuote(missing), collapse = " ")
+      )
+    )
+    \(w) {
+      if (stringr::str_detect(w$message, the_msg)) {
+        rlang::cnd_muffle(w)
+      }
+    }
+  } else {
+    \(w) {}
+  }
+}
+
 fit_glm <- function(target, mm, nb_vals, control) {
   assertthat::assert_that(nrow(mm) > 0)
   engine <- options()[["mixvlmc.predictive"]]
   assertthat::assert_that(engine %in% c("glm", "multinom"))
   target_dist <- table(target)
-  target_dist <- target_dist[target_dist > 0]
-  if (length(target_dist) == 1) {
+  non_empty <- target_dist[target_dist > 0]
+  if (length(non_empty) == 1) {
     ## degenerate case
     constant_model(target, mm, nb_vals, control$pseudo_obs)
   } else {
@@ -141,9 +164,24 @@ fit_glm <- function(target, mm, nb_vals, control) {
     } else if (engine == "multinom") {
       if (ncol(mm) > 0) {
         mm$target <- target
-        result <- nnet::multinom(target ~ ., data = mm, trace = FALSE, maxit = options()[["mixvlmc.maxit"]])
+        try_nnet <- try(
+          withCallingHandlers(
+            warning = multinom_warning_ignore_generator(target, target_dist),
+            result <- nnet::multinom(target ~ ., data = mm, trace = FALSE, maxit = options()[["mixvlmc.maxit"]])
+          ),
+          silent = TRUE
+        )
       } else {
-        result <- nnet::multinom(target ~ 1, trace = FALSE)
+        try_nnet <- try(
+          withCallingHandlers(
+            warning = multinom_warning_ignore_generator(target, target_dist),
+            result <- nnet::multinom(target ~ 1, trace = FALSE)
+          ),
+          silent = TRUE
+        )
+      }
+      if (inherits(try_nnet, "try-error")) {
+        stop(attr(try_nnet, "condition"))
       }
       result$rank <- length(stats::coef(result))
       result

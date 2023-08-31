@@ -54,6 +54,11 @@ test_that("print works as expected", {
   data_set <- build_markov_chain(500, 3, seed = 0)
   t_vlmc_auto <- tune_vlmc(data_set$x, max_depth = 2)
   expect_snapshot_output(print(t_vlmc_auto))
+  t_vlmc_auto <- tune_vlmc(data_set$x,
+    max_depth = 2,
+    initial = "extended", criterion = "AIC"
+  )
+  expect_snapshot_output(print(t_vlmc_auto))
 })
 
 test_that("summary works as expected", {
@@ -62,4 +67,14 @@ test_that("summary works as expected", {
   data_set <- build_markov_chain(500, 3, seed = 0)
   t_vlmc_auto <- tune_vlmc(data_set$x, max_depth = 2)
   expect_snapshot_output(print(summary(t_vlmc_auto)))
+  t_vlmc_auto <- tune_vlmc(data_set$x,
+    max_depth = 2,
+    initial = "extended", criterion = "AIC"
+  )
+  expect_snapshot_output(print(summary(t_vlmc_auto)))
+})
+
+test_that("tune_vlmc verbosity is adequate", {
+  data_set <- build_markov_chain(500, 3, seed = 0)
+  expect_snapshot_output(tune_vlmc(data_set$x, max_depth = 2, verbose = 1))
 })

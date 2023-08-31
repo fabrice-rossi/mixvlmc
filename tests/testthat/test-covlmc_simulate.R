@@ -100,3 +100,12 @@ test_that("covlmc simulate detects new levels in factors", {
   new_cov$y[2] <- 6
   expect_error(simulate(model, 100, covariate = new_cov), regexp = "Factor y has new levels 5, 6")
 })
+
+test_that("covlmc simulate works correctly with degenerate models", {
+  d_model <- build_degenerate_elec_model(TRUE)
+  expect_no_error(result <- simulate(d_model$model,
+    nsim = nrow(d_model$new_cov),
+    covariate = d_model$new_cov, seed = 0
+  ))
+  expect_equal(length(result), nrow(d_model$new_cov))
+})

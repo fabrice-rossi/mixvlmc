@@ -19,13 +19,13 @@ rec_loglikelihood_vlmc <- function(tree, node_as_ctx = FALSE, verbose = FALSE) {
   } else if (is.null(tree$children)) {
     ## simple leaf case
     ll <- local_loglikelihood_vlmc(tree$f_by, tree$data_f_by)
-    if (verbose) {
+    if (verbose) { # nocov start
       cat(
         "Leaf: ", paste(tree$f_by, collapse = " "), "->",
         paste(tree$data_f_by, collapse = " "),
         "\n"
       )
-    }
+    } # nocov end
     ll
   } else {
     ## recursive case
@@ -43,13 +43,13 @@ rec_loglikelihood_vlmc <- function(tree, node_as_ctx = FALSE, verbose = FALSE) {
         data_sub_counts <- rowSums(sapply(tree$children[sub_trees], function(x) x$data_f_by))
         data_loc_counts <- tree$data_f_by - data_sub_counts
         sub_ll <- sub_ll + local_loglikelihood_vlmc(tree$f_by, data_loc_counts)
-        if (verbose) {
+        if (verbose) { # nocov start
           cat(
             "Node: ", paste(tree$f_by, collapse = " "), "->",
             paste(data_loc_counts, collapse = " "),
             "\n"
           )
-        }
+        } # nocov end
       }
     }
     sub_ll
