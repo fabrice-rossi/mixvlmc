@@ -71,3 +71,10 @@ test_that("as_vlmc.ctx_tree applies pruning", {
     loglikelihood(vlmc_direct, data_set$x, initial = "extended")
   )
 })
+
+test_that("as_vlmc.tune_vlmc obeys is basic contract", {
+  data_set <- build_markov_chain(1000, 4, seed = 4)
+  tune_results <- tune_vlmc(data_set$x)
+  model <- as_vlmc(tune_results)
+  expect_true(is_vlmc(model))
+})
