@@ -50,11 +50,20 @@ as_vlmc.ctx_tree <- function(x, alpha, cutoff, ...) {
     result <- prune_ctx_tree(x, cutoff = cutoff)
     result$alpha <- alpha
     result$cutoff <- cutoff
+    if (x$keep_match) {
+      ## need to be recomputed in case of pruning
+      ## handle the case where the root is context
+      if (!is_full_node(result)) {
+        result$match <- 0:(x$data_size - 1)
+      }
+    }
   }
   if (depth(result) > 0) {
     result$ix <- x$ix[1:min(depth(result), length(x$ix))]
     ivlmc <- match_ctx(result, result$ix)
     result$extended_ll <- rec_loglikelihood_vlmc(ivlmc, TRUE)
+  } else {
+    result$extended_ll <- 0
   }
   result
 }

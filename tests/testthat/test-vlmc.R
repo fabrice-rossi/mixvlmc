@@ -24,7 +24,7 @@ test_that("post pruning is equivalent to direct pruning (alpha)", {
   for (k in seq_along(cut_off)) {
     pruned_model <- prune(model, alpha = cut_off[k])
     direct_model <- vlmc(dts, alpha = cut_off[k], keep_match = TRUE)
-    expect_equal(pruned_model, direct_model)
+    expect_true(compare_vlmc(pruned_model, direct_model))
   }
 })
 
@@ -36,7 +36,7 @@ test_that("post pruning is equivalent to direct pruning (cutoff)", {
   for (k in seq_along(cut_off)) {
     pruned_model <- prune(model, cutoff = cut_off[k])
     direct_model <- vlmc(dts, cutoff = cut_off[k])
-    expect_equal(pruned_model, direct_model)
+    expect_true(compare_vlmc(pruned_model, direct_model))
   }
 })
 
@@ -64,4 +64,14 @@ test_that("vlmc always returns a vlmc object", {
   data_set <- build_markov_chain(500, 2, seed = 6)
   model <- vlmc(data_set$x, cutoff = 0.5 * log(length(data_set$x)), max_depth = 2, prune = FALSE)
   expect_s3_class(model, "vlmc")
+})
+
+test_that("vlmc returns an object with all the needed internal fields", {
+  data_set <- build_markov_chain(500, 2, seed = 6)
+  model <- vlmc(data_set$x, cutoff = 0.1, keep_match = TRUE)
+  expect_named(model, c(
+    "children", "f_by", "max_depth", "vals", "depth",
+    "nb_ctx", "alpha", "cutoff", "ix", "extended_ll",
+    "keep_match", "data_size"
+  ), ignore.order = TRUE)
 })

@@ -50,7 +50,8 @@ Suggests:
     rmarkdown,
     testthat (>= 3.0.0),
     tibble,
-    vdiffr
+    vdiffr,
+    waldo
 Config/testthat/edition: 3
 Depends: 
     R (>= 2.10)

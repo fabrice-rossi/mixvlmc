@@ -1,3 +1,24 @@
+test_that("as_vlmc.ctx_tree produces a valid vlmc object", {
+  data_set <- build_markov_chain(1000, 4, seed = 4)
+  data_tree <- ctx_tree(data_set$x, min_size = 4, max_depth = 10)
+  vlmc_from_tree <- as_vlmc(data_tree)
+  expect_named(vlmc_from_tree, c(
+    "children", "f_by", "max_depth", "vals", "depth",
+    "nb_ctx", "alpha", "cutoff", "ix", "extended_ll",
+    "keep_match", "data_size"
+  ), ignore.order = TRUE)
+  ## degenerate case should add match
+  withr::local_seed(0)
+  data_set <- sample(c("A", "B", "C"), 500, replace = TRUE)
+  data_tree <- ctx_tree(data_set, min_size = 4, max_depth = 10)
+  vlmc_from_tree <- as_vlmc(data_tree, alpha = 0.01)
+  expect_named(vlmc_from_tree, c(
+    "f_by", "max_depth", "vals", "depth",
+    "nb_ctx", "alpha", "cutoff", "ix", "extended_ll",
+    "keep_match", "data_size", "match"
+  ), ignore.order = TRUE)
+})
+
 test_that("as_vlmc.ctx_tree obeys is basic contract", {
   data_set <- build_markov_chain(1000, 4, seed = 4)
   data_tree <- ctx_tree(data_set$x, min_size = 4, max_depth = 10)
