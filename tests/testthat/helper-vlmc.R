@@ -101,3 +101,28 @@ draw_matched_vlmc <- function(ct) {
     matched_vlmc_node2txt, list()
   )
 }
+
+compare_vlmc <- function(m1, m2, verbose = TRUE) {
+  if (length(m1) != length(m2)) {
+    if (verbose) {
+      cat("Different number of attributes\n")
+    }
+    return(FALSE)
+  }
+  for (field in c("f_by", "vals", "max_depth", "depth", "nb_ctx", "data_size", "alpha", "cutoff", "ix", "extended_ll", "keep_match", "data_size")) {
+    if (!isTRUE(all.equal(m1[[field]], m2[[field]]))) {
+      if (verbose) {
+        cat("In field", field, "\n")
+        print(waldo::compare(m1[[field]], m2[[field]]))
+      }
+      return(FALSE)
+    }
+  }
+  if (!isTRUE(all.equal(m1[["children"]], m2[["children"]]))) {
+    if (verbose) {
+      cat("Differences in structure\n")
+    }
+    return(FALSE)
+  }
+  TRUE
+}

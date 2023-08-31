@@ -159,6 +159,9 @@ prune_ctx_tree <- function(tree, alpha = 0.05, cutoff = NULL, verbose = FALSE) {
   }
   ## preserve construction information
   pre_res$max_depth <- tree$max_depth
+  pre_res$keep_match <- tree$keep_match
+  pre_res$ix <- tree$ix
+  pre_res$data_size <- tree$data_size
   pre_res
 }
 
@@ -228,6 +231,7 @@ prune.vlmc <- function(vlmc, alpha = 0.05, cutoff = NULL, ...) {
     result$extended_ll <- rec_loglikelihood_vlmc(ivlmc, TRUE)
   } else {
     result$extended_ll <- 0
+    result$ix <- NULL
   }
   ## preserve match information
   result$keep_match <- vlmc$keep_match
