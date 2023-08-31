@@ -164,6 +164,8 @@ ctx_tree <- function(x, min_size = 2L, max_depth = 100L, keep_position = TRUE,
     cpp_tree$compute_counts(ix[length(ix)], keep_position)
     cpp_tree$prune(min_size, max_depth)
     result <- new_ctx_tree_cpp(vals, cpp_tree)
+    ## with the C++ backend, max_depth is only used during pruning
+    result$max_depth <- FALSE
   }
   result$keep_match <- keep_position
   result$data_size <- length(x)

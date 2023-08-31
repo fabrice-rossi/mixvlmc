@@ -2,6 +2,7 @@
 
 S3method(as_covlmc,tune_covlmc)
 S3method(as_vlmc,ctx_tree)
+S3method(as_vlmc,ctx_tree_cpp)
 S3method(as_vlmc,tune_vlmc)
 S3method(coef,constant_model)
 S3method(context_number,covlmc)
