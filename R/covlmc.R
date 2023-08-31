@@ -381,7 +381,7 @@ ctx_tree_fit_glm <- function(tree, y, covariate, alpha, control, assume_model = 
             if (submodels[[v]][["model"]]$hsize == actual_model$hsize) {
               local_data <- submodels[[v]][["model"]]$data
             } else {
-              local_data <- prepare_glm(covariate, 1L + submodels[[v]]$match, max_hsize, y, d - max_hsize)
+              local_data <- prepare_glm(covariate, 1L + submodels[[v]]$match, actual_model$hsize, y, d - actual_model$hsize)
               if (verbose) { # nocov start
                 print("preparing local data")
                 print(paste(ctx, collapse = ", "))
