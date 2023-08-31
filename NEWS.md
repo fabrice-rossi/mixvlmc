@@ -8,11 +8,13 @@
   function, and documented in a new vignette
 * `tune_vlmc` and `tune_covlmc` can be used with the different likelihood 
   function definitions
-* results of `tune_vlmc` and `tune_covlmc` can be plotted using base R graphics
+* results of `tune_vlmc` and `tune_covlmc` can be plotted using base R graphics 
+  (issue #36)
 * `cutoff` uses a new `tolerance` parameter to avoid reporting cut off values
   that are almost identical due to numerical imprecision 
   
 ## Minor improvements and bug fixes
+* Improved the test coverage (issue #54)
 * Fixed several bugs related to degenerate VLMC (issue #55)
 * Fixed a bug in the likelihood calculation for internal context nodes
 * Improved type consistency by reporting counts as integers in `contexts` results
