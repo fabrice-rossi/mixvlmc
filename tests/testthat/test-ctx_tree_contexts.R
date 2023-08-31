@@ -41,6 +41,14 @@ test_that("contexts reversing reverses", {
   for (k in seq_along(def_ctx)) {
     expect_identical(rev_ctx[[k]], rev(def_ctx[[k]]))
   }
+  ## data frame case
+  def_ctx <- contexts(dts_tree, frequency = "detailed")
+  rev_ctx <- contexts(dts_tree, frequency = "detailed", reverse = FALSE)
+  expect_equal(dim(rev_ctx), dim(def_ctx))
+  for (k in 1:nrow(def_ctx)) {
+    expect_identical(rev_ctx$context[[k]], rev(def_ctx$context[[k]]))
+  }
+  expect_identical(rev_ctx[-1], def_ctx[-1])
 })
 
 test_that("context format is consistent", {
