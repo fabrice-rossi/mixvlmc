@@ -8,6 +8,7 @@
   function, and documented in a new vignette
 * `tune_vlmc` and `tune_covlmc` can be used with the different likelihood 
   function definitions
+* results of `tune_vlmc` and `tune_covlmc` can be plotted using base R graphics
 * `cutoff` uses a new `tolerance` parameter to avoid reporting cut off values
   that are almost identical due to numerical imprecision 
   
