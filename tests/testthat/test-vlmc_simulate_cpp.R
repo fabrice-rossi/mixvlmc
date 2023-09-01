@@ -62,7 +62,7 @@ test_that("vlmc simulate respects the type of the data (C++)", {
   }
 })
 
-test_that("vlmc simulate results do not depend on the backend (for the slow method)", {
+test_that("vlmc simulate results do not depend on the backend (for the R method)", {
   for (k in 2:10) {
     data_set <- build_markov_chain(5000, k, seed = k)
     cpp_vlmc <- vlmc(data_set$x, alpha = 0.1, backend = "C++")
@@ -73,3 +73,19 @@ test_that("vlmc simulate results do not depend on the backend (for the slow meth
     )
   }
 })
+
+test_that("vlmc simulate results do not depend on the backend for the slow method in simple cases", {
+  skip_on_cran()
+  skip_on_ci()
+  for (k in 2:4) {
+    data_set <- build_markov_chain(1000, k, seed = k)
+    cpp_vlmc <- tune_vlmc(data_set$x, backend = "C++")
+    r_vlmc <- tune_vlmc(data_set$x, backend = "R")
+    expect_identical(
+      simulate(as_vlmc(cpp_vlmc), 1000, seed = k, sample = "slow"),
+      simulate(as_vlmc(r_vlmc), 1000, seed = k)
+    )
+  }
+})
+
+
