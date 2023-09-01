@@ -71,3 +71,13 @@ test_that("printing works as expected", {
   x_model <- vlmc(x, alpha = 0.05, backend = "C++")
   expect_snapshot(print(x_model))
 })
+
+test_that("vlmc returns an object with all the needed internal fields", {
+  data_set <- build_markov_chain(500, 2, seed = 6)
+  model <- vlmc(data_set$x, cutoff = 0.1, keep_match = TRUE, backend = "C++")
+  expect_named(model, c(
+    "root", "max_depth", "vals", "depth",
+    "nb_ctx", "alpha", "cutoff", "ix", "extended_ll",
+    "keep_match", "data_size"
+  ), ignore.order = TRUE)
+})
