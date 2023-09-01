@@ -376,7 +376,7 @@ vlmc <- function(x, alpha = 0.05, cutoff = NULL, min_size = 2L, max_depth = 100L
   }
   result$keep_match <- keep_match
   result$data_size <- length(x)
-  if (keep_match) {
+  if (backend == "R" && keep_match) {
     ## handle the case where the root is context
     if (!is_full_node(result)) {
       result$match <- 0:(length(x) - 1)
