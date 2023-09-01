@@ -16,7 +16,7 @@ test_that("post pruning is equivalent to direct pruning (alpha, C++)", {
   for (k in seq_along(cut_off)) {
     pruned_model <- prune(model, alpha = cut_off[k])
     direct_model <- vlmc(dts, alpha = cut_off[k], backend = "C++")
-    expect_true(compare_vlmc(pruned_model, direct_model))
+    expect_true(compare_vlmc_cpp(pruned_model, direct_model))
   }
 })
 
@@ -28,7 +28,7 @@ test_that("post pruning is equivalent to direct pruning (cutoff, C++)", {
   for (k in seq_along(cut_off)) {
     pruned_model <- prune(model, cutoff = cut_off[k])
     direct_model <- vlmc(dts, cutoff = cut_off[k], backend = "C++")
-    expect_true(compare_vlmc(pruned_model, direct_model))
+    expect_true(compare_vlmc_cpp(pruned_model, direct_model))
   }
 })
 
@@ -42,7 +42,7 @@ test_that("alpha pruning is equivalent to cutoff pruning (C++)", {
   for (k in seq_along(a_cut_off)) {
     a_pruned_model <- prune(model, alpha = a_cut_off[k])
     c_pruned_model <- prune(model, cutoff = c_cut_off[k])
-    expect_true(compare_vlmc(a_pruned_model, c_pruned_model))
+    expect_true(compare_vlmc_cpp(a_pruned_model, c_pruned_model))
   }
 })
 

@@ -1,4 +1,4 @@
-compare_vlmc <- function(m1, m2, verbose = TRUE) {
+compare_vlmc_cpp <- function(m1, m2, verbose = TRUE) {
   if (length(m1) != length(m2)) {
     if (verbose) {
       cat("Different number of attributes\n")

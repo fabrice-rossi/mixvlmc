@@ -2,7 +2,7 @@ test_that("vlmc trimming does nothing in the default case (C++)", {
   pc <- powerconsumption[powerconsumption$week == 5, ]
   dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.25, 0.5, 0.75, 1))))
   model <- vlmc(dts, backend = "C++")
-  expect_true(compare_vlmc(model, trim(model)))
+  expect_true(compare_vlmc_cpp(model, trim(model)))
 })
 
 test_that("vlmc trimming does create memory issues (C++)", {
