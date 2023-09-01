@@ -459,6 +459,7 @@ class SuffixTree {
     List the_contexts(nb);
     for(int i = 0; i < nb; i++) {
       the_contexts[i] = (*ctxs)[i]->sequence();
+      delete(*ctxs)[i];
     }
     delete ctxs;
     return the_contexts;
@@ -478,6 +479,7 @@ class SuffixTree {
     List the_contexts(nb);
     for(int i = 0; i < nb; i++) {
       the_contexts[i] = (*ctxs)[i]->sequence();
+      delete(*ctxs)[i];
     }
     delete ctxs;
     return the_contexts;
@@ -579,6 +581,9 @@ class SuffixTree {
     if(with_cutoff) {
       res[next_col] = cutoff;
       col_names[next_col] = "cutoff";
+    }
+    for(int i = 0; i < ctxs->size(); i++) {
+      delete(*ctxs)[i];
     }
     delete ctxs;
     res.attr("names") = col_names;
