@@ -52,12 +52,13 @@ EdgeNode* EdgeNode::clone_only_counts() const {
   result->total_count = total_count;
   if(counts != nullptr) {
     result->counts =
-      new std::unordered_map<int, int>(counts->begin(), counts->end());
+        new std::unordered_map<int, int>(counts->begin(), counts->end());
   }
   result->depth = depth;
   return result;
 }
 
+// # nocov start
 std::string EdgeNode::edge_label(const IntegerVector& x, int current) const {
   std::string res = "";
   int size = std::min(end, current + 1);
@@ -103,6 +104,7 @@ void EdgeNode::print_tree(std::string pre,
     child.second->print_tree(pre + "  ", x, cend);
   }
 }
+// # nocov end
 
 void EdgeNode::compute_total_count() {
   if(children.size() == 0) {

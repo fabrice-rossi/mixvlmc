@@ -229,7 +229,9 @@ class SuffixTree {
     max_x = nb_vals - 1;
   }
 
+  // # nocov start
   void print_tree() const { root->print_tree("", x, x.size() + 1); }
+  // # nocov end
 
   // find the position of y in x expressed as a Position object.
   // Returns a valid Position if y is found and an invalid one if not.
@@ -765,23 +767,23 @@ class SuffixTree {
         if(auto child = current->counts->find(y[i]);
            child != current->counts->end()) {
           if(child->second == 0) {
-            if(verbose) {
+            if(verbose) {  // # nocov start
               Rcout << i << " " << y[i]
                     << " zero occurrence (should not happen)!\n";
-            }
+            }  // # nocov end
             return -std::numeric_limits<double>::infinity();
           } else {
-            if(verbose) {
+            if(verbose) {  // # nocov start
               Rcout << y[i] << ": " << current << " -> " << child->second << "/"
                     << current->total_count << "\n";
-            }
+            }  // # nocov end
             result += log(((double)child->second) / current->total_count);
           }
         } else {
-          if(verbose) {
+          if(verbose) {  // # nocov start
             Rcout << current << " " << i << " " << y[i]
                   << " not found in counts!\n";
-          }
+          }  // # nocov end
           return -std::numeric_limits<double>::infinity();
         }
       }
