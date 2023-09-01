@@ -71,3 +71,11 @@ test_that("the suffix tree counts correctly subsequences", {
     }
   }
 })
+
+test_that("error cases are correctly reported", {
+  withr::local_seed(11)
+  x <- sample(0:2, 100, replace = TRUE)
+  expect_error(build_suffix_tree(x, 2))
+  x <- c(x, -1L)
+  expect_error(build_suffix_tree(x, 3))
+})
