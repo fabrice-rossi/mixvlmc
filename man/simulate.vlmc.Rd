@@ -4,7 +4,7 @@
 \alias{simulate.vlmc}
 \title{Simulate a discrete time series for a vlmc}
 \usage{
-\method{simulate}{vlmc}(object, nsim = 1, seed = NULL, init = NULL, ...)
+\method{simulate}{vlmc}(object, nsim = 1L, seed = NULL, init = NULL, burnin = 0L, ...)
 }
 \arguments{
 \item{object}{a fitted vlmc object.}
@@ -15,10 +15,13 @@
 
 \item{init}{an optional initial sequence for the time series}
 
+\item{burnin}{number of initial observations to discard or \code{"auto"} (see the dedicated section)}
+
 \item{...}{additional arguments.}
 }
 \value{
-a simulated discrete time series of the same type as the one used to build the vlmc.
+a simulated discrete time series of the same type as the one used to
+build the vlmc.
 }
 \description{
 This function simulates a time series from the distribution estimated by the
@@ -28,10 +31,34 @@ given vlmc object.
 The time series can be initiated by a fixed sequence specified via the \code{init}
 parameter.
 }
+\section{Burn in (Warm up) period}{
+
+
+When using a VLMC for simulation purposes, we are generally interested in the
+stationary distribution of the corresponding Markov chain. To reduce the
+dependence of the samples from the initial values and get closer to this
+stationary distribution (if it exists), it is recommended to discard the first
+samples which are produced in a so-called "burn in" (or "warm up") period. The
+\code{burnin} parameter can be used to implement this approach. The VLMC is used
+to produce a sample of size \code{burnin + nsim} but the first \code{burnin} values are
+discarded. Notice that this burn in values can be partially given by the \code{init}
+parameter if it is specified.
+
+If \code{burnin} is set to \code{"auto"}, the \code{burnin} period is set to
+\code{64 * context_number(object)}, following the heuristic proposed in Mächler and
+Bühlmann (2004).
+}
+
 \examples{
 pc <- powerconsumption[powerconsumption$week == 5, ]
 dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.25, 0.5, 0.75, 1))))
 model <- vlmc(dts, min_size = 5)
 new_dts <- simulate(model, 500, seed = 0)
 new_dts_2 <- simulate(model, 500, seed = 0, init = dts[1:5])
+}
+\references{
+Mächler, M. and Bühlmann, P. (2004)
+"Variable Length Markov Chains: Methodology, Computing, and Software"
+Journal of Computational and Graphical Statistics, 13 (2), 435-455,
+\doi{10.1198/1061860043524}
 }
