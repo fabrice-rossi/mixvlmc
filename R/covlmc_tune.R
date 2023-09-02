@@ -37,7 +37,10 @@
 #'   initial (complex) model which is then pruned during the selection process.
 #'   When `save="all"`, the function returns all the models considered during the
 #'   selection process. See details for memory occupation.
-#' @param trimming specify the type of trimming used when saving the intermediate models, see details.
+#' @param trimming specify the type of trimming used when saving the intermediate models,
+#'   see details.
+#' @param best_trimming specify the type of trimming used when saving the best model
+#'   and the initial one (see details).
 #'
 #' @returns a list with the following components:
 #'
@@ -60,6 +63,13 @@
 #' to use `keep_model=TRUE` in [trim.covlmc()] for intermediate models. Finally,
 #' `trimming="none"` turns off trimming, which is discouraged expected for small data sets.
 #'
+#' In parallel processing contexts (e.g. using [foreach::%dopar%]), the memory
+#' occupation of the results can become very large as models tend to keep
+#' environments attached to the formulas. In this situation, it is highly recommended
+#' to trim all saved models, including the best one and the initial one. This can
+#' be done via the `best_trimming` parameter whose possible values are identical
+#' to the ones of `trimming`.
+#'
 #' @export
 #' @seealso [covlmc()], [cutoff()] and [prune()]
 #'
@@ -74,9 +84,11 @@ tune_covlmc <- function(x, covariate, criterion = c("BIC", "AIC"),
                         min_size = 5, max_depth = 100,
                         verbose = 0,
                         save = c("best", "initial", "all"),
-                        trimming = c("full", "partial", "none")) {
+                        trimming = c("full", "partial", "none"),
+                        best_trimming = c("none", "partial", "full")) {
   criterion <- match.arg(criterion)
   initial <- match.arg(initial)
+  best_trimming <- match.arg(best_trimming)
   if (initial == "extended") {
     stop("log likelihood calculation for COVLMC is limited to truncated and specific likelihood")
   }
@@ -168,10 +180,22 @@ tune_covlmc <- function(x, covariate, criterion = c("BIC", "AIC"),
     initial = initial,
     results = results
   )
+  if (best_trimming == "partial") {
+    pre_result$best_model <- trim(best_model, keep_model = TRUE)
+  } else if (best_trimming == "full") {
+    pre_result$best_model <- trim(best_model)
+  }
   if (save == "all") {
     pre_result[["saved_models"]] <- list(initial = base_model, all = all_models)
   } else if (save == "initial") {
     pre_result[["saved_models"]] <- list(initial = base_model)
+  }
+  if (!is.null(pre_result[["saved_models"]])) {
+    if (best_trimming == "partial") {
+      pre_result[["saved_models"]]$initial <- trim(pre_result[["saved_models"]]$initial, keep_model = TRUE)
+    } else if (best_trimming == "full") {
+      pre_result[["saved_models"]]$initial <- trim(pre_result[["saved_models"]]$initial)
+    }
   }
   structure(pre_result, class = "tune_covlmc")
 }
