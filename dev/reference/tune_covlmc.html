@@ -85,7 +85,8 @@ by optimizing an information criterion (BIC or AIC).</p>
 <span>  max_depth <span class="op">=</span> <span class="fl">100</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  save <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"best"</span>, <span class="st">"initial"</span>, <span class="st">"all"</span><span class="op">)</span>,</span>
-<span>  trimming <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"full"</span>, <span class="st">"partial"</span>, <span class="st">"none"</span><span class="op">)</span></span>
+<span>  trimming <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"full"</span>, <span class="st">"partial"</span>, <span class="st">"none"</span><span class="op">)</span>,</span>
+<span>  best_trimming <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"none"</span>, <span class="st">"partial"</span>, <span class="st">"full"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -134,7 +135,13 @@ selection process. See details for memory occupation.</p></dd>
 
 
 <dt>trimming</dt>
-<dd><p>specify the type of trimming used when saving the intermediate models, see details.</p></dd>
+<dd><p>specify the type of trimming used when saving the intermediate models,
+see details.</p></dd>
+
+
+<dt>best_trimming</dt>
+<dd><p>specify the type of trimming used when saving the best model
+and the initial one (see details).</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -178,6 +185,12 @@ Both the initial model and the best one are saved untrimmed. This default
 behaviour corresponds to <code>trimming="full"</code>. Setting <code>trimming="partial"</code> asks the function
 to use <code>keep_model=TRUE</code> in <code><a href="trim.covlmc.html">trim.covlmc()</a></code> for intermediate models. Finally,
 <code>trimming="none"</code> turns off trimming, which is discouraged expected for small data sets.</p>
+<p>In parallel processing contexts (e.g. using foreach::%dopar%), the memory
+occupation of the results can become very large as models tend to keep
+environments attached to the formulas. In this situation, it is highly recommended
+to trim all saved models, including the best one and the initial one. This can
+be done via the <code>best_trimming</code> parameter whose possible values are identical
+to the ones of <code>trimming</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

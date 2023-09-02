@@ -88,15 +88,15 @@ given covlmc object.</p>
 
 
 <dt>seed</dt>
-<dd><p>an optional random seed.</p></dd>
+<dd><p>an optional random seed (see the dedicated section).</p></dd>
 
 
 <dt>covariate</dt>
-<dd><p>values of the covariates</p></dd>
+<dd><p>values of the covariates.</p></dd>
 
 
 <dt>init</dt>
-<dd><p>an optional initial sequence for the time series</p></dd>
+<dd><p>an optional initial sequence for the time series.</p></dd>
 
 
 <dt>...</dt>
@@ -107,7 +107,8 @@ given covlmc object.</p>
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     
 
-<p>a simulated discrete time series of the same type as the one used to build the covlmc.</p>
+<p>a simulated discrete time series of the same type as the one used to
+build the covlmc with a <code>seed</code> attribute (see the Random seed section).</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
@@ -115,6 +116,29 @@ given covlmc object.</p>
 probabilities. The covariates must be submitted as a data frame using the
 <code>covariate</code> argument. In addition,  the time series can be initiated by a
 fixed sequence specified via the <code>init</code> parameter.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="random-seed">Random seed<a class="anchor" aria-label="anchor" href="#random-seed"></a></h2>
+    
+
+
+<p>This function reproduce the behaviour of <code><a href="https://rdrr.io/r/stats/simulate.html" class="external-link">stats::simulate()</a></code>. If <code>seed</code> is <code>NULL</code>
+the function does not change the random generator state and returns the value
+of <a href="https://rdrr.io/r/base/Random.html" class="external-link">.Random.seed</a> as a <code>seed</code> attribute in the return value. This can be used
+to reproduce exactly the simulation results by setting <a href="https://rdrr.io/r/base/Random.html" class="external-link">.Random.seed</a> to this value.
+Notice that if the random seed has not be initialised by R so far, the function
+issues a call to <code>runif(1)</code> to perform this initialisation (as is done in
+<code><a href="https://rdrr.io/r/stats/simulate.html" class="external-link">stats::simulate()</a></code>).</p>
+<p>It <code>seed</code> is an integer, it is used in a call to <code><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed()</a></code> before the simulation
+takes place. The integer is saved as a <code>seed</code> attribute in the return value.
+The integer seed is completed by an attribute <code>kind</code> which contains the value
+<code>as.list([RNGkind()])</code> exactly as with <code><a href="https://rdrr.io/r/stats/simulate.html" class="external-link">stats::simulate()</a></code>. As with <code>seed=NULL</code>,
+the random generator state is reset to its original value at the end of the
+call.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
+    <div class="dont-index"><p><code><a href="https://rdrr.io/r/stats/simulate.html" class="external-link">stats::simulate()</a></code> for details and examples on the random number generator setting</p></div>
     </div>
 
     <div class="section level2">
