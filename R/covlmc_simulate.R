@@ -40,12 +40,15 @@ match_context_co <- function(tree, ctx) {
 #'
 #' @param object a fitted covlmc object.
 #' @param nsim length of the simulated time series (defaults to 1).
-#' @param seed an optional random seed.
-#' @param covariate values of the covariates
-#' @param init an optional initial sequence for the time series
+#' @param seed an optional random seed (see the dedicated section).
+#' @param covariate values of the covariates.
+#' @param init an optional initial sequence for the time series.
 #' @param ... additional arguments.
 #'
-#' @returns a simulated discrete time series of the same type as the one used to build the covlmc.
+#' @inheritSection simulate.vlmc Random seed
+#' @returns a simulated discrete time series of the same type as the one used to
+#'   build the covlmc with a `seed` attribute (see the Random seed section).
+#' @seealso [stats::simulate()] for details and examples on the random number generator setting
 #' @export
 #' @examples
 #' pc <- powerconsumption[powerconsumption$week == 5, ]
@@ -64,7 +67,14 @@ simulate.covlmc <- function(object, nsim = 1, seed = NULL, covariate, init = NUL
   covariate <- validate_covariate(object, covariate)
   max_depth <- depth(object)
   if (!is.null(seed)) {
+    attr(seed, "kind") <- as.list(RNGkind())
     withr::local_seed(seed)
+  } else {
+    if (!exists(".Random.seed", envir = .GlobalEnv, inherits = FALSE)) {
+      stats::runif(1)
+    }
+    seed <- .Random.seed
+    withr::local_preserve_seed()
   }
   int_vals <- seq_along(object$vals)
   if (!is.null(init)) {
@@ -111,5 +121,7 @@ simulate.covlmc <- function(object, nsim = 1, seed = NULL, covariate, init = NUL
       }
     }
   }
-  object$vals[pre_res]
+  pre_res <- object$vals[pre_res]
+  attr(pre_res, "seed") <- seed
+  pre_res
 }

@@ -11,17 +11,18 @@
 
 \item{nsim}{length of the simulated time series (defaults to 1).}
 
-\item{seed}{an optional random seed.}
+\item{seed}{an optional random seed (see the dedicated section).}
 
-\item{init}{an optional initial sequence for the time series}
+\item{init}{an optional initial sequence for the time series.}
 
-\item{burnin}{number of initial observations to discard or \code{"auto"} (see the dedicated section)}
+\item{burnin}{number of initial observations to discard or \code{"auto"} (see the
+dedicated section).}
 
 \item{...}{additional arguments.}
 }
 \value{
 a simulated discrete time series of the same type as the one used to
-build the vlmc.
+build the vlmc with a \code{seed} attribute (see the Random seed section).
 }
 \description{
 This function simulates a time series from the distribution estimated by the
@@ -49,6 +50,25 @@ If \code{burnin} is set to \code{"auto"}, the \code{burnin} period is set to
 Bühlmann (2004).
 }
 
+\section{Random seed}{
+
+
+This function reproduce the behaviour of \code{\link[stats:simulate]{stats::simulate()}}. If \code{seed} is \code{NULL}
+the function does not change the random generator state and returns the value
+of \link{.Random.seed} as a \code{seed} attribute in the return value. This can be used
+to reproduce exactly the simulation results by setting \link{.Random.seed} to this value.
+Notice that if the random seed has not be initialised by R so far, the function
+issues a call to \code{runif(1)} to perform this initialisation (as is done in
+\code{\link[stats:simulate]{stats::simulate()}}).
+
+It \code{seed} is an integer, it is used in a call to \code{\link[=set.seed]{set.seed()}} before the simulation
+takes place. The integer is saved as a \code{seed} attribute in the return value.
+The integer seed is completed by an attribute \code{kind} which contains the value
+\verb{as.list([RNGkind()])} exactly as with \code{\link[stats:simulate]{stats::simulate()}}. As with \code{seed=NULL},
+the random generator state is reset to its original value at the end of the
+call.
+}
+
 \examples{
 pc <- powerconsumption[powerconsumption$week == 5, ]
 dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.25, 0.5, 0.75, 1))))
@@ -61,4 +81,7 @@ Mächler, M. and Bühlmann, P. (2004)
 "Variable Length Markov Chains: Methodology, Computing, and Software"
 Journal of Computational and Graphical Statistics, 13 (2), 435-455,
 \doi{10.1198/1061860043524}
+}
+\seealso{
+\code{\link[stats:simulate]{stats::simulate()}} for details and examples on the random number generator setting
 }

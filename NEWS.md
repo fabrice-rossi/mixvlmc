@@ -15,6 +15,8 @@
   that are almost identical due to numerical imprecision 
 * `trim.covlmc` implements simple trimming for VGAM based objects (issue #48)
 * `simulate.vlmc` implements a user specified burn in period (issue #40)
+* `simulate.vlmc` and `simulate.covlmc` now handle the random generator state
+  as does `stats::simulate` (issue #56)
   
 ## Minor improvements and bug fixes
 * Improved the test coverage (issue #54)

@@ -22,6 +22,23 @@
 #' `64 * context_number(object)`, following the heuristic proposed in Mächler and
 #' Bühlmann (2004).
 #'
+#' @section Random seed:
+#'
+#' This function reproduce the behaviour of [stats::simulate()]. If `seed` is `NULL`
+#' the function does not change the random generator state and returns the value
+#' of [.Random.seed] as a `seed` attribute in the return value. This can be used
+#' to reproduce exactly the simulation results by setting [.Random.seed] to this value.
+#' Notice that if the random seed has not be initialised by R so far, the function
+#' issues a call to `runif(1)` to perform this initialisation (as is done in
+#' [stats::simulate()]).
+#'
+#' It `seed` is an integer, it is used in a call to [set.seed()] before the simulation
+#' takes place. The integer is saved as a `seed` attribute in the return value.
+#' The integer seed is completed by an attribute `kind` which contains the value
+#' `as.list([RNGkind()])` exactly as with [stats::simulate()]. As with `seed=NULL`,
+#' the random generator state is reset to its original value at the end of the
+#' call.
+#'
 #' @references  Mächler, M. and Bühlmann, P. (2004)
 #' "Variable Length Markov Chains: Methodology, Computing, and Software"
 #' Journal of Computational and Graphical Statistics, 13 (2), 435-455,
@@ -29,14 +46,16 @@
 #'
 #' @param object a fitted vlmc object.
 #' @param nsim length of the simulated time series (defaults to 1).
-#' @param seed an optional random seed.
-#' @param init an optional initial sequence for the time series
-#' @param burnin number of initial observations to discard or `"auto"` (see the dedicated section)
+#' @param seed an optional random seed (see the dedicated section).
+#' @param init an optional initial sequence for the time series.
+#' @param burnin number of initial observations to discard or `"auto"` (see the
+#'   dedicated section).
 #' @param ... additional arguments.
 #'
 #' @returns a simulated discrete time series of the same type as the one used to
-#'   build the vlmc.
+#'   build the vlmc with a `seed` attribute (see the Random seed section).
 #' @export
+#' @seealso [stats::simulate()] for details and examples on the random number generator setting
 #' @examples
 #' pc <- powerconsumption[powerconsumption$week == 5, ]
 #' dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.25, 0.5, 0.75, 1))))
@@ -46,7 +65,14 @@
 simulate.vlmc <- function(object, nsim = 1L, seed = NULL, init = NULL, burnin = 0L, ...) {
   max_depth <- depth(object)
   if (!is.null(seed)) {
+    attr(seed, "kind") <- as.list(RNGkind())
     withr::local_seed(seed)
+  } else {
+    if (!exists(".Random.seed", envir = .GlobalEnv, inherits = FALSE)) {
+      stats::runif(1)
+    }
+    seed <- .Random.seed
+    withr::local_preserve_seed()
   }
   if (burnin == "auto") {
     burnin <- 64L * context_number(object)
@@ -101,5 +127,7 @@ simulate.vlmc <- function(object, nsim = 1L, seed = NULL, init = NULL, burnin = 
       }
     }
   }
-  object$vals[pre_res]
+  pre_res <- object$vals[pre_res]
+  attr(pre_res, "seed") <- seed
+  pre_res
 }
