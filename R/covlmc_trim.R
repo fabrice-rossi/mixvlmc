@@ -45,6 +45,7 @@ rec_trim_covlmc <- function(ct, keep_model, vals) {
 #'
 #' @returns a trimmed context tree.
 #' @export
+#' @seealso [tune_covlmc()]
 #'
 #' @examples
 #' pc <- powerconsumption[powerconsumption$week %in% 5:7, ]

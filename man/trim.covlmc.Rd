@@ -42,3 +42,6 @@ print(object.size(t_m_cov_model), units = "Mb")
 t_m_cov <- trim(m_cov)
 print(object.size(t_m_cov), units = "Mb")
 }
+\seealso{
+\code{\link[=tune_covlmc]{tune_covlmc()}}
+}

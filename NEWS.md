@@ -12,6 +12,7 @@
   (issue #36)
 * `cutoff` uses a new `tolerance` parameter to avoid reporting cut off values
   that are almost identical due to numerical imprecision 
+* `trim.covlmc` implements simple trimming for VGAM based objects (issue #48)
   
 ## Minor improvements and bug fixes
 * Improved the test coverage (issue #54)
