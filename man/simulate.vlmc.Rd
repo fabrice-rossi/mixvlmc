@@ -22,7 +22,9 @@ dedicated section).}
 }
 \value{
 a simulated discrete time series of the same type as the one used to
-build the vlmc with a \code{seed} attribute (see the Random seed section).
+build the vlmc with a \code{seed} attribute (see the Random seed section). The
+results has also the \code{dts} class to hide the \code{seed} attribute when using
+\code{print} or similar function.
 }
 \description{
 This function simulates a time series from the distribution estimated by the
@@ -75,6 +77,7 @@ dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.
 model <- vlmc(dts, min_size = 5)
 new_dts <- simulate(model, 500, seed = 0)
 new_dts_2 <- simulate(model, 500, seed = 0, init = dts[1:5])
+new_dts_3 <- simulate(model, 500, seed = 0, burnin = 500)
 }
 \references{
 Mächler, M. and Bühlmann, P. (2004)

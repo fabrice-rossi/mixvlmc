@@ -47,7 +47,9 @@ match_context_co <- function(tree, ctx) {
 #'
 #' @inheritSection simulate.vlmc Random seed
 #' @returns a simulated discrete time series of the same type as the one used to
-#'   build the covlmc with a `seed` attribute (see the Random seed section).
+#'   build the covlmc with a `seed` attribute (see the Random seed section). The
+#'   results has also the `dts` class to hide the `seed` attribute when using
+#'   `print` or similar function.
 #' @seealso [stats::simulate()] for details and examples on the random number generator setting
 #' @export
 #' @examples
@@ -122,6 +124,5 @@ simulate.covlmc <- function(object, nsim = 1, seed = NULL, covariate, init = NUL
     }
   }
   pre_res <- object$vals[pre_res]
-  attr(pre_res, "seed") <- seed
-  pre_res
+  structure(pre_res, "seed" = seed, "class" = c(class(pre_res), "dts"))
 }

@@ -53,7 +53,9 @@
 #' @param ... additional arguments.
 #'
 #' @returns a simulated discrete time series of the same type as the one used to
-#'   build the vlmc with a `seed` attribute (see the Random seed section).
+#'   build the vlmc with a `seed` attribute (see the Random seed section). The
+#'   results has also the `dts` class to hide the `seed` attribute when using
+#'   `print` or similar function.
 #' @export
 #' @seealso [stats::simulate()] for details and examples on the random number generator setting
 #' @examples
@@ -62,6 +64,7 @@
 #' model <- vlmc(dts, min_size = 5)
 #' new_dts <- simulate(model, 500, seed = 0)
 #' new_dts_2 <- simulate(model, 500, seed = 0, init = dts[1:5])
+#' new_dts_3 <- simulate(model, 500, seed = 0, burnin = 500)
 simulate.vlmc <- function(object, nsim = 1L, seed = NULL, init = NULL, burnin = 0L, ...) {
   max_depth <- depth(object)
   if (!is.null(seed)) {
@@ -128,6 +131,5 @@ simulate.vlmc <- function(object, nsim = 1L, seed = NULL, init = NULL, burnin = 
     }
   }
   pre_res <- object$vals[pre_res]
-  attr(pre_res, "seed") <- seed
-  pre_res
+  structure(pre_res, "seed" = seed, "class" = c(class(pre_res), "dts"))
 }

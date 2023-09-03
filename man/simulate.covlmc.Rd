@@ -21,7 +21,9 @@
 }
 \value{
 a simulated discrete time series of the same type as the one used to
-build the covlmc with a \code{seed} attribute (see the Random seed section).
+build the covlmc with a \code{seed} attribute (see the Random seed section). The
+results has also the \code{dts} class to hide the \code{seed} attribute when using
+\code{print} or similar function.
 }
 \description{
 This function simulates a time series from the distribution estimated by the
