@@ -878,3 +878,43 @@ print.covlmc <- function(x, ...) {
   }
   invisible(x)
 }
+
+
+rec_cov_depth <- function(ct) {
+  if (length(ct) == 0) {
+    0L
+  } else if (is.null(ct$children)) {
+    if (!is.null(ct$model)) {
+      ct$model$hsize
+    } else {
+      0L
+    }
+  } else {
+    below <- max(sapply(ct$children, rec_cov_depth))
+    if (!is.null(ct[["merged_model"]])) {
+      below <- max(below, ct$merged_model$hsize)
+    }
+    below
+  }
+}
+
+#' Maximal covariate memory of a VLMC with covariates
+#'
+#' This function return the longest covariate memory used by a VLMC
+#' with covariates.
+#'
+#' @param model a covlmc object
+#' @returns the longest covariate memory of this model
+#'
+#' @export
+#' @examples
+#' pc <- powerconsumption[powerconsumption$week == 5, ]
+#' dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1))))
+#' m_nocovariate <- vlmc(dts)
+#' dts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
+#' m_cov <- covlmc(dts, dts_cov, min_size = 10)
+#' covariate_depth(m_cov)
+covariate_depth <- function(model) {
+  assertthat::assert_that(is_covlmc(model))
+  rec_cov_depth(model)
+}

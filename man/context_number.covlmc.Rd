@@ -18,9 +18,8 @@ This function returns the total number of contexts of a VLMC with covariates.
 \examples{
 pc <- powerconsumption[powerconsumption$week == 5, ]
 dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1))))
-m_nocovariate <- vlmc(dts)
 dts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
 m_cov <- covlmc(dts, dts_cov, min_size = 10)
-# should be 4
+# should be 3
 context_number(m_cov)
 }
