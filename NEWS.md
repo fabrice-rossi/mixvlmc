@@ -9,9 +9,9 @@
   (`vignette("likelihood")`)
 * `tune_vlmc()` and `tune_covlmc()` can be used with the different likelihood 
   function definitions
-* results of `tune_vlmc()` and `tune_covlmc()` can be plotted using base R graphics 
-  (issue #36)
-* `tune_covlmc()` can trim the best model (and the initial one) is asked to  
+* results of `tune_vlmc()` and `tune_covlmc()` can be plotted using base R 
+  graphics or ggplot2 (issue #36)
+* `tune_covlmc()` can trim the best model (and the initial one) if asked to  
 * `cutoff()` uses a new `tolerance` parameter to avoid reporting cut off values
   that are almost identical due to numerical imprecision 
 * `trim.covlmc()` implements simple trimming for VGAM based objects (issue #48)

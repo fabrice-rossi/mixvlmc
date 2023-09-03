@@ -315,6 +315,7 @@ California_weeks[California_earth_quakes$nbweeks] <- 1
 And finally we adjust automatically a VLMC.
 ```{r}
 California_weeks_earth_quakes_model <- tune_vlmc(California_weeks)
+plot(California_weeks_earth_quakes_model)
 ```
 The resulting model remains relatively simple with an interesting increase of the 
 risk of observing an earth quake after 6 weeks after the last one. 
@@ -328,8 +329,7 @@ summary(California_weeks_earth_quakes_model)
 ```
 
 in addition, a summary data frame is accessible in the `results` component of the
-object. This can be used to build e.g. graphical representation of the model
-selection process for instance as follows
+object. This can be used to build e.g. custom graphical representation of the model selection process (rather than using `plot.tune_vlmc()` or `autoplot.tune_vlmc()`). A typical simple ggplot2 representation can made as follows, for instance:
 ```{r fig.height=4}
 ggplot(California_weeks_earth_quakes_model$results, aes(x = alpha, y = BIC)) +
   geom_line() +

@@ -32,6 +32,7 @@ LazyData: true
 Imports: 
     assertthat,
     butcher,
+    ggplot2,
     nnet,
     pROC,
     Rcpp (>= 1.0.8.3),
@@ -45,7 +46,6 @@ RoxygenNote: 7.2.3
 Suggests: 
     data.table,
     geodist,
-    ggplot2,
     knitr,
     rmarkdown,
     testthat (>= 3.0.0),

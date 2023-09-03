@@ -370,6 +370,10 @@ ggplot(elec_tune$results, aes(x = alpha, y = BIC)) +
   geom_line() +
   geom_point()
 ```
+or automatically using e.g. `autoplot()` as follows:
+```{r}
+print(autoplot(elec_tune))
+```
 
 The final model is:
 ```{r}

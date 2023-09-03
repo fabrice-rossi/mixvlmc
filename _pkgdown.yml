@@ -63,12 +63,14 @@ reference:
 - contents:
   - tune_vlmc
   - plot.tune_vlmc
+  - autoplot.tune_vlmc
   - cutoff
   - prune
 - subtitle: COVLMC
 - contents:
   - tune_covlmc
   - plot.tune_covlmc
+  - autoplot.tune_covlmc
   - cutoff.covlmc
   - prune.covlmc
 - title: Simulation
