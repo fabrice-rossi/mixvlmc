@@ -43,7 +43,8 @@ test_that("tune_covlmc memorizes the models it is asked to memorize", {
     "AIC" = stats::AIC,
     "loglikelihood" = stats::logLik,
     "depth" = depth,
-    "nb_contexts" = context_number
+    "nb_contexts" = context_number,
+    "cov_depth" = covariate_depth
   )
   for (quantity in names(quantities)) {
     all_quant <- c(

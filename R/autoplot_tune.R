@@ -89,6 +89,7 @@ autoplot.tune_covlmc <- function(object, ...) {
   vars[2] <- "Depth"
   vars[3] <- "Context number"
   vars[4] <- "Log likelihood"
+  vars[5] <- "Covariate depth"
   names(object$results) <- vars
   res_long <- stats::reshape(object$results,
     direction = "long",

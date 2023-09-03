@@ -143,6 +143,7 @@ tune_covlmc <- function(x, covariate, criterion = c("BIC", "AIC"),
       depth = depth(model),
       nb_contexts = context_number(model),
       loglikelihood = ll,
+      cov_depth = covariate_depth(model),
       AIC = stats::AIC(ll),
       BIC = stats::BIC(ll)
     )
