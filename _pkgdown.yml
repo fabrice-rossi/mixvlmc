@@ -19,6 +19,80 @@ articles:
   - likelihood
   - sampling
 
+reference:
+- title: Context trees
+  desc: Build context trees and extract information from them.
+- contents:
+  - ctx_tree
+  - context_number
+  - contexts.ctx_tree
+  - depth
+  - draw.ctx_tree
+  - draw_control
+  - states
+- title: Variable Length Markov Chain (VLMC)
+  desc: Estimate VLMC from a time series and extract information from them.
+- contents:
+  - vlmc
+  - context_number
+  - contexts.vlmc
+  - depth
+  - draw.vlmc
+  - draw_control
+  - logLik.vlmc
+  - loglikelihood.vlmc
+  - metrics.vlmc
+  - states
+- title: Variable Length Markov Chain with covariates (COVLMC)
+  desc: Estimate COVLMC from a time series and covariates. Extract information from them.
+- contents:
+  - covlmc
+  - covlmc_control
+  - context_number.covlmc
+  - contexts.covlmc
+  - depth
+  - draw.covlmc
+  - draw_control
+  - logLik.covlmc
+  - loglikelihood.covlmc
+  - metrics.covlmc
+  - states
+- title: Model selection for (CO)VLMC
+  desc: Functions to adjust automatically or manually the complexity of a (CO)VLMC to the time series.
+- subtitle: VLMC
+- contents:
+  - tune_vlmc
+  - plot.tune_vlmc
+  - cutoff
+  - prune
+- subtitle: COVLMC
+- contents:
+  - tune_covlmc
+  - plot.tune_covlmc
+  - cutoff.covlmc
+  - prune.covlmc
+- title: Simulation
+  desc: Functions to simulate new time series from a (CO)VLMC model
+- contents:
+  - starts_with("simulate")
+- title: Global options
+- contents:
+  - mixvlmc-package
+- title: Data sets
+- contents:
+  - has_keyword("datasets")
+- title: Conversions and other low level manipulation of models
+- contents:
+  - starts_with("as_")
+  - starts_with("is_")
+  - starts_with("trim")
+- title: Generics
+  desc: Generic S3 methods defined by the package
+- contents:
+  - contexts
+  - draw
+  - metrics
+
 news:
  releases:
  - text: "mixvlmc 0.1.1"
