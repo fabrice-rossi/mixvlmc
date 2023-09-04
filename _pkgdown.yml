@@ -50,6 +50,7 @@ reference:
   - covlmc_control
   - context_number.covlmc
   - contexts.covlmc
+  - covariate_depth
   - depth
   - draw.covlmc
   - draw_control
