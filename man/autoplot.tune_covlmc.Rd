@@ -8,7 +8,7 @@ selection}
 \method{autoplot}{tune_covlmc}(object, ...)
 }
 \arguments{
-\item{object}{a \code{tune_civlmc} object}
+\item{object}{a \code{tune_covlmc} object}
 
 \item{...}{additional parameters (not used currently)}
 }

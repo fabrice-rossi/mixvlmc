@@ -72,7 +72,7 @@ autoplot.tune_vlmc <- function(object, cutoff = c("quantile", "native"), ...) {
 #' criterion or the log likelihood. Each facet of the resulting plot shows a
 #' quantity as a function of the cut off expressed in quantile or native scale.
 #'
-#' @param object a `tune_civlmc` object
+#' @param object a `tune_covlmc` object
 #' @param ... additional parameters (not used currently)
 #' @returns a ggplot object
 #' @export
