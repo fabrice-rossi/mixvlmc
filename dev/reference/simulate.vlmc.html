@@ -109,7 +109,9 @@ dedicated section).</p></dd>
     
 
 <p>a simulated discrete time series of the same type as the one used to
-build the vlmc with a <code>seed</code> attribute (see the Random seed section).</p>
+build the vlmc with a <code>seed</code> attribute (see the Random seed section). The
+results has also the <code>dts</code> class to hide the <code>seed</code> attribute when using
+<code>print</code> or similar function.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
@@ -172,6 +174,7 @@ Journal of Computational and Graphical Statistics, 13 (2), 435-455,
 <span class="r-in"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="vlmc.html">vlmc</a></span><span class="op">(</span><span class="va">dts</span>, min_size <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">new_dts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/simulate.html" class="external-link">simulate</a></span><span class="op">(</span><span class="va">model</span>, <span class="fl">500</span>, seed <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">new_dts_2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/simulate.html" class="external-link">simulate</a></span><span class="op">(</span><span class="va">model</span>, <span class="fl">500</span>, seed <span class="op">=</span> <span class="fl">0</span>, init <span class="op">=</span> <span class="va">dts</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">new_dts_3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/simulate.html" class="external-link">simulate</a></span><span class="op">(</span><span class="va">model</span>, <span class="fl">500</span>, seed <span class="op">=</span> <span class="fl">0</span>, burnin <span class="op">=</span> <span class="fl">500</span><span class="op">)</span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

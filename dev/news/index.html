@@ -68,38 +68,38 @@
 <div class="section level3">
 <h3 id="new-features-development-version">New features<a class="anchor" aria-label="anchor" href="#new-features-development-version"></a></h3>
 <ul><li>
-<code>contexts</code> can now report the positions of each context in the original time series</li>
-<li>the log likelihood calculations performed by <code>logLik</code> and <code>loglikelihood</code> have been revised, expanded to include three possible definitions of the likelihood function, and documented in a new vignette</li>
+<code><a href="../reference/contexts.html">contexts()</a></code> can now report the positions of each context in the original time series</li>
+<li>the log likelihood calculations performed by <code><a href="https://rdrr.io/r/stats/logLik.html" class="external-link">logLik()</a></code> and <code><a href="../reference/loglikelihood.html">loglikelihood()</a></code> have been revised, expanded to include three possible definitions of the likelihood function, and documented in a new vignette (<code><a href="../articles/likelihood.html">vignette("likelihood")</a></code>)</li>
 <li>
-<code>tune_vlmc</code> and <code>tune_covlmc</code> can be used with the different likelihood function definitions</li>
-<li>results of <code>tune_vlmc</code> and <code>tune_covlmc</code> can be plotted using base R graphics (issue <a href="https://github.com/fabrice-rossi/mixvlmc/issues/36" class="external-link">#36</a>)</li>
+<code><a href="../reference/tune_vlmc.html">tune_vlmc()</a></code> and <code><a href="../reference/tune_covlmc.html">tune_covlmc()</a></code> can be used with the different likelihood function definitions</li>
+<li>results of <code><a href="../reference/tune_vlmc.html">tune_vlmc()</a></code> and <code><a href="../reference/tune_covlmc.html">tune_covlmc()</a></code> can be plotted using base R graphics or ggplot2 (issue <a href="https://github.com/fabrice-rossi/mixvlmc/issues/36" class="external-link">#36</a>)</li>
 <li>
-<code>tune_covlmc</code> can trim the best model (and the initial one) is asked to<br></li>
+<code><a href="../reference/tune_covlmc.html">tune_covlmc()</a></code> can trim the best model (and the initial one) if asked to<br></li>
 <li>
-<code>cutoff</code> uses a new <code>tolerance</code> parameter to avoid reporting cut off values that are almost identical due to numerical imprecision</li>
+<code><a href="../reference/cutoff.html">cutoff()</a></code> uses a new <code>tolerance</code> parameter to avoid reporting cut off values that are almost identical due to numerical imprecision</li>
 <li>
-<code>trim.covlmc</code> implements simple trimming for VGAM based objects (issue <a href="https://github.com/fabrice-rossi/mixvlmc/issues/48" class="external-link">#48</a>)</li>
+<code><a href="../reference/trim.covlmc.html">trim.covlmc()</a></code> implements simple trimming for VGAM based objects (issue <a href="https://github.com/fabrice-rossi/mixvlmc/issues/48" class="external-link">#48</a>)</li>
 <li>
-<code>simulate.vlmc</code> implements a user specified burn in period (issue <a href="https://github.com/fabrice-rossi/mixvlmc/issues/40" class="external-link">#40</a>)</li>
+<code><a href="../reference/simulate.vlmc.html">simulate.vlmc()</a></code> implements a user specified burn in period (issue <a href="https://github.com/fabrice-rossi/mixvlmc/issues/40" class="external-link">#40</a>)</li>
 <li>
-<code>simulate.vlmc</code> and <code>simulate.covlmc</code> now handle the random generator state as does <code><a href="https://rdrr.io/r/stats/simulate.html" class="external-link">stats::simulate</a></code> (issue <a href="https://github.com/fabrice-rossi/mixvlmc/issues/56" class="external-link">#56</a>)</li>
+<code><a href="../reference/simulate.vlmc.html">simulate.vlmc()</a></code> and <code><a href="../reference/simulate.covlmc.html">simulate.covlmc()</a></code> now handle the random generator state as does <code><a href="https://rdrr.io/r/stats/simulate.html" class="external-link">stats::simulate()</a></code> (issue <a href="https://github.com/fabrice-rossi/mixvlmc/issues/56" class="external-link">#56</a>)</li>
 </ul></div>
 <div class="section level3">
 <h3 id="minor-improvements-and-bug-fixes-development-version">Minor improvements and bug fixes<a class="anchor" aria-label="anchor" href="#minor-improvements-and-bug-fixes-development-version"></a></h3>
 <ul><li>Improved the test coverage (issue <a href="https://github.com/fabrice-rossi/mixvlmc/issues/54" class="external-link">#54</a>)</li>
 <li>Fixed several bugs related to degenerate VLMC (issue <a href="https://github.com/fabrice-rossi/mixvlmc/issues/55" class="external-link">#55</a>)</li>
 <li>Fixed a bug in the likelihood calculation for internal context nodes</li>
-<li>Improved type consistency by reporting counts as integers in <code>contexts</code> results</li>
+<li>Improved type consistency by reporting counts as integers in <code><a href="../reference/contexts.html">contexts()</a></code> results</li>
 <li>Fixed documentation: all models can be adjusted on time series of logical values</li>
-<li>Synchronized <code>ctx_tree</code> documentation and its default value</li>
-<li>Synchronized <code>contexts</code> documentation and its default value</li>
-<li>Added more trimming for COVLMC models in <code>trim.covlmc</code>
+<li>Synchronized <code><a href="../reference/ctx_tree.html">ctx_tree()</a></code> documentation and its default value</li>
+<li>Synchronized <code><a href="../reference/contexts.html">contexts()</a></code> documentation and its default value</li>
+<li>Added more trimming for COVLMC models in <code><a href="../reference/trim.covlmc.html">trim.covlmc()</a></code>
 </li>
 </ul></div>
 </div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.1.1" id="mixvlmc-011">mixvlmc 0.1.1<a class="anchor" aria-label="anchor" href="#mixvlmc-011"></a></h2><p class="text-muted">CRAN release: 2023-07-10</p>
-<ul><li>Added missing documentation about the return values of <code>simulate.vlmc</code> and <code>simulate.covlmc</code>
+<ul><li>Added missing documentation about the return values of <code><a href="../reference/simulate.vlmc.html">simulate.vlmc()</a></code> and <code><a href="../reference/simulate.covlmc.html">simulate.covlmc()</a></code>
 </li>
 </ul></div>
     <div class="section level2">

@@ -429,8 +429,10 @@ sequence of weeks with or without earthquake(s).</p>
 <span><span class="va">California_weeks</span><span class="op">[</span><span class="va">California_earth_quakes</span><span class="op">$</span><span class="va">nbweeks</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">1</span></span></code></pre></div>
 <p>And finally we adjust automatically a VLMC.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">California_weeks_earth_quakes_model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tune_vlmc.html">tune_vlmc</a></span><span class="op">(</span><span class="va">California_weeks</span><span class="op">)</span></span></code></pre></div>
-<p>The resulting model remains relatively simple with an interesting
+<code class="sourceCode R"><span><span class="va">California_weeks_earth_quakes_model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tune_vlmc.html">tune_vlmc</a></span><span class="op">(</span><span class="va">California_weeks</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">California_weeks_earth_quakes_model</span><span class="op">)</span></span></code></pre></div>
+<p><img src="variable-length-markov-chains_files/figure-html/unnamed-chunk-13-1.png" width="672" style="display: block; margin: auto;">
+The resulting model remains relatively simple with an interesting
 increase of the risk of observing an earth quake after 6 weeks after the
 last one.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
@@ -491,8 +493,10 @@ function as follows.</p>
 <span><span class="co">#&gt;  26.426030 3.596414e-13     0           1     -3221.590 6445.180 6451.947</span></span></code></pre></div>
 <p>in addition, a summary data frame is accessible in the
 <code>results</code> component of the object. This can be used to build
-e.g. graphical representation of the model selection process for
-instance as follows</p>
+e.g. custom graphical representation of the model selection process
+(rather than using <code><a href="../reference/plot.tune_vlmc.html">plot.tune_vlmc()</a></code> or
+<code><a href="../reference/autoplot.tune_vlmc.html">autoplot.tune_vlmc()</a></code>). A typical simple ggplot2
+representation can made as follows, for instance:</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">California_weeks_earth_quakes_model</span><span class="op">$</span><span class="va">results</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">alpha</span>, y <span class="op">=</span> <span class="va">BIC</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
