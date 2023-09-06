@@ -4,7 +4,7 @@
 \alias{predict.vlmc}
 \title{Next state prediction in a discrete time series for a VLMC}
 \usage{
-\method{predict}{vlmc}(object, newdata, type = c("raw", "probs"), ...)
+\method{predict}{vlmc}(object, newdata, type = c("raw", "probs"), final_pred = TRUE, ...)
 }
 \arguments{
 \item{object}{a fitted vlmc object.}
@@ -14,6 +14,10 @@
 \item{type}{character indicating the type of prediction required. The default
 \code{"raw"} returns actual predictions in the form of a new time series. The
 alternative \code{"probs"} returns a matrix of prediction probabilities (see details).}
+
+\item{final_pred}{if \code{TRUE} (default value), the predictions include a final
+prediction step, made by computing the context of the full time series. When
+\code{FALSE} this final prediction is not included.}
 
 \item{...}{additional arguments.}
 }

@@ -19,6 +19,9 @@
 #' @param type character indicating the type of prediction required. The default
 #'  `"raw"` returns actual predictions in the form of a new time series. The
 #'  alternative `"probs"` returns a matrix of prediction probabilities (see details).
+#' @param final_pred if `TRUE` (default value), the predictions include a final
+#'   prediction step, made by computing the context of the full time series. When
+#'   `FALSE` this final prediction is not included.
 #' @param ... additional arguments.
 #'
 #' @returns A vector of predictions if `type="raw"` or a matrix of state probabilities
@@ -30,9 +33,11 @@
 #' model <- vlmc(dts, min_size = 5)
 #' predict(model, dts[1:5])
 #' predict(model, dts[1:5], "probs")
-predict.vlmc <- function(object, newdata, type = c("raw", "probs"), ...) {
+predict.vlmc <- function(object, newdata, type = c("raw", "probs"),
+                         final_pred = TRUE, ...) {
   type <- match.arg(type)
   max_depth <- depth(object)
+  assertthat::assert_that(rlang::is_logical(final_pred))
   if (!is.null(newdata)) {
     assertthat::assert_that((typeof(newdata) == typeof(object$vals)) && (class(newdata) == class(object$vals)),
       msg = "newdata is not compatible with the model state space"
@@ -42,16 +47,18 @@ predict.vlmc <- function(object, newdata, type = c("raw", "probs"), ...) {
   } else {
     stop("newdata is empty.")
   }
-  pred_vals <- object$vals ### ATTENTION
+  pred_vals <- object$vals
   MAT <- NULL
+  with_final <- as.integer(final_pred)
   if (type == "raw") {
     if (max_depth == 0) {
       pred <- which.max(object$f_by) ## implements the tie break rule by default
-      thing <- rep(pred, (length(newdata) + 1))
+      thing <- rep(pred, length(newdata) + with_final)
     } else {
-      thing <- rep(0L, (length(newdata) + 1))
+      thing <- rep(0L, length(newdata) + with_final)
       thing[1] <- which.max(object$f_by)
-      for (ii in 1:length(newdata)) {
+      nb_preds <- length(newdata) - 1 + with_final
+      for (ii in 1:nb_preds) {
         if (ii <= max_depth) {
           ac_ctx <- ctx[(length(ctx) - ii + 1):length(ctx)]
         } else {
@@ -64,11 +71,12 @@ predict.vlmc <- function(object, newdata, type = c("raw", "probs"), ...) {
   } else {
     if (max_depth == 0) {
       prob <- object$f_by / sum(object$f_by)
-      probM <- matrix(rep(prob, each = (length(newdata) + 1)), ncol = length(pred_vals))
+      probM <- matrix(rep(prob, each = length(newdata) + with_final), ncol = length(pred_vals))
     } else {
-      probM <- matrix(NA, nrow = (length(newdata) + 1), ncol = length(pred_vals))
+      probM <- matrix(NA, nrow = length(newdata) + with_final, ncol = length(pred_vals))
       probM[1, ] <- object$f_by / sum(object$f_by)
-      for (ii in 1:length(newdata)) {
+      nb_preds <- length(newdata) - 1 + with_final
+      for (ii in 1:nb_preds) {
         if (ii <= max_depth) {
           ac_ctx <- ctx[(length(ctx) - ii + 1):length(ctx)]
         } else {

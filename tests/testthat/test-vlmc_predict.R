@@ -35,3 +35,43 @@ test_that("vlmc predict detects unadapted values in input", {
   expect_error(predict(d_vlmc, c("A", "B", "B", "D")))
   expect_error(predict(d_vlmc, c("A", "B", "B", "2")))
 })
+
+test_that("the semantics of final_pred is respected", {
+  withr::local_seed(0)
+  data_set <- sample(c("A", "B", "C"), 500, replace = TRUE)
+  d_vlmc <- vlmc(data_set, alpha = 0.1)
+  for (k in 1:10) {
+    new_dts <- sample(c("A", "B", "C"),
+      100 + sample(50:100, 1),
+      replace = TRUE
+    )
+    pred_w_final <- predict(d_vlmc, new_dts, final_pred = TRUE)
+    pred_wo_final <- predict(d_vlmc, new_dts, final_pred = FALSE)
+    expect_length(
+      pred_w_final,
+      length(new_dts) + 1
+    )
+    expect_length(
+      pred_wo_final,
+      length(new_dts)
+    )
+    expect_identical(
+      pred_wo_final,
+      pred_w_final[-length(pred_w_final)]
+    )
+    probs_pred_w_final <- predict(d_vlmc, new_dts, type = "probs", final_pred = TRUE)
+    probs_pred_wo_final <- predict(d_vlmc, new_dts, type = "probs", final_pred = FALSE)
+    expect_equal(
+      nrow(probs_pred_w_final),
+      length(new_dts) + 1
+    )
+    expect_equal(
+      nrow(probs_pred_wo_final),
+      length(new_dts)
+    )
+    expect_identical(
+      probs_pred_wo_final,
+      probs_pred_w_final[-length(pred_w_final), , drop = FALSE]
+    )
+  }
+})
