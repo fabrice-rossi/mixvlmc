@@ -50,6 +50,13 @@ to keep only the last $n$ values, in order to minimise the influence of the star
 values. The first values are considered as a *burn in* or *warm up* phase. 
 
 ## Sampling from a VLMC
+
+As explained in `vignette("likelihood")`, a VLMC does not specify distributions
+for the initial values of time series as no context can be computed from them. 
+In `simulate.vlmc()`, we use the notion of `extended context` described in the 
+vignette to extend any VLMC into a full model, that specifies both the conditional
+distributions given its contexts and also the distributions of the initial values.
+   
 ### Introduction
 
 Let us consider a simple example with an independent sample:
@@ -79,7 +86,7 @@ the standard parameters:
    
 As for `stats::simulate()`, the state of the random number generator is never 
 modified by a call to `simulate.vlmc()`. 
-   
+
 In addition, one can specify the initial values of the sequence via the `init` parameter, for
 instance:
 ```{r}

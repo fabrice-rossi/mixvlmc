@@ -1,6 +1,8 @@
 # mixvlmc (development version)
 
 ## New features
+* a new function `predict.vlmc()` can be used to make one step ahead predictions
+  of a time series based on a VLMC model (issue #46)
 * `contexts()` can now report the positions of each context in the original time
   series
 * the log likelihood calculations performed by `logLik()` and `loglikelihood()` 
