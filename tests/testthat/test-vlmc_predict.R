@@ -1,16 +1,53 @@
 test_that("vlmc predict returns the same value for zero depth model", {
   withr::local_seed(0)
-  data_set <- sample(1:5, 50, replace = TRUE)
-  d_vlmc <- vlmc(data_set)
-  expect_equal(predict(d_vlmc, 1:5), rep(2, 6))
+  for (k in 1:5) {
+    data_set <- sample(1:(k + 1), 50, replace = TRUE)
+    d_vlmc <- vlmc(data_set, alpha = 1e-5)
+    ## make sure we are in the constant model case
+    expect_equal(context_number(d_vlmc), 1L)
+    expect_equal(
+      predict(d_vlmc, sample(1:(k + 1), 50, replace = TRUE)),
+      rep(as.numeric(which.max(table(data_set))), 51)
+    )
+  }
 })
 
-test_that("vlmc predict returns the same size matrix for different type", {
+test_that("vlmc predict returns deterministic results", {
   withr::local_seed(0)
-  data_set <- sample(1:5, 50, replace = TRUE)
+  data_set <- sample(c("A", "B", "C"), 500, replace = TRUE)
   d_vlmc <- vlmc(data_set)
-  expect_length(predict(d_vlmc, 1:5), 6L)
-  expect_equal(dim(predict(d_vlmc, 1:5, type = "probs")), c(6, 5))
+  new_data <- sample(c("A", "B", "C"), 500, replace = TRUE)
+  first_try <- predict(d_vlmc, new_data)
+  second_try <- predict(d_vlmc, new_data)
+  expect_identical(first_try, second_try)
+})
+
+test_that("vlmc predict handles correctly edge cases", {
+  pc <- powerconsumption[powerconsumption$week == 5, ]
+  dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.25, 0.5, 0.75, 1))))
+  model <- vlmc(dts, min_size = 5)
+  for (fp in c(TRUE, FALSE)) {
+    ec_predict <- predict(model, dts[0], final_pred = fp)
+    expect_length(ec_predict, as.integer(fp))
+    expect_type(ec_predict, typeof(dts))
+    expect_s3_class(ec_predict, class(dts))
+    expect_identical(levels(ec_predict), levels(dts))
+    prob_ec_predict <- predict(model, dts[0], final_pred = fp, type = "probs")
+    expect_equal(nrow(prob_ec_predict), as.integer(fp))
+    expect_equal(ncol(prob_ec_predict), length(levels(dts)))
+    expect_type(prob_ec_predict, "double")
+    expect_identical(class(prob_ec_predict), c("matrix", "array"))
+    expect_equal(colnames(prob_ec_predict), as.character(levels(dts)))
+  }
+})
+
+test_that("vlmc predict returns probabilities", {
+  for (k in 2:5) {
+    data_set <- build_markov_chain(1000, k, seed = k)
+    x_vlmc <- vlmc(data_set$x)
+    preds <- predict(x_vlmc, data_set$x[1:500], type = "probs")
+    expect_equal(rowSums(preds), rep(1, nrow(preds)))
+  }
 })
 
 test_that("vlmc predict returns good values and number of predictions for non-zero depth model", {
@@ -34,6 +71,7 @@ test_that("vlmc predict detects unadapted values in input", {
   d_vlmc <- vlmc(data_set)
   expect_error(predict(d_vlmc, c("A", "B", "B", "D")))
   expect_error(predict(d_vlmc, c("A", "B", "B", "2")))
+  expect_error(predict(d_vlmc, newdata = NULL))
 })
 
 test_that("the semantics of final_pred is respected", {

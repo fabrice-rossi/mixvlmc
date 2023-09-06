@@ -59,7 +59,17 @@ predict.vlmc <- function(object, newdata, type = c("raw", "probs"),
     dts <- to_dts(newdata, object$vals)
     ctx <- rev(dts$ix) + 1
   } else {
-    stop("newdata is empty.")
+    stop("newdata must be provided.")
+  }
+  if (length(newdata) == 0 && final_pred == FALSE) {
+    ## degenerate cases
+    if (type == "raw") {
+      return(object$vals[0])
+    } else {
+      res <- matrix(0, nrow = 0, ncol = length(object$vals))
+      colnames(res) <- as.character(object$vals)
+      return(res)
+    }
   }
   pred_vals <- object$vals
   MAT <- NULL
@@ -72,13 +82,15 @@ predict.vlmc <- function(object, newdata, type = c("raw", "probs"),
       thing <- rep(0L, length(newdata) + with_final)
       thing[1] <- which.max(object$f_by)
       nb_preds <- length(newdata) - 1 + with_final
-      for (ii in 1:nb_preds) {
-        if (ii <= max_depth) {
-          ac_ctx <- ctx[(length(ctx) - ii + 1):length(ctx)]
-        } else {
-          ac_ctx <- ctx[(length(ctx) - ii + 1):(length(ctx) - ii + max_depth)]
+      if (nb_preds > 0) {
+        for (ii in 1:nb_preds) {
+          if (ii <= max_depth) {
+            ac_ctx <- ctx[(length(ctx) - ii + 1):length(ctx)]
+          } else {
+            ac_ctx <- ctx[(length(ctx) - ii + 1):(length(ctx) - ii + max_depth)]
+          }
+          thing[1 + ii] <- which.max(match_context(object, ac_ctx)$tree$f_by)
         }
-        thing[1 + ii] <- which.max(match_context(object, ac_ctx)$tree$f_by)
       }
     }
     MAT <- pred_vals[thing]
@@ -90,14 +102,16 @@ predict.vlmc <- function(object, newdata, type = c("raw", "probs"),
       probM <- matrix(NA, nrow = length(newdata) + with_final, ncol = length(pred_vals))
       probM[1, ] <- object$f_by / sum(object$f_by)
       nb_preds <- length(newdata) - 1 + with_final
-      for (ii in 1:nb_preds) {
-        if (ii <= max_depth) {
-          ac_ctx <- ctx[(length(ctx) - ii + 1):length(ctx)]
-        } else {
-          ac_ctx <- ctx[(length(ctx) - ii + 1):(length(ctx) - ii + max_depth)]
+      if (nb_preds > 0) {
+        for (ii in 1:nb_preds) {
+          if (ii <= max_depth) {
+            ac_ctx <- ctx[(length(ctx) - ii + 1):length(ctx)]
+          } else {
+            ac_ctx <- ctx[(length(ctx) - ii + 1):(length(ctx) - ii + max_depth)]
+          }
+          ac_prob <- match_context(object, ac_ctx)$tree$f_by
+          probM[1 + ii, ] <- ac_prob / sum(ac_prob)
         }
-        ac_prob <- match_context(object, ac_ctx)$tree$f_by
-        probM[1 + ii, ] <- ac_prob / sum(ac_prob)
       }
     }
     colnames(probM) <- as.character(pred_vals)
