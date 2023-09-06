@@ -120,26 +120,44 @@ tree.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">dts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A"</span>, <span class="st">"B"</span>, <span class="st">"C"</span><span class="op">)</span>, <span class="fl">500</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="vlmc.html">vlmc</a></span><span class="op">(</span><span class="va">dts</span>, alpha <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="draw.html">draw</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> * (0.302, 0.332, 0.366)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> '-- A (0.26, 0.3667, 0.3733)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     '-- A (0.2368, 0.2632, 0.5)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         '-- C (0.1667, 0.2222, 0.6111)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             '-- A (0.2222, 0.3333, 0.4444)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                 '-- B (1, 0, 0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> * (0.344, 0.318, 0.338)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> +-- A (0.345, 0.3099, 0.345)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |   '-- B (0.3091, 0.3091, 0.3818)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |       '-- C (0.2353, 0.2941, 0.4706)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |           '-- B (0, 0, 1)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> '-- C (0.3373, 0.2604, 0.4024)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     +-- B (0.381, 0.2857, 0.3333)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     |   '-- B (0.4118, 0.2353, 0.3529)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     |       '-- C (0, 0, 1)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     '-- C (0.3235, 0.2206, 0.4559)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         +-- B (0.6429, 0.1429, 0.2143)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         '-- C (0.09677, 0.3548, 0.5484)</span>
 <span class="r-in"><span><span class="fu"><a href="draw.html">draw</a></span><span class="op">(</span><span class="va">model</span>, prob <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> * (151, 166, 183)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> '-- A (39, 55, 56)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     '-- A (9, 10, 19)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         '-- C (3, 4, 11)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             '-- A (2, 3, 4)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                 '-- B (2, 0, 0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> * (172, 159, 169)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> +-- A (59, 53, 59)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |   '-- B (17, 17, 21)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |       '-- C (4, 5, 8)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |           '-- B (0, 0, 5)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> '-- C (57, 44, 68)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     +-- B (16, 12, 14)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     |   '-- B (7, 4, 6)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     |       '-- C (0, 0, 5)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     '-- C (22, 15, 31)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         +-- B (9, 2, 3)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         '-- C (3, 11, 17)</span>
 <span class="r-in"><span><span class="fu"><a href="draw.html">draw</a></span><span class="op">(</span><span class="va">model</span>, prob <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> *</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> '-- A</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     '-- A</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> +-- A</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |   '-- B</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |       '-- C</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |           '-- B</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> '-- C</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     +-- B</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     |   '-- B</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     |       '-- C</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     '-- C</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         +-- B</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         '-- C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             '-- A</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                 '-- B</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
