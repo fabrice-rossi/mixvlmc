@@ -2,28 +2,45 @@
 % Please edit documentation in R/vlmc_predict.R
 \name{predict.vlmc}
 \alias{predict.vlmc}
-\title{Predictor of the following state of a discrete time series for a vlmc}
+\title{Next state prediction in a discrete time series for a VLMC}
 \usage{
-\method{predict}{vlmc}(object, ts, type = "class", ...)
+\method{predict}{vlmc}(object, newdata, type = c("raw", "probs"), ...)
 }
 \arguments{
 \item{object}{a fitted vlmc object.}
 
-\item{ts}{a time series adapted to the vlmc object.}
+\item{newdata}{a time series adapted to the vlmc object.}
 
-\item{type}{charachter indicating the type of prediction required.
-The default "class" returns the predictor,
-"probs" returns a matrix of prediction probabilities.}
+\item{type}{character indicating the type of prediction required. The default
+\code{"raw"} returns actual predictions in the form of a new time series. The
+alternative \code{"probs"} returns a matrix of prediction probabilities (see details).}
 
 \item{...}{additional arguments.}
 }
+\value{
+A vector of predictions if \code{type="raw"} or a matrix of state probabilities
+if \code{type="probs"}.
+}
 \description{
-This function predict each state of a time series from the distribution estimated by the
-given vlmc object.
+This function computes one step ahead predictions for a discrete time series
+based on a VLMC.
+}
+\details{
+Given a time series \code{X}, at time step \code{t}, a context is computed using
+observations from \code{X[1]} to \code{X[t-1]}. The prediction is then the most
+probable state for \code{X[t]} given this contexts. Ties are broken according to
+the natural order in the state space, favouring "small" values. The time
+series of predictions is returned by the function when \code{type="raw"} (default
+case).
+
+When \code{type="probs"}, each \code{X[t]} is associated to the conditional probabilities
+of the next state given the context. Those probabilities are returned as a matrix
+of probabilities with column names given by the state names.
 }
 \examples{
 pc <- powerconsumption[powerconsumption$week == 5, ]
 dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.25, 0.5, 0.75, 1))))
 model <- vlmc(dts, min_size = 5)
 predict(model, dts[1:5])
+predict(model, dts[1:5], "probs")
 }
