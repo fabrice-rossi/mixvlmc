@@ -38,20 +38,20 @@ fixed sequence specified via the \code{init} parameter.
 \section{Random seed}{
 
 
-This function reproduce the behaviour of \code{\link[stats:simulate]{stats::simulate()}}. If \code{seed} is \code{NULL}
-the function does not change the random generator state and returns the value
-of \link{.Random.seed} as a \code{seed} attribute in the return value. This can be used
-to reproduce exactly the simulation results by setting \link{.Random.seed} to this value.
-Notice that if the random seed has not be initialised by R so far, the function
-issues a call to \code{runif(1)} to perform this initialisation (as is done in
-\code{\link[stats:simulate]{stats::simulate()}}).
+This function reproduce the behaviour of \code{\link[stats:simulate]{stats::simulate()}}. If \code{seed} is
+\code{NULL} the function does not change the random generator state and returns
+the value of \link{.Random.seed} as a \code{seed} attribute in the return value. This
+can be used to reproduce exactly the simulation results by setting
+\link{.Random.seed} to this value. Notice that if the random seed has not be
+initialised by R so far, the function issues a call to \code{runif(1)} to
+perform this initialisation (as is done in \code{\link[stats:simulate]{stats::simulate()}}).
 
-It \code{seed} is an integer, it is used in a call to \code{\link[=set.seed]{set.seed()}} before the simulation
-takes place. The integer is saved as a \code{seed} attribute in the return value.
-The integer seed is completed by an attribute \code{kind} which contains the value
-\verb{as.list([RNGkind()])} exactly as with \code{\link[stats:simulate]{stats::simulate()}}. As with \code{seed=NULL},
-the random generator state is reset to its original value at the end of the
-call.
+It \code{seed} is an integer, it is used in a call to \code{\link[=set.seed]{set.seed()}} before the
+simulation takes place. The integer is saved as a \code{seed} attribute in the
+return value. The integer seed is completed by an attribute \code{kind} which
+contains the value \verb{as.list([RNGkind()])} exactly as with
+\code{\link[stats:simulate]{stats::simulate()}}. As with \code{seed=NULL}, the random generator state is
+reset to its original value at the end of the call.
 }
 
 \examples{

@@ -4,28 +4,42 @@
 #' based on a VLMC.
 #'
 #' Given a time series `X`, at time step `t`, a context is computed using
-#' observations from `X[1]` to `X[t-1]`. The prediction is then the most
-#' probable state for `X[t]` given this contexts. Ties are broken according to
-#' the natural order in the state space, favouring "small" values. The time
-#' series of predictions is returned by the function when `type="raw"` (default
-#' case).
+#' observations from `X[1]` to `X[t-1]` (see the dedicated section). The
+#' prediction is then the most probable state for `X[t]` given this contexts.
+#' Ties are broken according to the natural order in the state space, favouring
+#' "small" values. The time series of predictions is returned by the function
+#' when `type="raw"` (default case).
 #'
-#' When `type="probs"`, each `X[t]` is associated to the conditional probabilities
-#' of the next state given the context. Those probabilities are returned as a matrix
-#' of probabilities with column names given by the state names.
+#' When `type="probs"`, each `X[t]` is associated to the conditional
+#' probabilities of the next state given the context. Those probabilities are
+#' returned as a matrix of probabilities with column names given by the state
+#' names.
+#'
+#' @section Extended contexts:
+#'
+#'   As explained in details in [loglikelihood.vlmc()] documentation and in the
+#'   dedicated `vignette("likelihood", package = "mixvlmc")`, the first initial
+#'   values of a time series do not in general have a proper context for a VLMC
+#'   with a non zero order. In order to predict something meaningful for those
+#'   values, we rely on the notion of extended context defined in the documents
+#'   mentioned above. This follows the same logic as using
+#'   [loglikelihood.vlmc()] with the parameter `initial="extended"`.
+#'   [simulate.vlmc()] uses the same approach with initial values are not
+#'   provided.
 #'
 #' @param object a fitted vlmc object.
 #' @param newdata a time series adapted to the vlmc object.
 #' @param type character indicating the type of prediction required. The default
-#'  `"raw"` returns actual predictions in the form of a new time series. The
-#'  alternative `"probs"` returns a matrix of prediction probabilities (see details).
+#'   `"raw"` returns actual predictions in the form of a new time series. The
+#'   alternative `"probs"` returns a matrix of prediction probabilities (see
+#'   details).
 #' @param final_pred if `TRUE` (default value), the predictions include a final
-#'   prediction step, made by computing the context of the full time series. When
-#'   `FALSE` this final prediction is not included.
+#'   prediction step, made by computing the context of the full time series.
+#'   When `FALSE` this final prediction is not included.
 #' @param ... additional arguments.
 #'
-#' @returns A vector of predictions if `type="raw"` or a matrix of state probabilities
-#'   if `type="probs"`.
+#' @returns A vector of predictions if `type="raw"` or a matrix of state
+#'   probabilities if `type="probs"`.
 #' @export
 #' @examples
 #' pc <- powerconsumption[powerconsumption$week == 5, ]

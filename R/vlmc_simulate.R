@@ -8,41 +8,52 @@
 #'
 #' @section Burn in (Warm up) period:
 #'
-#' When using a VLMC for simulation purposes, we are generally interested in the
-#' stationary distribution of the corresponding Markov chain. To reduce the
-#' dependence of the samples from the initial values and get closer to this
-#' stationary distribution (if it exists), it is recommended to discard the first
-#' samples which are produced in a so-called "burn in" (or "warm up") period. The
-#' `burnin` parameter can be used to implement this approach. The VLMC is used
-#' to produce a sample of size `burnin + nsim` but the first `burnin` values are
-#' discarded. Notice that this burn in values can be partially given by the `init`
-#' parameter if it is specified.
+#'   When using a VLMC for simulation purposes, we are generally interested in
+#'   the stationary distribution of the corresponding Markov chain. To reduce
+#'   the dependence of the samples from the initial values and get closer to
+#'   this stationary distribution (if it exists), it is recommended to discard
+#'   the first samples which are produced in a so-called "burn in" (or "warm
+#'   up") period. The `burnin` parameter can be used to implement this approach.
+#'   The VLMC is used to produce a sample of size `burnin + nsim` but the first
+#'   `burnin` values are discarded. Notice that this burn in values can be
+#'   partially given by the `init` parameter if it is specified.
 #'
-#' If `burnin` is set to `"auto"`, the `burnin` period is set to
-#' `64 * context_number(object)`, following the heuristic proposed in Mächler and
-#' Bühlmann (2004).
+#'   If `burnin` is set to `"auto"`, the `burnin` period is set to `64 *
+#'   context_number(object)`, following the heuristic proposed in Mächler and
+#'   Bühlmann (2004).
 #'
 #' @section Random seed:
 #'
-#' This function reproduce the behaviour of [stats::simulate()]. If `seed` is `NULL`
-#' the function does not change the random generator state and returns the value
-#' of [.Random.seed] as a `seed` attribute in the return value. This can be used
-#' to reproduce exactly the simulation results by setting [.Random.seed] to this value.
-#' Notice that if the random seed has not be initialised by R so far, the function
-#' issues a call to `runif(1)` to perform this initialisation (as is done in
-#' [stats::simulate()]).
+#'   This function reproduce the behaviour of [stats::simulate()]. If `seed` is
+#'   `NULL` the function does not change the random generator state and returns
+#'   the value of [.Random.seed] as a `seed` attribute in the return value. This
+#'   can be used to reproduce exactly the simulation results by setting
+#'   [.Random.seed] to this value. Notice that if the random seed has not be
+#'   initialised by R so far, the function issues a call to `runif(1)` to
+#'   perform this initialisation (as is done in [stats::simulate()]).
 #'
-#' It `seed` is an integer, it is used in a call to [set.seed()] before the simulation
-#' takes place. The integer is saved as a `seed` attribute in the return value.
-#' The integer seed is completed by an attribute `kind` which contains the value
-#' `as.list([RNGkind()])` exactly as with [stats::simulate()]. As with `seed=NULL`,
-#' the random generator state is reset to its original value at the end of the
-#' call.
+#'   It `seed` is an integer, it is used in a call to [set.seed()] before the
+#'   simulation takes place. The integer is saved as a `seed` attribute in the
+#'   return value. The integer seed is completed by an attribute `kind` which
+#'   contains the value `as.list([RNGkind()])` exactly as with
+#'   [stats::simulate()]. As with `seed=NULL`, the random generator state is
+#'   reset to its original value at the end of the call.
 #'
-#' @references  Mächler, M. and Bühlmann, P. (2004)
-#' "Variable Length Markov Chains: Methodology, Computing, and Software"
-#' Journal of Computational and Graphical Statistics, 13 (2), 435-455,
-#' \doi{10.1198/1061860043524}
+#' @section Extended contexts:
+#'
+#'   As explained in details in [loglikelihood.vlmc()] documentation and in the
+#'   dedicated `vignette("likelihood", package = "mixvlmc")`, the first initial
+#'   values of a time series do not in general have a proper context for a VLMC
+#'   with a non zero order. In order to simulate something meaningful for those
+#'   values when `init` is not provided, we rely on the notion of extended
+#'   context defined in the documents mentioned above. This follows the same
+#'   logic as using [loglikelihood.vlmc()] with the parameter
+#'   `initial="extended"`. [predict.vlmc()] uses the same approach with initial
+#'   values are not provided.
+#'
+#' @references  Mächler, M. and Bühlmann, P. (2004) "Variable Length Markov
+#'   Chains: Methodology, Computing, and Software" Journal of Computational and
+#'   Graphical Statistics, 13 (2), 435-455, \doi{10.1198/1061860043524}
 #'
 #' @param object a fitted vlmc object.
 #' @param nsim length of the simulated time series (defaults to 1).
@@ -57,7 +68,8 @@
 #'   results has also the `dts` class to hide the `seed` attribute when using
 #'   `print` or similar function.
 #' @export
-#' @seealso [stats::simulate()] for details and examples on the random number generator setting
+#' @seealso [stats::simulate()] for details and examples on the random number
+#'   generator setting
 #' @examples
 #' pc <- powerconsumption[powerconsumption$week == 5, ]
 #' dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.25, 0.5, 0.75, 1))))

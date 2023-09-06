@@ -37,38 +37,51 @@ parameter.
 \section{Burn in (Warm up) period}{
 
 
-When using a VLMC for simulation purposes, we are generally interested in the
-stationary distribution of the corresponding Markov chain. To reduce the
-dependence of the samples from the initial values and get closer to this
-stationary distribution (if it exists), it is recommended to discard the first
-samples which are produced in a so-called "burn in" (or "warm up") period. The
-\code{burnin} parameter can be used to implement this approach. The VLMC is used
-to produce a sample of size \code{burnin + nsim} but the first \code{burnin} values are
-discarded. Notice that this burn in values can be partially given by the \code{init}
-parameter if it is specified.
+When using a VLMC for simulation purposes, we are generally interested in
+the stationary distribution of the corresponding Markov chain. To reduce
+the dependence of the samples from the initial values and get closer to
+this stationary distribution (if it exists), it is recommended to discard
+the first samples which are produced in a so-called "burn in" (or "warm
+up") period. The \code{burnin} parameter can be used to implement this approach.
+The VLMC is used to produce a sample of size \code{burnin + nsim} but the first
+\code{burnin} values are discarded. Notice that this burn in values can be
+partially given by the \code{init} parameter if it is specified.
 
-If \code{burnin} is set to \code{"auto"}, the \code{burnin} period is set to
-\code{64 * context_number(object)}, following the heuristic proposed in Mächler and
+If \code{burnin} is set to \code{"auto"}, the \code{burnin} period is set to \code{64 * context_number(object)}, following the heuristic proposed in Mächler and
 Bühlmann (2004).
 }
 
 \section{Random seed}{
 
 
-This function reproduce the behaviour of \code{\link[stats:simulate]{stats::simulate()}}. If \code{seed} is \code{NULL}
-the function does not change the random generator state and returns the value
-of \link{.Random.seed} as a \code{seed} attribute in the return value. This can be used
-to reproduce exactly the simulation results by setting \link{.Random.seed} to this value.
-Notice that if the random seed has not be initialised by R so far, the function
-issues a call to \code{runif(1)} to perform this initialisation (as is done in
-\code{\link[stats:simulate]{stats::simulate()}}).
+This function reproduce the behaviour of \code{\link[stats:simulate]{stats::simulate()}}. If \code{seed} is
+\code{NULL} the function does not change the random generator state and returns
+the value of \link{.Random.seed} as a \code{seed} attribute in the return value. This
+can be used to reproduce exactly the simulation results by setting
+\link{.Random.seed} to this value. Notice that if the random seed has not be
+initialised by R so far, the function issues a call to \code{runif(1)} to
+perform this initialisation (as is done in \code{\link[stats:simulate]{stats::simulate()}}).
 
-It \code{seed} is an integer, it is used in a call to \code{\link[=set.seed]{set.seed()}} before the simulation
-takes place. The integer is saved as a \code{seed} attribute in the return value.
-The integer seed is completed by an attribute \code{kind} which contains the value
-\verb{as.list([RNGkind()])} exactly as with \code{\link[stats:simulate]{stats::simulate()}}. As with \code{seed=NULL},
-the random generator state is reset to its original value at the end of the
-call.
+It \code{seed} is an integer, it is used in a call to \code{\link[=set.seed]{set.seed()}} before the
+simulation takes place. The integer is saved as a \code{seed} attribute in the
+return value. The integer seed is completed by an attribute \code{kind} which
+contains the value \verb{as.list([RNGkind()])} exactly as with
+\code{\link[stats:simulate]{stats::simulate()}}. As with \code{seed=NULL}, the random generator state is
+reset to its original value at the end of the call.
+}
+
+\section{Extended contexts}{
+
+
+As explained in details in \code{\link[=loglikelihood.vlmc]{loglikelihood.vlmc()}} documentation and in the
+dedicated \code{vignette("likelihood", package = "mixvlmc")}, the first initial
+values of a time series do not in general have a proper context for a VLMC
+with a non zero order. In order to simulate something meaningful for those
+values when \code{init} is not provided, we rely on the notion of extended
+context defined in the documents mentioned above. This follows the same
+logic as using \code{\link[=loglikelihood.vlmc]{loglikelihood.vlmc()}} with the parameter
+\code{initial="extended"}. \code{\link[=predict.vlmc]{predict.vlmc()}} uses the same approach with initial
+values are not provided.
 }
 
 \examples{
@@ -80,11 +93,11 @@ new_dts_2 <- simulate(model, 500, seed = 0, init = dts[1:5])
 new_dts_3 <- simulate(model, 500, seed = 0, burnin = 500)
 }
 \references{
-Mächler, M. and Bühlmann, P. (2004)
-"Variable Length Markov Chains: Methodology, Computing, and Software"
-Journal of Computational and Graphical Statistics, 13 (2), 435-455,
-\doi{10.1198/1061860043524}
+Mächler, M. and Bühlmann, P. (2004) "Variable Length Markov
+Chains: Methodology, Computing, and Software" Journal of Computational and
+Graphical Statistics, 13 (2), 435-455, \doi{10.1198/1061860043524}
 }
 \seealso{
-\code{\link[stats:simulate]{stats::simulate()}} for details and examples on the random number generator setting
+\code{\link[stats:simulate]{stats::simulate()}} for details and examples on the random number
+generator setting
 }
