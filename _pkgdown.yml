@@ -43,6 +43,7 @@ reference:
   - loglikelihood.vlmc
   - metrics.vlmc
   - states
+  - predict.vlmc
 - title: Variable Length Markov Chain with covariates (COVLMC)
   desc: Estimate COVLMC from a time series and covariates. Extract information from them.
 - contents:
