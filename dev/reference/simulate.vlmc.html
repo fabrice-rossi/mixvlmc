@@ -123,17 +123,16 @@ parameter.</p>
     
 
 
-<p>When using a VLMC for simulation purposes, we are generally interested in the
-stationary distribution of the corresponding Markov chain. To reduce the
-dependence of the samples from the initial values and get closer to this
-stationary distribution (if it exists), it is recommended to discard the first
-samples which are produced in a so-called "burn in" (or "warm up") period. The
-<code>burnin</code> parameter can be used to implement this approach. The VLMC is used
-to produce a sample of size <code>burnin + nsim</code> but the first <code>burnin</code> values are
-discarded. Notice that this burn in values can be partially given by the <code>init</code>
-parameter if it is specified.</p>
-<p>If <code>burnin</code> is set to <code>"auto"</code>, the <code>burnin</code> period is set to
-<code>64 * context_number(object)</code>, following the heuristic proposed in Mächler and
+<p>When using a VLMC for simulation purposes, we are generally interested in
+the stationary distribution of the corresponding Markov chain. To reduce
+the dependence of the samples from the initial values and get closer to
+this stationary distribution (if it exists), it is recommended to discard
+the first samples which are produced in a so-called "burn in" (or "warm
+up") period. The <code>burnin</code> parameter can be used to implement this approach.
+The VLMC is used to produce a sample of size <code>burnin + nsim</code> but the first
+<code>burnin</code> values are discarded. Notice that this burn in values can be
+partially given by the <code>init</code> parameter if it is specified.</p>
+<p>If <code>burnin</code> is set to <code>"auto"</code>, the <code>burnin</code> period is set to <code>64 * context_number(object)</code>, following the heuristic proposed in Mächler and
 Bühlmann (2004).</p>
     </div>
     <div class="section level2">
@@ -141,30 +140,45 @@ Bühlmann (2004).</p>
     
 
 
-<p>This function reproduce the behaviour of <code><a href="https://rdrr.io/r/stats/simulate.html" class="external-link">stats::simulate()</a></code>. If <code>seed</code> is <code>NULL</code>
-the function does not change the random generator state and returns the value
-of <a href="https://rdrr.io/r/base/Random.html" class="external-link">.Random.seed</a> as a <code>seed</code> attribute in the return value. This can be used
-to reproduce exactly the simulation results by setting <a href="https://rdrr.io/r/base/Random.html" class="external-link">.Random.seed</a> to this value.
-Notice that if the random seed has not be initialised by R so far, the function
-issues a call to <code>runif(1)</code> to perform this initialisation (as is done in
-<code><a href="https://rdrr.io/r/stats/simulate.html" class="external-link">stats::simulate()</a></code>).</p>
-<p>It <code>seed</code> is an integer, it is used in a call to <code><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed()</a></code> before the simulation
-takes place. The integer is saved as a <code>seed</code> attribute in the return value.
-The integer seed is completed by an attribute <code>kind</code> which contains the value
-<code>as.list([RNGkind()])</code> exactly as with <code><a href="https://rdrr.io/r/stats/simulate.html" class="external-link">stats::simulate()</a></code>. As with <code>seed=NULL</code>,
-the random generator state is reset to its original value at the end of the
-call.</p>
+<p>This function reproduce the behaviour of <code><a href="https://rdrr.io/r/stats/simulate.html" class="external-link">stats::simulate()</a></code>. If <code>seed</code> is
+<code>NULL</code> the function does not change the random generator state and returns
+the value of <a href="https://rdrr.io/r/base/Random.html" class="external-link">.Random.seed</a> as a <code>seed</code> attribute in the return value. This
+can be used to reproduce exactly the simulation results by setting
+<a href="https://rdrr.io/r/base/Random.html" class="external-link">.Random.seed</a> to this value. Notice that if the random seed has not be
+initialised by R so far, the function issues a call to <code>runif(1)</code> to
+perform this initialisation (as is done in <code><a href="https://rdrr.io/r/stats/simulate.html" class="external-link">stats::simulate()</a></code>).</p>
+<p>It <code>seed</code> is an integer, it is used in a call to <code><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed()</a></code> before the
+simulation takes place. The integer is saved as a <code>seed</code> attribute in the
+return value. The integer seed is completed by an attribute <code>kind</code> which
+contains the value <code>as.list([RNGkind()])</code> exactly as with
+<code><a href="https://rdrr.io/r/stats/simulate.html" class="external-link">stats::simulate()</a></code>. As with <code>seed=NULL</code>, the random generator state is
+reset to its original value at the end of the call.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="extended-contexts">Extended contexts<a class="anchor" aria-label="anchor" href="#extended-contexts"></a></h2>
+    
+
+
+<p>As explained in details in <code><a href="loglikelihood.html">loglikelihood.vlmc()</a></code> documentation and in the
+dedicated <code><a href="../articles/likelihood.html">vignette("likelihood", package = "mixvlmc")</a></code>, the first initial
+values of a time series do not in general have a proper context for a VLMC
+with a non zero order. In order to simulate something meaningful for those
+values when <code>init</code> is not provided, we rely on the notion of extended
+context defined in the documents mentioned above. This follows the same
+logic as using <code><a href="loglikelihood.html">loglikelihood.vlmc()</a></code> with the parameter
+<code>initial="extended"</code>. <code><a href="predict.vlmc.html">predict.vlmc()</a></code> uses the same approach with initial
+values are not provided.</p>
     </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
-    <p>Mächler, M. and Bühlmann, P. (2004)
-"Variable Length Markov Chains: Methodology, Computing, and Software"
-Journal of Computational and Graphical Statistics, 13 (2), 435-455,
-<a href="https://doi.org/10.1198/1061860043524" class="external-link">doi:10.1198/1061860043524</a></p>
+    <p>Mächler, M. and Bühlmann, P. (2004) "Variable Length Markov
+Chains: Methodology, Computing, and Software" Journal of Computational and
+Graphical Statistics, 13 (2), 435-455, <a href="https://doi.org/10.1198/1061860043524" class="external-link">doi:10.1198/1061860043524</a></p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="https://rdrr.io/r/stats/simulate.html" class="external-link">stats::simulate()</a></code> for details and examples on the random number generator setting</p></div>
+    <div class="dont-index"><p><code><a href="https://rdrr.io/r/stats/simulate.html" class="external-link">stats::simulate()</a></code> for details and examples on the random number
+generator setting</p></div>
     </div>
 
     <div class="section level2">

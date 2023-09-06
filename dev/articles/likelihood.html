@@ -394,6 +394,47 @@ likelihoods. This is illustrated on the following figure:</p>
 <p><img src="likelihood_files/figure-html/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;"></p>
 </div>
 </div>
+<div class="section level2">
+<h2 id="coherence-with-other-uses-of-a-vlmc">Coherence with other uses of a VLMC<a class="anchor" aria-label="anchor" href="#coherence-with-other-uses-of-a-vlmc"></a>
+</h2>
+<div class="section level3">
+<h3 id="sampling">Sampling<a class="anchor" aria-label="anchor" href="#sampling"></a>
+</h3>
+<p>As detailed in <code><a href="../articles/sampling.html">vignette("sampling")</a></code> a VLMC model can be
+used to generate new discrete time series based on the conditional
+probability distributions associated to the contexts. However, raw VLMC
+models do not specify distributions for the initial values for which no
+proper context exists.</p>
+<p>The difficulty is generally circumvented by using a constant
+initialisation coupled with a burn in phase. This is supported by the
+theoretical results on VLMC bootstrap proved by Bühlmann and Wyner in <a href="https://dx.doi.org/10.1214/aos/1018031204" class="external-link">their seminal
+paper</a>. Indeed the hypothesis used in the paper ensure an exponential
+mix-in for Markov Chain and thus the initial values play essentially no
+role in the stationary distribution, provided the burn in period is
+“<em>long enough</em>”.</p>
+<p>In practice, it is difficult to verify that the conditions of the
+theorem apply and to turns them into actual numerical values of a
+<em>long enough</em> burn in time. Thus we use in
+<code><a href="../reference/simulate.vlmc.html">simulate.vlmc()</a></code> the extended contexts proposed above. This
+extends the VLMC into a full model, with specific probability
+distributions for the initial values. This does not prevent e.g. slow
+mix-in and this does not change the stationary distribution when it
+exists, but this gives some coherence between likelihood calculation and
+sampling. Notice that we also support burn in period as well as a manual
+specification of the initial values of a sample.</p>
+</div>
+<div class="section level3">
+<h3 id="prediction">Prediction<a class="anchor" aria-label="anchor" href="#prediction"></a>
+</h3>
+<p>A VLMC can also be used for one step ahead prediction of a time
+series (or even for multiple steps ahead), as implement in
+<code><a href="../reference/predict.vlmc.html">predict.vlmc()</a></code>. This poses obviously the same problem as
+sampling or likelihood calculation for the initial values. We use in
+<code><a href="../reference/predict.vlmc.html">predict.vlmc()</a></code> the extended contexts proposed above, using
+the same extended VLMC model principle. This provides full coherence
+between sampling, likelihood calculation and prediction.</p>
+</div>
+</div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>
 </div>

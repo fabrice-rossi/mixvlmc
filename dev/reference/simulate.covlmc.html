@@ -124,19 +124,19 @@ fixed sequence specified via the <code>init</code> parameter.</p>
     
 
 
-<p>This function reproduce the behaviour of <code><a href="https://rdrr.io/r/stats/simulate.html" class="external-link">stats::simulate()</a></code>. If <code>seed</code> is <code>NULL</code>
-the function does not change the random generator state and returns the value
-of <a href="https://rdrr.io/r/base/Random.html" class="external-link">.Random.seed</a> as a <code>seed</code> attribute in the return value. This can be used
-to reproduce exactly the simulation results by setting <a href="https://rdrr.io/r/base/Random.html" class="external-link">.Random.seed</a> to this value.
-Notice that if the random seed has not be initialised by R so far, the function
-issues a call to <code>runif(1)</code> to perform this initialisation (as is done in
-<code><a href="https://rdrr.io/r/stats/simulate.html" class="external-link">stats::simulate()</a></code>).</p>
-<p>It <code>seed</code> is an integer, it is used in a call to <code><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed()</a></code> before the simulation
-takes place. The integer is saved as a <code>seed</code> attribute in the return value.
-The integer seed is completed by an attribute <code>kind</code> which contains the value
-<code>as.list([RNGkind()])</code> exactly as with <code><a href="https://rdrr.io/r/stats/simulate.html" class="external-link">stats::simulate()</a></code>. As with <code>seed=NULL</code>,
-the random generator state is reset to its original value at the end of the
-call.</p>
+<p>This function reproduce the behaviour of <code><a href="https://rdrr.io/r/stats/simulate.html" class="external-link">stats::simulate()</a></code>. If <code>seed</code> is
+<code>NULL</code> the function does not change the random generator state and returns
+the value of <a href="https://rdrr.io/r/base/Random.html" class="external-link">.Random.seed</a> as a <code>seed</code> attribute in the return value. This
+can be used to reproduce exactly the simulation results by setting
+<a href="https://rdrr.io/r/base/Random.html" class="external-link">.Random.seed</a> to this value. Notice that if the random seed has not be
+initialised by R so far, the function issues a call to <code>runif(1)</code> to
+perform this initialisation (as is done in <code><a href="https://rdrr.io/r/stats/simulate.html" class="external-link">stats::simulate()</a></code>).</p>
+<p>It <code>seed</code> is an integer, it is used in a call to <code><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed()</a></code> before the
+simulation takes place. The integer is saved as a <code>seed</code> attribute in the
+return value. The integer seed is completed by an attribute <code>kind</code> which
+contains the value <code>as.list([RNGkind()])</code> exactly as with
+<code><a href="https://rdrr.io/r/stats/simulate.html" class="external-link">stats::simulate()</a></code>. As with <code>seed=NULL</code>, the random generator state is
+reset to its original value at the end of the call.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
