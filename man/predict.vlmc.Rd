@@ -53,7 +53,7 @@ with a non zero order. In order to predict something meaningful for those
 values, we rely on the notion of extended context defined in the documents
 mentioned above. This follows the same logic as using
 \code{\link[=loglikelihood.vlmc]{loglikelihood.vlmc()}} with the parameter \code{initial="extended"}.
-\code{\link[=simulate.vlmc]{simulate.vlmc()}} uses the same approach with initial values are not
+\code{\link[=simulate.vlmc]{simulate.vlmc()}} uses the same approach when initial values are not
 provided.
 }
 

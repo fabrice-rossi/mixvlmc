@@ -350,4 +350,6 @@ use in `predict.vlmc()` the extended contexts proposed above, using the same ext
 VLMC model principle. This provides full coherence between sampling, likelihood 
 calculation and prediction. 
 
-
+The `metrics.vlmc()` function computes predictive performances of a VLMC on the
+time series used to estimate it. Predictions used for those computations are also 
+based on the extended context principle. 

@@ -5,9 +5,9 @@
 #'
 #' A context based model computes transition probabilities for its contexts.
 #' Using a maximum transition probability decision rule, this can be used to
-#' "predict" the new state that is the more likely to follow the current one,
-#' given the context. The quality of these predictions is evaluated using
-#' standard metrics including:
+#' predict the new state that is the more likely to follow the current one,
+#' given the context (see [predict.vlmc()]). The quality of these predictions
+#' is evaluated using standard metrics including:
 #'
 #' - accuracy
 #' - the full confusion matrix
@@ -25,7 +25,7 @@
 #'    in rows and true values in columns
 #'  - `auc`: the AUC of the predictive model
 #'
-#' @seealso [metrics.vlmc()], [contexts.covlmc()]
+#' @seealso [metrics.vlmc()], [contexts.covlmc()], [predict.vlmc()].
 #' @references
 #' David J. Hand and Robert J. Till (2001). "A Simple Generalisation of the Area
 #' Under the ROC Curve for Multiple Class Classification

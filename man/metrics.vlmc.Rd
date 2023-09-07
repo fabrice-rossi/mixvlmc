@@ -25,8 +25,8 @@ in rows and true values in columns
 \item \code{auc}: the AUC of the predictive model
 }
 
-The object has a print method that recalls basic information about the model
-together with the values of the components above.
+The object has a print method that recalls basic information about the
+model together with the values of the components above.
 }
 \description{
 This function computes and returns predictive quality metrics for VLMC and
@@ -35,9 +35,9 @@ VLMC with covariates.
 \details{
 A context based model computes transition probabilities for its contexts.
 Using a maximum transition probability decision rule, this can be used to
-"predict" the new state that is the more likely to follow the current one,
-given the context. The quality of these predictions is evaluated using
-standard metrics including:
+predict the new state that is the more likely to follow the current one,
+given the context (see \code{\link[=predict.vlmc]{predict.vlmc()}}). The quality of these predictions
+is evaluated using standard metrics including:
 \itemize{
 \item accuracy
 \item the full confusion matrix
@@ -51,6 +51,20 @@ AUC in case of a state space with more than 2 states
 \item \code{print(metrics.vlmc)}: Prints the predictive metrics of the VLMC model.
 
 }}
+\section{Extended contexts}{
+
+
+As explained in details in \code{\link[=loglikelihood.vlmc]{loglikelihood.vlmc()}} documentation and in the
+dedicated \code{vignette("likelihood", package = "mixvlmc")}, the first initial
+values of a time series do not in general have a proper context for a VLMC
+with a non zero order. In order to predict something meaningful for those
+values, we rely on the notion of extended context defined in the documents
+mentioned above. Metrics are computed using this extended context approach.
+This follows the same logic as using \code{\link[=loglikelihood.vlmc]{loglikelihood.vlmc()}} with the
+parameter \code{initial="extended"}. \code{\link[=simulate.vlmc]{simulate.vlmc()}} and \code{\link[=predict.vlmc]{predict.vlmc()}} use
+the same approach.
+}
+
 \examples{
 pc <- powerconsumption[powerconsumption$week == 5, ]
 breaks <- c(
@@ -71,5 +85,5 @@ Problems." \emph{Machine Learning} 45(2), p. 171--186. DOI:
 \doi{10.1023/A:1010920819831}.
 }
 \seealso{
-\code{\link[=metrics.vlmc]{metrics.vlmc()}}, \code{\link[=contexts.covlmc]{contexts.covlmc()}}
+\code{\link[=metrics.vlmc]{metrics.vlmc()}}, \code{\link[=contexts.covlmc]{contexts.covlmc()}}, \code{\link[=predict.vlmc]{predict.vlmc()}}.
 }

@@ -24,7 +24,7 @@
 #'   values, we rely on the notion of extended context defined in the documents
 #'   mentioned above. This follows the same logic as using
 #'   [loglikelihood.vlmc()] with the parameter `initial="extended"`.
-#'   [simulate.vlmc()] uses the same approach with initial values are not
+#'   [simulate.vlmc()] uses the same approach when initial values are not
 #'   provided.
 #'
 #' @param object a fitted vlmc object.
