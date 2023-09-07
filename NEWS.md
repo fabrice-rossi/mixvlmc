@@ -23,6 +23,8 @@
   
 ## Minor improvements and bug fixes
 * Improved the test coverage (issue #54)
+* Fixed several bugs in `metrics.vlmc()` and align the results with the ones
+  obtained by using direct calculation on the results of `predict.vlmc()`
 * Fixed several bugs related to degenerate VLMC (issue #55)
 * Fixed a bug in the likelihood calculation for internal context nodes
 * Improved type consistency by reporting counts as integers in `contexts()` results

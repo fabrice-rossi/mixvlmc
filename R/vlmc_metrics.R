@@ -1,6 +1,8 @@
-generate_fake_data <- function(freq, counts, vals) {
+## builds a fake data set from the counts associated to contexts in order
+## to compute prediction metrics without making actual prediction (for the
+## learning data).
+generate_fake_data <- function(freq, counts, probs, vals) {
   counts <- as.matrix(counts)
-  probs <- sweep(counts, 1, freq, "/")
   if (is.factor(vals)) {
     the_levels <- levels(vals)
   } else {
@@ -66,12 +68,42 @@ generate_fake_data <- function(freq, counts, vals) {
 #' @exportS3Method
 metrics.vlmc <- function(model, ...) {
   all_ctx <- contexts(model, frequency = "detailed", counts = "local")
+  all_ctx_global <- contexts(model, frequency = "detailed")
+  probs <- sweep(as.matrix(all_ctx_global[, -(1:2)]), 1, all_ctx_global$freq, "/")
   counts <- as.matrix(all_ctx[, -(1:2)])
-  fake_data <- generate_fake_data(all_ctx$freq, counts, model$vals)
+  accounted_for <- sum(all_ctx$freq)
+  freqs <- all_ctx$freq
+  fake_data <- generate_fake_data(freqs, counts, probs, model$vals)
+  if (accounted_for < model$data_size) {
+    ## we have proper extended contexts, we need to get them
+    ## we rely on predict for that
+    nb <- model$data_size - accounted_for
+    unmatched_data <- model$vals[model$ix[1:nb] + 1]
+    extended_ctx_probs <- predict(model, unmatched_data,
+      final_pred = FALSE,
+      type = "probs"
+    )
+    if (is.factor(model$vals)) {
+      the_levels <- levels(model$vals)
+    } else {
+      the_levels <- model$vals
+    }
+    fake_data$response <- c(
+      fake_data$response,
+      factor(the_levels[model$ix[1:nb] + 1], levels = the_levels)
+    )
+    if (length(model$vals) == 2) {
+      fake_data$predictor <- c(fake_data$predictor, extended_ctx_probs[, 2])
+    } else {
+      fake_data$predictor <- rbind(fake_data$predictor, extended_ctx_probs)
+    }
+  }
+  assertthat::assert_that(length(fake_data$response) == model$data_size)
   res <- main_metrics(fake_data$response, fake_data$predictor)
   rownames(res$conf_mat) <- model$vals
   colnames(res$conf_mat) <- model$vals
   res$model <- model
+  res$fake_data <- fake_data
   structure(res, class = "metrics.vlmc")
 }
 

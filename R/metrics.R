@@ -84,10 +84,10 @@ main_metrics <- function(target, probs) {
       decision <- apply(probs, 1, which.max)
       decision <- factor(levels(target)[decision], levels = levels(target))
     } else {
-      decision <- factor(as.integer(probs[, 1] >= 0.5), levels = c(0, 1))
+      decision <- factor(as.integer(probs[, 1] > 0.5), levels = c(0, 1))
     }
   } else {
-    decision <- factor(as.integer(probs >= 0.5), levels = c(0, 1))
+    decision <- factor(as.integer(probs > 0.5), levels = c(0, 1))
   }
   if (!is.factor(target)) {
     f_target <- factor(target, levels = c(0, 1))
