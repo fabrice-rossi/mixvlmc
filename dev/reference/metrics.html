@@ -99,9 +99,9 @@ in rows and true values in columns</p></li>
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>A context based model computes transition probabilities for its contexts.
 Using a maximum transition probability decision rule, this can be used to
-"predict" the new state that is the more likely to follow the current one,
-given the context. The quality of these predictions is evaluated using
-standard metrics including:</p><ul><li><p>accuracy</p></li>
+predict the new state that is the more likely to follow the current one,
+given the context (see <code><a href="predict.vlmc.html">predict.vlmc()</a></code>). The quality of these predictions
+is evaluated using standard metrics including:</p><ul><li><p>accuracy</p></li>
 <li><p>the full confusion matrix</p></li>
 <li><p>the area under the roc curve (AUC), considering the context based model as
 a (conditional) probability estimator. We use Hand and Till (2001) multiclass
@@ -117,7 +117,7 @@ Problems." <em>Machine Learning</em> 45(2), p. 171--186. DOI:
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="metrics.vlmc.html">metrics.vlmc()</a></code>, <code><a href="contexts.covlmc.html">contexts.covlmc()</a></code></p></div>
+    <div class="dont-index"><p><code><a href="metrics.vlmc.html">metrics.vlmc()</a></code>, <code><a href="contexts.covlmc.html">contexts.covlmc()</a></code>, <code><a href="predict.vlmc.html">predict.vlmc()</a></code>.</p></div>
     </div>
 
     <div class="section level2">
@@ -138,10 +138,10 @@ Problems." <em>Machine Learning</em> 45(2), p. 171--186. DOI:
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Maximum context length: 63 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Confusion matrix: </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     0   1   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   0 317 29  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   1 33  627 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Accurary: 0.9384 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  AUC: 0.9656 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   0 318 30  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1 32  628 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Accurary: 0.9385 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  AUC: 0.9518 </span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

@@ -102,16 +102,16 @@ VLMC with covariates.</p>
 <li><p><code>conf_mat</code>: the confusion matrix of the predictions, with predicted values
 in rows and true values in columns</p></li>
 <li><p><code>auc</code>: the AUC of the predictive model</p></li>
-</ul><p>The object has a print method that recalls basic information about the model
-together with the values of the components above.</p>
+</ul><p>The object has a print method that recalls basic information about the
+model together with the values of the components above.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>A context based model computes transition probabilities for its contexts.
 Using a maximum transition probability decision rule, this can be used to
-"predict" the new state that is the more likely to follow the current one,
-given the context. The quality of these predictions is evaluated using
-standard metrics including:</p><ul><li><p>accuracy</p></li>
+predict the new state that is the more likely to follow the current one,
+given the context (see <code><a href="predict.vlmc.html">predict.vlmc()</a></code>). The quality of these predictions
+is evaluated using standard metrics including:</p><ul><li><p>accuracy</p></li>
 <li><p>the full confusion matrix</p></li>
 <li><p>the area under the roc curve (AUC), considering the context based model as
 a (conditional) probability estimator. We use Hand and Till (2001) multiclass
@@ -123,6 +123,21 @@ AUC in case of a state space with more than 2 states</p></li>
 <ul><li><p><code>print(metrics.vlmc)</code>: Prints the predictive metrics of the VLMC model.</p></li>
 </ul></div>
     <div class="section level2">
+    <h2 id="extended-contexts">Extended contexts<a class="anchor" aria-label="anchor" href="#extended-contexts"></a></h2>
+    
+
+
+<p>As explained in details in <code><a href="loglikelihood.html">loglikelihood.vlmc()</a></code> documentation and in the
+dedicated <code><a href="../articles/likelihood.html">vignette("likelihood", package = "mixvlmc")</a></code>, the first initial
+values of a time series do not in general have a proper context for a VLMC
+with a non zero order. In order to predict something meaningful for those
+values, we rely on the notion of extended context defined in the documents
+mentioned above. Metrics are computed using this extended context approach.
+This follows the same logic as using <code><a href="loglikelihood.html">loglikelihood.vlmc()</a></code> with the
+parameter <code>initial="extended"</code>. <code><a href="simulate.vlmc.html">simulate.vlmc()</a></code> and <code><a href="predict.vlmc.html">predict.vlmc()</a></code> use
+the same approach.</p>
+    </div>
+    <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
     <p>David J. Hand and Robert J. Till (2001). "A Simple Generalisation of the Area
 Under the ROC Curve for Multiple Class Classification
@@ -132,7 +147,7 @@ Problems." <em>Machine Learning</em> 45(2), p. 171--186. DOI:
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code>metrics.vlmc()</code>, <code><a href="contexts.covlmc.html">contexts.covlmc()</a></code></p></div>
+    <div class="dont-index"><p><code>metrics.vlmc()</code>, <code><a href="contexts.covlmc.html">contexts.covlmc()</a></code>, <code><a href="predict.vlmc.html">predict.vlmc()</a></code>.</p></div>
     </div>
 
     <div class="section level2">
@@ -153,10 +168,10 @@ Problems." <em>Machine Learning</em> 45(2), p. 171--186. DOI:
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Maximum context length: 63 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Confusion matrix: </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     0   1   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   0 317 29  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   1 33  627 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Accurary: 0.9384 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  AUC: 0.9656 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   0 318 30  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1 32  628 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Accurary: 0.9385 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  AUC: 0.9518 </span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
