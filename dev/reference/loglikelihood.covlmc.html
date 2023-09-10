@@ -129,8 +129,7 @@ the log-likelihood of the (CO)VLMC with the following attributes:</p><ul><li><p>
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>The definition of the likelihood function depends on the value of the
 <code>initial</code> parameters, see the section below as well as the dedicated
-vignette: <code><a href="../articles/likelihood.html">vignette("likelihood", package = "mixvlmc")</a></code>. VLMC with covariates
-support only <code>"truncated"</code> and <code>"specific"</code> likelihood functions.</p>
+vignette: <code><a href="../articles/likelihood.html">vignette("likelihood", package = "mixvlmc")</a></code>.</p>
     </div>
     <div class="section level2">
     <h2 id="likelihood-calculation">likelihood calculation<a class="anchor" aria-label="anchor" href="#likelihood-calculation"></a></h2>
@@ -155,8 +154,7 @@ the relaxed context matching needs in general to turn internal nodes
 of the context tree into actual context, increasing the number of parameters,
 but not as much as with "specific". However, the likelihood of say <code>x[1]</code>
 with an empty context is generally not 1 and thus the full likelihood is
-smaller than the one computed with "specific". The <code>"relaxed"</code> likelihood
-is not supported by <code><a href="covlmc.html">covlmc()</a></code> models.</p></li>
+smaller than the one computed with "specific".</p></li>
 </ul><p>See the dedicated vignette for a more mathematically oriented discussion:
 <code><a href="../articles/likelihood.html">vignette("likelihood", package = "mixvlmc")</a></code>.</p>
     </div>
@@ -192,13 +190,13 @@ is not supported by <code><a href="covlmc.html">covlmc()</a></code> models.</p><
 <span class="r-in"><span><span class="va">dts_cov_new</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>day_night <span class="op">=</span> <span class="op">(</span><span class="va">pc_new</span><span class="op">$</span><span class="va">hour</span> <span class="op">&gt;=</span> <span class="fl">7</span> <span class="op">&amp;</span> <span class="va">pc_new</span><span class="op">$</span><span class="va">hour</span> <span class="op">&lt;=</span> <span class="fl">17</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">ll_new</span> <span class="op">&lt;-</span> <span class="fu"><a href="loglikelihood.html">loglikelihood</a></span><span class="op">(</span><span class="va">m_cov</span>, newdata <span class="op">=</span> <span class="va">dts_new</span>, newcov <span class="op">=</span> <span class="va">dts_cov_new</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">ll_new</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 'log Lik.' -249.0136 (df= 5, nb obs.= 1007, initial="truncated")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 'log Lik.' -248.8283 (df= 5, nb obs.= 1005, initial="truncated")</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/attributes.html" class="external-link">attributes</a></span><span class="op">(</span><span class="va">ll_new</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $df</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 5</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $nobs</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1007</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1005</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $initial</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "truncated"</span>

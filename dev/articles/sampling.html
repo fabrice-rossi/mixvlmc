@@ -147,7 +147,7 @@ of the initial values.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">best_vlmc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tune_vlmc.html">tune_vlmc</a></span><span class="op">(</span><span class="va">dts</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/draw.html">draw</a></span><span class="op">(</span><span class="fu"><a href="../reference/as_vlmc.html">as_vlmc</a></span><span class="op">(</span><span class="va">best_vlmc</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; * (0.536, 0.464)</span></span></code></pre></div>
+<span><span class="co">#&gt; * (0.526, 0.474)</span></span></code></pre></div>
 <p>Simulating a sequence using the model is done via
 <code><a href="../reference/simulate.vlmc.html">simulate.vlmc()</a></code> which overrides the standard
 <code><a href="https://rdrr.io/r/stats/simulate.html" class="external-link">stats::simulate()</a></code>. For instance:</p>
@@ -176,7 +176,7 @@ the <code>init</code> parameter, for instance:</p>
 0\)</span>:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dts_sample_2</span></span>
-<span><span class="co">#&gt;  [1] 0 0 0 1 1 0 0 0 1 0</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1] 0 0 0 1 1 1 0 0 1 1</span></span></code></pre></div>
 <p>This provides an alternative to dropping the initial values of the
 simulated time series by setting those values to the one observed in the
 data set. Notice that this practice has no theoretical
@@ -303,27 +303,16 @@ we select a model with the AIC criterion:</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/draw.html">draw</a></span><span class="op">(</span><span class="va">CAC_comodel</span>, model <span class="op">=</span> <span class="st">"full"</span>, with_state <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; *</span></span>
-<span><span class="co">#&gt; +-- Down</span></span>
-<span><span class="co">#&gt; |   +-- Down (0.04097 [ (Down) | (I)    DAX_1   SMI_1    FTSE_1    DAX_2    SMI_2   FTSE_2  </span></span>
-<span><span class="co">#&gt; |   |                   Stay   | -2.383 0.01467 -0.01714 -0.003948 -0.01314 0.01539 0.005337</span></span>
-<span><span class="co">#&gt; |   |                   Up     | -1.939 0.02377 -0.02597 -0.0104   -0.02428 0.02526 0.01193  ])</span></span>
-<span><span class="co">#&gt; |   '-- Stay, Up (0.07236 [ (Down) | (I)    DAX_1     SMI_1     FTSE_1    </span></span>
-<span><span class="co">#&gt; |                           Stay   | -1.412 0.0004292 -0.001297 0.001371  </span></span>
-<span><span class="co">#&gt; |                           Up     | 1.59   -0.000136 0.0004101 -0.0007633 ])</span></span>
-<span><span class="co">#&gt; '-- Stay</span></span>
+<span><span class="co">#&gt; +-- Stay</span></span>
 <span><span class="co">#&gt; |   +-- Stay (0.0065 [ (Down) | (I)   DAX_1     SMI_1     FTSE_1  DAX_2     SMI_2    FTSE_2  </span></span>
 <span><span class="co">#&gt; |   |                  Stay   | 0.871 0.007903  -0.009399 0.01673 -0.007771 0.009261 -0.01684</span></span>
 <span><span class="co">#&gt; |   |                  Up     | 2.838 -0.005994 -0.01448  0.0299  0.003666  0.0169   -0.03126 ])</span></span>
 <span><span class="co">#&gt; |   '-- Down, Up (0.002452 [ (Down) | (I)    DAX_1     SMI_1     FTSE_1   </span></span>
 <span><span class="co">#&gt; |                            Stay   | -1.707 -0.001755 0.0004276 0.001412 </span></span>
 <span><span class="co">#&gt; |                            Up     | -1.397 -0.001357 0.0006376 0.0008178 ])</span></span>
-<span><span class="co">#&gt; '-- Up</span></span>
-<span><span class="co">#&gt;     +-- Up (0.01046 [ (Down) | (I)     DAX_1    SMI_1    FTSE_1    DAX_2     SMI_2   FTSE_2  </span></span>
-<span><span class="co">#&gt;     |                 Stay   | -0.4838 0.02407  -0.02501 -0.008507 -0.02374  0.02474 0.0089  </span></span>
-<span><span class="co">#&gt;     |                 Up     | 2.484   0.005797 -0.01774 -0.009711 -0.006469 0.01917 0.008314 ])</span></span>
-<span><span class="co">#&gt;     '-- Down, Stay (0.7881 [ (Down) | (I)   </span></span>
-<span><span class="co">#&gt;                              Stay   | 0.3225</span></span>
-<span><span class="co">#&gt;                              Up     | 0.1779 ])</span></span></code></pre></div>
+<span><span class="co">#&gt; '-- Down, Up (NA [ (Down) | (I)    </span></span>
+<span><span class="co">#&gt;                    Stay   | 0.347  </span></span>
+<span><span class="co">#&gt;                    Up     | 0.05716 ])</span></span></code></pre></div>
 <p>The variability of the discrete time series for fixed values of the
 covariates can be investigated using simulated sequences. The only
 difference between <code><a href="../reference/simulate.vlmc.html">simulate.vlmc()</a></code> and
