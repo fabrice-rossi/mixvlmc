@@ -693,9 +693,17 @@ covlmc <- function(x, covariate, alpha = 0.05, min_size = 5L, max_depth = 100L, 
   pre_result$control <- control
   pre_result$cov_desc <- cov_desc
   pre_result$max_depth <- ctx_tree$max_depth
+  pre_result$data_size <- length(x)
   if (keep_data) {
     pre_result$x <- x
     pre_result$covariate <- covariate
+  }
+  ## prepare for loglikelihoodcalculation
+  the_depth <- depth(pre_result)
+  if (the_depth > 0) {
+    pre_result$iix <- ix[1:min(the_depth, length(x))]
+    pre_result$ix <- x[1:min(the_depth, length(x))]
+    pre_result$icov <- covariate[1:min(the_depth, length(x)), , drop = FALSE]
   }
   pre_result
 }
@@ -877,11 +885,19 @@ prune.covlmc <- function(vlmc, alpha = 0.05, cutoff = NULL, ...) {
   )
   pre_result <- new_ctx_tree(vlmc$vals, pruned_tree, count_context = count_covlmc_local_context, class = "covlmc")
   pre_result$cov_names <- vlmc$cov_names
-  pre_result$cov_desc <- vlmc$cov_desc
   pre_result$alpha <- alpha
+  pre_result$control <- vlmc$control
+  pre_result$cov_desc <- vlmc$cov_desc
+  pre_result$max_depth <- vlmc$max_depth
+  pre_result$data_size <- vlmc$data_size
   pre_result$x <- vlmc$x
   pre_result$covariate <- vlmc$covariate
-  pre_result$control <- vlmc$control
+  the_depth <- depth(pre_result)
+  if (the_depth > 0) {
+    pre_result$iix <- vlmc$iix[1:min(the_depth, length(vlmc$ix))]
+    pre_result$ix <- vlmc$ix[1:min(the_depth, length(vlmc$ix))]
+    pre_result$icov <- vlmc$icov[1:min(the_depth, length(vlmc$ix)), , drop = FALSE]
+  }
   pre_result
 }
 

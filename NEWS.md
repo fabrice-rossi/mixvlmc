@@ -5,10 +5,10 @@
   of a time series based on a VLMC model (issue #46)
 * `contexts()` can now report the positions of each context in the original time
   series
-* the log likelihood calculations performed by `logLik()` and `loglikelihood()` 
-  have been revised, expanded to include three possible definitions of the 
-  likelihood function, and documented in a new vignette 
-  (`vignette("likelihood")`)
+* the log likelihood calculations performed by `logLik.vlmc()`, `logLik.covlmc()`
+  `loglikelihood()` and `loglikelihood.covlmc()` have been revised, expanded to 
+  include three possible definitions of the likelihood function, and documented 
+  in a new vignette (`vignette("likelihood")`)
 * `tune_vlmc()` and `tune_covlmc()` can be used with the different likelihood 
   function definitions
 * results of `tune_vlmc()` and `tune_covlmc()` can be plotted using base R 

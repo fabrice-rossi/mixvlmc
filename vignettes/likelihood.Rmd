@@ -33,6 +33,9 @@ series are obviously finite which introduces some difficulties
 associated to the initial observations. In particular, the definition of
 a likelihood function is not entirely obvious.
 
+This vignette discusses the case of VLMC, but the discussion applies to 
+VLMC with covariates with minimal adaptation. 
+
 ## Likelihood functions for Markov chains
 
 Let us consider a doubly infinite time series $X_{i\in\mathbb{Z}}$
