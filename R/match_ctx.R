@@ -32,6 +32,10 @@ match_ctx <- function(tree, x, keep_match = FALSE) {
             nb_children <- nb_children + 1
           } else {
             children[[v]] <- list()
+            if (keep_match) {
+              children[[v]]$match <- fmatch$positions[[v]]
+              nb_children <- nb_children + 1
+            }
           }
         } else {
           children[[v]] <- list()
