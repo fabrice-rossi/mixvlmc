@@ -50,11 +50,21 @@ glm_likelihood.multinom <- function(model, mm, target) {
       }
       tm_tokeep <- tm[, which(!is.na(mapper)), drop = FALSE]
       if (!is.matrix(probs)) {
-        ## this should only happen when the model has degenerate to
-        ## a single regression and we should have only two
+        ## this happens if we have only one prediction to make or if the model
+        ## has degenerate to a single regression and we should have only two
         ## columns in tm_tokeep
-        assertthat::assert_that(ncol(tm_tokeep) == 2)
-        sum_log_prob(probs, tm_tokeep[, 2]) + sum_log_prob(1 - probs, 1 - tm_tokeep[, 2])
+        if (nrow(mm) > 1) {
+          ## degenerate case
+          assertthat::assert_that(ncol(tm_tokeep) == 2)
+          sum_log_prob(probs, tm_tokeep[, 2]) + sum_log_prob(1 - probs, 1 - tm_tokeep[, 2])
+        } else {
+          ## single prediction
+          if (length(probs) == ncol(tm_tokeep)) {
+            sum(log(probs) * tm_tokeep[1, ])
+          } else {
+            sum_log_prob(probs, tm_tokeep[, 2]) + sum_log_prob(1 - probs, 1 - tm_tokeep[, 2])
+          }
+        }
       } else {
         sum(log(probs) * tm)
       }
