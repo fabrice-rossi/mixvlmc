@@ -940,3 +940,25 @@ covariate_depth <- function(model) {
   assertthat::assert_that(is_covlmc(model))
   rec_cov_depth(model)
 }
+
+rec_count_parameters <- function(ct, with_extended = FALSE, d, md) {
+  local_counts <- 0
+  if (!is.null(ct$model)) {
+    local_counts <- local_counts + length(ct$model$coefficients)
+  }
+  if (!is.null(ct$merged_model)) {
+    local_counts <- local_counts + length(ct$merged_model$coefficients)
+  }
+  if (with_extended && d < md && !is.null(ct$extended_model)) {
+    local_counts <- local_counts + length(ct$extended_model$coefficients)
+  }
+  if (!is.null(ct$children)) {
+    local_counts <- local_counts + sum(sapply(ct$children, rec_count_parameters, with_extended, d + 1, md))
+  }
+  local_counts
+}
+
+count_parameters <- function(model, with_extended = FALSE) {
+  assertthat::assert_that(is_covlmc(model))
+  rec_count_parameters(model, with_extended, 0, depth(model))
+}
