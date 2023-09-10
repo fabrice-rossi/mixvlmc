@@ -503,6 +503,28 @@ ctx_tree_fit_glm <- function(tree, y, covariate, alpha, control, assume_model = 
             result$merged_model <- node_prune_model(result$merged_model, ncol(covariate), nb_vals, alpha, keep_local_data, control)
           }
         }
+        ## prepare a local model for extended context if needed
+        if (is.null(result[["model"]])) {
+          if (!need_local_model || need_merged_model) {
+            ## no luck
+            if (verbose) { # nocov start
+              print("fitting model for extended contexts")
+            } # nocov end
+            local_model <- node_fit_glm(tree$match, max_hsize, y, covariate, alpha, nb_vals, return_all = TRUE, control, d - max_hsize)
+            if (verbose) { # nocov start
+              print(paste(local_model$H1_model$H0, local_model$H1_model$hsize))
+            } # nocov end
+          }
+          if (is.na(local_model$p_value)) {
+            result[["extended_model"]] <- local_model$H0_model
+          } else {
+            if (local_model$p_value > alpha) {
+              result[["extended_model"]] <- local_model$H0_model
+            } else {
+              result[["extended_model"]] <- local_model$H1_model
+            }
+          }
+        }
         result
       }
     }

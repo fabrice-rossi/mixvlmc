@@ -106,6 +106,14 @@ compare_covlmc_node <- function(n1, n2) {
       return(FALSE)
     }
   }
+  if (!is.null(n1[["extended_model"]])) {
+    if (is.null(n2[["extended_model"]])) {
+      return(FALSE)
+    }
+    if (!identical(n1[["extended_model"]][["coefficents"]], n2[["extended_model"]][["coefficents"]])) {
+      return(FALSE)
+    }
+  }
   TRUE
 }
 
