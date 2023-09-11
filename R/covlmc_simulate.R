@@ -123,5 +123,5 @@ simulate.covlmc <- function(object, nsim = 1, seed = NULL, covariate, init = NUL
     }
   }
   pre_res <- object$vals[pre_res]
-  structure(pre_res, "seed" = seed, "class" = c(class(pre_res), "dts"))
+  structure(pre_res, "seed" = seed, "class" = c("dts", class(pre_res)))
 }

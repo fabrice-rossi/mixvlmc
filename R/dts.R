@@ -3,6 +3,6 @@
 
 #' @export
 print.dts <- function(x, ...) {
-  x <- as.vector(x)
+  attr(x, "seed") <- NULL
   NextMethod()
 }
