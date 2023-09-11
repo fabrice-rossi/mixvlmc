@@ -76,7 +76,6 @@ simulate.covlmc <- function(object, nsim = 1, seed = NULL, covariate, init = NUL
       stats::runif(1)
     }
     seed <- .Random.seed
-    withr::local_preserve_seed()
   }
   int_vals <- seq_along(object$vals)
   if (!is.null(init)) {

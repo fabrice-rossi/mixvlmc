@@ -36,8 +36,8 @@
 #'   simulation takes place. The integer is saved as a `seed` attribute in the
 #'   return value. The integer seed is completed by an attribute `kind` which
 #'   contains the value `as.list([RNGkind()])` exactly as with
-#'   [stats::simulate()]. As with `seed=NULL`, the random generator state is
-#'   reset to its original value at the end of the call.
+#'   [stats::simulate()]. The random generator state is reset to its original
+#'   value at the end of the call.
 #'
 #' @section Extended contexts:
 #'
@@ -87,7 +87,6 @@ simulate.vlmc <- function(object, nsim = 1L, seed = NULL, init = NULL, burnin = 
       stats::runif(1)
     }
     seed <- .Random.seed
-    withr::local_preserve_seed()
   }
   if (burnin == "auto") {
     burnin <- 64L * context_number(object)

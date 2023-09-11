@@ -50,8 +50,8 @@ It \code{seed} is an integer, it is used in a call to \code{\link[=set.seed]{set
 simulation takes place. The integer is saved as a \code{seed} attribute in the
 return value. The integer seed is completed by an attribute \code{kind} which
 contains the value \verb{as.list([RNGkind()])} exactly as with
-\code{\link[stats:simulate]{stats::simulate()}}. As with \code{seed=NULL}, the random generator state is
-reset to its original value at the end of the call.
+\code{\link[stats:simulate]{stats::simulate()}}. The random generator state is reset to its original
+value at the end of the call.
 }
 
 \examples{
