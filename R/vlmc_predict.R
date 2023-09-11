@@ -52,7 +52,7 @@ predict.vlmc <- function(object, newdata, type = c("raw", "probs"),
   type <- match.arg(type)
   max_depth <- depth(object)
   assertthat::assert_that(rlang::is_logical(final_pred))
-  if (!is.null(newdata)) {
+  if (!missing(newdata) && !is.null(newdata)) {
     assertthat::assert_that((typeof(newdata) == typeof(object$vals)) && (class(newdata) == class(object$vals)),
       msg = "newdata is not compatible with the model state space"
     )
