@@ -192,9 +192,12 @@ covlmc_node2txt <- function(node, vals, params) {
 #' draw(m_cov, p_value = FALSE, time_sep = " | ")
 #' draw(m_cov, model = "full", time_sep = " | ")
 #' @export
-draw.covlmc <- function(ct, control = draw_control(), model = "coef", p_value = TRUE, digits = 4, with_state = FALSE, ...) {
+draw.covlmc <- function(ct, control = draw_control(), model = c("coef", "full"),
+                        p_value = TRUE, digits = 4, with_state = FALSE, ...) {
   if (is.null(model)) {
     model <- "none"
+  } else {
+    model <- match.arg(model)
   }
   dot_params <- list(...)
   if (is.null(dot_params[["time_sep"]])) {
