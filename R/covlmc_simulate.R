@@ -106,14 +106,17 @@ simulate.covlmc <- function(object, nsim = 1, seed = NULL, covariate, init = NUL
       for (i in istart:nsim) {
         subtree <- match_context_co(object, ctx)
         if (subtree$merged) {
-          mm <- prepare_covariate(covariate, i - subtree$depth, d = subtree$tree$merged_model$hsize, from = 0)
-          pre_res[i] <- 1 + glm_sample_one(subtree$tree$merged_model$model, mm)
+          local_model <- subtree$tree$merged_model
         } else if (is.null(subtree$tree[["model"]])) {
-          pre_res[i] <- sample(int_vals, 1, prob = subtree$tree$f_by)
+          local_model <- subtree$tree$extended_model
         } else {
-          mm <- prepare_covariate(covariate, i - subtree$depth, d = subtree$tree$model$hsize, from = 0)
-          pre_res[i] <- 1 + glm_sample_one(subtree$tree$model$model, mm)
+          local_model <- subtree$tree$model
         }
+        mm <- prepare_covariate(covariate, i - subtree$depth - 1,
+          d = local_model$hsize,
+          from = subtree$depth - local_model$hsize
+        )
+        pre_res[i] <- 1 + glm_sample_one(local_model$model, mm)
         if (length(ctx) < max_depth) {
           ctx <- c(pre_res[i], ctx)
         } else {

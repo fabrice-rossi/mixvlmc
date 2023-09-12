@@ -23,6 +23,8 @@
   
 ## Minor improvements and bug fixes
 * Improved the test coverage (issue #54)
+* Fixed a bug in `simulate.covlmc()` that occurred in contexts with a longer 
+  self memory compared to their covariate memory
 * Fixed several bugs in `metrics.vlmc()` and align the results with the ones
   obtained by using direct calculation on the results of `predict.vlmc()`
 * Fixed several bugs related to degenerate VLMC (issue #55)
