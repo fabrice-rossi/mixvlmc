@@ -47,12 +47,18 @@ test_that("likelihood calculation on real data", {
   pc <- powerconsumption[powerconsumption$week == 5, ]
   dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1))))
   dts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
-  m_cov <- covlmc(dts, dts_cov, min_size = 5)
+  m_cov <- covlmc(dts, dts_cov, min_size = 5, alpha = 0.1)
   for (initial in c("truncated", "specific", "extended")) {
-    expect_identical(loglikelihood(m_cov, initial = initial, newdata = dts, newcov = dts_cov),
+    fll <- loglikelihood(m_cov, initial = initial, newdata = dts, newcov = dts_cov)
+    expect_identical(
+      fll,
       loglikelihood(m_cov, initial = initial),
       tolerance = 1e-7
     )
+    sll <- co_slow_loglikelihood(m_cov, initial = initial, newdata = dts, newcov = dts_cov)
+    expect_equal(as.numeric(fll), as.numeric(sll))
+    expect_equal(attr(fll, "df"), attr(sll, "df"))
+    expect_equal(attr(fll, "nobs"), attr(sll, "nobs"))
   }
 })
 
