@@ -4,7 +4,7 @@ glm_sample_one <- function(model, newdata) {
 
 #' @exportS3Method
 glm_sample_one.glm <- function(model, newdata) {
-  newdata <- glm_drop_level_correction(model, newdata)
+  newdata <- glm_drop_level_correction(model, newdata, model$xlevels)
   probs <- stats::predict(model, newdata = newdata, type = "response")
   if (stats::runif(1) <= probs) {
     1

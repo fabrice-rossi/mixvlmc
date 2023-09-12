@@ -62,8 +62,8 @@ sum_log_prob <- function(prob, indic) {
   }
 }
 
-glm_drop_level_correction <- function(model, newdata) {
-  xlevels <- model$xlevels
+glm_drop_level_correction <- function(model, newdata, xlevels) {
+  #  xlevels <- model$xlevels
   if (!is.null(xlevels)) {
     for (var in names(xlevels)) {
       nv <- newdata[[var]]
