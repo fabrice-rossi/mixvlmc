@@ -32,7 +32,11 @@ glm_predict.default <- function(model, newdata = NULL, lev) {
   if (!is.null(newdata)) {
     newdata <- glm_drop_level_correction(model, newdata, model$xlevels)
   }
-  glm_add_missing_prediction(predict(model, newdata = newdata, type = "response"), lev)
+  probs <- predict(model, newdata = newdata, type = "response")
+  if (!is.null(newdata) && nrow(newdata) == 1 && !is.matrix(probs)) {
+    probs <- matrix(probs, nrow = 1)
+  }
+  glm_add_missing_prediction(probs, lev)
 }
 
 #' @exportS3Method
@@ -47,7 +51,12 @@ glm_predict.vglm <- function(model, newdata = NULL, lev) {
   } else {
     probs <- VGAM::predictvglm(model, type = "response")
   }
-  glm_add_missing_prediction(probs, lev)
+  if (length(lev) != ncol(probs)) {
+    ## degenerate case
+    colnames(probs) <- model@extra$colnames.y
+    probs <- glm_add_missing_prediction(probs, lev)
+  }
+  probs
 }
 
 #' @exportS3Method
@@ -56,6 +65,19 @@ glm_predict.multinom <- function(model, newdata = NULL, lev) {
     probs <- predict(model, type = "probs")
   } else {
     probs <- predict(model, newdata = newdata, type = "probs")
+    if (nrow(newdata) == 1 && !is.matrix(probs)) {
+      probs <- matrix(probs, nrow = 1)
+    }
   }
-  glm_add_missing_prediction(probs, lev)
+  if (length(lev) > 2) {
+    if (!is.matrix(probs) || ncol(probs) == 1) {
+      probs <- cbind(1 - probs, probs)
+      colnames(probs) <- model$lev
+      probs <- glm_add_missing_prediction(probs, lev)
+    } else if (ncol(probs) < length(lev)) {
+      colnames(probs) <- model$lev
+      probs <- glm_add_missing_prediction(probs, lev)
+    }
+  }
+  probs
 }
