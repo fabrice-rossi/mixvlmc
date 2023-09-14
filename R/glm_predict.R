@@ -1,3 +1,17 @@
+#' Logistic model prediction
+#'
+#' This generic function provides a unified interface for prediction
+#' by logistic models, regardless of the back-end (`glm`, `vglm` and
+#' `multinom`). In particular, it takes into account degenerate models.
+#'
+#' @param model a logistic model
+#' @param newdata optional new data
+#' @param lev original levels of the target variable
+#'
+#' @return a matrix of predicted probabilities is the target variable has at
+#' least three levels or a vector of predicted probabilities of the positive
+#' class for a target variable with only two levels.
+#' @noRd
 glm_predict <- function(model, newdata = NULL, lev) {
   UseMethod("glm_predict")
 }
