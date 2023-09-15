@@ -1,3 +1,14 @@
+#' Sampling from Logistic Model
+#'
+#' This generic function provides a unified interface for sampling by logistic
+#' models, regardless of the back-end (`glm`, `vglm` and `multinom`).
+#'
+#' @param model a logistic model
+#' @param newdata new data
+#'
+#' @return a single value obtained by sampling according to the distribution
+#'   predicted by the logistic model based on the provided observation
+#' @noRd
 glm_sample_one <- function(model, newdata) {
   UseMethod("glm_sample_one")
 }
