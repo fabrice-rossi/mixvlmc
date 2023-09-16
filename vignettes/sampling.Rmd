@@ -53,7 +53,7 @@ values. The first values are considered as a *burn in* or *warm up* phase.
 
 As explained in `vignette("likelihood")`, a VLMC does not specify distributions
 for the initial values of time series as no context can be computed from them. 
-In `simulate.vlmc()`, we use the notion of `extended context` described in the 
+In `simulate.vlmc()`, we use the notion of *extended context* described in the 
 vignette to extend any VLMC into a full model, that specifies both the conditional
 distributions given its contexts and also the distributions of the initial values.
    

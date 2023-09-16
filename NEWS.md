@@ -2,7 +2,8 @@
 
 ## New features
 * new functions `predict.vlmc()` and `predict.covlmc()` can be used to make one 
-  step ahead predictions of a time series based on a (CO)VLMC model (issue #46)
+  step ahead predictions of a time series based on a (CO)VLMC model (issue #46).
+  Those function are documented in  a new vignette (`vignette("prediction")`)
 * `contexts()` can now report the positions of each context in the original time
   series
 * the log likelihood calculations performed by `logLik.vlmc()`, `logLik.covlmc()`

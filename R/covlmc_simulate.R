@@ -45,6 +45,17 @@ match_context_co <- function(tree, ctx) {
 #' @param init an optional initial sequence for the time series.
 #' @param ... additional arguments.
 #'
+#' @section Extended contexts:
+#'
+#'   As explained in details in [loglikelihood.covlmc()] documentation and in
+#'   the dedicated `vignette("likelihood", package = "mixvlmc")`, the first
+#'   initial values of a time series do not in general have a proper context for
+#'   a COVLMC with a non zero order. In order to simulate something meaningful
+#'   for those values, we rely on the notion of extended context defined in the
+#'   documents mentioned above. This follows the same logic as using
+#'   [loglikelihood.covlmc()] with the parameter `initial="extended"`. All
+#'   covlmc functions that need to manipulate initial values with no proper
+#'   context use the same approach.
 #' @inheritSection simulate.vlmc Random seed
 #' @returns a simulated discrete time series of the same type as the one used to
 #'   build the covlmc with a `seed` attribute (see the Random seed section). The

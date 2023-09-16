@@ -17,6 +17,7 @@ articles:
   navbar: Advanced topics
   contents:
   - likelihood
+  - prediction
   - sampling
 
 reference:
@@ -58,6 +59,7 @@ reference:
   - logLik.covlmc
   - loglikelihood.covlmc
   - metrics.covlmc
+  - predict.covlmc
   - states
 - title: Model selection for (CO)VLMC
   desc: Functions to adjust automatically or manually the complexity of a (CO)VLMC to the time series.

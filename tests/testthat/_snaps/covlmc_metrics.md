@@ -10,9 +10,9 @@
        Confusion matrix: 
                 low typical high 
         low     129 39      0    
-        typical 38  468     46   
+        typical 38  470     46   
         high    1   45      240  
-       Accurary: 0.832 
+       Accurary: 0.8323 
        AUC: 0.9 
 
 # metrics.covlmc objects print as expected
@@ -27,8 +27,8 @@
        Confusion matrix: 
                 low typical high 
         low     129 39      0    
-        typical 38  468     46   
+        typical 38  470     46   
         high    1   45      240  
-       Accurary: 0.832 
-       AUC: 0.9285 
+       Accurary: 0.8323 
+       AUC: 0.9284 
 

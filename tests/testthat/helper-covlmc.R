@@ -34,6 +34,22 @@ build_data_set_2 <- function(seed = 0) {
   list(x = x, covariate = dts_cov)
 }
 
+build_data_set_3_model <- function(n, seed = 0, alpha = 0.1) {
+  withr::local_seed(seed)
+  x3 <- sample(c("A", "B", "C"), n, replace = TRUE)
+  y3 <- ifelse(runif(length(x3)) > 0.5, c(x3[-1], sample(c("A", "B", "C"), 1)), c(x3[-c(1, 2)], sample(c("A", "B", "C"), 2, replace = TRUE)))
+  y3 <- as.factor(ifelse(runif(length(x3)) > 0.2, y3, sample(c("A", "B", "C"), n, replace = TRUE)))
+  z3 <- data.table::fcase(
+    x3[-1] == "A", runif(length(x3) - 1),
+    x3[-1] == "B", 0.5 + runif(length(x3) - 1),
+    x3[-1] == "C", -0.5 + runif(length(x3) - 1)
+  )
+  z3 <- c(0, z3)
+  df_full <- data.frame(y = y3, z = z3)
+  model <- covlmc(x3, df_full, max_depth = 5, min_size = 5, alpha = alpha)
+  list(model = model, dts = x3, cov = df_full)
+}
+
 extract_p_value <- function(tree) {
   recurse_extract_p_value <- function(tree) {
     if (is.null(tree[["children"]])) {
@@ -280,5 +296,5 @@ create_demo_covlmc <- function() {
   for (k in seq_along(m_cuts[1:4])) {
     m_current <- prune(m_current, m_cuts[k])
   }
-  list(model = m_current, dts = x3, cov = df_y3)
+  list(model = m_current, dts = x3, cov = df_y3, full_model = x3_covlmc)
 }

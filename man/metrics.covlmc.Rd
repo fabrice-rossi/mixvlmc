@@ -51,6 +51,20 @@ AUC in case of a state space with more than 2 states
 \item \code{print(metrics.covlmc)}: Prints the predictive metrics of the VLMC model with covariates.
 
 }}
+\section{Extended contexts}{
+
+
+As explained in details in \code{\link[=loglikelihood.covlmc]{loglikelihood.covlmc()}} documentation and in
+the dedicated \code{vignette("likelihood", package = "mixvlmc")}, the first
+initial values of a time series do not in general have a proper context for
+a COVLMC with a non zero order. In order to predict something meaningful
+for those values, we rely on the notion of extended context defined in the
+documents mentioned above. This follows the same logic as using
+\code{\link[=loglikelihood.covlmc]{loglikelihood.covlmc()}} with the parameter \code{initial="extended"}. All
+covlmc functions that need to manipulate initial values with no proper
+context use the same approach.
+}
+
 \examples{
 pc <- powerconsumption[powerconsumption$week == 5, ]
 breaks <- c(

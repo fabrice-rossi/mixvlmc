@@ -60,9 +60,25 @@ test_that("metrics.covlmc works as expected on two state chains", {
   expect_equal(rownames(m_metrics$conf_mat), as.character(states(m_cov)))
   expect_lte(sum(m_metrics$conf_mat), length(dts))
   expect_true(all(colSums(m_metrics$conf_mat) <= table(dts)))
+  m_predict <- predict(m_cov, dts, dts_cov, final_pred = FALSE)
+  predict_table <- table(m_predict, dts)
+  names(dimnames(predict_table)) <- c("predicted value", "true value")
+  expect_identical(m_metrics$conf_mat, predict_table)
 })
 
 test_that("metrics.covlmc works as expected on degenerate models", {
   d_model <- build_degenerate_elec_model(FALSE)
   expect_no_error(metrics(d_model$model))
+})
+
+test_that("metrics.covlmc and predict.covlmc return consistent results", {
+  pc <- powerconsumption[powerconsumption$week == 5, ]
+  dts <- cut(pc$active_power, breaks = c(0, 0.4, 2, 8), labels = c("low", "typical", "high"))
+  dts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
+  m_cov <- covlmc(dts, dts_cov, min_size = 2, keep_data = TRUE, alpha = 0.5)
+  m_metrics <- metrics(m_cov)
+  m_predict <- predict(m_cov, dts, dts_cov, final_pred = FALSE)
+  predict_table <- table(m_predict, dts)
+  names(dimnames(predict_table)) <- c("predicted value", "true value")
+  expect_identical(m_metrics$conf_mat, predict_table)
 })
