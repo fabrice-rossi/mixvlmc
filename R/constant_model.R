@@ -87,7 +87,7 @@ glm_coef.constant_model <- function(model, data) {
 }
 
 #' @exportS3Method
-glm_sample_one.constant_model <- function(model, newdata) {
+glm_sample_one.constant_model <- function(model, newdata, lev) {
   model$target
 }
 

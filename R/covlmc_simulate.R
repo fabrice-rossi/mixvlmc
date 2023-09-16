@@ -100,7 +100,7 @@ simulate.covlmc <- function(object, nsim = 1, seed = NULL, covariate, init = NUL
       ## degenerate case
       mm <- covariate[1, , drop = FALSE]
       for (i in istart:nsim) {
-        pre_res[i] <- 1 + glm_sample_one(object$model$model, mm)
+        pre_res[i] <- 1 + glm_sample_one(object$model$model, mm, object$vals)
       }
     } else {
       for (i in istart:nsim) {
@@ -116,7 +116,7 @@ simulate.covlmc <- function(object, nsim = 1, seed = NULL, covariate, init = NUL
           d = local_model$hsize,
           from = subtree$depth - local_model$hsize
         )
-        pre_res[i] <- 1 + glm_sample_one(local_model$model, mm)
+        pre_res[i] <- 1 + glm_sample_one(local_model$model, mm, object$vals)
         if (length(ctx) < max_depth) {
           ctx <- c(pre_res[i], ctx)
         } else {

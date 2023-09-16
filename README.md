@@ -377,7 +377,8 @@ lh_covlmc <- sapply(covlmc_simul, longuest_high)
 The average longest time spent in *high* consecutively is
 
 - for the VLMC: 243.6 minutes with a standard error of 6.7337834;
-- for the VLMC with covariate: 280 minutes with a standard error of 0;
+- for the VLMC with covariate: 286 minutes with a standard error of
+  8.9386235;
 - 410 minutes for the observed time series.
 
 The following figure shows the distributions of the times obtained by

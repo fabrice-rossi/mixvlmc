@@ -1,8 +1,8 @@
 # mixvlmc (development version)
 
 ## New features
-* a new function `predict.vlmc()` can be used to make one step ahead predictions
-  of a time series based on a VLMC model (issue #46)
+* new functions `predict.vlmc()` and `predict.covlmc()` can be used to make one 
+  step ahead predictions of a time series based on a (CO)VLMC model (issue #46)
 * `contexts()` can now report the positions of each context in the original time
   series
 * the log likelihood calculations performed by `logLik.vlmc()`, `logLik.covlmc()`
@@ -23,6 +23,8 @@
   
 ## Minor improvements and bug fixes
 * Improved the test coverage (issue #54)
+* Fixed several bugs in internal sampling methods that made `simulate.covlmc()`
+  unreliable for state spaces with three or more states
 * Fixed a bug in `simulate.covlmc()` that occurred in contexts with a longer 
   self memory compared to their covariate memory
 * Fixed several bugs in `metrics.vlmc()` and align the results with the ones
