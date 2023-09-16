@@ -1,8 +1,9 @@
 test_that("glm_predict returns a vector in two levels cases", {
   data_set <- build_binary_dataset(0)
+  cc <- covlmc_control()
   for (engine in c("glm", "multinom")) {
     withr::local_options(mixvlmc.predictive = engine)
-    model <- fit_glm(data_set$target, data_set$mm, 2, covlmc_control())
+    model <- fit_glm(data_set$target, data_set$mm, 2, cc)
     model_pred <- glm_predict(model, lev = 0:1)
     expect_vector(model_pred)
     expect_length(model_pred, length(data_set$target))
@@ -16,11 +17,11 @@ test_that("glm_predict returns a vector in two levels cases", {
 
 test_that("glm_predict returns the probability of the positive class in degenerate cases", {
   data_set <- build_binary_dataset(0)
+  cc <- covlmc_control()
   precision <- .Machine$double.eps^0.5
   ## turn the data set into a degenerate one
   for (one_target in 0:1) {
     data_set$target <- rep(one_target, length(data_set$target))
-    cc <- covlmc_control()
     for (engine in c("glm", "multinom")) {
       withr::local_options(mixvlmc.predictive = engine)
       model <- fit_glm(data_set$target, data_set$mm, 2, cc)
@@ -39,9 +40,10 @@ test_that("glm_predict returns the probability of the positive class in degenera
 
 test_that("glm_predict returns a matrix of probabilities when there are 3 or more levels", {
   data_set <- build_multilevel_dataset(4, 0)
+  cc <- covlmc_control()
   for (engine in c("glm", "multinom")) {
     withr::local_options(mixvlmc.predictive = engine)
-    model <- fit_glm(data_set$target, data_set$mm, length(data_set$vals), covlmc_control())
+    model <- fit_glm(data_set$target, data_set$mm, length(data_set$vals), cc)
     model_pred <- glm_predict(model, lev = data_set$vals)
     expect_identical(class(model_pred), c("matrix", "array"))
     expect_equal(dim(model_pred), c(length(data_set$target), length(data_set$vals)))
@@ -71,7 +73,7 @@ test_that("glm_predict returns a matrix of probabilities when there are 3 or mor
     data_set$target[to_remove_idx] <- sample(replace_vals, sum(to_remove_idx), replace = TRUE)
     for (engine in c("glm", "multinom")) {
       withr::local_options(mixvlmc.predictive = engine)
-      model <- fit_glm(data_set$target, data_set$mm, length(data_set$vals), covlmc_control())
+      model <- fit_glm(data_set$target, data_set$mm, length(data_set$vals), cc)
       model_pred <- glm_predict(model, lev = data_set$vals)
       expect_identical(class(model_pred), c("matrix", "array"))
       expect_equal(dim(model_pred), c(length(data_set$target), length(data_set$vals)))
