@@ -80,8 +80,8 @@ with a non zero order. In order to simulate something meaningful for those
 values when \code{init} is not provided, we rely on the notion of extended
 context defined in the documents mentioned above. This follows the same
 logic as using \code{\link[=loglikelihood.vlmc]{loglikelihood.vlmc()}} with the parameter
-\code{initial="extended"}. \code{\link[=predict.vlmc]{predict.vlmc()}} uses the same approach with initial
-values are not provided.
+\code{initial="extended"}. All vlmc functions that need to manipulate initial
+values with no proper context use the same approach.
 }
 
 \examples{

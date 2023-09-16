@@ -48,8 +48,8 @@
 #'   values when `init` is not provided, we rely on the notion of extended
 #'   context defined in the documents mentioned above. This follows the same
 #'   logic as using [loglikelihood.vlmc()] with the parameter
-#'   `initial="extended"`. [predict.vlmc()] uses the same approach with initial
-#'   values are not provided.
+#'   `initial="extended"`. All vlmc functions that need to manipulate initial
+#'   values with no proper context use the same approach.
 #'
 #' @references  Mächler, M. and Bühlmann, P. (2004) "Variable Length Markov
 #'   Chains: Methodology, Computing, and Software" Journal of Computational and

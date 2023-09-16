@@ -59,9 +59,9 @@ dedicated \code{vignette("likelihood", package = "mixvlmc")}, the first initial
 values of a time series do not in general have a proper context for a VLMC
 with a non zero order. In order to predict something meaningful for those
 values, we rely on the notion of extended context defined in the documents
-mentioned above. Metrics are computed using this extended context approach.
-This follows the same logic as using \code{\link[=loglikelihood.vlmc]{loglikelihood.vlmc()}} with the
-parameter \code{initial="extended"}. \code{\link[=simulate.vlmc]{simulate.vlmc()}} and \code{\link[=predict.vlmc]{predict.vlmc()}} use
+mentioned above. This follows the same logic as using
+\code{\link[=loglikelihood.vlmc]{loglikelihood.vlmc()}} with the parameter \code{initial="extended"}. All vlmc
+functions that need to manipulate initial values with no proper context use
 the same approach.
 }
 

@@ -53,17 +53,7 @@ generate_fake_data <- function(freq, counts, probs, vals) {
 #'   The object has a print method that recalls basic information about the
 #'   model together with the values of the components above.
 #'
-#' @section Extended contexts:
-#'
-#'   As explained in details in [loglikelihood.vlmc()] documentation and in the
-#'   dedicated `vignette("likelihood", package = "mixvlmc")`, the first initial
-#'   values of a time series do not in general have a proper context for a VLMC
-#'   with a non zero order. In order to predict something meaningful for those
-#'   values, we rely on the notion of extended context defined in the documents
-#'   mentioned above. Metrics are computed using this extended context approach.
-#'   This follows the same logic as using [loglikelihood.vlmc()] with the
-#'   parameter `initial="extended"`. [simulate.vlmc()] and [predict.vlmc()] use
-#'   the same approach.
+#' @inheritSection predict.vlmc Extended contexts
 #'
 #' @exportS3Method
 metrics.vlmc <- function(model, ...) {
