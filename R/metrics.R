@@ -117,7 +117,11 @@ main_metrics <- function(target, probs) {
       colnames(probs) <- levels(target)
       roc <- pROC::multiclass.roc(target, probs)
     } else {
-      roc <- pROC::roc(target, probs, levels = c(0, 1), direction = "<")
+      if (is.factor(target)) {
+        roc <- pROC::roc(target, probs, levels = levels(target), direction = "<")
+      } else {
+        roc <- pROC::roc(target, probs, levels = c(0, 1), direction = "<")
+      }
     }
     auc <- as.numeric(pROC::auc(roc))
   }
