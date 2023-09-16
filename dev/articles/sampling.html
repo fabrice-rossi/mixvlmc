@@ -49,6 +49,7 @@
     <div class="dropdown-divider"></div>
     <h6 class="dropdown-header" data-toc-skip>Advanced topics</h6>
     <a class="dropdown-item" href="../articles/likelihood.html">Likelihood calculation</a>
+    <a class="dropdown-item" href="../articles/prediction.html">Predicting with (CO)VLMC</a>
     <a class="dropdown-item" href="../articles/sampling.html">Sampling from (CO)VLMC</a>
   </div>
 </li>
@@ -133,10 +134,10 @@ influence of the starting values. The first values are considered as a
 <p>As explained in <code><a href="../articles/likelihood.html">vignette("likelihood")</a></code>, a VLMC does not
 specify distributions for the initial values of time series as no
 context can be computed from them. In <code><a href="../reference/simulate.vlmc.html">simulate.vlmc()</a></code>, we
-use the notion of <code>extended context</code> described in the
-vignette to extend any VLMC into a full model, that specifies both the
-conditional distributions given its contexts and also the distributions
-of the initial values.</p>
+use the notion of <em>extended context</em> described in the vignette to
+extend any VLMC into a full model, that specifies both the conditional
+distributions given its contexts and also the distributions of the
+initial values.</p>
 <div class="section level3">
 <h3 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h3>
@@ -147,7 +148,7 @@ of the initial values.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">best_vlmc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tune_vlmc.html">tune_vlmc</a></span><span class="op">(</span><span class="va">dts</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/draw.html">draw</a></span><span class="op">(</span><span class="fu"><a href="../reference/as_vlmc.html">as_vlmc</a></span><span class="op">(</span><span class="va">best_vlmc</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; * (0.526, 0.474)</span></span></code></pre></div>
+<span><span class="co">#&gt; * (0.492, 0.508)</span></span></code></pre></div>
 <p>Simulating a sequence using the model is done via
 <code><a href="../reference/simulate.vlmc.html">simulate.vlmc()</a></code> which overrides the standard
 <code><a href="https://rdrr.io/r/stats/simulate.html" class="external-link">stats::simulate()</a></code>. For instance:</p>
@@ -176,7 +177,9 @@ the <code>init</code> parameter, for instance:</p>
 0\)</span>:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dts_sample_2</span></span>
-<span><span class="co">#&gt;  [1] 0 0 0 1 1 1 0 0 1 1</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1] 0 0 1 0 1 1 0 1 1 0</span></span>
+<span><span class="co">#&gt; attr(,"class")</span></span>
+<span><span class="co">#&gt; [1] "dts"     "integer"</span></span></code></pre></div>
 <p>This provides an alternative to dropping the initial values of the
 simulated time series by setting those values to the one observed in the
 data set. Notice that this practice has no theoretical

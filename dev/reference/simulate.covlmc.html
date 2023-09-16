@@ -33,6 +33,7 @@ given covlmc object."><meta name="robots" content="noindex"><!-- mathjax --><scr
     <div class="dropdown-divider"></div>
     <h6 class="dropdown-header" data-toc-skip>Advanced topics</h6>
     <a class="dropdown-item" href="../articles/likelihood.html">Likelihood calculation</a>
+    <a class="dropdown-item" href="../articles/prediction.html">Predicting with (CO)VLMC</a>
     <a class="dropdown-item" href="../articles/sampling.html">Sampling from (CO)VLMC</a>
   </div>
 </li>
@@ -120,6 +121,21 @@ probabilities. The covariates must be submitted as a data frame using the
 fixed sequence specified via the <code>init</code> parameter.</p>
     </div>
     <div class="section level2">
+    <h2 id="extended-contexts">Extended contexts<a class="anchor" aria-label="anchor" href="#extended-contexts"></a></h2>
+    
+
+
+<p>As explained in details in <code><a href="loglikelihood.covlmc.html">loglikelihood.covlmc()</a></code> documentation and in
+the dedicated <code><a href="../articles/likelihood.html">vignette("likelihood", package = "mixvlmc")</a></code>, the first
+initial values of a time series do not in general have a proper context for
+a COVLMC with a non zero order. In order to simulate something meaningful
+for those values, we rely on the notion of extended context defined in the
+documents mentioned above. This follows the same logic as using
+<code><a href="loglikelihood.covlmc.html">loglikelihood.covlmc()</a></code> with the parameter <code>initial="extended"</code>. All
+covlmc functions that need to manipulate initial values with no proper
+context use the same approach.</p>
+    </div>
+    <div class="section level2">
     <h2 id="random-seed">Random seed<a class="anchor" aria-label="anchor" href="#random-seed"></a></h2>
     
 
@@ -135,8 +151,8 @@ perform this initialisation (as is done in <code><a href="https://rdrr.io/r/stat
 simulation takes place. The integer is saved as a <code>seed</code> attribute in the
 return value. The integer seed is completed by an attribute <code>kind</code> which
 contains the value <code>as.list([RNGkind()])</code> exactly as with
-<code><a href="https://rdrr.io/r/stats/simulate.html" class="external-link">stats::simulate()</a></code>. As with <code>seed=NULL</code>, the random generator state is
-reset to its original value at the end of the call.</p>
+<code><a href="https://rdrr.io/r/stats/simulate.html" class="external-link">stats::simulate()</a></code>. The random generator state is reset to its original
+value at the end of the call.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

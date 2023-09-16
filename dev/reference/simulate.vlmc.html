@@ -33,6 +33,7 @@ given vlmc object."><meta name="robots" content="noindex"><!-- mathjax --><scrip
     <div class="dropdown-divider"></div>
     <h6 class="dropdown-header" data-toc-skip>Advanced topics</h6>
     <a class="dropdown-item" href="../articles/likelihood.html">Likelihood calculation</a>
+    <a class="dropdown-item" href="../articles/prediction.html">Predicting with (CO)VLMC</a>
     <a class="dropdown-item" href="../articles/sampling.html">Sampling from (CO)VLMC</a>
   </div>
 </li>
@@ -151,8 +152,8 @@ perform this initialisation (as is done in <code><a href="https://rdrr.io/r/stat
 simulation takes place. The integer is saved as a <code>seed</code> attribute in the
 return value. The integer seed is completed by an attribute <code>kind</code> which
 contains the value <code>as.list([RNGkind()])</code> exactly as with
-<code><a href="https://rdrr.io/r/stats/simulate.html" class="external-link">stats::simulate()</a></code>. As with <code>seed=NULL</code>, the random generator state is
-reset to its original value at the end of the call.</p>
+<code><a href="https://rdrr.io/r/stats/simulate.html" class="external-link">stats::simulate()</a></code>. The random generator state is reset to its original
+value at the end of the call.</p>
     </div>
     <div class="section level2">
     <h2 id="extended-contexts">Extended contexts<a class="anchor" aria-label="anchor" href="#extended-contexts"></a></h2>
@@ -166,8 +167,8 @@ with a non zero order. In order to simulate something meaningful for those
 values when <code>init</code> is not provided, we rely on the notion of extended
 context defined in the documents mentioned above. This follows the same
 logic as using <code><a href="loglikelihood.html">loglikelihood.vlmc()</a></code> with the parameter
-<code>initial="extended"</code>. <code><a href="predict.vlmc.html">predict.vlmc()</a></code> uses the same approach with initial
-values are not provided.</p>
+<code>initial="extended"</code>. All vlmc functions that need to manipulate initial
+values with no proper context use the same approach.</p>
     </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>

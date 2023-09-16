@@ -33,6 +33,7 @@ VLMC with covariates."><meta name="robots" content="noindex"><!-- mathjax --><sc
     <div class="dropdown-divider"></div>
     <h6 class="dropdown-header" data-toc-skip>Advanced topics</h6>
     <a class="dropdown-item" href="../articles/likelihood.html">Likelihood calculation</a>
+    <a class="dropdown-item" href="../articles/prediction.html">Predicting with (CO)VLMC</a>
     <a class="dropdown-item" href="../articles/sampling.html">Sampling from (CO)VLMC</a>
   </div>
 </li>
@@ -123,6 +124,21 @@ AUC in case of a state space with more than 2 states</p></li>
 <ul><li><p><code>print(metrics.covlmc)</code>: Prints the predictive metrics of the VLMC model with covariates.</p></li>
 </ul></div>
     <div class="section level2">
+    <h2 id="extended-contexts">Extended contexts<a class="anchor" aria-label="anchor" href="#extended-contexts"></a></h2>
+    
+
+
+<p>As explained in details in <code><a href="loglikelihood.covlmc.html">loglikelihood.covlmc()</a></code> documentation and in
+the dedicated <code><a href="../articles/likelihood.html">vignette("likelihood", package = "mixvlmc")</a></code>, the first
+initial values of a time series do not in general have a proper context for
+a COVLMC with a non zero order. In order to predict something meaningful
+for those values, we rely on the notion of extended context defined in the
+documents mentioned above. This follows the same logic as using
+<code><a href="loglikelihood.covlmc.html">loglikelihood.covlmc()</a></code> with the parameter <code>initial="extended"</code>. All
+covlmc functions that need to manipulate initial values with no proper
+context use the same approach.</p>
+    </div>
+    <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
     <p>David J. Hand and Robert J. Till (2001). "A Simple Generalisation of the Area
 Under the ROC Curve for Multiple Class Classification
@@ -155,9 +171,9 @@ Problems." <em>Machine Learning</em> 45(2), p. 171--186. DOI:
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Confusion matrix: </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     0   1   </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   0 318 31  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   1 32  624 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Accurary: 0.9373 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  AUC: 0.9443 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1 32  627 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Accurary: 0.9375 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  AUC: 0.9442 </span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

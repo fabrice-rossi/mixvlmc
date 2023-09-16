@@ -31,6 +31,7 @@
     <div class="dropdown-divider"></div>
     <h6 class="dropdown-header" data-toc-skip>Advanced topics</h6>
     <a class="dropdown-item" href="../articles/likelihood.html">Likelihood calculation</a>
+    <a class="dropdown-item" href="../articles/prediction.html">Predicting with (CO)VLMC</a>
     <a class="dropdown-item" href="../articles/sampling.html">Sampling from (CO)VLMC</a>
   </div>
 </li>
@@ -67,7 +68,7 @@
 <h2 class="pkg-version" data-toc-text="development version" id="mixvlmc-development-version">mixvlmc (development version)<a class="anchor" aria-label="anchor" href="#mixvlmc-development-version"></a></h2>
 <div class="section level3">
 <h3 id="new-features-development-version">New features<a class="anchor" aria-label="anchor" href="#new-features-development-version"></a></h3>
-<ul><li>a new function <code><a href="../reference/predict.vlmc.html">predict.vlmc()</a></code> can be used to make one step ahead predictions of a time series based on a VLMC model (issue <a href="https://github.com/fabrice-rossi/mixvlmc/issues/46" class="external-link">#46</a>)</li>
+<ul><li>new functions <code><a href="../reference/predict.vlmc.html">predict.vlmc()</a></code> and <code><a href="../reference/predict.covlmc.html">predict.covlmc()</a></code> can be used to make one step ahead predictions of a time series based on a (CO)VLMC model (issue <a href="https://github.com/fabrice-rossi/mixvlmc/issues/46" class="external-link">#46</a>). Those function are documented in a new vignette (<code><a href="../articles/prediction.html">vignette("prediction")</a></code>)</li>
 <li>
 <code><a href="../reference/contexts.html">contexts()</a></code> can now report the positions of each context in the original time series</li>
 <li>the log likelihood calculations performed by <code><a href="../reference/logLik.vlmc.html">logLik.vlmc()</a></code>, <code><a href="../reference/logLik.covlmc.html">logLik.covlmc()</a></code> <code><a href="../reference/loglikelihood.html">loglikelihood()</a></code> and <code><a href="../reference/loglikelihood.covlmc.html">loglikelihood.covlmc()</a></code> have been revised, expanded to include three possible definitions of the likelihood function, and documented in a new vignette (<code><a href="../articles/likelihood.html">vignette("likelihood")</a></code>)</li>
@@ -88,6 +89,8 @@
 <div class="section level3">
 <h3 id="minor-improvements-and-bug-fixes-development-version">Minor improvements and bug fixes<a class="anchor" aria-label="anchor" href="#minor-improvements-and-bug-fixes-development-version"></a></h3>
 <ul><li>Improved the test coverage (issue <a href="https://github.com/fabrice-rossi/mixvlmc/issues/54" class="external-link">#54</a>)</li>
+<li>Fixed several bugs in internal sampling methods that made <code><a href="../reference/simulate.covlmc.html">simulate.covlmc()</a></code> unreliable for state spaces with three or more states</li>
+<li>Fixed a bug in <code><a href="../reference/simulate.covlmc.html">simulate.covlmc()</a></code> that occurred in contexts with a longer self memory compared to their covariate memory</li>
 <li>Fixed several bugs in <code><a href="../reference/metrics.vlmc.html">metrics.vlmc()</a></code> and align the results with the ones obtained by using direct calculation on the results of <code><a href="../reference/predict.vlmc.html">predict.vlmc()</a></code>
 </li>
 <li>Fixed several bugs related to degenerate VLMC (issue <a href="https://github.com/fabrice-rossi/mixvlmc/issues/55" class="external-link">#55</a>)</li>

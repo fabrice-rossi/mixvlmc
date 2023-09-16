@@ -33,6 +33,7 @@ based on a VLMC."><meta name="robots" content="noindex"><!-- mathjax --><script 
     <div class="dropdown-divider"></div>
     <h6 class="dropdown-header" data-toc-skip>Advanced topics</h6>
     <a class="dropdown-item" href="../articles/likelihood.html">Likelihood calculation</a>
+    <a class="dropdown-item" href="../articles/prediction.html">Predicting with (CO)VLMC</a>
     <a class="dropdown-item" href="../articles/sampling.html">Sampling from (CO)VLMC</a>
   </div>
 </li>
@@ -135,9 +136,9 @@ values of a time series do not in general have a proper context for a VLMC
 with a non zero order. In order to predict something meaningful for those
 values, we rely on the notion of extended context defined in the documents
 mentioned above. This follows the same logic as using
-<code><a href="loglikelihood.html">loglikelihood.vlmc()</a></code> with the parameter <code>initial="extended"</code>.
-<code><a href="simulate.vlmc.html">simulate.vlmc()</a></code> uses the same approach when initial values are not
-provided.</p>
+<code><a href="loglikelihood.html">loglikelihood.vlmc()</a></code> with the parameter <code>initial="extended"</code>. All vlmc
+functions that need to manipulate initial values with no proper context use
+the same approach.</p>
     </div>
 
     <div class="section level2">
