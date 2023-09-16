@@ -7,7 +7,7 @@
 \method{draw}{covlmc}(
   ct,
   control = draw_control(),
-  model = "coef",
+  model = c("coef", "full"),
   p_value = TRUE,
   digits = 4,
   with_state = FALSE,

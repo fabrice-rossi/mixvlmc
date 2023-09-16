@@ -22,7 +22,8 @@ vlmc_context_extractor <-
         } else {
           lres <- res
         }
-        fake_data <- generate_fake_data(lres$freq, lres[, 3:(2 + length(vals)), drop = FALSE], vals)
+        probs <- matrix(ct$f_by / sum(ct$f_by), nrow = 1)
+        fake_data <- generate_fake_data(lres$freq, lres[, 3:(2 + length(vals)), drop = FALSE], probs, vals)
         local_m <- main_metrics(fake_data$response, fake_data$predictor)
         local_m$roc <- NULL
         local_m$conf_mat <- NULL

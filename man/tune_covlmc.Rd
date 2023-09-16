@@ -13,7 +13,8 @@ tune_covlmc(
   max_depth = 100,
   verbose = 0,
   save = c("best", "initial", "all"),
-  trimming = c("full", "partial", "none")
+  trimming = c("full", "partial", "none"),
+  best_trimming = c("none", "partial", "full")
 )
 }
 \arguments{
@@ -43,7 +44,11 @@ initial (complex) model which is then pruned during the selection process.
 When \code{save="all"}, the function returns all the models considered during the
 selection process. See details for memory occupation.}
 
-\item{trimming}{specify the type of trimming used when saving the intermediate models, see details.}
+\item{trimming}{specify the type of trimming used when saving the intermediate models,
+see details.}
+
+\item{best_trimming}{specify the type of trimming used when saving the best model
+and the initial one (see details).}
 }
 \value{
 a list with the following components:
@@ -89,6 +94,13 @@ Both the initial model and the best one are saved untrimmed. This default
 behaviour corresponds to \code{trimming="full"}. Setting \code{trimming="partial"} asks the function
 to use \code{keep_model=TRUE} in \code{\link[=trim.covlmc]{trim.covlmc()}} for intermediate models. Finally,
 \code{trimming="none"} turns off trimming, which is discouraged expected for small data sets.
+
+In parallel processing contexts (e.g. using \link[foreach:foreach]{foreach::\%dopar\%}), the memory
+occupation of the results can become very large as models tend to keep
+environments attached to the formulas. In this situation, it is highly recommended
+to trim all saved models, including the best one and the initial one. This can
+be done via the \code{best_trimming} parameter whose possible values are identical
+to the ones of \code{trimming}.
 }
 
 \examples{

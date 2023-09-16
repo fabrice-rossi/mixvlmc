@@ -41,12 +41,37 @@ covlmc_predictive_extractor <- function(path, ct, vals, control, is_leaf, p_summ
 #' m_cov <- covlmc(dts, dts_cov, min_size = 5)
 #' metrics(m_cov)
 #'
+#' @inheritSection predict.covlmc Extended contexts
+#'
 #' @exportS3Method
 metrics.covlmc <- function(model, ...) {
   if (!is.null(model$trimmed)) {
     stop("metrics is not supported by trimmed covlmc")
   }
   all_preds <- contexts_extractor(model, TRUE, covlmc_predictive_extractor, list(), no_summary)
+  if (length(all_preds$target) < model$data_size) {
+    ## we have proper extended contexts, we need to get them
+    ## we rely on predict for that
+    nb <- model$data_size - length(all_preds$target)
+    unmatched_data <- model$vals[model$iix[1:nb] + 1]
+    unmatched_cov <- model$icov[1:nb, , drop = FALSE]
+    extended_ctx_probs <- predict(model,
+      unmatched_data,
+      unmatched_cov,
+      final_pred = FALSE,
+      type = "probs"
+    )
+    if (ncol(extended_ctx_probs) == 2) {
+      extended_ctx_probs <- extended_ctx_probs[, 2, drop = FALSE]
+      colnames(extended_ctx_probs) <- c("predictions")
+      unmatched_data <- model$iix[1:nb]
+    }
+    local_preds <- data.frame(
+      target = unmatched_data,
+      predictions = extended_ctx_probs
+    )
+    all_preds <- rbind(all_preds, local_preds)
+  }
   res <- main_metrics(all_preds$target, all_preds[, -1])
   rownames(res$conf_mat) <- model$vals
   colnames(res$conf_mat) <- model$vals

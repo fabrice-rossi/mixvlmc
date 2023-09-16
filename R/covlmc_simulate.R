@@ -40,12 +40,28 @@ match_context_co <- function(tree, ctx) {
 #'
 #' @param object a fitted covlmc object.
 #' @param nsim length of the simulated time series (defaults to 1).
-#' @param seed an optional random seed.
-#' @param covariate values of the covariates
-#' @param init an optional initial sequence for the time series
+#' @param seed an optional random seed (see the dedicated section).
+#' @param covariate values of the covariates.
+#' @param init an optional initial sequence for the time series.
 #' @param ... additional arguments.
 #'
-#' @returns a simulated discrete time series of the same type as the one used to build the covlmc.
+#' @section Extended contexts:
+#'
+#'   As explained in details in [loglikelihood.covlmc()] documentation and in
+#'   the dedicated `vignette("likelihood", package = "mixvlmc")`, the first
+#'   initial values of a time series do not in general have a proper context for
+#'   a COVLMC with a non zero order. In order to simulate something meaningful
+#'   for those values, we rely on the notion of extended context defined in the
+#'   documents mentioned above. This follows the same logic as using
+#'   [loglikelihood.covlmc()] with the parameter `initial="extended"`. All
+#'   covlmc functions that need to manipulate initial values with no proper
+#'   context use the same approach.
+#' @inheritSection simulate.vlmc Random seed
+#' @returns a simulated discrete time series of the same type as the one used to
+#'   build the covlmc with a `seed` attribute (see the Random seed section). The
+#'   results has also the `dts` class to hide the `seed` attribute when using
+#'   `print` or similar function.
+#' @seealso [stats::simulate()] for details and examples on the random number generator setting
 #' @export
 #' @examples
 #' pc <- powerconsumption[powerconsumption$week == 5, ]
@@ -64,7 +80,13 @@ simulate.covlmc <- function(object, nsim = 1, seed = NULL, covariate, init = NUL
   covariate <- validate_covariate(object, covariate)
   max_depth <- depth(object)
   if (!is.null(seed)) {
+    attr(seed, "kind") <- as.list(RNGkind())
     withr::local_seed(seed)
+  } else {
+    if (!exists(".Random.seed", envir = .GlobalEnv, inherits = FALSE)) {
+      stats::runif(1)
+    }
+    seed <- .Random.seed
   }
   int_vals <- seq_along(object$vals)
   if (!is.null(init)) {
@@ -89,20 +111,23 @@ simulate.covlmc <- function(object, nsim = 1, seed = NULL, covariate, init = NUL
       ## degenerate case
       mm <- covariate[1, , drop = FALSE]
       for (i in istart:nsim) {
-        pre_res[i] <- 1 + glm_sample_one(object$model$model, mm)
+        pre_res[i] <- 1 + glm_sample_one(object$model$model, mm, object$vals)
       }
     } else {
       for (i in istart:nsim) {
         subtree <- match_context_co(object, ctx)
         if (subtree$merged) {
-          mm <- prepare_covariate(covariate, i - subtree$depth, d = subtree$tree$merged_model$hsize, from = 0)
-          pre_res[i] <- 1 + glm_sample_one(subtree$tree$merged_model$model, mm)
+          local_model <- subtree$tree$merged_model
         } else if (is.null(subtree$tree[["model"]])) {
-          pre_res[i] <- sample(int_vals, 1, prob = subtree$tree$f_by)
+          local_model <- subtree$tree$extended_model
         } else {
-          mm <- prepare_covariate(covariate, i - subtree$depth, d = subtree$tree$model$hsize, from = 0)
-          pre_res[i] <- 1 + glm_sample_one(subtree$tree$model$model, mm)
+          local_model <- subtree$tree$model
         }
+        mm <- prepare_covariate(covariate, i - subtree$depth - 1,
+          d = local_model$hsize,
+          from = subtree$depth - local_model$hsize
+        )
+        pre_res[i] <- 1 + glm_sample_one(local_model$model, mm, object$vals)
         if (length(ctx) < max_depth) {
           ctx <- c(pre_res[i], ctx)
         } else {
@@ -111,5 +136,6 @@ simulate.covlmc <- function(object, nsim = 1, seed = NULL, covariate, init = NUL
       }
     }
   }
-  object$vals[pre_res]
+  pre_res <- object$vals[pre_res]
+  structure(pre_res, "seed" = seed, "class" = c("dts", class(pre_res)))
 }

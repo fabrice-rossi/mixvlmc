@@ -47,23 +47,30 @@ transformations of the empirical distribution of patterns up to a fixed length.
 
 In practice, it is recommended to sample a longer sequence than the one needed and
 to keep only the last $n$ values, in order to minimise the influence of the starting
-values. 
+values. The first values are considered as a *burn in* or *warm up* phase. 
 
 ## Sampling from a VLMC
+
+As explained in `vignette("likelihood")`, a VLMC does not specify distributions
+for the initial values of time series as no context can be computed from them. 
+In `simulate.vlmc()`, we use the notion of *extended context* described in the 
+vignette to extend any VLMC into a full model, that specifies both the conditional
+distributions given its contexts and also the distributions of the initial values.
+   
 ### Introduction
 
 Let us consider a simple example with an independent sample:
 ```{r}
 dts <- sample(0:1, 500, replace = TRUE)
 ```
-The optimal VLMC according to the BIC has non memory:
+The optimal VLMC according to the BIC has no memory:
 ```{r}
 best_vlmc <- tune_vlmc(dts)
 draw(as_vlmc(best_vlmc))
 ```
 
-Simulating a sequence using the model is done via the standard `stats::simulate()` 
-function as follows:
+Simulating a sequence using the model is done via `simulate.vlmc()` which overrides
+the standard `stats::simulate()`. For instance:
 
 ```{r}
 dts_sample <- simulate(as_vlmc(best_vlmc), 600)[-(1:100)]
@@ -77,6 +84,9 @@ the standard parameters:
 - `seed` to specify the random seed used during the simulation (the initial state of
    the random number generator is restored to its previous after simulating the values)
    
+As for `stats::simulate()`, the state of the random number generator is never 
+modified by a call to `simulate.vlmc()`. 
+
 In addition, one can specify the initial values of the sequence via the `init` parameter, for
 instance:
 ```{r}
@@ -89,6 +99,12 @@ dts_sample_2
 This provides an alternative to dropping the initial values of the simulated time
 series by setting those values to the one observed in the data set. Notice that this
 practice has no theoretical justification. 
+
+To implement a *burn in* period, just use the `burnin` parameter. For instance:
+```{r}
+dts_sample_3 <- simulate(as_vlmc(best_vlmc), 10, burnin = 20)
+```
+will simulated 30 values and drop the first 20. 
 
 ### CAC time series
 Let us consider the French CAC index provided in `EuStockMarkets`:
@@ -151,18 +167,21 @@ long_sequence <- function(dts) {
 }
 ```
 
-We generate 100 bootstrap samples, using a burning time proportional to the 
-depth of the model, in order to allow for a proper mixing to take place. We use
+We generate 100 bootstrap samples, using a *burn in* time proportional to the 
+depth of the model, in order to allow for a proper mixing to take place. Notice 
+that we could use also `burnin="auto"` to use the another heuristics which uses
+the number of contexts to compute the length of the *burn in* period. We use
 the `seed` parameter of `stats::simulate()` to ensure reproducibility. 
 
 ```{r cache=TRUE}
 bootstrap_samples <- vector(100, mode = "list")
-burning_time <- 50 * depth(CAC_model)
+burn_in_time <- 50 * depth(CAC_model)
 for (b in seq_along(bootstrap_samples)) {
   bootstrap_samples[[b]] <- simulate(CAC_model,
-    burning_time + length(CAC_dts),
+    length(CAC_dts),
+    burin = burn_in_time,
     seed = b
-  )[-(1:burning_time)]
+  )
 }
 ```
 
@@ -212,7 +231,7 @@ draw(CAC_comodel, model = "full", with_state = TRUE)
 The variability of the discrete time series for fixed values of the covariates
 can be investigated using simulated sequences. The only difference between
 `simulate.vlmc()` and `simulate.covlmc()` is the need for the covariates in the 
-latter. A burning time is also problematic here as we do not have additional 
+latter. A *burn in*  time is also problematic here as we do not have additional 
 throw away values for the covariates. A possibility used here consists in starting
 the discrete time series as the observed one started, using as many values as the
 size of the largest context. Notice that in the current implementation, 

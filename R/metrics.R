@@ -5,9 +5,9 @@
 #'
 #' A context based model computes transition probabilities for its contexts.
 #' Using a maximum transition probability decision rule, this can be used to
-#' "predict" the new state that is the more likely to follow the current one,
-#' given the context. The quality of these predictions is evaluated using
-#' standard metrics including:
+#' predict the new state that is the more likely to follow the current one,
+#' given the context (see [predict.vlmc()]). The quality of these predictions
+#' is evaluated using standard metrics including:
 #'
 #' - accuracy
 #' - the full confusion matrix
@@ -25,7 +25,7 @@
 #'    in rows and true values in columns
 #'  - `auc`: the AUC of the predictive model
 #'
-#' @seealso [metrics.vlmc()], [contexts.covlmc()]
+#' @seealso [metrics.vlmc()], [contexts.covlmc()], [predict.vlmc()].
 #' @references
 #' David J. Hand and Robert J. Till (2001). "A Simple Generalisation of the Area
 #' Under the ROC Curve for Multiple Class Classification
@@ -84,10 +84,10 @@ main_metrics <- function(target, probs) {
       decision <- apply(probs, 1, which.max)
       decision <- factor(levels(target)[decision], levels = levels(target))
     } else {
-      decision <- factor(as.integer(probs[, 1] >= 0.5), levels = c(0, 1))
+      decision <- factor(as.integer(probs[, 1] > 0.5), levels = c(0, 1))
     }
   } else {
-    decision <- factor(as.integer(probs >= 0.5), levels = c(0, 1))
+    decision <- factor(as.integer(probs > 0.5), levels = c(0, 1))
   }
   if (!is.factor(target)) {
     f_target <- factor(target, levels = c(0, 1))
@@ -117,7 +117,11 @@ main_metrics <- function(target, probs) {
       colnames(probs) <- levels(target)
       roc <- pROC::multiclass.roc(target, probs)
     } else {
-      roc <- pROC::roc(target, probs, levels = c(0, 1), direction = "<")
+      if (is.factor(target)) {
+        roc <- pROC::roc(target, probs, levels = levels(target), direction = "<")
+      } else {
+        roc <- pROC::roc(target, probs, levels = c(0, 1), direction = "<")
+      }
     }
     auc <- as.numeric(pROC::auc(roc))
   }

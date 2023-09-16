@@ -1,18 +1,35 @@
+trim_one_model <- function(model, keep_model, vals) {
+  model$data <- NULL
+  model$metrics$roc <- NULL
+  ml <- glm_levels(model$model, vals)
+  if (!identical(ml, vals)) {
+    model_levels <- ml
+  } else {
+    model_levels <- NULL
+  }
+  if (keep_model) {
+    model$model <- glm_trim(model$model)
+  } else {
+    model$model <- NULL
+  }
+  list(model = model, model_levels = model_levels)
+}
+
 rec_trim_covlmc <- function(ct, keep_model, vals) {
   ct$match <- NULL
   ct$cache <- NULL
   if (!is.null(ct$model)) {
-    ct$model$data <- NULL
-    ct$model$metrics$roc <- NULL
-    ml <- glm_levels(ct$model$model, vals)
-    if (!identical(ml, vals)) {
-      ct$model_levels <- ml
-    }
-    if (keep_model) {
-      ct$model$model <- glm_trim(ct$model$model)
-    } else {
-      ct$model$model <- NULL
-    }
+    tr_model <- trim_one_model(ct$model, keep_model, vals)
+    ct$model <- tr_model$model
+    ct$model_levels <- tr_model[["model_levels"]]
+  }
+  if (!is.null(ct$merged_model)) {
+    tr_model <- trim_one_model(ct$merged_model, keep_model, vals)
+    ct$merged_model <- tr_model$model
+  }
+  if (!is.null(ct$extended_model)) {
+    tr_model <- trim_one_model(ct$extended_model, keep_model, vals)
+    ct$extended_model <- tr_model$model
   }
   if (!is.null(ct$children)) {
     for (k in seq_along(ct$children)) {
@@ -45,6 +62,7 @@ rec_trim_covlmc <- function(ct, keep_model, vals) {
 #'
 #' @returns a trimmed context tree.
 #' @export
+#' @seealso [tune_covlmc()]
 #'
 #' @examples
 #' pc <- powerconsumption[powerconsumption$week %in% 5:7, ]

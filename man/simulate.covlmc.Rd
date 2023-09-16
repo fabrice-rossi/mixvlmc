@@ -11,16 +11,19 @@
 
 \item{nsim}{length of the simulated time series (defaults to 1).}
 
-\item{seed}{an optional random seed.}
+\item{seed}{an optional random seed (see the dedicated section).}
 
-\item{covariate}{values of the covariates}
+\item{covariate}{values of the covariates.}
 
-\item{init}{an optional initial sequence for the time series}
+\item{init}{an optional initial sequence for the time series.}
 
 \item{...}{additional arguments.}
 }
 \value{
-a simulated discrete time series of the same type as the one used to build the covlmc.
+a simulated discrete time series of the same type as the one used to
+build the covlmc with a \code{seed} attribute (see the Random seed section). The
+results has also the \code{dts} class to hide the \code{seed} attribute when using
+\code{print} or similar function.
 }
 \description{
 This function simulates a time series from the distribution estimated by the
@@ -32,6 +35,39 @@ probabilities. The covariates must be submitted as a data frame using the
 \code{covariate} argument. In addition,  the time series can be initiated by a
 fixed sequence specified via the \code{init} parameter.
 }
+\section{Extended contexts}{
+
+
+As explained in details in \code{\link[=loglikelihood.covlmc]{loglikelihood.covlmc()}} documentation and in
+the dedicated \code{vignette("likelihood", package = "mixvlmc")}, the first
+initial values of a time series do not in general have a proper context for
+a COVLMC with a non zero order. In order to simulate something meaningful
+for those values, we rely on the notion of extended context defined in the
+documents mentioned above. This follows the same logic as using
+\code{\link[=loglikelihood.covlmc]{loglikelihood.covlmc()}} with the parameter \code{initial="extended"}. All
+covlmc functions that need to manipulate initial values with no proper
+context use the same approach.
+}
+
+\section{Random seed}{
+
+
+This function reproduce the behaviour of \code{\link[stats:simulate]{stats::simulate()}}. If \code{seed} is
+\code{NULL} the function does not change the random generator state and returns
+the value of \link{.Random.seed} as a \code{seed} attribute in the return value. This
+can be used to reproduce exactly the simulation results by setting
+\link{.Random.seed} to this value. Notice that if the random seed has not be
+initialised by R so far, the function issues a call to \code{runif(1)} to
+perform this initialisation (as is done in \code{\link[stats:simulate]{stats::simulate()}}).
+
+It \code{seed} is an integer, it is used in a call to \code{\link[=set.seed]{set.seed()}} before the
+simulation takes place. The integer is saved as a \code{seed} attribute in the
+return value. The integer seed is completed by an attribute \code{kind} which
+contains the value \verb{as.list([RNGkind()])} exactly as with
+\code{\link[stats:simulate]{stats::simulate()}}. The random generator state is reset to its original
+value at the end of the call.
+}
+
 \examples{
 pc <- powerconsumption[powerconsumption$week == 5, ]
 dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1))))
@@ -41,4 +77,7 @@ m_cov <- covlmc(dts, dts_cov, min_size = 5)
 new_cov <- data.frame(day_night = rep(c(rep(FALSE, 59), rep(TRUE, 121), rep(FALSE, 60)), times = 7))
 new_dts <- simulate(m_cov, nrow(new_cov), seed = 0, covariate = new_cov)
 new_dts_2 <- simulate(m_cov, nrow(new_cov), seed = 0, covariate = new_cov, init = dts[1:10])
+}
+\seealso{
+\code{\link[stats:simulate]{stats::simulate()}} for details and examples on the random number generator setting
 }

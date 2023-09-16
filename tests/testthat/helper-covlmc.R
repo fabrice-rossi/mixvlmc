@@ -34,6 +34,22 @@ build_data_set_2 <- function(seed = 0) {
   list(x = x, covariate = dts_cov)
 }
 
+build_data_set_3_model <- function(n, seed = 0, alpha = 0.1) {
+  withr::local_seed(seed)
+  x3 <- sample(c("A", "B", "C"), n, replace = TRUE)
+  y3 <- ifelse(runif(length(x3)) > 0.5, c(x3[-1], sample(c("A", "B", "C"), 1)), c(x3[-c(1, 2)], sample(c("A", "B", "C"), 2, replace = TRUE)))
+  y3 <- as.factor(ifelse(runif(length(x3)) > 0.2, y3, sample(c("A", "B", "C"), n, replace = TRUE)))
+  z3 <- data.table::fcase(
+    x3[-1] == "A", runif(length(x3) - 1),
+    x3[-1] == "B", 0.5 + runif(length(x3) - 1),
+    x3[-1] == "C", -0.5 + runif(length(x3) - 1)
+  )
+  z3 <- c(0, z3)
+  df_full <- data.frame(y = y3, z = z3)
+  model <- covlmc(x3, df_full, max_depth = 5, min_size = 5, alpha = alpha)
+  list(model = model, dts = x3, cov = df_full)
+}
+
 extract_p_value <- function(tree) {
   recurse_extract_p_value <- function(tree) {
     if (is.null(tree[["children"]])) {
@@ -106,6 +122,14 @@ compare_covlmc_node <- function(n1, n2) {
       return(FALSE)
     }
   }
+  if (!is.null(n1[["extended_model"]])) {
+    if (is.null(n2[["extended_model"]])) {
+      return(FALSE)
+    }
+    if (!identical(n1[["extended_model"]][["coefficents"]], n2[["extended_model"]][["coefficents"]])) {
+      return(FALSE)
+    }
+  }
   TRUE
 }
 
@@ -153,4 +177,124 @@ build_degenerate_elec_model <- function(with_new_data = FALSE) {
     result$new_dts <- elec_new_dts
   }
   result
+}
+
+## same calculations as in slow_loglikelihood but for COVLMC
+co_slow_loglikelihood <- function(model, initial = c("truncated", "specific", "extended"),
+                                  newdata, newcov, verbose = FALSE) {
+  initial <- match.arg(initial)
+  nx <- to_dts(newdata, model$vals)
+  if (length(model$vals) > 2) {
+    newdata <- nx$fx
+  } else {
+    newdata <- nx$ix
+  }
+  x <- nx$ix + 1
+  ctx <- c()
+  max_depth <- depth(model)
+  if (max_depth == 0) {
+    ## fixed model (and no covariate!)
+    glmdata <- prepare_glm(newcov, model$match, 0, newdata, 0)
+    result <- glm_likelihood(model$model$model, glmdata$local_mm, glmdata$target)
+  } else {
+    start <- max_depth + 1
+    if (initial == "extended") {
+      start <- 1
+    }
+    result <- 0
+    if (start <= length(newdata)) {
+      for (i in seq_along(newdata)) {
+        subtree <- match_context_co(model, ctx)
+        the_model <- NULL
+        if (i >= start) {
+          ## do we have a true match or an extended one?
+          if (i >= max_depth + 1) {
+            ## true match
+            if (subtree$merged) {
+              if (verbose) {
+                cat("merged model\n")
+              }
+              the_model <- subtree$tree$merged_model
+            } else if (!is.null(subtree$tree[["model"]])) {
+              the_model <- subtree$tree$model
+            } else {
+              stop("No match???")
+            }
+          } else {
+            ## extended match
+            if (subtree$merged) {
+              if (verbose) {
+                cat("merged model\n")
+              }
+              the_model <- subtree$tree$merged_model
+            } else if (!is.null(subtree$tree[["model"]])) {
+              if (verbose) {
+                cat("extended use of context\n")
+              }
+              the_model <- subtree$tree$model
+            } else if (!is.null(subtree$tree[["extended_model"]])) {
+              if (verbose) {
+                cat("extended context\n")
+              }
+              the_model <- subtree$tree$extended_model
+            } else {
+              stop("No extended match???")
+            }
+          }
+          mm <- prepare_covariate(newcov,
+            i - subtree$depth - 1,
+            d = the_model$hsize,
+            from = subtree$depth - the_model$hsize
+          )
+          ll <- glm_likelihood(the_model$model, mm, newdata[i])
+          if (verbose) {
+            cat(
+              "[", paste(rev(model$vals[ctx]), collapse = "-"), "] ->",
+              paste(model$vals[newdata[i]]), ll,
+              the_model$coefficients,
+              "\n"
+            )
+          }
+          result <- result + ll
+        }
+        ## ctx <- rev(x[(i-max_depth+1):i])
+        j <- max(i - max_depth + 1, 1)
+        ctx <- x[i:j]
+        #      print(paste(i,j))
+      }
+    }
+    result <- as.numeric(result)
+  }
+  if (initial == "truncated") {
+    attr(result, "df") <- count_parameters(model, FALSE)
+    attr(result, "nobs") <- max(0, length(newdata) - max_depth)
+  } else if (initial == "specific") {
+    attr(result, "df") <- count_parameters(model, FALSE) + max_depth
+    attr(result, "nobs") <- length(x)
+  } else {
+    attr(result, "df") <- count_parameters(model, TRUE)
+    attr(result, "nobs") <- length(x)
+  }
+  result
+}
+
+create_demo_covlmc <- function() {
+  withr::local_seed(0)
+  x3 <- sample(c("A", "B", "C"), 1000, replace = TRUE)
+  y3 <- ifelse(runif(length(x3)) > 0.5, c(x3[-1], sample(c("A", "B", "C"), 1)), c(x3[-c(1, 2)], sample(c("A", "B", "C"), 2, replace = TRUE)))
+  y3 <- as.factor(ifelse(runif(length(x3)) > 0.2, y3, sample(c("A", "B", "C"), 1000, replace = TRUE)))
+  z3 <- data.table::fcase(
+    x3[-1] == "A", runif(length(x3) - 1),
+    x3[-1] == "B", 0.5 + runif(length(x3) - 1),
+    x3[-1] == "C", -0.5 + runif(length(x3) - 1)
+  )
+  z3 <- c(0, z3)
+  df_y3 <- data.frame(y = y3)
+  x3_covlmc <- covlmc(x3, df_y3, max_depth = 5, min_size = 5, alpha = 0.01)
+  m_cuts <- cutoff(x3_covlmc)
+  m_current <- x3_covlmc
+  for (k in seq_along(m_cuts[1:4])) {
+    m_current <- prune(m_current, m_cuts[k])
+  }
+  list(model = m_current, dts = x3, cov = df_y3, full_model = x3_covlmc)
 }

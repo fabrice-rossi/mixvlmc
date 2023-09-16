@@ -115,9 +115,7 @@ sun_model_tune
 The results of the pruning process can be represented graphically:
 
 ```{r sunspots_bic}
-ggplot(sun_model_tune$results, aes(x = alpha, y = BIC)) +
-  geom_line() +
-  geom_point()
+print(autoplot(sun_model_tune) + geom_point())
 ```
 
 The plot shows that simpler models are too simple as the BIC increases when pruning becomes strong enough. The best model remains rather complex (as expected based on the periodicity of the Solar cycle):
@@ -175,11 +173,16 @@ draw(elec_covlmc, time_sep = " | ", model = "full", p_value = FALSE)
 
 The model appears a bit complex. To get a more adapted model, we use a BIC based model selection as follows:
 
-```{r}
+```{r elec_tune_process}
 elec_covlmc_tune <- tune_covlmc(elec_dts, elec_cov)
+print(autoplot(elec_covlmc_tune))
+```
+
+```{r}
 best_elec_covlmc <- as_covlmc(elec_covlmc_tune)
 draw(best_elec_covlmc, model = "full", time_sep = " | ", p_value = FALSE)
 ```
+
 
 As in the VLMC case, the optimal model remains rather simple:
 

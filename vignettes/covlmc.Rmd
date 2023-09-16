@@ -370,6 +370,10 @@ ggplot(elec_tune$results, aes(x = alpha, y = BIC)) +
   geom_line() +
   geom_point()
 ```
+or automatically using e.g. `autoplot()` as follows:
+```{r}
+print(autoplot(elec_tune))
+```
 
 The final model is:
 ```{r}
@@ -409,6 +413,7 @@ The package provides numerous ways to analyse a COVLMC. asic functions include
 
 - `states()` returns the state space of the model;
 - `depth()` returns the length of the longest context in the model;
+- `covariate_depth()` returns the longest memory used by the model with respect to covariates;
 - `context_number()` returns the number of contexts in the model.
 
 For instance, the large model obtained above has the following
@@ -417,6 +422,7 @@ characteristics:
 elec_model <- as_covlmc(elec_tune)
 states(elec_model)
 depth(elec_model)
+covariate_depth(elec_model)
 context_number(elec_model)
 ```
 VLMC objects support classical statistical functions such as:

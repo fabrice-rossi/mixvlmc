@@ -70,3 +70,16 @@ test_that("contexts do not depend on the format", {
   ctx_m_cov <- contexts(model, type = "data.frame")
   expect_equal(unclass(ctx_m_cov$context), contexts(model))
 })
+
+test_that("covariate depth is reported consistently", {
+  withr::local_seed(0)
+  for (k in 1:5) {
+    dts <- sample(c("A", "B", "C"), 500, replace = TRUE)
+    y <- ifelse(runif(length(dts)) > 0.5, c(dts[-1], sample(c("A", "B", "C"), 1)), c(dts[-c(1, 2)], sample(c("A", "B", "C"), 2, replace = TRUE)))
+    y <- as.factor(ifelse(runif(length(dts)) > 0.2, y, sample(c("A", "B", "C"), length(dts), replace = TRUE)))
+    df_y <- data.frame(y = y)
+    model <- covlmc(dts, df_y, alpha = 0.9, min_size = 3)
+    ctx_m_cov <- contexts(model, hsize = TRUE)
+    expect_equal(covariate_depth(model), max(ctx_m_cov$hsize))
+  }
+})

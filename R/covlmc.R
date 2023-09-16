@@ -503,6 +503,28 @@ ctx_tree_fit_glm <- function(tree, y, covariate, alpha, control, assume_model = 
             result$merged_model <- node_prune_model(result$merged_model, ncol(covariate), nb_vals, alpha, keep_local_data, control)
           }
         }
+        ## prepare a local model for extended context if needed
+        if (is.null(result[["model"]])) {
+          if (!need_local_model || need_merged_model) {
+            ## no luck
+            if (verbose) { # nocov start
+              print("fitting model for extended contexts")
+            } # nocov end
+            local_model <- node_fit_glm(tree$match, max_hsize, y, covariate, alpha, nb_vals, return_all = TRUE, control, d - max_hsize)
+            if (verbose) { # nocov start
+              print(paste(local_model$H1_model$H0, local_model$H1_model$hsize))
+            } # nocov end
+          }
+          if (is.na(local_model$p_value)) {
+            result[["extended_model"]] <- local_model$H0_model
+          } else {
+            if (local_model$p_value > alpha) {
+              result[["extended_model"]] <- local_model$H0_model
+            } else {
+              result[["extended_model"]] <- local_model$H1_model
+            }
+          }
+        }
         result
       }
     }
@@ -671,9 +693,17 @@ covlmc <- function(x, covariate, alpha = 0.05, min_size = 5L, max_depth = 100L, 
   pre_result$control <- control
   pre_result$cov_desc <- cov_desc
   pre_result$max_depth <- ctx_tree$max_depth
+  pre_result$data_size <- length(x)
   if (keep_data) {
     pre_result$x <- x
     pre_result$covariate <- covariate
+  }
+  ## prepare for loglikelihoodcalculation
+  the_depth <- depth(pre_result)
+  if (the_depth > 0) {
+    pre_result$iix <- ix[1:min(the_depth, length(x))]
+    pre_result$ix <- x[1:min(the_depth, length(x))]
+    pre_result$icov <- covariate[1:min(the_depth, length(x)), , drop = FALSE]
   }
   pre_result
 }
@@ -855,11 +885,19 @@ prune.covlmc <- function(vlmc, alpha = 0.05, cutoff = NULL, ...) {
   )
   pre_result <- new_ctx_tree(vlmc$vals, pruned_tree, count_context = count_covlmc_local_context, class = "covlmc")
   pre_result$cov_names <- vlmc$cov_names
-  pre_result$cov_desc <- vlmc$cov_desc
   pre_result$alpha <- alpha
+  pre_result$control <- vlmc$control
+  pre_result$cov_desc <- vlmc$cov_desc
+  pre_result$max_depth <- vlmc$max_depth
+  pre_result$data_size <- vlmc$data_size
   pre_result$x <- vlmc$x
   pre_result$covariate <- vlmc$covariate
-  pre_result$control <- vlmc$control
+  the_depth <- depth(pre_result)
+  if (the_depth > 0) {
+    pre_result$iix <- vlmc$iix[1:min(the_depth, length(vlmc$ix))]
+    pre_result$ix <- vlmc$ix[1:min(the_depth, length(vlmc$ix))]
+    pre_result$icov <- vlmc$icov[1:min(the_depth, length(vlmc$ix)), , drop = FALSE]
+  }
   pre_result
 }
 
@@ -877,4 +915,66 @@ print.covlmc <- function(x, ...) {
     cat(paste(" Maximum context length:", x$depth, "\n"))
   }
   invisible(x)
+}
+
+
+rec_cov_depth <- function(ct) {
+  if (length(ct) == 0) {
+    0L
+  } else if (is.null(ct$children)) {
+    if (!is.null(ct$model)) {
+      ct$model$hsize
+    } else {
+      0L
+    }
+  } else {
+    below <- max(sapply(ct$children, rec_cov_depth))
+    if (!is.null(ct[["merged_model"]])) {
+      below <- max(below, ct$merged_model$hsize)
+    }
+    below
+  }
+}
+
+#' Maximal covariate memory of a VLMC with covariates
+#'
+#' This function return the longest covariate memory used by a VLMC
+#' with covariates.
+#'
+#' @param model a covlmc object
+#' @returns the longest covariate memory of this model
+#'
+#' @export
+#' @examples
+#' pc <- powerconsumption[powerconsumption$week == 5, ]
+#' dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1))))
+#' m_nocovariate <- vlmc(dts)
+#' dts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
+#' m_cov <- covlmc(dts, dts_cov, min_size = 10)
+#' covariate_depth(m_cov)
+covariate_depth <- function(model) {
+  assertthat::assert_that(is_covlmc(model))
+  rec_cov_depth(model)
+}
+
+rec_count_parameters <- function(ct, with_extended = FALSE, d, md) {
+  local_counts <- 0
+  if (!is.null(ct$model)) {
+    local_counts <- local_counts + length(ct$model$coefficients)
+  }
+  if (!is.null(ct$merged_model)) {
+    local_counts <- local_counts + length(ct$merged_model$coefficients)
+  }
+  if (with_extended && d < md && !is.null(ct$extended_model)) {
+    local_counts <- local_counts + length(ct$extended_model$coefficients)
+  }
+  if (!is.null(ct$children)) {
+    local_counts <- local_counts + sum(sapply(ct$children, rec_count_parameters, with_extended, d + 1, md))
+  }
+  local_counts
+}
+
+count_parameters <- function(model, with_extended = FALSE) {
+  assertthat::assert_that(is_covlmc(model))
+  rec_count_parameters(model, with_extended, 0, depth(model))
 }
