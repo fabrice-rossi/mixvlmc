@@ -7,6 +7,7 @@ ctx_recode <- function(ctxs, reverse, vals) {
 }
 
 #' @export
+#' @rdname contexts.ctx_tree
 contexts.ctx_tree_cpp <- function(ct, type = c("auto", "list", "data.frame"), reverse = TRUE, frequency = NULL, positions = FALSE, ...) {
   if (extptr_is_null(ct$root$.pointer)) {
     stop("Missing C++ representation!\nThis object was probably restored from a saved object.\n")

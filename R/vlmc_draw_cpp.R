@@ -1,4 +1,5 @@
 #' @export
+#' @rdname draw.vlmc
 draw.vlmc_cpp <- function(ct, control = draw_control(), prob = TRUE, ...) {
   if (extptr_is_null(ct$root$.pointer)) {
     stop("Missing C++ representation!\nThis object was probably restored from a saved object.\n")

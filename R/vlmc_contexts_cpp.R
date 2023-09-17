@@ -1,4 +1,5 @@
 #' @export
+#' @rdname contexts.vlmc
 contexts.vlmc_cpp <- function(ct, type = c("auto", "list", "data.frame"), reverse = TRUE, frequency = NULL,
                               positions = FALSE, counts = c("desc", "local"), cutoff = NULL, metrics = FALSE, ...) {
   if (extptr_is_null(ct$root$.pointer)) {

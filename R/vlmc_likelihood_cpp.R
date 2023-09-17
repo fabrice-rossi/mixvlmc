@@ -1,4 +1,4 @@
-#' @inherit logLik.vlmc
+#' @rdname logLik.vlmc
 #' @export
 logLik.vlmc_cpp <- function(object, initial = c("truncated", "specific", "extended"), ...) {
   ll <- loglikelihood(object, initial)
@@ -6,7 +6,7 @@ logLik.vlmc_cpp <- function(object, initial = c("truncated", "specific", "extend
   ll
 }
 
-#' @inherit loglikelihood
+#' @rdname loglikelihood
 #' @export
 loglikelihood.vlmc_cpp <- function(vlmc,
                                    initial = c("truncated", "specific", "extended"),
