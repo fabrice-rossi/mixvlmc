@@ -173,10 +173,10 @@ number.</p>
 <code class="sourceCode R"><span><span class="va">sun_model_tune</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tune_vlmc.html">tune_vlmc</a></span><span class="op">(</span><span class="va">sun_activity</span><span class="op">)</span></span>
 <span><span class="va">sun_model_tune</span></span>
 <span><span class="co">#&gt; VLMC context tree on high, low </span></span>
-<span><span class="co">#&gt;  cutoff: 2.306 (quantile: 0.03175)</span></span>
-<span><span class="co">#&gt;  Number of contexts: 9 </span></span>
+<span><span class="co">#&gt;  cutoff: 4.245 (quantile: 0.00357)</span></span>
+<span><span class="co">#&gt;  Number of contexts: 8 </span></span>
 <span><span class="co">#&gt;  Maximum context length: 5 </span></span>
-<span><span class="co">#&gt;  Selected by BIC (248.5057) with likelihood function "truncated" (-98.83247)</span></span></code></pre></div>
+<span><span class="co">#&gt;  Selected by BIC (285.0378) with likelihood function "extended" (-111.3536)</span></span></code></pre></div>
 <p>Predictions are obtained as follows:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sun_model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/as_vlmc.html">as_vlmc</a></span><span class="op">(</span><span class="va">sun_model_tune</span><span class="op">)</span></span>
@@ -204,10 +204,10 @@ With the AIC, we obtain a more complex model as follows:</p>
 <code class="sourceCode R"><span><span class="va">sun_model_tune_aic</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tune_vlmc.html">tune_vlmc</a></span><span class="op">(</span><span class="va">sun_activity</span>, criterion <span class="op">=</span> <span class="st">"AIC"</span><span class="op">)</span></span>
 <span><span class="va">sun_model_tune_aic</span></span>
 <span><span class="co">#&gt; VLMC context tree on high, low </span></span>
-<span><span class="co">#&gt;  cutoff: 1.512 (quantile: 0.08202)</span></span>
-<span><span class="co">#&gt;  Number of contexts: 19 </span></span>
-<span><span class="co">#&gt;  Maximum context length: 14 </span></span>
-<span><span class="co">#&gt;  Selected by AIC (208.2283) with likelihood function "truncated" (-85.11416)</span></span></code></pre></div>
+<span><span class="co">#&gt;  cutoff: 2.306 (quantile: 0.03175)</span></span>
+<span><span class="co">#&gt;  Number of contexts: 9 </span></span>
+<span><span class="co">#&gt;  Maximum context length: 5 </span></span>
+<span><span class="co">#&gt;  Selected by AIC (231.4665) with likelihood function "extended" (-100.7333)</span></span></code></pre></div>
 <p>As expected it has a slightly better confusion matrix on its
 estimation data set:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
@@ -217,8 +217,8 @@ estimation data set:</p>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt;       sun_activity</span></span>
 <span><span class="co">#&gt;        high low</span></span>
-<span><span class="co">#&gt;   high  121  27</span></span>
-<span><span class="co">#&gt;   low    25 116</span></span></code></pre></div>
+<span><span class="co">#&gt;   high  119  27</span></span>
+<span><span class="co">#&gt;   low    27 116</span></span></code></pre></div>
 <p>Despite the use of penalized likelihood, we may experiment some form
 of overfitting and a split sample approach could be used to study it.
 For instance, one can use AIC to build a VLMC on the first half of the
@@ -275,9 +275,9 @@ covariates. As previously, we select a model with the AIC criterion:</p>
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">CAC_pred</span>, <span class="va">CAC_dts</span><span class="op">)</span></span>
 <span><span class="co">#&gt;         CAC_dts</span></span>
 <span><span class="co">#&gt; CAC_pred Down Stay  Up</span></span>
-<span><span class="co">#&gt;     Down   40   46  36</span></span>
-<span><span class="co">#&gt;     Stay  453  625 467</span></span>
-<span><span class="co">#&gt;     Up     36   65  91</span></span></code></pre></div>
+<span><span class="co">#&gt;     Down   12    9   7</span></span>
+<span><span class="co">#&gt;     Stay  480  666 513</span></span>
+<span><span class="co">#&gt;     Up     37   61  74</span></span></code></pre></div>
 <p>This can be easily explained by the large ambiguity of the
 conditional distributions as can be observed by focusing on them rather
 than on predictions:</p>
@@ -293,8 +293,8 @@ than on predictions:</p>
 <span><span class="co">#&gt;  [6,] 0.2878788 0.4073084 0.3048128</span></span>
 <span><span class="co">#&gt;  [7,] 0.2878788 0.4073084 0.3048128</span></span>
 <span><span class="co">#&gt;  [8,] 0.2878788 0.4073084 0.3048128</span></span>
-<span><span class="co">#&gt;  [9,] 0.4248040 0.3124036 0.2627924</span></span>
-<span><span class="co">#&gt; [10,] 0.3747649 0.4891093 0.1361259</span></span></code></pre></div>
+<span><span class="co">#&gt;  [9,] 0.3564661 0.3943651 0.2491688</span></span>
+<span><span class="co">#&gt; [10,] 0.3601841 0.3888857 0.2509302</span></span></code></pre></div>
 <p>The Shannon entropies of those conditional distributions are
 generally relatively close to the maximum in this setting, i.e. 1.09861,
 as shown on this graphical illustration</p>
@@ -351,15 +351,15 @@ data.</p>
 <code class="sourceCode R"><span><span class="va">sun_metrics</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/metrics.html">metrics</a></span><span class="op">(</span><span class="fu"><a href="../reference/as_vlmc.html">as_vlmc</a></span><span class="op">(</span><span class="va">sun_model_tune_aic</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">sun_metrics</span></span>
 <span><span class="co">#&gt; VLMC context tree on high, low </span></span>
-<span><span class="co">#&gt;  cutoff: 1.512 (quantile: 0.08202)</span></span>
-<span><span class="co">#&gt;  Number of contexts: 19 </span></span>
-<span><span class="co">#&gt;  Maximum context length: 14 </span></span>
+<span><span class="co">#&gt;  cutoff: 2.306 (quantile: 0.03175)</span></span>
+<span><span class="co">#&gt;  Number of contexts: 9 </span></span>
+<span><span class="co">#&gt;  Maximum context length: 5 </span></span>
 <span><span class="co">#&gt;  Confusion matrix: </span></span>
 <span><span class="co">#&gt;        high low </span></span>
-<span><span class="co">#&gt;   high 121  27  </span></span>
-<span><span class="co">#&gt;   low  25   116 </span></span>
-<span><span class="co">#&gt;  Accurary: 0.8201 </span></span>
-<span><span class="co">#&gt;  AUC: 0.9238</span></span></code></pre></div>
+<span><span class="co">#&gt;   high 119  27  </span></span>
+<span><span class="co">#&gt;   low  27   116 </span></span>
+<span><span class="co">#&gt;  Accurary: 0.8131 </span></span>
+<span><span class="co">#&gt;  AUC: 0.9146</span></span></code></pre></div>
 <p>The ROC curve is computed by <code><a href="../reference/metrics.html">metrics()</a></code> (for state space
 of size 2) and can be plotted simply using:</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
@@ -374,16 +374,16 @@ of size 2) and can be plotted simply using:</p>
 <code class="sourceCode R"><span><span class="va">CAC_metrics</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/metrics.html">metrics</a></span><span class="op">(</span><span class="va">CAC_comodel</span><span class="op">)</span></span>
 <span><span class="va">CAC_metrics</span></span>
 <span><span class="co">#&gt; VLMC with covariate context tree on Down, Stay, Up </span></span>
-<span><span class="co">#&gt;  cutoff in quantile scale: 0.01046</span></span>
-<span><span class="co">#&gt;  Number of contexts: 5 </span></span>
-<span><span class="co">#&gt;  Maximum context length: 2 </span></span>
+<span><span class="co">#&gt;  cutoff in quantile scale: 0.0065</span></span>
+<span><span class="co">#&gt;  Number of contexts: 3 </span></span>
+<span><span class="co">#&gt;  Maximum context length: 1 </span></span>
 <span><span class="co">#&gt;  Confusion matrix: </span></span>
 <span><span class="co">#&gt;        Down Stay Up  </span></span>
-<span><span class="co">#&gt;   Down 40   46   36  </span></span>
-<span><span class="co">#&gt;   Stay 453  625  467 </span></span>
-<span><span class="co">#&gt;   Up   36   65   91  </span></span>
-<span><span class="co">#&gt;  Accurary: 0.4067 </span></span>
-<span><span class="co">#&gt;  AUC: 0.6451</span></span></code></pre></div>
+<span><span class="co">#&gt;   Down 12   9    7   </span></span>
+<span><span class="co">#&gt;   Stay 480  666  513 </span></span>
+<span><span class="co">#&gt;   Up   37   61   74  </span></span>
+<span><span class="co">#&gt;  Accurary: 0.4045 </span></span>
+<span><span class="co">#&gt;  AUC: 0.5425</span></span></code></pre></div>
 <p>When the state space contains three or more states, we report the
 generalized AUC proposed by Hand and Till in <a href="https://doi.org/10.1023/A:1010920819831" class="external-link">A Simple Generalisation
 of the Area Under the ROC Curve for Multiple Class Classification

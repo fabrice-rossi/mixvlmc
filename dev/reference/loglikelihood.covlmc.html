@@ -86,7 +86,7 @@ discrete time series on the new covariates which must be provided through the
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S3 method for covlmc</span></span>
 <span><span class="fu"><a href="loglikelihood.html">loglikelihood</a></span><span class="op">(</span></span>
 <span>  <span class="va">vlmc</span>,</span>
-<span>  initial <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"truncated"</span>, <span class="st">"specific"</span>, <span class="st">"extended"</span><span class="op">)</span>,</span>
+<span>  initial <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"extended"</span>, <span class="st">"specific"</span>, <span class="st">"truncated"</span><span class="op">)</span>,</span>
 <span>  <span class="va">newdata</span>,</span>
 <span>  <span class="va">newcov</span>,</span>
 <span>  <span class="va">...</span></span>
@@ -140,7 +140,7 @@ vignette: <code><a href="../articles/likelihood.html">vignette("likelihood", pac
 <p>In a (CO)VLMC of <code><a href="depth.html">depth()</a></code>=k, we need k past values in order to compute the
 context of a given observation. As a consequence, in a time series <code>x</code>, the
 contexts of <code>x[1]</code> to <code>x[k]</code> are unknown. Depending on the value of <code>initial</code>
-different likelihood functions are used to tackle this difficulty:</p><ul><li><p><code>initial=="truncated"</code> (default): the likelihood is computed using only
+different likelihood functions are used to tackle this difficulty:</p><ul><li><p><code>initial=="truncated"</code>: the likelihood is computed using only
 <code>x[(k+1):length(x)]</code></p></li>
 <li><p><code>initial=="specific"</code>: the likelihood is computed on the full time series
 using a specific context for the initial values, <code>x[1]</code> to <code>x[k]</code>. Each of
@@ -148,8 +148,8 @@ the specific context is unique, leading to a perfect likelihood of 1 (0 in
 log scale). Thus the numerical value of the likelihood is identical as the
 one obtained with <code>initial=="truncated"</code> but it is computed on <code>length(x)</code>
 with a model with more parameters than in this previous case.</p></li>
-<li><p><code>initial=="relaxed"</code>: the likelihood is computed on the full time series
-using a relaxed context matching for the initial values, <code>x[1]</code> to <code>x[k]</code>.
+<li><p><code>initial=="extended"</code> (default): the likelihood is computed on the full time series
+using an extended context matching for the initial values, <code>x[1]</code> to <code>x[k]</code>.
 This can be seen as a compromised between the two other possibilities:
 the relaxed context matching needs in general to turn internal nodes
 of the context tree into actual context, increasing the number of parameters,
@@ -180,9 +180,9 @@ smaller than the one computed with "specific".</p></li>
 <span class="r-in"><span><span class="va">m_cov</span> <span class="op">&lt;-</span> <span class="fu"><a href="covlmc.html">covlmc</a></span><span class="op">(</span><span class="va">dts</span>, <span class="va">dts_cov</span>, min_size <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">ll</span> <span class="op">&lt;-</span> <span class="fu"><a href="loglikelihood.html">loglikelihood</a></span><span class="op">(</span><span class="va">m_cov</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">ll</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 'log Lik.' -224.1199 (df= 5, nb obs.= 1005, initial="truncated")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 'log Lik.' -224.6392 (df= 9, nb obs.= 1008, initial="extended")</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">ll</span>, <span class="st">"nobs"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1005</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1008</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Likelihood for new time series and covariates with previously</span></span></span>
 <span class="r-in"><span><span class="co">## fitted VLMC with covariates</span></span></span>
@@ -191,16 +191,16 @@ smaller than the one computed with "specific".</p></li>
 <span class="r-in"><span><span class="va">dts_cov_new</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>day_night <span class="op">=</span> <span class="op">(</span><span class="va">pc_new</span><span class="op">$</span><span class="va">hour</span> <span class="op">&gt;=</span> <span class="fl">7</span> <span class="op">&amp;</span> <span class="va">pc_new</span><span class="op">$</span><span class="va">hour</span> <span class="op">&lt;=</span> <span class="fl">17</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">ll_new</span> <span class="op">&lt;-</span> <span class="fu"><a href="loglikelihood.html">loglikelihood</a></span><span class="op">(</span><span class="va">m_cov</span>, newdata <span class="op">=</span> <span class="va">dts_new</span>, newcov <span class="op">=</span> <span class="va">dts_cov_new</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">ll_new</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 'log Lik.' -248.8283 (df= 5, nb obs.= 1005, initial="truncated")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 'log Lik.' -250.0704 (df= 9, nb obs.= 1008, initial="extended")</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/attributes.html" class="external-link">attributes</a></span><span class="op">(</span><span class="va">ll_new</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $df</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 9</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $nobs</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1005</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1008</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $initial</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "truncated"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "extended"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $class</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "logLikMixVLMC" "logLik"       </span>

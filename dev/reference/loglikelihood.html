@@ -79,7 +79,7 @@ log-likelihood for this (new) discrete time series.</p>
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">loglikelihood</span><span class="op">(</span></span>
 <span>  <span class="va">vlmc</span>,</span>
-<span>  initial <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"truncated"</span>, <span class="st">"specific"</span>, <span class="st">"extended"</span><span class="op">)</span>,</span>
+<span>  initial <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"extended"</span>, <span class="st">"specific"</span>, <span class="st">"truncated"</span><span class="op">)</span>,</span>
 <span>  <span class="va">newdata</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span>
@@ -87,7 +87,7 @@ log-likelihood for this (new) discrete time series.</p>
 <span><span class="co"># S3 method for vlmc</span></span>
 <span><span class="fu">loglikelihood</span><span class="op">(</span></span>
 <span>  <span class="va">vlmc</span>,</span>
-<span>  initial <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"truncated"</span>, <span class="st">"specific"</span>, <span class="st">"extended"</span><span class="op">)</span>,</span>
+<span>  initial <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"extended"</span>, <span class="st">"specific"</span>, <span class="st">"truncated"</span><span class="op">)</span>,</span>
 <span>  <span class="va">newdata</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -138,7 +138,7 @@ will instead be called. For more informations on <code>loglikelihood</code> meth
 <p>In a (CO)VLMC of <code><a href="depth.html">depth()</a></code>=k, we need k past values in order to compute the
 context of a given observation. As a consequence, in a time series <code>x</code>, the
 contexts of <code>x[1]</code> to <code>x[k]</code> are unknown. Depending on the value of <code>initial</code>
-different likelihood functions are used to tackle this difficulty:</p><ul><li><p><code>initial=="truncated"</code> (default): the likelihood is computed using only
+different likelihood functions are used to tackle this difficulty:</p><ul><li><p><code>initial=="truncated"</code>: the likelihood is computed using only
 <code>x[(k+1):length(x)]</code></p></li>
 <li><p><code>initial=="specific"</code>: the likelihood is computed on the full time series
 using a specific context for the initial values, <code>x[1]</code> to <code>x[k]</code>. Each of
@@ -146,8 +146,8 @@ the specific context is unique, leading to a perfect likelihood of 1 (0 in
 log scale). Thus the numerical value of the likelihood is identical as the
 one obtained with <code>initial=="truncated"</code> but it is computed on <code>length(x)</code>
 with a model with more parameters than in this previous case.</p></li>
-<li><p><code>initial=="relaxed"</code>: the likelihood is computed on the full time series
-using a relaxed context matching for the initial values, <code>x[1]</code> to <code>x[k]</code>.
+<li><p><code>initial=="extended"</code> (default): the likelihood is computed on the full time series
+using an extended context matching for the initial values, <code>x[1]</code> to <code>x[k]</code>.
 This can be seen as a compromised between the two other possibilities:
 the relaxed context matching needs in general to turn internal nodes
 of the context tree into actual context, increasing the number of parameters,
@@ -176,27 +176,27 @@ smaller than the one computed with "specific".</p></li>
 <span class="r-in"><span><span class="va">m_nocovariate</span> <span class="op">&lt;-</span> <span class="fu"><a href="vlmc.html">vlmc</a></span><span class="op">(</span><span class="va">dts</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">ll</span> <span class="op">&lt;-</span> <span class="fu">loglikelihood</span><span class="op">(</span><span class="va">m_nocovariate</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">ll</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 'log Lik.' -207.9581 (df= 69, nb obs.= 945, initial="truncated")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 'log Lik.' -223.4258 (df= 71, nb obs.= 1008, initial="extended")</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">ll</span>, <span class="st">"nobs"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 945</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1008</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">ll</span>, <span class="st">"df"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 69</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 71</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Likelihood for a new time series with previously fitted VLMC.</span></span></span>
 <span class="r-in"><span><span class="va">pc_new</span> <span class="op">&lt;-</span> <span class="va">powerconsumption</span><span class="op">[</span><span class="va">powerconsumption</span><span class="op">$</span><span class="va">week</span> <span class="op">==</span> <span class="fl">11</span>, <span class="op">]</span></span></span>
 <span class="r-in"><span><span class="va">dts_new</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cut.html" class="external-link">cut</a></span><span class="op">(</span><span class="va">pc_new</span><span class="op">$</span><span class="va">active_power</span>, breaks <span class="op">=</span> <span class="va">breaks</span>, labels <span class="op">=</span> <span class="va">labels</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">ll_new</span> <span class="op">&lt;-</span> <span class="fu">loglikelihood</span><span class="op">(</span><span class="va">m_nocovariate</span>, newdata <span class="op">=</span> <span class="va">dts_new</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">ll_new</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 'log Lik.' -240.5671 (df= 69, nb obs.= 945, initial="truncated")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 'log Lik.' -254.0705 (df= 71, nb obs.= 1008, initial="extended")</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/attributes.html" class="external-link">attributes</a></span><span class="op">(</span><span class="va">ll_new</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $nobs</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 945</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1008</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $df</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 69</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 71</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $initial</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "truncated"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "extended"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $class</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "logLikMixVLMC" "logLik"       </span>
