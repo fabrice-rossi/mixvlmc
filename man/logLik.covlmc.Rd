@@ -4,7 +4,7 @@
 \alias{logLik.covlmc}
 \title{Log-Likelihood of a VLMC with covariates}
 \usage{
-\method{logLik}{covlmc}(object, initial = c("truncated", "specific", "extended"), ...)
+\method{logLik}{covlmc}(object, initial = c("extended", "specific", "truncated"), ...)
 }
 \arguments{
 \item{object}{the covlmc representation.}

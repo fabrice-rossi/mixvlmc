@@ -86,7 +86,7 @@ rec_loglikelihood_vlmc <- function(tree, node_as_ctx = FALSE, verbose = FALSE) {
 #' ll
 #' attributes(ll)
 #' @export
-logLik.vlmc <- function(object, initial = c("truncated", "specific", "extended"), ...) {
+logLik.vlmc <- function(object, initial = c("extended", "specific", "truncated"), ...) {
   ll <- loglikelihood(object, initial)
   class(ll) <- "logLik"
   ll
@@ -111,7 +111,7 @@ logLik.vlmc <- function(object, initial = c("truncated", "specific", "extended")
 #' context of a given observation. As a consequence, in a time series `x`, the
 #' contexts of `x[1]` to `x[k]` are unknown. Depending on the value of `initial`
 #' different likelihood functions are used to tackle this difficulty:
-#' * `initial=="truncated"` (default): the likelihood is computed using only
+#' * `initial=="truncated"`: the likelihood is computed using only
 #'   `x[(k+1):length(x)]`
 #' * `initial=="specific"`: the likelihood is computed on the full time series
 #'   using a specific context for the initial values, `x[1]` to `x[k]`. Each of
@@ -119,8 +119,8 @@ logLik.vlmc <- function(object, initial = c("truncated", "specific", "extended")
 #'   log scale). Thus the numerical value of the likelihood is identical as the
 #'   one obtained with `initial=="truncated"` but it is computed on `length(x)`
 #'   with a model with more parameters than in this previous case.
-#' * `initial=="relaxed"`: the likelihood is computed on the full time series
-#'   using a relaxed context matching for the initial values, `x[1]` to `x[k]`.
+#' * `initial=="extended"` (default): the likelihood is computed on the full time series
+#'   using an extended context matching for the initial values, `x[1]` to `x[k]`.
 #'   This can be seen as a compromised between the two other possibilities:
 #'   the relaxed context matching needs in general to turn internal nodes
 #'   of the context tree into actual context, increasing the number of parameters,
@@ -175,13 +175,13 @@ logLik.vlmc <- function(object, initial = c("truncated", "specific", "extended")
 #' attributes(ll_new_extended)
 #'
 #' @export
-loglikelihood <- function(vlmc, initial = c("truncated", "specific", "extended"), newdata, ...) {
+loglikelihood <- function(vlmc, initial = c("extended", "specific", "truncated"), newdata, ...) {
   UseMethod("loglikelihood")
 }
 
 #' @rdname loglikelihood
 #' @export
-loglikelihood.vlmc <- function(vlmc, initial = c("truncated", "specific", "extended"), newdata, ...) {
+loglikelihood.vlmc <- function(vlmc, initial = c("extended", "specific", "truncated"), newdata, ...) {
   initial <- match.arg(initial)
   if (missing(newdata)) {
     pre_res <- rec_loglikelihood_vlmc(vlmc, TRUE)
@@ -211,12 +211,13 @@ loglikelihood.vlmc <- function(vlmc, initial = c("truncated", "specific", "exten
     }
   }
   ctx_nb <- context_number(vlmc)
-  if (initial == "specific") {
-    ctx_nb <- ctx_nb + depth(vlmc)
-  } else if (initial == "extended") {
+  if (initial == "extended") {
     ctx_nb <- ctx_nb + count_full_nodes(vlmc)
   }
-  attr(pre_res, "df") <- ctx_nb * (length(vlmc$vals) - 1)
+  attr(pre_res, "df") <- ctx_nb * (length(vlmc$vals) - 1L)
+  if (initial == "specific") {
+    attr(pre_res, "df") <- attr(pre_res, "df") + depth(vlmc)
+  }
   attr(pre_res, "initial") <- initial
   structure(pre_res, class = c("logLikMixVLMC", "logLik"))
 }

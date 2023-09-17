@@ -61,5 +61,5 @@ test_that("metrics.vlmc and predict.vlmc return consistent results", {
 test_that("metrics.vlmc works on real world data", {
   sun_activity <- as.factor(ifelse(sunspot.year >= median(sunspot.year), "high", "low"))
   sun_model_tune <- tune_vlmc(sun_activity)
-  metrics(as_vlmc(sun_model_tune))
+  expect_no_error(metrics(as_vlmc(sun_model_tune)))
 })

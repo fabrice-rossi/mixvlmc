@@ -80,7 +80,7 @@
 #' dts_best_model_tune <- tune_covlmc(dts, dts_cov)
 #' draw(as_covlmc(dts_best_model_tune))
 tune_covlmc <- function(x, covariate, criterion = c("BIC", "AIC"),
-                        initial = c("truncated", "specific", "extended"),
+                        initial = c("extended", "specific", "truncated"),
                         min_size = 5, max_depth = 100,
                         verbose = 0,
                         save = c("best", "initial", "all"),
@@ -89,9 +89,6 @@ tune_covlmc <- function(x, covariate, criterion = c("BIC", "AIC"),
   criterion <- match.arg(criterion)
   initial <- match.arg(initial)
   best_trimming <- match.arg(best_trimming)
-  if (initial == "extended") {
-    stop("log likelihood calculation for COVLMC is limited to truncated and specific likelihood")
-  }
   save <- match.arg(save)
   criterion <- match.arg(criterion)
   trimming <- match.arg(trimming)

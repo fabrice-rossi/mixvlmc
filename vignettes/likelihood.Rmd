@@ -78,8 +78,10 @@ identifying $\mathbb{P}_{\mathcal{M}}(X_1=x_1,\ldots,X_n=x_n)$ to
 $\mathbb{P}_{\mathcal{M}}(X_{d+1}=x_{d+1},\ldots,X_n=x_n)$.
 
 In terms of parameters for AIC/BIC calculation, this corresponds to
-adding a specific distribution for each of the $d$ initial values, where
-$d$ is the order of the VLMC.
+adding a specific parameter for each of the $d$ initial values, where
+$d$ is the order of the VLMC. Notice that this departs from Garivier's approach
+cited above (in this paper, each initial value is associated to a full context
+and thus to $|S|-1$ parameters if $S$ is the state space).
 
 ### Extended contexts
 
@@ -119,16 +121,10 @@ model <- as_vlmc(California_weeks_earth_quakes_model)
 draw(model, prob = FALSE)
 ```
 
-The optimal model according to the BIC as an order of `r depth(model)`
+The optimal model according to the BIC has an order of `r depth(model)`
 and thus the simple truncated log likelihood is obtained by considering
-only the observations starting at index 6. We disregard the first 5
-observations, i.e.:
-
-```{r}
-California_weeks[1:5]
-```
-
-The corresponding log likelihood is
+only the observations starting at index `r (depth(model)+1)`. We disregard the first 
+observation. The corresponding log likelihood is
 
 ```{r}
 loglikelihood(model)
@@ -137,9 +133,9 @@ loglikelihood(model)
 Using specific contexts amounts to assuming perfect predictions for the
 first five observations. The log likelihood is not modified, but it
 covers now the full time series, i.e. `r length(California_weeks)`
-observations. The number of parameters is increased significantly as
-each of the 5 initial values is associated to a full conditional
-distribution leading to a total of
+observations. The number of parameters is increased as
+the initial value is now associated to a specific parameter
+ leading to a total of
 `r (depth(model) + context_number(model))` parameters.
 
 ```{r}
@@ -167,14 +163,6 @@ $\mathbb{P}(X_1=1)=\frac{940}{4185+940}\simeq`r round(940/(4185+940),3)`$.
 The contribution of this observation to the log likelihood is therefore
 $\log \mathbb{P}(X_1=0)\simeq `r round(log(4185/(4185+940)),3)`$. In
 addition, this extended context adds again a parameter to the total.
-
-The following observations $X_3$, $X_4$ and $X_5$ have all proper
-contexts and contribute in a normal way to the (log) likelihood without
-the need for additional parameters. Notice that the number of additional
-parameters does not depend on the initial sequence but on the structure
-of the context tree. Notice also that while the corresponding nodes are
-contexts, they are not the contexts of those three values. Those
-contexts cannot be computed due to the lack of older values.
 
 The final value is
 
@@ -272,7 +260,7 @@ context to a true context does not change the probability included in the likeli
 Therefore, the extended likelihood is also non increasing with the pruning operation.
 
 ### Experimental illustration
-By default, `tune_vlmc()` uses the *truncated* likelihood and thus the California 
+By default, `tune_vlmc()` uses the *extended* likelihood and thus the California 
 earth quakes results can be used to illustrate its non increasing
 behaviour as follows:
 ```{r fig.height=4}
@@ -280,27 +268,24 @@ ggplot(California_weeks_earth_quakes_model$results, aes(cutoff, loglikelihood)) 
   geom_line() +
   xlab("Cut off (native scale)") +
   ylab("Log likelihood") +
-  ggtitle("Truncated log likelihood")
+  ggtitle("Extended log likelihood")
 ```
 
-As noted above, the numerical values of the *specific* likelihood are identical 
-and thus the above graphical representation is also valid for it. 
-
-The *extended* likelihood can be used with `tune_vlmc()` as follows:
+The *truncated* likelihood can be used with `tune_vlmc()` as follows:
 ```{r}
-California_weeks_earth_quakes_model_extended <-
-  tune_vlmc(California_weeks, initial = "extended")
+California_weeks_earth_quakes_model_truncated <-
+  tune_vlmc(California_weeks, initial = "truncated")
 ```
 which gives the following log likelihood representation:
 ```{r fig.height=4}
 ggplot(
-  California_weeks_earth_quakes_model_extended$results,
+  California_weeks_earth_quakes_model_truncated$results,
   aes(cutoff, loglikelihood)
 ) +
   geom_line() +
   xlab("Cut off (native scale)") +
   ylab("Log likelihood") +
-  ggtitle("Extended log likelihood")
+  ggtitle("Truncated log likelihood")
 ```
 Notice that the time series contains `r length(California_weeks)` observations and 
 the maximum order considered by `tune_vlmc()` is `r max(California_weeks_earth_quakes_model$results$depth)`, thus we do not expect
@@ -309,9 +294,9 @@ illustrated on the following figure:
 ```{r fig.height=4}
 CW_combined <- rbind(
   California_weeks_earth_quakes_model$results[c("cutoff", "loglikelihood")],
-  California_weeks_earth_quakes_model_extended$results[c("cutoff", "loglikelihood")]
+  California_weeks_earth_quakes_model_truncated$results[c("cutoff", "loglikelihood")]
 )
-CW_combined[["Likelihood function"]] <- rep(c("truncated", "extended"), times = rep(nrow(California_weeks_earth_quakes_model$results), 2))
+CW_combined[["Likelihood function"]] <- rep(c("extended", "truncated"), times = rep(nrow(California_weeks_earth_quakes_model$results), 2))
 ggplot(
   CW_combined,
   aes(cutoff, loglikelihood, color = `Likelihood function`)
@@ -321,6 +306,9 @@ ggplot(
   ylab("Log likelihood") +
   ggtitle("Log likelihood")
 ```
+
+As noted above, the numerical values of the *specific* likelihood are identical 
+to the values of the *truncated* likelihod and thus the above graphical representations are also valid for it. 
 
 ## Coherence with other uses of a VLMC
 ### Sampling

@@ -8,7 +8,7 @@ tune_covlmc(
   x,
   covariate,
   criterion = c("BIC", "AIC"),
-  initial = c("truncated", "specific", "extended"),
+  initial = c("extended", "specific", "truncated"),
   min_size = 5,
   max_depth = 100,
   verbose = 0,

@@ -5,7 +5,7 @@ test_that("tune_vlmc obeys is basic contract", {
   expect_true(all(c("best_model", "criterion", "initial", "results") %in% names(t_vlmc)))
   expect_true(is_vlmc(t_vlmc$best_model))
   expect_true(t_vlmc$criterion == "BIC") ## default value
-  expect_true(t_vlmc$initial == "truncated") ## default value
+  expect_true(t_vlmc$initial == "extended") ## default value
   expect_null(t_vlmc$saved_models)
   expect_s3_class(t_vlmc$results, "data.frame")
 })
@@ -56,7 +56,7 @@ test_that("print works as expected", {
   expect_snapshot_output(print(t_vlmc_auto))
   t_vlmc_auto <- tune_vlmc(data_set$x,
     max_depth = 2,
-    initial = "extended", criterion = "AIC"
+    initial = "truncated", criterion = "AIC"
   )
   expect_snapshot_output(print(t_vlmc_auto))
 })
@@ -69,7 +69,7 @@ test_that("summary works as expected", {
   expect_snapshot_output(print(summary(t_vlmc_auto)))
   t_vlmc_auto <- tune_vlmc(data_set$x,
     max_depth = 2,
-    initial = "extended", criterion = "AIC"
+    initial = "specific", criterion = "AIC"
   )
   expect_snapshot_output(print(summary(t_vlmc_auto)))
 })

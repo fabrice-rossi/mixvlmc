@@ -10,7 +10,7 @@
     Code
       print(x_tree_ll)
     Output
-      'log Lik.' -1081.273 (df= 24, nb obs.= 1000, initial="specific")
+      'log Lik.' -1081.273 (df= 19, nb obs.= 1000, initial="specific")
 
 ---
 

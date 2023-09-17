@@ -25,7 +25,7 @@
   </clipPath>
 </defs>
 <g clip-path='url(#cpNTkuMDR8Njg5Ljc2fDU5LjA0fDUwMi41Ng==)'>
-<polyline points='666.40,75.47 566.65,75.76 508.17,77.54 284.17,79.67 217.61,80.77 127.67,82.81 123.59,86.04 86.96,89.76 82.40,486.13 ' style='stroke-width: 0.75;' />
+<polyline points='666.40,75.47 566.65,75.76 508.17,77.49 284.17,79.59 217.61,80.69 127.67,82.73 123.59,85.93 86.96,89.65 82.40,486.13 ' style='stroke-width: 0.75;' />
 </g>
 <g clip-path='url(#cpMC4wMHw3MjAuMDB8MC4wMHw1NzYuMDA=)'>
 <line x1='82.40' y1='502.56' x2='666.40' y2='502.56' style='stroke-width: 0.75;' />
@@ -41,17 +41,17 @@
 <text x='432.80' y='528.48' text-anchor='middle' style='font-size: 12.00px; font-family: sans;' textLength='16.68px' lengthAdjust='spacingAndGlyphs'>0.3</text>
 <text x='549.60' y='528.48' text-anchor='middle' style='font-size: 12.00px; font-family: sans;' textLength='16.68px' lengthAdjust='spacingAndGlyphs'>0.4</text>
 <text x='666.40' y='528.48' text-anchor='middle' style='font-size: 12.00px; font-family: sans;' textLength='16.68px' lengthAdjust='spacingAndGlyphs'>0.5</text>
-<line x1='59.04' y1='487.92' x2='59.04' y2='130.71' style='stroke-width: 0.75;' />
+<line x1='59.04' y1='487.92' x2='59.04' y2='130.06' style='stroke-width: 0.75;' />
 <line x1='59.04' y1='487.92' x2='51.84' y2='487.92' style='stroke-width: 0.75;' />
-<line x1='59.04' y1='398.62' x2='51.84' y2='398.62' style='stroke-width: 0.75;' />
-<line x1='59.04' y1='309.31' x2='51.84' y2='309.31' style='stroke-width: 0.75;' />
-<line x1='59.04' y1='220.01' x2='51.84' y2='220.01' style='stroke-width: 0.75;' />
-<line x1='59.04' y1='130.71' x2='51.84' y2='130.71' style='stroke-width: 0.75;' />
+<line x1='59.04' y1='398.46' x2='51.84' y2='398.46' style='stroke-width: 0.75;' />
+<line x1='59.04' y1='308.99' x2='51.84' y2='308.99' style='stroke-width: 0.75;' />
+<line x1='59.04' y1='219.52' x2='51.84' y2='219.52' style='stroke-width: 0.75;' />
+<line x1='59.04' y1='130.06' x2='51.84' y2='130.06' style='stroke-width: 0.75;' />
 <text transform='translate(41.76,487.92) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: sans;' textLength='24.02px' lengthAdjust='spacingAndGlyphs'>-700</text>
-<text transform='translate(41.76,398.62) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: sans;' textLength='24.02px' lengthAdjust='spacingAndGlyphs'>-600</text>
-<text transform='translate(41.76,309.31) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: sans;' textLength='24.02px' lengthAdjust='spacingAndGlyphs'>-500</text>
-<text transform='translate(41.76,220.01) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: sans;' textLength='24.02px' lengthAdjust='spacingAndGlyphs'>-400</text>
-<text transform='translate(41.76,130.71) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: sans;' textLength='24.02px' lengthAdjust='spacingAndGlyphs'>-300</text>
+<text transform='translate(41.76,398.46) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: sans;' textLength='24.02px' lengthAdjust='spacingAndGlyphs'>-600</text>
+<text transform='translate(41.76,308.99) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: sans;' textLength='24.02px' lengthAdjust='spacingAndGlyphs'>-500</text>
+<text transform='translate(41.76,219.52) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: sans;' textLength='24.02px' lengthAdjust='spacingAndGlyphs'>-400</text>
+<text transform='translate(41.76,130.06) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: sans;' textLength='24.02px' lengthAdjust='spacingAndGlyphs'>-300</text>
 <polygon points='59.04,502.56 689.76,502.56 689.76,59.04 59.04,59.04 ' style='stroke-width: 0.75; fill: none;' />
 <text x='374.40' y='557.28' text-anchor='middle' style='font-size: 12.00px; font-family: sans;' textLength='120.07px' lengthAdjust='spacingAndGlyphs'>Cut off (quantile scale)</text>
 <text transform='translate(12.96,280.80) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: sans;' textLength='73.39px' lengthAdjust='spacingAndGlyphs'>Log likelihood</text>

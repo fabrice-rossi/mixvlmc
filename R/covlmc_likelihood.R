@@ -83,11 +83,13 @@ rec_loglikelihood_covlmc_newdata <- function(tree, d, nb_vals, y, cov, verbose =
         }
       } # nocov end
       ## update the values
-      merged_ll <- glm_likelihood(tree$merged_model$model, glmdata$local_mm, glmdata$target)
-      sub_ll <- sub_ll + merged_ll
-      if (verbose) { # nocov start
-        print(paste(merged_ll, tree$merged_model$likelihood))
-      } # nocov end
+      if (length(glmdata$target) > 0) {
+        merged_ll <- glm_likelihood(tree$merged_model$model, glmdata$local_mm, glmdata$target)
+        sub_ll <- sub_ll + merged_ll
+        if (verbose) { # nocov start
+          print(paste(merged_ll, tree$merged_model$likelihood))
+        } # nocov end
+      }
     }
   }
   ## we take care finally of the extended model if there is one
@@ -146,7 +148,7 @@ rec_loglikelihood_covlmc_newdata <- function(tree, d, nb_vals, y, cov, verbose =
 #' attributes(ll)
 #'
 #' @export
-logLik.covlmc <- function(object, initial = c("truncated", "specific", "extended"), ...) {
+logLik.covlmc <- function(object, initial = c("extended", "specific", "truncated"), ...) {
   ll <- loglikelihood(object, initial)
   class(ll) <- "logLik"
   ll
@@ -194,7 +196,7 @@ logLik.covlmc <- function(object, initial = c("truncated", "specific", "extended
 #' attributes(ll_new)
 #'
 #' @export
-loglikelihood.covlmc <- function(vlmc, initial = c("truncated", "specific", "extended"),
+loglikelihood.covlmc <- function(vlmc, initial = c("extended", "specific", "truncated"),
                                  newdata, newcov, ...) {
   initial <- match.arg(initial)
   if (missing(newdata)) {
@@ -205,9 +207,7 @@ loglikelihood.covlmc <- function(vlmc, initial = c("truncated", "specific", "ext
     ## in this case, we have directly the truncated/specific LL
     res <- rec_loglikelihood_covlmc(vlmc)
     if (initial == "extended" && depth(vlmc) != 0) {
-      icovlmc <- match_ctx(vlmc, vlmc$iix, keep_match = TRUE)
-      delta_res <- rec_loglikelihood_covlmc_newdata(icovlmc, 0, length(vlmc$vals), vlmc$ix, vlmc$icov)
-      res <- res + delta_res
+      res <- res + vlmc$extended_ll
     }
   } else {
     if (isTRUE(vlmc$trimmed == "full")) {

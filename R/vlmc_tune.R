@@ -55,7 +55,7 @@
 #' tune_result <- tune_vlmc(dts)
 #' draw(tune_result$best_model)
 tune_vlmc <- function(x, criterion = c("BIC", "AIC"),
-                      initial = c("truncated", "specific", "extended"),
+                      initial = c("extended", "specific", "truncated"),
                       min_size = 2, max_depth = 100, verbose = 0,
                       save = c("best", "initial", "all")) {
   criterion <- match.arg(criterion)

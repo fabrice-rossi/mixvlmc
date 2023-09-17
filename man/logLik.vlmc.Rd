@@ -4,7 +4,7 @@
 \alias{logLik.vlmc}
 \title{Log-Likelihood of a VLMC}
 \usage{
-\method{logLik}{vlmc}(object, initial = c("truncated", "specific", "extended"), ...)
+\method{logLik}{vlmc}(object, initial = c("extended", "specific", "truncated"), ...)
 }
 \arguments{
 \item{object}{the vlmc representation.}
