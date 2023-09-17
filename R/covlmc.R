@@ -704,6 +704,12 @@ covlmc <- function(x, covariate, alpha = 0.05, min_size = 5L, max_depth = 100L, 
     pre_result$iix <- ix[1:min(the_depth, length(x))]
     pre_result$ix <- x[1:min(the_depth, length(x))]
     pre_result$icov <- covariate[1:min(the_depth, length(x)), , drop = FALSE]
+    ## precompute the likelihood to enable trimming
+    icovlmc <- match_ctx(pre_result, pre_result$iix, keep_match = TRUE)
+    pre_result$extended_ll <- rec_loglikelihood_covlmc_newdata(
+      icovlmc, 0, length(pre_result$vals),
+      pre_result$ix, pre_result$icov
+    )
   }
   pre_result
 }
@@ -897,6 +903,12 @@ prune.covlmc <- function(vlmc, alpha = 0.05, cutoff = NULL, ...) {
     pre_result$iix <- vlmc$iix[1:min(the_depth, length(vlmc$ix))]
     pre_result$ix <- vlmc$ix[1:min(the_depth, length(vlmc$ix))]
     pre_result$icov <- vlmc$icov[1:min(the_depth, length(vlmc$ix)), , drop = FALSE]
+    ## precompute the likelihood to enable trimming
+    icovlmc <- match_ctx(pre_result, pre_result$iix, keep_match = TRUE)
+    pre_result$extended_ll <- rec_loglikelihood_covlmc_newdata(
+      icovlmc, 0, length(pre_result$vals),
+      pre_result$ix, pre_result$icov
+    )
   }
   pre_result
 }
