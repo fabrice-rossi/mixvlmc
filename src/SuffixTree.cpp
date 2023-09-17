@@ -901,6 +901,82 @@ class SuffixTree {
     result->compute_reverse();
     return result;
   }
+
+  IntegerVector predict_raw(const IntegerVector& y, bool final_pred) const {
+    if(!has_reverse) {
+      stop("cannot predict without reverse links");
+    }
+    int n = y.size();
+    if(final_pred) {
+      n++;
+    }
+    IntegerVector result(n);
+    EdgeNode* current = root;
+    for(int i = 0; i < n; i++) {
+      int res = 0;
+      int res_c = 0;
+      for(auto count : *(current->counts)) {
+        if(count.second > res_c) {
+          res = count.first;
+          res_c = count.second;
+        } else if(count.second == res_c && count.first < res) {
+          res = count.first;
+        }
+      }
+      result[i] = res;
+      // we take the reverse link
+      if(i < y.size()) {
+        current = (*(current->reverse))[y[i]];
+        // let's find out if we can increase the match
+        int max_ctx = std::min(i + 1, max_depth);
+        int pos = i - current->depth;
+        while(current->depth < max_ctx) {
+          if(auto child = current->children.find(y[pos]);
+             child != current->children.end()) {
+            current = child->second;
+            pos--;
+          } else {
+            break;
+          }
+        }
+      }
+    }
+    return result;
+  }
+
+  NumericMatrix predict_probs(const IntegerVector& y, bool final_pred) const {
+    if(!has_reverse) {
+      stop("cannot predict without reverse links");
+    }
+    int n = y.size();
+    if(final_pred) {
+      n++;
+    }
+    NumericMatrix result(n, max_x + 1);
+    EdgeNode* current = root;
+    for(int i = 0; i < n; i++) {
+      for(auto count : *(current->counts)) {
+        result(i, count.first) = ((double)count.second) / current->total_count;
+      }
+      // we take the reverse link
+      if(i < y.size()) {
+        current = (*(current->reverse))[y[i]];
+        // let's find out if we can increase the match
+        int max_ctx = std::min(i + 1, max_depth);
+        int pos = i - current->depth;
+        while(current->depth < max_ctx) {
+          if(auto child = current->children.find(y[pos]);
+             child != current->children.end()) {
+            current = child->second;
+            pos--;
+          } else {
+            break;
+          }
+        }
+      }
+    }
+    return result;
+  }
 };
 
 SuffixTree* build_suffix_tree(const IntegerVector& x, int nb_vals) {
@@ -969,6 +1045,9 @@ RCPP_MODULE(suffixtree) {
       .property("has_positions", &SuffixTree::get_has_positions,
                 "Does this VLMC store positions?")
       .method("trim", &SuffixTree::trim,
-              "Reduce the memory usage of the tree by removing positions");
+              "Reduce the memory usage of the tree by removing positions")
+      .method("predict_raw", &SuffixTree::predict_raw, "Predict values")
+      .method("predict_probs", &SuffixTree::predict_probs,
+              "Predict probabilities");
   function("build_suffix_tree", &build_suffix_tree);
 }
