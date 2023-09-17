@@ -54,6 +54,7 @@ contexts.vlmc_cpp <- function(ct, type = c("auto", "list", "data.frame"), revers
         fake_data <- generate_fake_data(
           pre_res$local_counts[k, 1],
           pre_res$local_counts[k, -1, drop = FALSE],
+          pre_res$counts[k, -1, drop = FALSE] / pre_res$counts[k, 1],
           ct$vals
         )
         local_m <- main_metrics(fake_data$response, fake_data$predictor)

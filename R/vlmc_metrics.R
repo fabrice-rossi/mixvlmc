@@ -28,7 +28,7 @@ generate_fake_data <- function(freq, counts, probs, vals) {
     for (k in seq_along(freq)) {
       if (freq[k] > 0) {
         new_pos <- pos + freq[k]
-        predictor[pos:(new_pos - 1), ] <- matrix(probs[k, ], ncol = ncol(predictor), nrow = freq[k], byrow = TRUE)
+        predictor[pos:(new_pos - 1), ] <- matrix(as.numeric(probs[k, ]), ncol = ncol(predictor), nrow = freq[k], byrow = TRUE)
         pos <- new_pos
       }
     }
