@@ -814,7 +814,10 @@ class SuffixTree {
     return root->loglikelihood(max_x + 1);
   }
 
-  IntegerVector simulate(IntegerVector start, int n, int method) const {
+  IntegerVector simulate(IntegerVector start,
+                         int n,
+                         int burnin,
+                         int method) const {
     if(!has_reverse) {
       stop("cannot simulate without reverse links");
     }
@@ -823,36 +826,61 @@ class SuffixTree {
       r_sample = Nullable(Function("sample.int"));
     }
     RNGScope scope;
+    // final result
     IntegerVector result(n);
+    // burn in results
+    std::vector<int> burnin_sample(burnin, 0);
+    int outpos = 0;
     for(int k = 0; k < start.size(); k++) {
-      result[k] = start[k];
+      if(k >= burnin) {
+        result[outpos] = start[k];
+        outpos++;
+      } else {
+        burnin_sample[k] = start[k];
+      }
     }
     int start_generating = start.size();
     EdgeNode* current = root;
-    for(int i = 0; i < n; i++) {
+    int max_i = n + burnin;
+    for(int i = 0; i < max_i; i++) {
+      int pre_res = 0;
       if(i >= start_generating) {
         switch(method) {
           case 0:
-            result[i] = sample(current->counts, current->total_count);
+            pre_res = sample(current->counts, current->total_count);
             break;
           case 1:
-            result[i] = sample2(current->counts, max_x, current->total_count);
+            pre_res = sample2(current->counts, max_x, current->total_count);
             break;
           default:
-            result[i] = Rcpp::as<IntegerVector>(Rcpp::as<Function>(r_sample)(
-                            max_x + 1, (int)1, true,
-                            map_to_counts(current->counts, max_x)))[0] -
-                        1;
+            pre_res = Rcpp::as<IntegerVector>(Rcpp::as<Function>(r_sample)(
+                          max_x + 1, (int)1, true,
+                          map_to_counts(current->counts, max_x)))[0] -
+                      1;
             break;
         }
+        if(i >= burnin) {
+          result[outpos] = pre_res;
+          outpos++;
+        } else {
+          burnin_sample[i] = pre_res;
+        }
+      } else {
+        pre_res = start[i];
       }
       // we take the reverse link
-      current = (*(current->reverse))[result[i]];
+      current = (*(current->reverse))[pre_res];
       // let's find out if we can increase the match
       int max_ctx = std::min(i + 1, max_depth);
       int pos = i - current->depth;
       while(current->depth < max_ctx) {
-        if(auto child = current->children.find(result[pos]);
+        int to_search;
+        if(pos >= burnin) {
+          to_search = result[pos - burnin];
+        } else {
+          to_search = burnin_sample[pos];
+        }
+        if(auto child = current->children.find(to_search);
            child != current->children.end()) {
           current = child->second;
           pos--;

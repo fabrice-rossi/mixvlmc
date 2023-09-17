@@ -88,4 +88,34 @@ test_that("vlmc simulate results do not depend on the backend for the slow metho
   }
 })
 
+test_that("vlmc simulate handles correctly burnin (C++)", {
+  for (k in 2:4) {
+    data_set <- build_markov_chain(1000, k, seed = k)
+    x_vlmc <- vlmc(data_set$x, alpha = 0.05, backend = "C++")
+    xs <- simulate(x_vlmc, nsim = 250, seed = 5, burnin = 50)
+    expect_length(xs, 250)
+    xs_full <- simulate(x_vlmc, nsim = 300, seed = 5, burnin = 0)
+    expect_length(xs_full, 300)
+    expect_equal(as.vector(xs), xs_full[-(1:50)])
+    xs_auto <- simulate(x_vlmc, nsim = 250, seed = 10, burnin = "auto")
+    xs_auto_full <- simulate(x_vlmc, nsim = 250 + 64 * context_number(x_vlmc), seed = 10, burnin = 0)
+    expect_equal(
+      as.vector(xs_auto),
+      xs_auto_full[(length(xs_auto_full) - 249):length(xs_auto_full)]
+    )
+  }
+})
 
+test_that("vlmc simulate handles correctly burnin with init values (C++)", {
+  for (k in 2:4) {
+    data_set <- build_markov_chain(1000, k, seed = k)
+    x_vlmc <- vlmc(data_set$x, alpha = 0.05, backend = "C++")
+    xs_init <- sample(states(x_vlmc), 25, replace = TRUE)
+    xs <- simulate(x_vlmc, nsim = 250, seed = 5, burnin = 50, init = xs_init)
+    expect_length(xs, 250)
+    xs_full <- simulate(x_vlmc, nsim = 300, seed = 5, burnin = 0, init = xs_init)
+    expect_length(xs_full, 300)
+    expect_equal(as.vector(xs), xs_full[-(1:50)])
+    expect_equal(xs_full[1:25], xs_init)
+  }
+})

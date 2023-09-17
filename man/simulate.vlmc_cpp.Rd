@@ -9,6 +9,7 @@
   nsim = 1,
   seed = NULL,
   init = NULL,
+  burnin = 0L,
   sample = c("fast", "slow", "R"),
   ...
 )
@@ -21,6 +22,9 @@
 \item{seed}{an optional random seed (see the dedicated section).}
 
 \item{init}{an optional initial sequence for the time series.}
+
+\item{burnin}{number of initial observations to discard or \code{"auto"} (see the
+dedicated section).}
 
 \item{sample}{specifies which implementation of \code{\link[base:sample]{base::sample()}} to use.
 See the dedicated section.}

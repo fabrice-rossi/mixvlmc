@@ -23,19 +23,33 @@
 #'   time.
 #'
 #' @export
-simulate.vlmc_cpp <- function(object, nsim = 1, seed = NULL, init = NULL, sample = c("fast", "slow", "R"), ...) {
+simulate.vlmc_cpp <- function(object, nsim = 1, seed = NULL, init = NULL, burnin = 0L, sample = c("fast", "slow", "R"), ...) {
   if (extptr_is_null(object$root$.pointer)) {
     stop("Missing C++ representation!\nThis object was probably restored from a saved object.\n")
   }
   sample <- match.arg(sample)
   if (!is.null(seed)) {
+    attr(seed, "kind") <- as.list(RNGkind())
     withr::local_seed(seed)
+  } else {
+    if (!exists(".Random.seed", envir = .GlobalEnv, inherits = FALSE)) {
+      stats::runif(1)
+    }
+    seed <- .Random.seed
+  }
+  if (burnin == "auto") {
+    burnin <- 64L * context_number(object)
+  } else {
+    burnin <- as.integer(burnin)
+    if (burnin < 0L) {
+      stop("burnin must be non negative or \"auto\"")
+    }
   }
   if (!is.null(init)) {
     assertthat::assert_that((typeof(init) == typeof(object$vals)) && (class(init) == class(object$vals)),
       msg = "init is not compatible with the model state space"
     )
-    assertthat::assert_that(length(init) <= nsim, msg = "too many initial values")
+    assertthat::assert_that(length(init) <= nsim + burnin, msg = "too many initial values")
     init_dts <- to_dts(init, object$vals)
     ctx <- init_dts$ix
   } else {
@@ -47,6 +61,7 @@ simulate.vlmc_cpp <- function(object, nsim = 1, seed = NULL, init = NULL, sample
   } else if (sample == "R") {
     isample <- 2L
   }
-  pre_res <- object$root$simulate(ctx, nsim, isample)
-  object$vals[pre_res + 1]
+  pre_res <- object$root$simulate(ctx, nsim, burnin, isample)
+  pre_res <- object$vals[pre_res + 1]
+  structure(pre_res, "seed" = seed, "class" = c("dts", class(pre_res)))
 }
