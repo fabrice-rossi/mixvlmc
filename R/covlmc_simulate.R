@@ -90,7 +90,7 @@ simulate.covlmc <- function(object, nsim = 1, seed = NULL, covariate, init = NUL
   }
   int_vals <- seq_along(object$vals)
   if (!is.null(init)) {
-    assertthat::assert_that((typeof(init) == typeof(object$vals)) && (class(init) == class(object$vals)),
+    assertthat::assert_that((typeof(init) == typeof(object$vals)) && methods::is(init, class(object$vals)),
       msg = "init is not compatible with the model state space"
     )
     assertthat::assert_that(length(init) <= nsim, msg = "too many initial values")

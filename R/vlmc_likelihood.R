@@ -193,7 +193,7 @@ loglikelihood.vlmc <- function(vlmc, initial = c("extended", "specific", "trunca
       attr(pre_res, "nobs") <- max(0, attr(pre_res, "nobs") - depth(vlmc))
     }
   } else {
-    assertthat::assert_that((typeof(newdata) == typeof(vlmc$vals)) && (class(newdata) == class(vlmc$vals)),
+    assertthat::assert_that((typeof(newdata) == typeof(vlmc$vals)) && is(newdata, class(vlmc$vals)),
       msg = "newdata is not compatible with the model state space"
     )
     nx <- to_dts(newdata, vlmc$vals)

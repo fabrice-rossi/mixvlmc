@@ -33,6 +33,7 @@ Imports:
     assertthat,
     butcher,
     ggplot2,
+    methods,
     nnet,
     pROC,
     Rcpp (>= 1.0.8.3),
