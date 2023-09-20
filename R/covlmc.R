@@ -909,6 +909,9 @@ prune.covlmc <- function(vlmc, alpha = 0.05, cutoff = NULL, ...) {
       icovlmc, 0, length(pre_result$vals),
       pre_result$ix, pre_result$icov
     )
+  } else {
+    ## add match
+    pre_result$match <- 1:vlmc$data_size
   }
   pre_result
 }
