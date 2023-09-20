@@ -182,10 +182,10 @@
 <code class="sourceCode R"><span><span class="va">sun_model_tune</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/tune_vlmc.html">tune_vlmc</a></span><span class="op">(</span><span class="va">sun_activity</span><span class="op">)</span></span>
 <span><span class="va">sun_model_tune</span></span>
 <span><span class="co">#&gt; VLMC context tree on high, low </span></span>
-<span><span class="co">#&gt;  cutoff: 4.245 (quantile: 0.00357)</span></span>
-<span><span class="co">#&gt;  Number of contexts: 8 </span></span>
+<span><span class="co">#&gt;  cutoff: 2.306 (quantile: 0.03175)</span></span>
+<span><span class="co">#&gt;  Number of contexts: 9 </span></span>
 <span><span class="co">#&gt;  Maximum context length: 5 </span></span>
-<span><span class="co">#&gt;  Selected by BIC (285.0378) with likelihood function "extended" (-111.3536)</span></span></code></pre></div>
+<span><span class="co">#&gt;  Selected by BIC (236.262) with likelihood function "truncated" (-98.83247)</span></span></code></pre></div>
 <p>The results of the pruning process can be represented graphically:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot</a></span><span class="op">(</span><span class="va">sun_model_tune</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
@@ -196,15 +196,19 @@
 <span><span class="fu"><a href="reference/draw.html">draw</a></span><span class="op">(</span><span class="va">best_sun_model</span><span class="op">)</span></span>
 <span><span class="co">#&gt; * (0.5052, 0.4948)</span></span>
 <span><span class="co">#&gt; +-- high (0.8207, 0.1793)</span></span>
-<span><span class="co">#&gt; |   '-- high (0.7899, 0.2101)</span></span>
-<span><span class="co">#&gt; |       '-- high (0.7447, 0.2553)</span></span>
-<span><span class="co">#&gt; |           +-- high (0.6571, 0.3429)</span></span>
-<span><span class="co">#&gt; |           |   '-- low (0.9167, 0.08333)</span></span>
-<span><span class="co">#&gt; |           '-- low (1, 0)</span></span>
+<span><span class="co">#&gt; |   +-- high (0.7899, 0.2101)</span></span>
+<span><span class="co">#&gt; |   |   +-- high (0.7447, 0.2553)</span></span>
+<span><span class="co">#&gt; |   |   |   +-- high (0.6571, 0.3429)</span></span>
+<span><span class="co">#&gt; |   |   |   |   '-- low (0.9167, 0.08333)</span></span>
+<span><span class="co">#&gt; |   |   |   '-- low (1, 0)</span></span>
+<span><span class="co">#&gt; |   |   '-- low (0.96, 0.04)</span></span>
+<span><span class="co">#&gt; |   '-- low (0.9615, 0.03846)</span></span>
 <span><span class="co">#&gt; '-- low (0.1888, 0.8112)</span></span>
 <span><span class="co">#&gt;     +-- high (0, 1)</span></span>
 <span><span class="co">#&gt;     '-- low (0.2328, 0.7672)</span></span>
-<span><span class="co">#&gt;         '-- high (0, 1)</span></span></code></pre></div>
+<span><span class="co">#&gt;         +-- high (0, 1)</span></span>
+<span><span class="co">#&gt;         '-- low (0.3034, 0.6966)</span></span>
+<span><span class="co">#&gt;             '-- high (0.07692, 0.9231)</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level3">

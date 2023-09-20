@@ -430,7 +430,7 @@ sequence of weeks with or without earthquake(s).</p>
 <span><span class="va">California_weeks</span><span class="op">[</span><span class="va">California_earth_quakes</span><span class="op">$</span><span class="va">nbweeks</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">1</span></span></code></pre></div>
 <p>And finally we adjust automatically a VLMC.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">California_weeks_earth_quakes_model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tune_vlmc.html">tune_vlmc</a></span><span class="op">(</span><span class="va">California_weeks</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">California_weeks_earth_quakes_model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tune_vlmc.html">tune_vlmc</a></span><span class="op">(</span><span class="va">California_weeks</span>, initial <span class="op">=</span> <span class="st">"truncated"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">California_weeks_earth_quakes_model</span><span class="op">)</span></span></code></pre></div>
 <p><img src="variable-length-markov-chains_files/figure-html/unnamed-chunk-13-1.png" width="672" style="display: block; margin: auto;">
 The resulting model remains relatively simple with an interesting
@@ -439,6 +439,12 @@ last one.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/draw.html">draw</a></span><span class="op">(</span><span class="fu"><a href="../reference/as_vlmc.html">as_vlmc</a></span><span class="op">(</span><span class="va">California_weeks_earth_quakes_model</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; * (0.7988, 0.2012)</span></span>
+<span><span class="co">#&gt; +-- 0 (0.8166, 0.1834)</span></span>
+<span><span class="co">#&gt; |   +-- 0 (0.8268, 0.1732)</span></span>
+<span><span class="co">#&gt; |   |   '-- 0 (0.8332, 0.1668)</span></span>
+<span><span class="co">#&gt; |   |       '-- 0 (0.8398, 0.1602)</span></span>
+<span><span class="co">#&gt; |   |           '-- 1 (0.7766, 0.2234)</span></span>
+<span><span class="co">#&gt; |   '-- 1 (0.771, 0.229)</span></span>
 <span><span class="co">#&gt; '-- 1 (0.7281, 0.2719)</span></span></code></pre></div>
 <p>The tuning process can be summarised using the <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code>
 function as follows.</p>
@@ -446,46 +452,46 @@ function as follows.</p>
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">California_weeks_earth_quakes_model</span><span class="op">)</span></span>
 <span><span class="co">#&gt; VLMC tune results</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Best VLMC selected by BIC (6423.523) with likelihood function "extended" (-3202.995)</span></span>
+<span><span class="co">#&gt; Best VLMC selected by BIC (6408.344) with likelihood function "truncated" (-3182.077)</span></span>
 <span><span class="co">#&gt; VLMC context tree on 0, 1 </span></span>
-<span><span class="co">#&gt;  cutoff: 10.76 (quantile: 3.484e-06)</span></span>
-<span><span class="co">#&gt;  Number of contexts: 2 </span></span>
-<span><span class="co">#&gt;  Maximum context length: 1 </span></span>
+<span><span class="co">#&gt;  cutoff: 6.041 (quantile: 0.0005092)</span></span>
+<span><span class="co">#&gt;  Number of contexts: 6 </span></span>
+<span><span class="co">#&gt;  Maximum context length: 5 </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Pruning results</span></span>
 <span><span class="co">#&gt;     cutoff        alpha depth nb_contexts loglikelihood      AIC      BIC</span></span>
-<span><span class="co">#&gt;   2.191676 3.629154e-02    29         152     -3043.377 6446.755 7664.762</span></span>
-<span><span class="co">#&gt;   2.201782 3.586391e-02    29         139     -3049.642 6429.284 7545.790</span></span>
-<span><span class="co">#&gt;   2.228217 3.477002e-02    29         132     -3054.488 6422.976 7485.349</span></span>
-<span><span class="co">#&gt;   2.279152 3.275949e-02    29         132     -3056.738 6425.477 7481.083</span></span>
-<span><span class="co">#&gt;   2.339072 3.054872e-02    29         132     -3059.047 6428.093 7476.933</span></span>
-<span><span class="co">#&gt;   2.372521 2.938285e-02    29         132     -3061.417 6430.834 7472.906</span></span>
-<span><span class="co">#&gt;   2.381973 2.906186e-02    29         131     -3065.398 6434.796 7463.335</span></span>
-<span><span class="co">#&gt;   2.394852 2.863036e-02    29         130     -3069.674 6439.348 7454.354</span></span>
-<span><span class="co">#&gt;   2.404277 2.831881e-02    29         127     -3072.207 6438.415 7433.121</span></span>
-<span><span class="co">#&gt;   2.416055 2.793443e-02    29         116     -3075.801 6421.602 7335.107</span></span>
-<span><span class="co">#&gt;   2.445039 2.701147e-02    29         114     -3079.820 6423.640 7316.845</span></span>
-<span><span class="co">#&gt;   2.506516 2.515721e-02    29         110     -3084.157 6422.314 7281.686</span></span>
-<span><span class="co">#&gt;   2.577905 2.316872e-02    29         110     -3086.705 6425.409 7278.014</span></span>
-<span><span class="co">#&gt;   2.625968 2.192238e-02    29         108     -3091.789 6429.577 7261.882</span></span>
-<span><span class="co">#&gt;   2.751151 1.899146e-02    29         103     -3096.441 6426.882 7218.586</span></span>
-<span><span class="co">#&gt;   2.893754 1.614045e-02    29         103     -3099.304 6430.608 7215.546</span></span>
-<span><span class="co">#&gt;   3.125676 1.240985e-02    29         103     -3102.229 6434.458 7212.629</span></span>
-<span><span class="co">#&gt;   3.344228 9.703925e-03    29          95     -3109.465 6430.930 7148.201</span></span>
-<span><span class="co">#&gt;   3.417970 8.934162e-03    27          90     -3114.379 6428.758 7105.429</span></span>
-<span><span class="co">#&gt;   3.536173 7.828270e-03    27          87     -3118.684 6429.369 7078.972</span></span>
-<span><span class="co">#&gt;   3.737381 6.256985e-03    27          63     -3130.300 6400.601 6874.270</span></span>
-<span><span class="co">#&gt;   4.077262 4.295389e-03    27          45     -3137.802 6379.604 6731.472</span></span>
-<span><span class="co">#&gt;   4.382147 3.071849e-03    27          43     -3142.450 6382.900 6714.468</span></span>
-<span><span class="co">#&gt;   4.507405 2.678006e-03    10          26     -3149.120 6360.241 6570.009</span></span>
-<span><span class="co">#&gt;   4.628051 2.347121e-03    10          21     -3155.263 6362.526 6538.461</span></span>
-<span><span class="co">#&gt;   4.763629 2.024423e-03    10          14     -3160.838 6359.676 6488.243</span></span>
-<span><span class="co">#&gt;   5.090995 1.418191e-03     7          11     -3166.921 6363.842 6465.343</span></span>
-<span><span class="co">#&gt;   5.678601 7.515599e-04     7           8     -3175.242 6372.483 6446.917</span></span>
-<span><span class="co">#&gt;   6.040782 5.092285e-04     5           6     -3183.052 6382.104 6436.237</span></span>
-<span><span class="co">#&gt;   6.183282 4.370913e-04     5           6     -3189.187 6392.374 6439.741</span></span>
-<span><span class="co">#&gt;  10.764714 3.484403e-06     1           2     -3202.995 6409.989 6423.523</span></span>
-<span><span class="co">#&gt;  26.426030 3.596414e-13     0           1     -3221.590 6445.180 6451.947</span></span></code></pre></div>
+<span><span class="co">#&gt;   2.191676 3.629154e-02    29         152     -3040.206 6384.411 7412.262</span></span>
+<span><span class="co">#&gt;   2.201782 3.586391e-02    29         139     -3046.470 6370.940 7310.883</span></span>
+<span><span class="co">#&gt;   2.228217 3.477002e-02    29         132     -3051.316 6366.632 7259.239</span></span>
+<span><span class="co">#&gt;   2.279152 3.275949e-02    29         132     -3053.566 6371.133 7263.740</span></span>
+<span><span class="co">#&gt;   2.339072 3.054872e-02    29         132     -3055.875 6375.750 7268.357</span></span>
+<span><span class="co">#&gt;   2.372521 2.938285e-02    29         132     -3058.245 6380.490 7273.097</span></span>
+<span><span class="co">#&gt;   2.381973 2.906186e-02    29         131     -3062.226 6386.452 7272.297</span></span>
+<span><span class="co">#&gt;   2.394852 2.863036e-02    29         130     -3066.502 6393.004 7272.087</span></span>
+<span><span class="co">#&gt;   2.404277 2.831881e-02    29         127     -3069.036 6392.071 7250.868</span></span>
+<span><span class="co">#&gt;   2.416055 2.793443e-02    29         116     -3072.629 6377.258 7161.671</span></span>
+<span><span class="co">#&gt;   2.445039 2.701147e-02    29         114     -3076.648 6381.296 7152.184</span></span>
+<span><span class="co">#&gt;   2.506516 2.515721e-02    29         110     -3080.985 6381.970 7125.810</span></span>
+<span><span class="co">#&gt;   2.577905 2.316872e-02    29         110     -3083.533 6387.066 7130.905</span></span>
+<span><span class="co">#&gt;   2.625968 2.192238e-02    29         108     -3088.617 6393.233 7123.548</span></span>
+<span><span class="co">#&gt;   2.751151 1.899146e-02    29         103     -3093.269 6392.538 7089.042</span></span>
+<span><span class="co">#&gt;   2.893754 1.614045e-02    29         103     -3096.132 6398.264 7094.769</span></span>
+<span><span class="co">#&gt;   3.125676 1.240985e-02    29         103     -3099.057 6404.114 7100.618</span></span>
+<span><span class="co">#&gt;   3.344228 9.703925e-03    29          95     -3106.293 6402.587 7044.993</span></span>
+<span><span class="co">#&gt;   3.417970 8.934162e-03    27          90     -3111.183 6402.366 7010.962</span></span>
+<span><span class="co">#&gt;   3.536173 7.828270e-03    27          87     -3115.488 6404.977 6993.286</span></span>
+<span><span class="co">#&gt;   3.737381 6.256985e-03    27          63     -3127.105 6380.209 6806.226</span></span>
+<span><span class="co">#&gt;   4.077262 4.295389e-03    27          45     -3134.606 6359.212 6663.510</span></span>
+<span><span class="co">#&gt;   4.382147 3.071849e-03    27          43     -3139.254 6364.508 6655.281</span></span>
+<span><span class="co">#&gt;   4.507405 2.678006e-03    10          26     -3144.971 6341.943 6517.759</span></span>
+<span><span class="co">#&gt;   4.628051 2.347121e-03    10          21     -3151.114 6344.228 6486.234</span></span>
+<span><span class="co">#&gt;   4.763629 2.024423e-03    10          14     -3156.689 6341.378 6436.048</span></span>
+<span><span class="co">#&gt;   5.090995 1.418191e-03     7          11     -3162.313 6346.626 6421.010</span></span>
+<span><span class="co">#&gt;   5.678601 7.515599e-04     7           8     -3170.633 6357.267 6411.364</span></span>
+<span><span class="co">#&gt;   6.040782 5.092285e-04     5           6     -3177.886 6367.771 6408.344</span></span>
+<span><span class="co">#&gt;   6.183282 4.370913e-04     5           6     -3184.021 6380.042 6420.615</span></span>
+<span><span class="co">#&gt;  10.764714 3.484403e-06     1           2     -3196.481 6396.961 6410.486</span></span>
+<span><span class="co">#&gt;  26.426030 3.596414e-13     0           1     -3215.076 6432.152 6438.914</span></span></code></pre></div>
 <p>in addition, a summary data frame is accessible in the
 <code>results</code> component of the object. This can be used to build
 e.g. custom graphical representation of the model selection process
@@ -525,11 +531,11 @@ characteristics:</p>
 <p>VLMC objects support classical statistical functions such as:</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/logLik.html" class="external-link">logLik</a></span><span class="op">(</span><span class="va">model_large</span><span class="op">)</span></span>
-<span><span class="co">#&gt; 'log Lik.' -210.7903 (df=12)</span></span>
+<span><span class="co">#&gt; 'log Lik.' -207.4279 (df=12)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/AIC.html" class="external-link">AIC</a></span><span class="op">(</span><span class="va">model_large</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 445.5807</span></span>
+<span><span class="co">#&gt; [1] 438.8558</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/AIC.html" class="external-link">BIC</a></span><span class="op">(</span><span class="va">model_large</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 485.1605</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 478.2542</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="contexts">Contexts<a class="anchor" aria-label="anchor" href="#contexts"></a>
