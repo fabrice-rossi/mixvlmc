@@ -36,6 +36,12 @@ a likelihood function is not entirely obvious.
 This vignette discusses the case of VLMC, but the discussion applies to 
 VLMC with covariates with minimal adaptation. 
 
+## Executive summary
+For model selection, we recommend to use a likelihood function that disregards
+the first few observations for which a (CO)VLMC cannot provide a context. This is
+based on the *truncated* likelihood function. For all practical uses such as
+prediction and sampling, we recommend to use a notion of *extended* contexts. 
+
 ## Likelihood functions for Markov chains
 
 Let us consider a doubly infinite time series $X_{i\in\mathbb{Z}}$
@@ -61,7 +67,7 @@ Transactions on Information Theory, 52 (10)
 
 ### Truncated solution
 
-The simplest way to define a likelihood function for a VLMC is to
+The simplest way to define a likelihood function for a single VLMC is to
 consider it as a Markov chain of the order given by the length of its
 longest context (i.e. of the order of the VLMC).
 
@@ -88,7 +94,7 @@ and thus to $|S|-1$ parameters if $S$ is the state space).
 Another approach considers extended/approximate contexts for the $d$
 initial values. Indeed each observation $x_i$ for $1\leq i\leq d$ can be
 considered has having its context partially determined by
-$(x_1,\ldots, x_{i-1})$ (thus by the empty context for $i=1$). Let us
+$(x_1,\ldots, x_{i-1})$, in particular by the empty context for $i=1$. Let us
 consider for instance $x_1$ and the empty context (the root of the
 context tree). If $d\geq 1$, we cannot determine the context of $x_1$
 without values of $(x_{-d+1},\ldots, x_0)$ even if the empty context is
@@ -99,7 +105,11 @@ corresponding node which is then interpreted as a context using the
 frequencies collected during the construction of the VLMC.
 
 In terms of parameters, this adds to the VLMC an additional extended
-context for each node of the context tree which is not a context.
+context for each node of the context tree which is not a context. For instance, 
+in a binary state space $S=\{0, 1\}$, one may consider a Markov Chain of order 1. 
+In this case, we have two contexts $0$ and $1$, and the root node of the context
+tree is not a proper (empty) context. To compute the likelihood of the first
+observation, we need therefore a new extended context, the empty one. 
 
 ### Complete example
 
@@ -116,18 +126,21 @@ distances <- geodist(globalearthquake[, c("longitude", "latitude")],
 California_earth_quakes <- globalearthquake[distances < 2e6, ] ## distances are in meters
 California_weeks <- rep(0, max(globalearthquake$nbweeks))
 California_weeks[California_earth_quakes$nbweeks] <- 1
-California_weeks_earth_quakes_model <- tune_vlmc(California_weeks)
+California_weeks_earth_quakes_model <- tune_vlmc(California_weeks,
+  initial = "truncated",
+  save = "all"
+)
 model <- as_vlmc(California_weeks_earth_quakes_model)
 draw(model, prob = FALSE)
 ```
 
 The optimal model according to the BIC has an order of `r depth(model)`
 and thus the simple truncated log likelihood is obtained by considering
-only the observations starting at index `r (depth(model)+1)`. We disregard the first 
-observation. The corresponding log likelihood is
+only the observations starting at index `r (depth(model)+1)`. We disregard the 
+first `r depth(model)` observations. The corresponding log likelihood is
 
 ```{r}
-loglikelihood(model)
+loglikelihood(model, initial = "truncated")
 ```
 
 Using specific contexts amounts to assuming perfect predictions for the
@@ -159,13 +172,20 @@ context is $0$. However, $0$ is again not a proper context we should
 normally look for $X_{0}$ and older values to find a proper context. In
 the extended approach, we consider the empirical distribution of values
 following a 0 in the time series, which is given by
-$\mathbb{P}(X_1=1)=\frac{940}{4185+940}\simeq`r round(940/(4185+940),3)`$.
+$\mathbb{P}(X_t=1|X_{t-1}=0)=\frac{940}{4185+940}\simeq`r round(940/(4185+940),3)`$.
 The contribution of this observation to the log likelihood is therefore
-$\log \mathbb{P}(X_1=0)\simeq `r round(log(4185/(4185+940)),3)`$. In
+$\log \mathbb{P}(X_t=0|X_{t-1}=0)\simeq `r round(log(4185/(4185+940)),3)`$. In
 addition, this extended context adds again a parameter to the total.
 
-The final value is
+The following observations $X_3$, $X_4$ and $X_5$ have all proper
+contexts and contribute in a normal way to the (log) likelihood without
+the need for additional parameters. Notice that the number of additional
+parameters does not depend on the initial sequence but on the structure
+of the context tree. Notice also that while the corresponding nodes are
+contexts, they are not the contexts of those three values. Those
+contexts cannot be computed due to the lack of older values.
 
+The final value is
 ```{r}
 loglikelihood(model, initial = "extended")
 ```
@@ -260,32 +280,42 @@ context to a true context does not change the probability included in the likeli
 Therefore, the extended likelihood is also non increasing with the pruning operation.
 
 ### Experimental illustration
-By default, `tune_vlmc()` uses the *extended* likelihood and thus the California 
-earth quakes results can be used to illustrate its non increasing
-behaviour as follows:
+We used the saving options of `tune_vlmc()` to keep all the models considered
+during the model selection process in the California 
+earth quakes analysis. We can use them to illustrate non decreasing behaviour
+of the likelihoods. For the *extended* likelikood, we have:
 ```{r fig.height=4}
-ggplot(California_weeks_earth_quakes_model$results, aes(cutoff, loglikelihood)) +
+CA_models <- c(
+  list(California_weeks_earth_quakes_model$saved_models$initial),
+  California_weeks_earth_quakes_model$saved_models$all
+)
+CA_extended <- data.frame(
+  cutoff = sapply(CA_models, \(x) x$cutoff),
+  loglikelihood = sapply(CA_models, loglikelihood,
+    initial = "extended"
+  )
+)
+ggplot(CA_extended, aes(cutoff, loglikelihood)) +
   geom_line() +
   xlab("Cut off (native scale)") +
   ylab("Log likelihood") +
   ggtitle("Extended log likelihood")
 ```
 
-The *truncated* likelihood can be used with `tune_vlmc()` as follows:
-```{r}
-California_weeks_earth_quakes_model_truncated <-
-  tune_vlmc(California_weeks, initial = "truncated")
-```
-which gives the following log likelihood representation:
+For the *specific* likelihood we have:
+
 ```{r fig.height=4}
-ggplot(
-  California_weeks_earth_quakes_model_truncated$results,
-  aes(cutoff, loglikelihood)
-) +
+CA_specific <- data.frame(
+  cutoff = sapply(CA_models, \(x) x$cutoff),
+  loglikelihood = sapply(CA_models, loglikelihood,
+    initial = "specific"
+  )
+)
+ggplot(CA_specific, aes(cutoff, loglikelihood)) +
   geom_line() +
   xlab("Cut off (native scale)") +
   ylab("Log likelihood") +
-  ggtitle("Truncated log likelihood")
+  ggtitle("Specific log likelihood")
 ```
 Notice that the time series contains `r length(California_weeks)` observations and 
 the maximum order considered by `tune_vlmc()` is `r max(California_weeks_earth_quakes_model$results$depth)`, thus we do not expect
@@ -293,10 +323,10 @@ to observe large differences between the different log likelihoods. This is
 illustrated on the following figure:
 ```{r fig.height=4}
 CW_combined <- rbind(
-  California_weeks_earth_quakes_model$results[c("cutoff", "loglikelihood")],
-  California_weeks_earth_quakes_model_truncated$results[c("cutoff", "loglikelihood")]
+  CA_extended[c("cutoff", "loglikelihood")],
+  CA_specific[c("cutoff", "loglikelihood")]
 )
-CW_combined[["Likelihood function"]] <- rep(c("extended", "truncated"), times = rep(nrow(California_weeks_earth_quakes_model$results), 2))
+CW_combined[["Likelihood function"]] <- rep(c("extended", "specific"), times = rep(nrow(California_weeks_earth_quakes_model$results), 2))
 ggplot(
   CW_combined,
   aes(cutoff, loglikelihood, color = `Likelihood function`)
@@ -307,8 +337,107 @@ ggplot(
   ggtitle("Log likelihood")
 ```
 
-As noted above, the numerical values of the *specific* likelihood are identical 
-to the values of the *truncated* likelihod and thus the above graphical representations are also valid for it. 
+The case of the *truncated* likelihood is more complex. As noted above, the
+numerical values of the *truncated* likelihood are identical to the values of the
+*specific* likelihood and thus the above graphical representations are also valid 
+for it. However care must be exercised when using the *truncated* likelihood for
+model selection, as explained below. 
+
+## Model selection
+Optimal (CO)VLMC models are generally selected via penalized likelihood approaches,
+with a preference for the BIC, based on its asymptotic consistency. A natural question
+is to what extent the different likelihood functions proposed above are adapted
+for model selection when combined with a penalty. Notice that consistency results
+for the BIC are generally obtained with a *truncated* likelihood function. 
+
+### Specific and extended likelihood
+The *specific* and the *extended* likelihood functions do not introduce any obvious
+difficulty. In particular, they work with the full data set as they extend the
+VLMC model with specific/extended contexts for the initial values. However, they 
+tend to penalize complex models more than the *truncated* likelihood. For instance, the
+model selected on the California earth quakes is simpler than the one selected
+with the *truncated* likelihood (as well as by the *specific* one):
+```{r}
+CA_model_extented <- tune_vlmc(California_weeks, initial = "extended")
+model_extended <- as_vlmc(CA_model_extented)
+draw(model_extended, prob = FALSE)
+```
+
+This is also the case for, e.g., the sun spot time series used in the introduction
+to the package, as shown below:
+```{r}
+sun_activity <- as.factor(ifelse(sunspot.year >= median(sunspot.year), "high", "low"))
+sun_model_tune_truncated <- tune_vlmc(sun_activity, initial = "truncated")
+draw(as_vlmc(sun_model_tune_truncated))
+```
+
+```{r}
+sun_model_tune_extended <- tune_vlmc(sun_activity, initial = "extended")
+draw(as_vlmc(sun_model_tune_extended))
+```
+
+In this latter case, the *specific* likelihood gives the same results as the
+*truncated* one. 
+
+We observe a similar behaviour on a simple second order Markov chain generated
+as follows:
+```{r}
+TM0 <- matrix(c(0.7, 0.3, 0.4, 0.6),
+  ncol = 2,
+  byrow = TRUE
+)
+TM1 <- matrix(c(0.4, 0.6, 0.8, 0.2),
+  ncol = 2,
+  byrow = TRUE
+)
+init <- c(0, 1)
+dts <- c(init, rep(NA, 500))
+set.seed(0)
+for (i in 3:length(dts)) {
+  if (dts[i - 1] == 0) {
+    probs <- TM0[dts[i - 2] + 1, ]
+  } else {
+    probs <- TM1[dts[i - 2] + 1, ]
+  }
+  dts[i] <- sample(0:1, 1, prob = probs)
+}
+```
+
+Once again, the *extended* likelihood tends to over penalize "complex" models
+```{r}
+MC_extended <- tune_vlmc(dts, initial = "extended", save = "all")
+draw(as_vlmc(MC_extended))
+```
+while thishappens neither for the *truncated* likelihood
+```{r}
+MC_truncated <- tune_vlmc(dts, initial = "truncated", save = "all")
+draw(as_vlmc(MC_truncated))
+```
+no for the *specific* likelihood
+```{r}
+MC_specific <- tune_vlmc(dts, initial = "specific", save = "all")
+draw(as_vlmc(MC_specific))
+```
+
+If we increase the number of observations in the synthetic example, to e.g. 5000, 
+the three likelihood functions conduct to the same optimal (and true) model, as
+expected. On smaller data sets, the use of the *truncated* seem to be more adapted. 
+
+### Truncated likelihood
+However, the *truncated* likelihood function is problematic when used 
+naively. The difficulty comes from the discarded observations: two VLMC models
+with different orders are evaluated on different data sets. If we consider for instance
+the BIC  as an approximation of the logarithm of the evidence of the data given 
+the model, it is obvious that one cannot compare directly two models on different 
+data sets.
+
+A possible solution for model selection based on the *truncated* likelihood 
+consists in choosing a maximal order, say $D$ and in evaluating the models only on 
+$(x_i)_{D+1\leq i\leq n}$ so that contexts are always computable. This amounts
+to additional truncation for simpler models. The solution is used by `tune_vlmc()`
+and `tune_covlmc()`. All the examples given above have been constructed using 
+this approach. 
+
 
 ## Coherence with other uses of a VLMC
 ### Sampling
@@ -330,8 +459,8 @@ we use in `simulate.vlmc()` the extended contexts proposed above. This extends t
 VLMC into a full model, with specific probability distributions for the initial 
 values. This does not prevent e.g. slow mix-in and this does not change the
 stationary distribution when it exists, but this gives some coherence between 
-likelihood calculation and sampling. Notice that we also support burn in period
-as well as a manual specification of the initial values of a sample. 
+the *extended* likelihood function and sampling. Notice that we also support burn 
+in period as well as a manual specification of the initial values of a sample. 
 
 ### Prediction
 A VLMC can also be used for one step ahead prediction of a time series (or even 
@@ -344,3 +473,4 @@ calculation and prediction.
 The `metrics.vlmc()` function computes predictive performances of a VLMC on the
 time series used to estimate it. Predictions used for those computations are also 
 based on the extended context principle. 
+

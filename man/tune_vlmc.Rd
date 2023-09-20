@@ -7,7 +7,7 @@
 tune_vlmc(
   x,
   criterion = c("BIC", "AIC"),
-  initial = c("extended", "specific", "truncated"),
+  initial = c("truncated", "specific", "extended"),
   min_size = 2,
   max_depth = 100,
   verbose = 0,
@@ -22,7 +22,7 @@ or \code{"AIC"} (see details).}
 
 \item{initial}{specifies the likelihood function, more precisely the way the
 first few observations for which contexts cannot be calculated are integrated
-in the likelihood. See \code{\link[=loglikelihood]{loglikelihood()}} for details.}
+in the likelihood. Default to \code{"truncated"}. See \code{\link[=loglikelihood]{loglikelihood()}} for details.}
 
 \item{min_size}{integer >= 1 (default: 2). Minimum number of observations for
 a context in the growing phase of the initial context tree.}

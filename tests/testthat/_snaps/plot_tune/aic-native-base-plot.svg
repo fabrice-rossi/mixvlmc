@@ -25,7 +25,7 @@
   </clipPath>
 </defs>
 <g clip-path='url(#cpNTkuMDR8Njg5Ljc2fDU5LjA0fDUwMi41Ng==)'>
-<polyline points='82.40,393.09 82.49,395.54 82.56,395.49 82.66,395.42 82.74,395.31 82.97,395.18 83.31,394.90 83.71,436.06 84.26,438.94 84.69,438.20 85.03,437.33 85.26,436.36 85.98,435.33 88.16,467.39 90.47,470.89 94.83,486.13 188.28,483.11 664.76,279.57 666.40,75.47 ' style='stroke-width: 0.75;' />
+<polyline points='82.40,396.73 82.49,398.47 82.56,398.42 82.66,397.34 82.74,397.22 82.97,396.00 83.31,394.70 83.71,437.53 84.26,440.88 84.69,439.08 85.03,437.01 85.26,434.84 85.98,432.59 88.16,466.35 90.47,470.61 94.83,486.13 188.28,484.47 664.76,296.24 666.40,75.47 ' style='stroke-width: 0.75;' />
 </g>
 <g clip-path='url(#cpMC4wMHw3MjAuMDB8MC4wMHw1NzYuMDA=)'>
 <line x1='79.76' y1='502.56' x2='606.96' y2='502.56' style='stroke-width: 0.75;' />
@@ -39,17 +39,15 @@
 <text x='343.36' y='528.48' text-anchor='middle' style='font-size: 12.00px; font-family: sans;' textLength='20.02px' lengthAdjust='spacingAndGlyphs'>100</text>
 <text x='475.16' y='528.48' text-anchor='middle' style='font-size: 12.00px; font-family: sans;' textLength='20.02px' lengthAdjust='spacingAndGlyphs'>150</text>
 <text x='606.96' y='528.48' text-anchor='middle' style='font-size: 12.00px; font-family: sans;' textLength='20.02px' lengthAdjust='spacingAndGlyphs'>200</text>
-<line x1='59.04' y1='444.21' x2='59.04' y2='75.18' style='stroke-width: 0.75;' />
-<line x1='59.04' y1='444.21' x2='51.84' y2='444.21' style='stroke-width: 0.75;' />
-<line x1='59.04' y1='351.95' x2='51.84' y2='351.95' style='stroke-width: 0.75;' />
-<line x1='59.04' y1='259.70' x2='51.84' y2='259.70' style='stroke-width: 0.75;' />
-<line x1='59.04' y1='167.44' x2='51.84' y2='167.44' style='stroke-width: 0.75;' />
-<line x1='59.04' y1='75.18' x2='51.84' y2='75.18' style='stroke-width: 0.75;' />
-<text transform='translate(41.76,444.21) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: sans;' textLength='20.02px' lengthAdjust='spacingAndGlyphs'>600</text>
-<text transform='translate(41.76,351.95) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: sans;' textLength='20.02px' lengthAdjust='spacingAndGlyphs'>800</text>
-<text transform='translate(41.76,259.70) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: sans;' textLength='26.70px' lengthAdjust='spacingAndGlyphs'>1000</text>
-<text transform='translate(41.76,167.44) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: sans;' textLength='26.70px' lengthAdjust='spacingAndGlyphs'>1200</text>
-<text transform='translate(41.76,75.18) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: sans;' textLength='26.70px' lengthAdjust='spacingAndGlyphs'>1400</text>
+<line x1='59.04' y1='430.87' x2='59.04' y2='130.81' style='stroke-width: 0.75;' />
+<line x1='59.04' y1='430.87' x2='51.84' y2='430.87' style='stroke-width: 0.75;' />
+<line x1='59.04' y1='330.85' x2='51.84' y2='330.85' style='stroke-width: 0.75;' />
+<line x1='59.04' y1='230.83' x2='51.84' y2='230.83' style='stroke-width: 0.75;' />
+<line x1='59.04' y1='130.81' x2='51.84' y2='130.81' style='stroke-width: 0.75;' />
+<text transform='translate(41.76,430.87) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: sans;' textLength='20.02px' lengthAdjust='spacingAndGlyphs'>600</text>
+<text transform='translate(41.76,330.85) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: sans;' textLength='20.02px' lengthAdjust='spacingAndGlyphs'>800</text>
+<text transform='translate(41.76,230.83) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: sans;' textLength='26.70px' lengthAdjust='spacingAndGlyphs'>1000</text>
+<text transform='translate(41.76,130.81) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: sans;' textLength='26.70px' lengthAdjust='spacingAndGlyphs'>1200</text>
 <polygon points='59.04,502.56 689.76,502.56 689.76,59.04 59.04,59.04 ' style='stroke-width: 0.75; fill: none;' />
 <text x='374.40' y='557.28' text-anchor='middle' style='font-size: 12.00px; font-family: sans;' textLength='110.06px' lengthAdjust='spacingAndGlyphs'>Cut off (native scale)</text>
 <text transform='translate(12.96,280.80) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: sans;' textLength='20.01px' lengthAdjust='spacingAndGlyphs'>AIC</text>

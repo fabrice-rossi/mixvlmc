@@ -80,7 +80,7 @@
 #' dts_best_model_tune <- tune_covlmc(dts, dts_cov)
 #' draw(as_covlmc(dts_best_model_tune))
 tune_covlmc <- function(x, covariate, criterion = c("BIC", "AIC"),
-                        initial = c("extended", "specific", "truncated"),
+                        initial = c("truncated", "specific", "extended"),
                         min_size = 5, max_depth = 100,
                         verbose = 0,
                         save = c("best", "initial", "all"),
@@ -118,6 +118,7 @@ tune_covlmc <- function(x, covariate, criterion = c("BIC", "AIC"),
   }
   results <- NULL
   model <- base_model
+  max_order <- depth(model)
   best_crit <- Inf
   if (verbose > 0) {
     cat("Initial criterion=", best_crit, "\n")
@@ -126,7 +127,15 @@ tune_covlmc <- function(x, covariate, criterion = c("BIC", "AIC"),
     all_models <- list()
   }
   repeat {
-    crit <- f_criterion(model)
+    if (initial == "truncated") {
+      ll <- loglikelihood(model,
+        newdata = x, initial = "truncated",
+        ignore = max_order, newcov = covariate
+      )
+    } else {
+      ll <- stats::logLik(model, initial = initial)
+    }
+    crit <- f_criterion(ll)
     if (crit <= best_crit) {
       best_crit <- crit
       best_model <- model
@@ -134,7 +143,6 @@ tune_covlmc <- function(x, covariate, criterion = c("BIC", "AIC"),
         cat("Improving criterion=", best_crit, "\n")
       }
     }
-    ll <- stats::logLik(model, initial = initial)
     a_result <- data.frame(
       alpha = alpha,
       depth = depth(model),

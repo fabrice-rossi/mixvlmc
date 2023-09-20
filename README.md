@@ -166,10 +166,10 @@ We adjust automatically an optimal VLMC as follows:
 sun_model_tune <- tune_vlmc(sun_activity)
 sun_model_tune
 #> VLMC context tree on high, low 
-#>  cutoff: 4.245 (quantile: 0.00357)
-#>  Number of contexts: 8 
+#>  cutoff: 2.306 (quantile: 0.03175)
+#>  Number of contexts: 9 
 #>  Maximum context length: 5 
-#>  Selected by BIC (285.0378) with likelihood function "extended" (-111.3536)
+#>  Selected by BIC (236.262) with likelihood function "truncated" (-98.83247)
 ```
 
 The results of the pruning process can be represented graphically:
@@ -189,15 +189,19 @@ best_sun_model <- as_vlmc(sun_model_tune)
 draw(best_sun_model)
 #> * (0.5052, 0.4948)
 #> +-- high (0.8207, 0.1793)
-#> |   '-- high (0.7899, 0.2101)
-#> |       '-- high (0.7447, 0.2553)
-#> |           +-- high (0.6571, 0.3429)
-#> |           |   '-- low (0.9167, 0.08333)
-#> |           '-- low (1, 0)
+#> |   +-- high (0.7899, 0.2101)
+#> |   |   +-- high (0.7447, 0.2553)
+#> |   |   |   +-- high (0.6571, 0.3429)
+#> |   |   |   |   '-- low (0.9167, 0.08333)
+#> |   |   |   '-- low (1, 0)
+#> |   |   '-- low (0.96, 0.04)
+#> |   '-- low (0.9615, 0.03846)
 #> '-- low (0.1888, 0.8112)
 #>     +-- high (0, 1)
 #>     '-- low (0.2328, 0.7672)
-#>         '-- high (0, 1)
+#>         +-- high (0, 1)
+#>         '-- low (0.3034, 0.6966)
+#>             '-- high (0.07692, 0.9231)
 ```
 
 ### Fitting a VLMC with covariates

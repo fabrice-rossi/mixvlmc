@@ -180,9 +180,18 @@ build_degenerate_elec_model <- function(with_new_data = FALSE) {
 }
 
 ## same calculations as in slow_loglikelihood but for COVLMC
-co_slow_loglikelihood <- function(model, initial = c("truncated", "specific", "extended"),
-                                  newdata, newcov, verbose = FALSE) {
+co_slow_loglikelihood <- function(model, newdata, initial = c("truncated", "specific", "extended"),
+                                  ignore, newcov, verbose = FALSE) {
   initial <- match.arg(initial)
+  if (missing(ignore)) {
+    if (initial == "truncated") {
+      ignore <- depth(model)
+    } else {
+      ignore <- 0L
+    }
+  } else if (initial == "truncated" && ignore < depth(model)) {
+    stop("Must ignore at least ", depth(model), " for truncated likelihood")
+  }
   nx <- to_dts(newdata, model$vals)
   if (length(model$vals) > 2) {
     newdata <- nx$fx
@@ -197,83 +206,83 @@ co_slow_loglikelihood <- function(model, initial = c("truncated", "specific", "e
     glmdata <- prepare_glm(newcov, model$match, 0, newdata, 0)
     result <- glm_likelihood(model$model$model, glmdata$local_mm, glmdata$target)
   } else {
-    start <- max_depth + 1
-    if (initial == "extended") {
-      start <- 1
-    }
     result <- 0
-    if (start <= length(newdata)) {
-      for (i in seq_along(newdata)) {
-        subtree <- match_context_co(model, ctx)
-        the_model <- NULL
-        if (i >= start) {
-          ## do we have a true match or an extended one?
-          if (i >= max_depth + 1) {
-            ## true match
-            if (subtree$merged) {
-              if (verbose) {
-                cat("merged model\n")
-              }
-              the_model <- subtree$tree$merged_model
-            } else if (!is.null(subtree$tree[["model"]])) {
-              the_model <- subtree$tree$model
-            } else {
-              stop("No match???")
-            }
-          } else {
-            ## extended match
-            if (subtree$merged) {
-              if (verbose) {
-                cat("merged model\n")
-              }
-              the_model <- subtree$tree$merged_model
-            } else if (!is.null(subtree$tree[["model"]])) {
-              if (verbose) {
-                cat("extended use of context\n")
-              }
-              the_model <- subtree$tree$model
-            } else if (!is.null(subtree$tree[["extended_model"]])) {
-              if (verbose) {
-                cat("extended context\n")
-              }
-              the_model <- subtree$tree$extended_model
-            } else {
-              stop("No extended match???")
-            }
-          }
-          mm <- prepare_covariate(newcov,
-            i - subtree$depth - 1,
-            d = the_model$hsize,
-            from = subtree$depth - the_model$hsize
-          )
-          ll <- glm_likelihood(the_model$model, mm, newdata[i])
+    discarded <- 0
+    for (i in seq_along(newdata)) {
+      subtree <- match_context_co(model, ctx)
+      the_model <- NULL
+      to_keep <- (initial != "specific" && i > ignore) ||
+        (initial == "specific" && i > max(max_depth, ignore))
+      ## do we have a true match or an extended one?
+      if (i >= max_depth + 1) {
+        ## true match
+        if (subtree$merged) {
           if (verbose) {
-            cat(
-              "[", paste(rev(model$vals[ctx]), collapse = "-"), "] ->",
-              paste(model$vals[newdata[i]]), ll,
-              the_model$coefficients,
-              "\n"
-            )
+            cat("merged model\n")
           }
-          result <- result + ll
+          the_model <- subtree$tree$merged_model
+        } else if (!is.null(subtree$tree[["model"]])) {
+          the_model <- subtree$tree$model
+        } else {
+          stop("No match???")
         }
-        ## ctx <- rev(x[(i-max_depth+1):i])
-        j <- max(i - max_depth + 1, 1)
-        ctx <- x[i:j]
-        #      print(paste(i,j))
+      } else {
+        ## extended match
+        if (subtree$merged) {
+          if (verbose) {
+            cat("merged model\n")
+          }
+          the_model <- subtree$tree$merged_model
+        } else if (!is.null(subtree$tree[["model"]])) {
+          if (verbose) {
+            cat("extended use of context\n")
+          }
+          the_model <- subtree$tree$model
+        } else if (!is.null(subtree$tree[["extended_model"]])) {
+          if (verbose) {
+            cat("extended context\n")
+          }
+          the_model <- subtree$tree$extended_model
+        } else {
+          stop("No extended match???")
+        }
       }
+      mm <- prepare_covariate(newcov,
+        i - subtree$depth - 1,
+        d = the_model$hsize,
+        from = subtree$depth - the_model$hsize
+      )
+      ll <- glm_likelihood(the_model$model, mm, newdata[i])
+      if (verbose) {
+        cat(
+          "[", paste(rev(model$vals[ctx]), collapse = "-"), "] ->",
+          paste(model$vals[newdata[i]]), ll,
+          the_model$coefficients,
+          "\n"
+        )
+      }
+      if (to_keep) {
+        result <- result + ll
+      } else {
+        discarded <- discarded + ll
+      }
+      ## ctx <- rev(x[(i-max_depth+1):i])
+      j <- max(i - max_depth + 1, 1)
+      ctx <- x[i:j]
+      #      print(paste(i,j))
     }
     result <- as.numeric(result)
   }
+  if (verbose) {
+    print(as.numeric(discarded))
+  }
+  attr(result, "nobs") <- max(0, length(x) - ignore)
   if (initial == "truncated") {
     attr(result, "df") <- count_parameters(model, FALSE)
-    attr(result, "nobs") <- max(0, length(newdata) - max_depth)
   } else if (initial == "specific") {
     attr(result, "df") <- count_parameters(model, FALSE) + max_depth
-    attr(result, "nobs") <- length(x)
   } else {
     attr(result, "df") <- count_parameters(model, TRUE)
-    attr(result, "nobs") <- length(x)
   }
   result
 }

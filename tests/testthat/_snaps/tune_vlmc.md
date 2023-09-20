@@ -1,10 +1,10 @@
 # print works as expected
 
     VLMC context tree on 0, 1, 2 
-     cutoff: 8.715 (quantile: 0.000164)
+     cutoff: 3.379 (quantile: 0.03409)
      Number of contexts: 3 
      Maximum context length: 1 
-     Selected by BIC (990.3778) with likelihood function "extended" (-476.5451)
+     Selected by BIC (968.9371) with likelihood function "truncated" (-471.5896)
 
 ---
 
@@ -12,52 +12,52 @@
      cutoff: 3.379 (quantile: 0.03409)
      Number of contexts: 3 
      Maximum context length: 1 
-     Selected by AIC (954.5098) with likelihood function "truncated" (-472.6002)
+     Selected by AIC (938.2772) with likelihood function "truncated" (-471.5896)
 
 # summary works as expected
 
     VLMC tune results
     
-    Best VLMC selected by BIC (990.3778) with likelihood function "extended" (-476.5451)
+    Best VLMC selected by BIC (968.9371) with likelihood function "truncated" (-471.5896)
     VLMC context tree on 0, 1, 2 
-     cutoff: 8.715 (quantile: 0.000164)
+     cutoff: 3.379 (quantile: 0.03409)
      Number of contexts: 3 
      Maximum context length: 1 
     
     Pruning results
         cutoff        alpha depth nb_contexts loglikelihood       AIC       BIC
-      1.553652 2.114743e-01     8          56     -412.1827 1072.3654 1594.9768
-      1.566520 2.087705e-01     8          52     -415.2330 1062.4660 1551.3605
-      1.595110 2.028862e-01     8          50     -417.3660 1054.7320 1518.3389
-      1.617948 1.983051e-01     8          49     -418.9795 1053.9591 1509.1367
-      1.629846 1.959597e-01     8          49     -420.6019 1053.2038 1499.9523
-      1.638429 1.942851e-01     8          48     -422.2393 1052.4785 1490.7978
-      1.659070 1.903160e-01     8          46     -424.5283 1049.0567 1470.5175
-      1.685882 1.852809e-01     8          44     -426.7619 1045.5238 1450.1261
-      1.727358 1.777533e-01     8          42     -429.7192 1039.4385 1418.7532
-      1.771785 1.700292e-01     8          39     -432.1259 1032.2518 1386.2789
-      1.806683 1.641979e-01     8          38     -433.9070 1031.8141 1377.4119
-      1.833370 1.598738e-01     8          36     -435.8403 1027.6806 1356.4200
-      1.841439 1.585891e-01     8          35     -437.6745 1027.3489 1347.6591
-      1.906938 1.485344e-01     7          27     -443.0233 1006.0466 1258.9231
-      1.968433 1.396755e-01     5          23     -445.9947  991.9895 1202.7199
-      2.079931 1.249389e-01     5          21     -448.6321  989.2642 1183.1362
-      2.212651 1.094102e-01     5          19     -451.5385  983.0770 1151.6613
-      2.256204 1.047474e-01     5          17     -453.9017  979.8034 1131.5293
-      2.303889 9.986969e-02     5          14     -457.7522  975.5045 1101.9427
-      2.552296 7.790260e-02     4          10     -461.3788  966.7576 1059.4790
-      2.834259 5.876203e-02     4           8     -464.4293  964.8586 1040.7216
-      2.880310 5.611737e-02     3           5     -469.2545  962.5089 1013.0842
-      3.378896 3.408506e-02     1           3     -472.6002  961.2005  994.9173
-      8.715379 1.640434e-04     1           3     -476.5451  965.0901  990.3778
-     21.194476 6.242464e-10     1           2     -495.8001  999.6002 1016.4586
-     25.464063 8.731682e-12     0           1     -519.1294 1042.2587 1050.6880
+      1.553652 2.114743e-01     8          56     -406.2783 1036.5565 1506.7862
+      1.566520 2.087705e-01     8          52     -409.1532 1026.3064 1462.9481
+      1.595110 2.028862e-01     8          50     -411.2862 1022.5724 1442.4203
+      1.617948 1.983051e-01     8          49     -412.8997 1021.7994 1433.2504
+      1.629846 1.959597e-01     8          49     -414.5221 1025.0442 1436.4951
+      1.638429 1.942851e-01     8          48     -416.1594 1024.3189 1427.3729
+      1.659070 1.903160e-01     8          46     -418.4485 1020.8971 1407.1571
+      1.685882 1.852809e-01     8          44     -420.6821 1017.3642 1386.8303
+      1.727358 1.777533e-01     8          42     -423.6394 1015.2789 1367.9511
+      1.771785 1.700292e-01     8          39     -426.0461 1008.0922 1335.5735
+      1.806683 1.641979e-01     8          38     -427.8272 1007.6545 1326.7389
+      1.833370 1.598738e-01     8          36     -429.7605 1003.5210 1305.8115
+      1.841439 1.585891e-01     8          35     -431.5947 1003.1893 1297.0828
+      1.906938 1.485344e-01     7          27     -436.9799  981.9598 1208.6776
+      1.968433 1.396755e-01     5          23     -439.3010  970.6021 1163.7321
+      2.079931 1.249389e-01     5          21     -441.9384  967.8768 1144.2129
+      2.212651 1.094102e-01     5          19     -444.5310  965.0620 1124.6041
+      2.256204 1.047474e-01     5          17     -446.8942  961.7884 1104.5366
+      2.303889 9.986969e-02     5          14     -450.8427  957.6853 1075.2427
+      2.552296 7.790260e-02     4          10     -454.5862  949.1724 1033.1420
+      2.834259 5.876203e-02     4           8     -457.7708  947.5416 1014.7173
+      2.880310 5.611737e-02     3           5     -462.5273  945.0546  987.0394
+      3.378896 3.408506e-02     1           3     -465.8731  943.7462  968.9371
+      8.715379 1.640434e-04     1           3     -470.0193  952.0386  977.2294
+     21.194476 6.242464e-10     1           2     -488.8284  985.6569 1002.4508
+     25.464063 8.731682e-12     0           1     -511.0119 1026.0239 1034.4208
 
 ---
 
     VLMC tune results
     
-    Best VLMC selected by AIC (957.1793) with likelihood function "specific" (-472.6002)
+    Best VLMC selected by AIC (957.1793) with likelihood function "specific" (-471.5896)
     VLMC context tree on 0, 1, 2 
      cutoff: 3.379 (quantile: 0.03409)
      Number of contexts: 3 
@@ -119,59 +119,57 @@
     Max depth reached, increasing it to 4 
     Max depth reached, increasing it to 8 
     Max depth reached, increasing it to 16 
-    Initial criterion= Inf 
-    Improving criterion= 1594.977 
-    Pruning vlmc with cutoff= 1.56652 
-    Improving criterion= 1551.361 
-    Pruning vlmc with cutoff= 1.59511 
-    Improving criterion= 1518.339 
-    Pruning vlmc with cutoff= 1.617948 
-    Improving criterion= 1509.137 
-    Pruning vlmc with cutoff= 1.629846 
-    Improving criterion= 1499.952 
-    Pruning vlmc with cutoff= 1.638429 
-    Improving criterion= 1490.798 
-    Pruning vlmc with cutoff= 1.65907 
-    Improving criterion= 1470.517 
-    Pruning vlmc with cutoff= 1.685882 
-    Improving criterion= 1450.126 
-    Pruning vlmc with cutoff= 1.727358 
-    Improving criterion= 1418.753 
-    Pruning vlmc with cutoff= 1.771785 
-    Improving criterion= 1386.279 
-    Pruning vlmc with cutoff= 1.806683 
-    Improving criterion= 1377.412 
-    Pruning vlmc with cutoff= 1.83337 
-    Improving criterion= 1356.42 
-    Pruning vlmc with cutoff= 1.841439 
-    Improving criterion= 1347.659 
-    Pruning vlmc with cutoff= 1.906938 
-    Improving criterion= 1258.923 
-    Pruning vlmc with cutoff= 1.968433 
-    Improving criterion= 1202.72 
-    Pruning vlmc with cutoff= 2.079931 
-    Improving criterion= 1183.136 
-    Pruning vlmc with cutoff= 2.212651 
-    Improving criterion= 1151.661 
-    Pruning vlmc with cutoff= 2.256204 
-    Improving criterion= 1131.529 
-    Pruning vlmc with cutoff= 2.303889 
-    Improving criterion= 1101.943 
-    Pruning vlmc with cutoff= 2.552296 
-    Improving criterion= 1059.479 
-    Pruning vlmc with cutoff= 2.834259 
-    Improving criterion= 1040.722 
-    Pruning vlmc with cutoff= 2.88031 
-    Improving criterion= 1013.084 
-    Pruning vlmc with cutoff= 3.378896 
-    Improving criterion= 994.9173 
-    Pruning vlmc with cutoff= 8.715379 
-    Improving criterion= 990.3778 
-    Pruning vlmc with cutoff= 21.19448 
-    Pruning vlmc with cutoff= 25.46406 
+    Initial criterion = Inf 
+    Improving criterion = 1506.786 likelihood = -406.2783 df = 112 nobs =  492 
+    Pruning vlmc with cutoff = 1.56652 
+    Improving criterion = 1462.948 likelihood = -409.1532 df = 104 nobs =  492 
+    Pruning vlmc with cutoff = 1.59511 
+    Improving criterion = 1442.42 likelihood = -411.2862 df = 100 nobs =  492 
+    Pruning vlmc with cutoff = 1.617948 
+    Improving criterion = 1433.25 likelihood = -412.8997 df = 98 nobs =  492 
+    Pruning vlmc with cutoff = 1.629846 
+    Pruning vlmc with cutoff = 1.638429 
+    Improving criterion = 1427.373 likelihood = -416.1594 df = 96 nobs =  492 
+    Pruning vlmc with cutoff = 1.65907 
+    Improving criterion = 1407.157 likelihood = -418.4485 df = 92 nobs =  492 
+    Pruning vlmc with cutoff = 1.685882 
+    Improving criterion = 1386.83 likelihood = -420.6821 df = 88 nobs =  492 
+    Pruning vlmc with cutoff = 1.727358 
+    Improving criterion = 1367.951 likelihood = -423.6394 df = 84 nobs =  492 
+    Pruning vlmc with cutoff = 1.771785 
+    Improving criterion = 1335.574 likelihood = -426.0461 df = 78 nobs =  492 
+    Pruning vlmc with cutoff = 1.806683 
+    Improving criterion = 1326.739 likelihood = -427.8272 df = 76 nobs =  492 
+    Pruning vlmc with cutoff = 1.83337 
+    Improving criterion = 1305.811 likelihood = -429.7605 df = 72 nobs =  492 
+    Pruning vlmc with cutoff = 1.841439 
+    Improving criterion = 1297.083 likelihood = -431.5947 df = 70 nobs =  492 
+    Pruning vlmc with cutoff = 1.906938 
+    Improving criterion = 1208.678 likelihood = -436.9799 df = 54 nobs =  492 
+    Pruning vlmc with cutoff = 1.968433 
+    Improving criterion = 1163.732 likelihood = -439.301 df = 46 nobs =  492 
+    Pruning vlmc with cutoff = 2.079931 
+    Improving criterion = 1144.213 likelihood = -441.9384 df = 42 nobs =  492 
+    Pruning vlmc with cutoff = 2.212651 
+    Improving criterion = 1124.604 likelihood = -444.531 df = 38 nobs =  492 
+    Pruning vlmc with cutoff = 2.256204 
+    Improving criterion = 1104.537 likelihood = -446.8942 df = 34 nobs =  492 
+    Pruning vlmc with cutoff = 2.303889 
+    Improving criterion = 1075.243 likelihood = -450.8427 df = 28 nobs =  492 
+    Pruning vlmc with cutoff = 2.552296 
+    Improving criterion = 1033.142 likelihood = -454.5862 df = 20 nobs =  492 
+    Pruning vlmc with cutoff = 2.834259 
+    Improving criterion = 1014.717 likelihood = -457.7708 df = 16 nobs =  492 
+    Pruning vlmc with cutoff = 2.88031 
+    Improving criterion = 987.0394 likelihood = -462.5273 df = 10 nobs =  492 
+    Pruning vlmc with cutoff = 3.378896 
+    Improving criterion = 968.9371 likelihood = -465.8731 df = 6 nobs =  492 
+    Pruning vlmc with cutoff = 8.715379 
+    Pruning vlmc with cutoff = 21.19448 
+    Pruning vlmc with cutoff = 25.46406 
     VLMC context tree on 0, 1, 2 
-     cutoff: 8.715 (quantile: 0.000164)
+     cutoff: 3.379 (quantile: 0.03409)
      Number of contexts: 3 
      Maximum context length: 1 
-     Selected by BIC (990.3778) with likelihood function "extended" (-476.5451)
+     Selected by BIC (968.9371) with likelihood function "truncated" (-471.5896)
 

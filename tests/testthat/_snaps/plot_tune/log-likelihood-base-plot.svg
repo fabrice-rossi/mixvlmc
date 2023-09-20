@@ -25,7 +25,7 @@
   </clipPath>
 </defs>
 <g clip-path='url(#cpNTkuMDR8Njg5Ljc2fDU5LjA0fDUwMi41Ng==)'>
-<polyline points='666.40,75.47 575.76,77.03 505.21,78.71 463.57,80.50 358.99,82.34 189.94,85.16 122.99,88.81 89.10,93.56 82.40,100.75 82.40,293.17 82.40,486.13 ' style='stroke-width: 0.75;' />
+<polyline points='666.40,75.47 575.76,77.15 505.21,79.10 463.57,81.14 358.99,83.24 189.94,86.29 122.99,89.81 89.10,94.95 82.40,101.21 82.40,277.93 82.40,486.13 ' style='stroke-width: 0.75;' />
 </g>
 <g clip-path='url(#cpMC4wMHw3MjAuMDB8MC4wMHw1NzYuMDA=)'>
 <line x1='82.40' y1='502.56' x2='639.02' y2='502.56' style='stroke-width: 0.75;' />
@@ -43,17 +43,17 @@
 <text x='453.48' y='528.48' text-anchor='middle' style='font-size: 12.00px; font-family: sans;' textLength='23.36px' lengthAdjust='spacingAndGlyphs'>0.04</text>
 <text x='546.25' y='528.48' text-anchor='middle' style='font-size: 12.00px; font-family: sans;' textLength='23.36px' lengthAdjust='spacingAndGlyphs'>0.05</text>
 <text x='639.02' y='528.48' text-anchor='middle' style='font-size: 12.00px; font-family: sans;' textLength='23.36px' lengthAdjust='spacingAndGlyphs'>0.06</text>
-<line x1='59.04' y1='487.27' x2='59.04' y2='139.96' style='stroke-width: 0.75;' />
-<line x1='59.04' y1='487.27' x2='51.84' y2='487.27' style='stroke-width: 0.75;' />
-<line x1='59.04' y1='400.44' x2='51.84' y2='400.44' style='stroke-width: 0.75;' />
-<line x1='59.04' y1='313.62' x2='51.84' y2='313.62' style='stroke-width: 0.75;' />
-<line x1='59.04' y1='226.79' x2='51.84' y2='226.79' style='stroke-width: 0.75;' />
-<line x1='59.04' y1='139.96' x2='51.84' y2='139.96' style='stroke-width: 0.75;' />
-<text transform='translate(41.76,487.27) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: sans;' textLength='24.02px' lengthAdjust='spacingAndGlyphs'>-700</text>
-<text transform='translate(41.76,400.44) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: sans;' textLength='24.02px' lengthAdjust='spacingAndGlyphs'>-600</text>
-<text transform='translate(41.76,313.62) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: sans;' textLength='24.02px' lengthAdjust='spacingAndGlyphs'>-500</text>
-<text transform='translate(41.76,226.79) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: sans;' textLength='24.02px' lengthAdjust='spacingAndGlyphs'>-400</text>
-<text transform='translate(41.76,139.96) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: sans;' textLength='24.02px' lengthAdjust='spacingAndGlyphs'>-300</text>
+<line x1='59.04' y1='435.12' x2='59.04' y2='59.51' style='stroke-width: 0.75;' />
+<line x1='59.04' y1='435.12' x2='51.84' y2='435.12' style='stroke-width: 0.75;' />
+<line x1='59.04' y1='341.21' x2='51.84' y2='341.21' style='stroke-width: 0.75;' />
+<line x1='59.04' y1='247.31' x2='51.84' y2='247.31' style='stroke-width: 0.75;' />
+<line x1='59.04' y1='153.41' x2='51.84' y2='153.41' style='stroke-width: 0.75;' />
+<line x1='59.04' y1='59.51' x2='51.84' y2='59.51' style='stroke-width: 0.75;' />
+<text transform='translate(41.76,435.12) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: sans;' textLength='24.02px' lengthAdjust='spacingAndGlyphs'>-600</text>
+<text transform='translate(41.76,341.21) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: sans;' textLength='24.02px' lengthAdjust='spacingAndGlyphs'>-500</text>
+<text transform='translate(41.76,247.31) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: sans;' textLength='24.02px' lengthAdjust='spacingAndGlyphs'>-400</text>
+<text transform='translate(41.76,153.41) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: sans;' textLength='24.02px' lengthAdjust='spacingAndGlyphs'>-300</text>
+<text transform='translate(41.76,59.51) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: sans;' textLength='24.02px' lengthAdjust='spacingAndGlyphs'>-200</text>
 <polygon points='59.04,502.56 689.76,502.56 689.76,59.04 59.04,59.04 ' style='stroke-width: 0.75; fill: none;' />
 <text x='374.40' y='557.28' text-anchor='middle' style='font-size: 12.00px; font-family: sans;' textLength='120.07px' lengthAdjust='spacingAndGlyphs'>Cut off (quantile scale)</text>
 <text transform='translate(12.96,280.80) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: sans;' textLength='73.39px' lengthAdjust='spacingAndGlyphs'>Log likelihood</text>

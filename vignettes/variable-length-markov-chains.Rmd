@@ -314,7 +314,7 @@ California_weeks[California_earth_quakes$nbweeks] <- 1
 ```
 And finally we adjust automatically a VLMC.
 ```{r}
-California_weeks_earth_quakes_model <- tune_vlmc(California_weeks)
+California_weeks_earth_quakes_model <- tune_vlmc(California_weeks, initial = "truncated")
 plot(California_weeks_earth_quakes_model)
 ```
 The resulting model remains relatively simple with an interesting increase of the 

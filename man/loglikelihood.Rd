@@ -7,26 +7,32 @@
 \usage{
 loglikelihood(
   vlmc,
-  initial = c("extended", "specific", "truncated"),
   newdata,
+  initial = c("truncated", "specific", "extended"),
+  ignore,
   ...
 )
 
 \method{loglikelihood}{vlmc}(
   vlmc,
-  initial = c("extended", "specific", "truncated"),
   newdata,
+  initial = c("truncated", "specific", "extended"),
+  ignore,
   ...
 )
 }
 \arguments{
 \item{vlmc}{the vlmc representation.}
 
+\item{newdata}{an optional discrete time series.}
+
 \item{initial}{specifies the likelihood function, more precisely the way the
 first few observations for which contexts cannot be calculated are integrated
-in the likelihood. See below for details.}
+in the likelihood. Defaults to \code{"truncated"}. See below for details.}
 
-\item{newdata}{an optional discrete time series.}
+\item{ignore}{specifies the number of initial values for which the loglikelihood
+will not be computed. The minimal number depends on the likelihood function as
+detailed below.}
 
 \item{...}{additional parameters for loglikelihood.}
 }
@@ -77,6 +83,12 @@ but not as much as with "specific". However, the likelihood of say \code{x[1]}
 with an empty context is generally not 1 and thus the full likelihood is
 smaller than the one computed with "specific".
 }
+
+In all cases, the \code{ignore} first values of the time series are not included
+in the computed likelihood, but still used to compute contexts. If \code{ignore}
+is not specified, it is set to the minimal possible value, that is k for the
+\code{truncated} likelihood and 0 for the other ones. If it is specified, it must
+be larger or equal to k for \code{truncated}.
 
 See the dedicated vignette for a more mathematically oriented discussion:
 \code{vignette("likelihood", package = "mixvlmc")}.

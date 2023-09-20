@@ -25,7 +25,7 @@
   </clipPath>
 </defs>
 <g clip-path='url(#cpNTkuMDR8Njg5Ljc2fDU5LjA0fDUwMi41Ng==)'>
-<polyline points='666.40,263.26 575.76,264.82 505.21,266.24 463.57,267.56 358.99,268.82 189.94,389.26 122.99,411.31 89.10,477.67 82.40,486.13 82.40,281.09 82.40,75.47 ' style='stroke-width: 0.75;' />
+<polyline points='666.40,268.15 575.76,266.34 505.21,264.25 463.57,262.05 358.99,259.79 189.94,384.53 122.99,408.43 89.10,475.57 82.40,486.13 82.40,296.01 82.40,75.47 ' style='stroke-width: 0.75;' />
 </g>
 <g clip-path='url(#cpMC4wMHw3MjAuMDB8MC4wMHw1NzYuMDA=)'>
 <line x1='82.40' y1='502.56' x2='639.02' y2='502.56' style='stroke-width: 0.75;' />
@@ -43,17 +43,15 @@
 <text x='453.48' y='528.48' text-anchor='middle' style='font-size: 12.00px; font-family: sans;' textLength='23.36px' lengthAdjust='spacingAndGlyphs'>0.04</text>
 <text x='546.25' y='528.48' text-anchor='middle' style='font-size: 12.00px; font-family: sans;' textLength='23.36px' lengthAdjust='spacingAndGlyphs'>0.05</text>
 <text x='639.02' y='528.48' text-anchor='middle' style='font-size: 12.00px; font-family: sans;' textLength='23.36px' lengthAdjust='spacingAndGlyphs'>0.06</text>
-<line x1='59.04' y1='453.44' x2='59.04' y2='77.49' style='stroke-width: 0.75;' />
-<line x1='59.04' y1='453.44' x2='51.84' y2='453.44' style='stroke-width: 0.75;' />
-<line x1='59.04' y1='359.45' x2='51.84' y2='359.45' style='stroke-width: 0.75;' />
-<line x1='59.04' y1='265.46' x2='51.84' y2='265.46' style='stroke-width: 0.75;' />
-<line x1='59.04' y1='171.47' x2='51.84' y2='171.47' style='stroke-width: 0.75;' />
-<line x1='59.04' y1='77.49' x2='51.84' y2='77.49' style='stroke-width: 0.75;' />
-<text transform='translate(41.76,453.44) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: sans;' textLength='20.02px' lengthAdjust='spacingAndGlyphs'>600</text>
-<text transform='translate(41.76,359.45) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: sans;' textLength='20.02px' lengthAdjust='spacingAndGlyphs'>800</text>
-<text transform='translate(41.76,265.46) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: sans;' textLength='26.70px' lengthAdjust='spacingAndGlyphs'>1000</text>
-<text transform='translate(41.76,171.47) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: sans;' textLength='26.70px' lengthAdjust='spacingAndGlyphs'>1200</text>
-<text transform='translate(41.76,77.49) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: sans;' textLength='26.70px' lengthAdjust='spacingAndGlyphs'>1400</text>
+<line x1='59.04' y1='436.90' x2='59.04' y2='133.82' style='stroke-width: 0.75;' />
+<line x1='59.04' y1='436.90' x2='51.84' y2='436.90' style='stroke-width: 0.75;' />
+<line x1='59.04' y1='335.87' x2='51.84' y2='335.87' style='stroke-width: 0.75;' />
+<line x1='59.04' y1='234.84' x2='51.84' y2='234.84' style='stroke-width: 0.75;' />
+<line x1='59.04' y1='133.82' x2='51.84' y2='133.82' style='stroke-width: 0.75;' />
+<text transform='translate(41.76,436.90) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: sans;' textLength='20.02px' lengthAdjust='spacingAndGlyphs'>600</text>
+<text transform='translate(41.76,335.87) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: sans;' textLength='20.02px' lengthAdjust='spacingAndGlyphs'>800</text>
+<text transform='translate(41.76,234.84) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: sans;' textLength='26.70px' lengthAdjust='spacingAndGlyphs'>1000</text>
+<text transform='translate(41.76,133.82) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: sans;' textLength='26.70px' lengthAdjust='spacingAndGlyphs'>1200</text>
 <polygon points='59.04,502.56 689.76,502.56 689.76,59.04 59.04,59.04 ' style='stroke-width: 0.75; fill: none;' />
 <text x='374.40' y='557.28' text-anchor='middle' style='font-size: 12.00px; font-family: sans;' textLength='120.07px' lengthAdjust='spacingAndGlyphs'>Cut off (quantile scale)</text>
 <text transform='translate(12.96,280.80) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: sans;' textLength='20.01px' lengthAdjust='spacingAndGlyphs'>BIC</text>

@@ -23,7 +23,7 @@
 #'   or `"AIC"` (see details).
 #' @param initial specifies the likelihood function, more precisely the way the
 #'   first few observations for which contexts cannot be calculated are integrated
-#'   in the likelihood. See [loglikelihood()] for details.
+#'   in the likelihood. Default to `"truncated"`. See [loglikelihood()] for details.
 #' @param min_size integer >= 1 (default: 2). Minimum number of observations for
 #'   a context in the growing phase of the initial context tree.
 #' @param max_depth integer >= 1 (default: 100). Longest context considered in
@@ -55,7 +55,7 @@
 #' tune_result <- tune_vlmc(dts)
 #' draw(tune_result$best_model)
 tune_vlmc <- function(x, criterion = c("BIC", "AIC"),
-                      initial = c("extended", "specific", "truncated"),
+                      initial = c("truncated", "specific", "extended"),
                       min_size = 2, max_depth = 100, verbose = 0,
                       save = c("best", "initial", "all")) {
   criterion <- match.arg(criterion)
@@ -100,29 +100,38 @@ tune_vlmc <- function(x, criterion = c("BIC", "AIC"),
   model <- base_model
   best_crit <- Inf
   if (verbose > 0) {
-    cat("Initial criterion=", best_crit, "\n")
+    cat("Initial criterion =", best_crit, "\n")
   }
   if (save == "all") {
     all_models <- vector(mode = "list", length = length(cutoffs))
   }
+  max_order <- depth(model)
   repeat {
-    crit <- f_criterion(model)
+    if (initial == "truncated") {
+      ll <- loglikelihood(model, initial = "truncated", newdata = x, ignore = max_order)
+    } else {
+      ll <- stats::logLik(model, initial = initial)
+    }
+    crit <- f_criterion(ll)
     if (crit <= best_crit) {
       best_crit <- crit
       best_model <- model
       if (verbose > 0) {
-        cat("Improving criterion=", best_crit, "\n")
+        cat(
+          "Improving criterion =", best_crit, "likelihood =", ll,
+          "df =", attr(ll, "df"),
+          "nobs = ", attr(ll, "nobs"), "\n"
+        )
       }
     }
     results$depth[k] <- depth(model)
     results$nb_contexts[k] <- context_number(model)
-    ll <- stats::logLik(model, initial = initial)
     results$loglikelihood[k] <- ll
     results$AIC[k] <- stats::AIC(ll)
     results$BIC[k] <- stats::BIC(ll)
     if (k <= length(cutoffs)) {
       if (verbose > 0) {
-        cat("Pruning vlmc with cutoff=", cutoffs[k], "\n")
+        cat("Pruning vlmc with cutoff =", cutoffs[k], "\n")
       }
       model <- prune(model, cutoff = cutoffs[k])
       if (save == "all") {

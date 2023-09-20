@@ -1,4 +1,4 @@
-# the loglikelihood prints as expected
+# loglikelihood results print as expected
 
     Code
       print(x_tree_ll)

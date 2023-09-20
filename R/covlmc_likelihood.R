@@ -36,7 +36,11 @@ rec_loglikelihood_covlmc_newdata <- function(tree, d, nb_vals, y, cov, verbose =
   ## local model
   if (is.null(tree$children) && !is.null(tree$model)) {
     glmdata <- prepare_glm(cov, tree$match, tree$model$hsize, y, from = d - tree$model$hsize)
-    res <- glm_likelihood(tree$model$model, glmdata$local_mm, glmdata$target)
+    if (length(glmdata$target) > 0) {
+      res <- glm_likelihood(tree$model$model, glmdata$local_mm, glmdata$target)
+    } else {
+      res <- 0
+    }
     if (verbose) { # nocov start
       print("Leaf")
       print(all.equal(glmdata$target, tree$model$data$target))
@@ -148,8 +152,8 @@ rec_loglikelihood_covlmc_newdata <- function(tree, d, nb_vals, y, cov, verbose =
 #' attributes(ll)
 #'
 #' @export
-logLik.covlmc <- function(object, initial = c("extended", "specific", "truncated"), ...) {
-  ll <- loglikelihood(object, initial)
+logLik.covlmc <- function(object, initial = c("truncated", "specific", "extended"), ...) {
+  ll <- loglikelihood(object, initial = initial)
   class(ll) <- "logLik"
   ll
 }
@@ -196,29 +200,58 @@ logLik.covlmc <- function(object, initial = c("extended", "specific", "truncated
 #' attributes(ll_new)
 #'
 #' @export
-loglikelihood.covlmc <- function(vlmc, initial = c("extended", "specific", "truncated"),
-                                 newdata, newcov, ...) {
+loglikelihood.covlmc <- function(vlmc, newdata, initial = c("truncated", "specific", "extended"),
+                                 ignore, newcov, ...) {
   initial <- match.arg(initial)
+  if (missing(ignore)) {
+    if (initial == "truncated") {
+      ignore <- depth(vlmc)
+    } else {
+      ignore <- 0
+    }
+  } else if (ignore < depth(vlmc) && initial == "truncated") {
+    stop("Cannot ignore less than ", depth(vlmc), " initial observations with `truncated` likelihood")
+  }
   if (missing(newdata)) {
+    if (ignore > depth(vlmc)) {
+      stop("Cannot ignore more than ", depth(vlmc), " initial observations without newdata")
+    }
     assertthat::assert_that(missing(newcov),
       msg = "Cannot specify new covariate values (newcov) without new data (newdata)"
     )
     data_size <- vlmc$data_size
     ## in this case, we have directly the truncated/specific LL
     res <- rec_loglikelihood_covlmc(vlmc)
-    if (initial == "extended" && depth(vlmc) != 0) {
-      res <- res + vlmc$extended_ll
+    ignore_counts <- ignore
+    if (initial == "extended") {
+      if (depth(vlmc) > 0) {
+        ## add the full extended match
+        res <- res + vlmc$extended_ll
+      }
+      if (ignore > 0) {
+        ## remove the ignored data
+        icovlmc <- match_ctx(vlmc, vlmc$ix[1:min(ignore, length(vlmc$ix))])
+        delta_res <- rec_loglikelihood_covlmc_newdata(
+          icovlmc, 0, length(vlmc$vals),
+          vlmc$ix[1:min(ignore, length(vlmc$ix))],
+          vlmc$icov[1:min(ignore, length(vlmc$ix)), , drop = FALSE]
+        )
+        res <- res - delta_res
+      }
     }
   } else {
     if (isTRUE(vlmc$trimmed == "full")) {
       stop("loglikelihood calculation for new data is not supported by fully trimmed covlmc")
     }
-    assertthat::assert_that((typeof(newdata) == typeof(vlmc$vals)) && is(newdata, class(vlmc$vals)),
+    assertthat::assert_that((typeof(newdata) == typeof(vlmc$vals)) && methods::is(newdata, class(vlmc$vals)),
       msg = "newdata is not compatible with the model state space"
     )
     assertthat::assert_that(!missing(newcov),
       msg = "Need new covariate values (newcov) with new data (newdata)"
     )
+    if (ignore >= length(newdata)) {
+      stop("Cannot ignore more data than the available ones")
+    }
     assertthat::assert_that(is.data.frame(newcov))
     assertthat::assert_that(nrow(newcov) == length(newdata))
     data_size <- length(newdata)
@@ -230,23 +263,29 @@ loglikelihood.covlmc <- function(vlmc, initial = c("extended", "specific", "trun
     } else {
       newdata <- nx$ix
     }
+    ignore_counts <- ignore
+    if (initial == "specific" && ignore < depth(vlmc)) {
+      ignore <- depth(vlmc)
+    }
     res <- rec_loglikelihood_covlmc_newdata(ncovlmc, 0, length(vlmc$vals), newdata, newcov)
-    if (initial != "extended" && depth(vlmc) != 0) {
-      icovlmc <- match_ctx(vlmc, nx$ix[1:depth(vlmc)], keep_match = TRUE)
-      delta_res <- rec_loglikelihood_covlmc_newdata(icovlmc, 0, length(vlmc$vals), newdata, newcov)
+    if (ignore > 0) {
+      icovlmc <- match_ctx(vlmc, nx$ix[1:min(ignore, length(newdata))], keep_match = TRUE)
+      delta_res <- rec_loglikelihood_covlmc_newdata(
+        icovlmc, 0, length(vlmc$vals),
+        newdata[1:min(ignore, length(newdata))],
+        newcov[1:min(ignore, length(newdata)), , drop = FALSE]
+      )
       res <- res - delta_res
     }
   }
+  attr(res, "nobs") <- max(0, data_size - ignore_counts)
   max_depth <- depth(vlmc)
   if (initial == "truncated") {
     attr(res, "df") <- count_parameters(vlmc, FALSE)
-    attr(res, "nobs") <- data_size - depth(vlmc)
   } else if (initial == "specific") {
     attr(res, "df") <- count_parameters(vlmc, FALSE) + max_depth
-    attr(res, "nobs") <- data_size
   } else {
     attr(res, "df") <- count_parameters(vlmc, TRUE)
-    attr(res, "nobs") <- data_size
   }
   attr(res, "initial") <- initial
   structure(res, class = c("logLikMixVLMC", "logLik"))
