@@ -48,7 +48,6 @@ Suggests:
     data.table,
     geodist,
     knitr,
-    methods,
     rmarkdown,
     testthat (>= 3.0.0),
     tibble,
