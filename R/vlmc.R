@@ -369,7 +369,7 @@ vlmc <- function(x, alpha = 0.05, cutoff = NULL, min_size = 2L, max_depth = 100L
       ivlmc <- match_ctx(result, result$ix)
       result$extended_ll <- rec_loglikelihood_vlmc(ivlmc, TRUE)
     } else {
-      result$extended_ll <- result$root$loglikelihood(result$ix, TRUE, FALSE)
+      result$extended_ll <- result$root$loglikelihood(result$ix, 0, TRUE, FALSE)
     }
   } else {
     result$extended_ll <- 0

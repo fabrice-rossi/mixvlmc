@@ -27,3 +27,19 @@ test_that("loglikelihood computes the same values regardless of the backend", {
     }
   }
 })
+
+test_that("loglikelihood ignores the requested number of observation", {
+  withr::local_seed(0)
+  for (k in 1:9) {
+    x <- sample(0:k, 1000 + 100 * k, replace = TRUE)
+    x_tree <- vlmc(x, alpha = 0.1, backend = "C++")
+    r_tree <- vlmc(x, alpha = 0.1)
+    for (initial in c("truncated", "specific", "extended")) {
+      to_ignore <- depth(x_tree) + sample(1:50, 1)
+      fll <- loglikelihood(x_tree, newdata = x, initial = initial, ignore = to_ignore)
+      sll <- slow_loglikelihood(r_tree, x, initial = initial, ignore = to_ignore)
+      expect_equal(as.numeric(fll), as.numeric(sll))
+      expect_equal(attr(fll, "nobs"), attr(sll, "nobs"))
+    }
+  }
+})

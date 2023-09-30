@@ -754,6 +754,7 @@ class SuffixTree {
   }
   // loglikelihood calculation
   double loglikelihood(const IntegerVector& y,
+                       int ignore,
                        bool extended,
                        bool verbose) const {
     if(!has_reverse) {
@@ -763,7 +764,7 @@ class SuffixTree {
     EdgeNode* current = root;
     int ny = y.size();
     for(int i = 0; i < ny; i++) {
-      if(extended || i >= max_depth) {
+      if(i >= ignore && (extended || i >= max_depth)) {
         if(auto child = current->counts->find(y[i]);
            child != current->counts->end()) {
           if(child->second == 0) {

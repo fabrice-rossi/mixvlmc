@@ -40,7 +40,7 @@ as_vlmc.ctx_tree_cpp <- function(x, alpha, cutoff, ...) {
   }
   if (depth(result) > 0) {
     result$ix <- x$ix[1:min(depth(result), length(x$ix))]
-    result$extended_ll <- result$root$loglikelihood(result$ix, TRUE, FALSE)
+    result$extended_ll <- result$root$loglikelihood(result$ix, 0, TRUE, FALSE)
   } else {
     result$extended_ll <- 0
   }

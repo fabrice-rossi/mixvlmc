@@ -24,8 +24,9 @@ loglikelihood(
 
 \method{loglikelihood}{vlmc_cpp}(
   vlmc,
-  initial = c("truncated", "specific", "extended"),
   newdata,
+  initial = c("truncated", "specific", "extended"),
+  ignore,
   ...
 )
 }

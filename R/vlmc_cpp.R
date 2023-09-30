@@ -40,7 +40,7 @@ prune.vlmc_cpp <- function(vlmc, alpha = 0.05, cutoff = NULL, ...) {
   ## recompute the extended_ll
   if (depth(result) > 0) {
     result$ix <- vlmc$ix[1:min(depth(result), length(vlmc$ix))]
-    result$extended_ll <- result$root$loglikelihood(result$ix, TRUE, FALSE)
+    result$extended_ll <- result$root$loglikelihood(result$ix, 0, TRUE, FALSE)
   } else {
     result$extended_ll <- 0
   }
