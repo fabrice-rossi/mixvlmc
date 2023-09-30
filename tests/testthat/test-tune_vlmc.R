@@ -12,23 +12,23 @@ test_that("tune_vlmc obeys is basic contract", {
 
 test_that("tune_vlmc selects the best model", {
   data_set <- build_markov_chain(300, 3, seed = 3)
-  bt_vlmc <- tune_vlmc(data_set$x, criterion = "BIC")
-  expect_equal(stats::BIC(bt_vlmc$best_model), min(bt_vlmc$results$BIC))
-  at_vlmc <- tune_vlmc(data_set$x, criterion = "AIC")
-  expect_equal(stats::AIC(at_vlmc$best_model), min(at_vlmc$results$AIC))
+  bt_vlmc <- tune_vlmc(data_set$x, initial = "specific", criterion = "BIC")
+  expect_equal(stats::BIC(logLik(bt_vlmc$best_model, initial = "specific")), min(bt_vlmc$results$BIC))
+  at_vlmc <- tune_vlmc(data_set$x, initial = "specific", criterion = "AIC")
+  expect_equal(stats::AIC(logLik(at_vlmc$best_model, initial = "specific")), min(at_vlmc$results$AIC))
 })
 
 test_that("tune_vlmc memorizes the models it is asked to memorize", {
   data_set <- build_markov_chain(500, 4, seed = 2)
-  bt_vlmc <- tune_vlmc(data_set$x, criterion = "BIC", save = "all")
+  bt_vlmc <- tune_vlmc(data_set$x, initial = "extended", criterion = "BIC", save = "all")
   expect_equal(length(bt_vlmc$saved_models$all) + 1L, nrow(bt_vlmc$results))
   best_BIC_idx <- which.min(bt_vlmc$results$BIC)
   expect_identical(bt_vlmc$best_model, bt_vlmc$saved_models$all[[best_BIC_idx - 1]])
   ## compare the result table and the models
   quantities <- list(
-    "BIC" = stats::BIC,
-    "AIC" = stats::AIC,
-    "loglikelihood" = stats::logLik,
+    "BIC" = \(x) stats::BIC(stats::logLik(x, initial = "extended")),
+    "AIC" = \(x) stats::AIC(stats::logLik(x, initial = "extended")),
+    "loglikelihood" = \(x) stats::logLik(x, initial = "extended"),
     "depth" = depth,
     "nb_contexts" = context_number
   )
@@ -56,7 +56,7 @@ test_that("print works as expected", {
   expect_snapshot_output(print(t_vlmc_auto))
   t_vlmc_auto <- tune_vlmc(data_set$x,
     max_depth = 2,
-    initial = "extended", criterion = "AIC"
+    initial = "truncated", criterion = "AIC"
   )
   expect_snapshot_output(print(t_vlmc_auto))
 })
@@ -69,7 +69,7 @@ test_that("summary works as expected", {
   expect_snapshot_output(print(summary(t_vlmc_auto)))
   t_vlmc_auto <- tune_vlmc(data_set$x,
     max_depth = 2,
-    initial = "extended", criterion = "AIC"
+    initial = "specific", criterion = "AIC"
   )
   expect_snapshot_output(print(summary(t_vlmc_auto)))
 })

@@ -9,7 +9,7 @@ test_that("loglikelihood computes the expected values", {
     x_covlmc <- covlmc(x, df_y, min_size = 5, alpha = 0.01)
     for (initial in c("truncated", "specific", "extended")) {
       fll <- loglikelihood(x_covlmc, initial = initial, newdata = x, newcov = df_y)
-      sll <- co_slow_loglikelihood(x_covlmc, initial = initial, newdata = x, newcov = df_y)
+      sll <- co_slow_loglikelihood(x_covlmc, x, initial = initial, newcov = df_y)
       dll <- loglikelihood(x_covlmc, initial = initial)
       expect_equal(as.numeric(fll), as.numeric(sll))
       expect_equal(attr(fll, "df"), attr(sll, "df"))
@@ -17,6 +17,26 @@ test_that("loglikelihood computes the expected values", {
       expect_equal(as.numeric(dll), as.numeric(sll))
       expect_equal(attr(dll, "df"), attr(sll, "df"))
       expect_equal(attr(dll, "nobs"), attr(sll, "nobs"))
+    }
+  }
+})
+
+test_that("loglikelihood computes the expected values with ignore", {
+  withr::local_seed(42)
+  x <- sample(c("A", "B", "C"), 1000, replace = TRUE)
+  y <- ifelse(runif(length(x)) > 0.5, c(x[-1], sample(c("A", "B", "C"), 1)), c(x[-c(1, 2)], sample(c("A", "B", "C"), 2, replace = TRUE)))
+  y <- as.factor(ifelse(runif(length(x)) > 0.2, y, sample(c("A", "B", "C"), 1000, replace = TRUE)))
+  df_y <- data.frame(y = y)
+  for (engine in c("glm", "multinom")) {
+    withr::local_options(mixvlmc.predictive = engine)
+    x_covlmc <- covlmc(x, df_y, min_size = 5, alpha = 0.01)
+    for (initial in c("truncated", "specific", "extended")) {
+      to_ignore <- depth(x_covlmc) + sample(1:50, 1)
+      fll <- loglikelihood(x_covlmc, initial = initial, newdata = x, newcov = df_y, ignore = to_ignore)
+      sll <- co_slow_loglikelihood(x_covlmc, x, initial = initial, newcov = df_y, ignore = to_ignore)
+      expect_equal(as.numeric(fll), as.numeric(sll))
+      expect_equal(attr(fll, "df"), attr(sll, "df"))
+      expect_equal(attr(fll, "nobs"), attr(sll, "nobs"))
     }
   }
 })
@@ -55,7 +75,7 @@ test_that("likelihood calculation on real data", {
       loglikelihood(m_cov, initial = initial),
       tolerance = 1e-7
     )
-    sll <- co_slow_loglikelihood(m_cov, initial = initial, newdata = dts, newcov = dts_cov)
+    sll <- co_slow_loglikelihood(m_cov, dts, initial = initial, newcov = dts_cov)
     expect_equal(as.numeric(fll), as.numeric(sll))
     expect_equal(attr(fll, "df"), attr(sll, "df"))
     expect_equal(attr(fll, "nobs"), attr(sll, "nobs"))
@@ -79,8 +99,8 @@ test_that("likelihood calculation on real data with merged models", {
         tolerance = 1e-7
       )
       sll <- co_slow_loglikelihood(d_model$model,
-        initial = initial,
         newdata = d_model$dts,
+        initial = initial,
         newcov = d_model$cov
       )
       expect_equal(as.numeric(fll), as.numeric(sll))
@@ -103,8 +123,8 @@ test_that("likelihood calculation artifical data with merged models", {
         tolerance = 1e-7
       )
       sll <- co_slow_loglikelihood(d_model$model,
-        initial = initial,
         newdata = d_model$dts,
+        initial = initial,
         newcov = d_model$cov
       )
       expect_equal(as.numeric(fll), as.numeric(sll))

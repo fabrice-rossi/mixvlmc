@@ -21,8 +21,18 @@ build_markov_chain <- function(n, nb_vals, seed = 0) {
 ## 3) extended: from 1 to length(x) with assuming global contexts for the first d
 ##    observations (see the vignette)
 slow_loglikelihood <- function(model, x, initial = c("truncated", "specific", "extended"),
+                               ignore,
                                verbose = FALSE) {
   initial <- match.arg(initial)
+  if (missing(ignore)) {
+    if (initial == "truncated") {
+      ignore <- depth(model)
+    } else {
+      ignore <- 0L
+    }
+  } else if (initial == "truncated" && ignore < depth(model)) {
+    stop("Must ignore at least ", depth(model), " for truncated likelihood")
+  }
   assertthat::assert_that(length(x) >= 1)
   nx <- to_dts(x, model$vals)$ix + 1
   ctx <- c()
@@ -31,54 +41,51 @@ slow_loglikelihood <- function(model, x, initial = c("truncated", "specific", "e
     ## no model
     result <- sum(table(nx) * log(model$f_by / sum(model$f_by)))
   } else {
-    start <- max_depth + 1
-    if (initial == "extended") {
-      start <- 1
-    }
     result <- 0
-    if (start <= length(x)) {
-      for (i in seq_along(x)) {
-        subtree <- match_context(model, ctx)
-        if (verbose) {
-          if (subtree$depth > 0) {
-            matched_ctx <- paste(model$vals[ctx[1:subtree$depth]], collapse = "")
-          } else {
-            matched_ctx <- ""
-          }
-          cat(paste(
-            x[i], "<-",
-            stringr::str_pad(paste(model$vals[ctx], collapse = ""), max_depth, side = "right"),
-            "matched to",
-            stringr::str_pad(matched_ctx, max_depth, side = "right"),
-            "with counts",
-            paste(subtree$tree$f_by, collapse = " ")
-          ), "\n")
+    for (i in seq_along(x)) {
+      subtree <- match_context(model, ctx)
+      if (verbose) {
+        if (subtree$depth > 0) {
+          matched_ctx <- paste(model$vals[ctx[1:subtree$depth]], collapse = "")
+        } else {
+          matched_ctx <- ""
         }
+        cat(paste(
+          x[i], "<-",
+          stringr::str_pad(paste(model$vals[ctx], collapse = ""), max_depth, side = "right"),
+          "matched to",
+          stringr::str_pad(matched_ctx, max_depth, side = "right"),
+          "with counts",
+          paste(subtree$tree$f_by, collapse = " ")
+        ), "\n")
+      }
+      if ((initial != "specific" && i > ignore) ||
+        (initial == "specific" && i > max(max_depth, ignore))) {
+        ## keep this match
         if (subtree$tree$f_by[nx[i]] == 0) {
           print(paste(i, paste(model$vals[ctx], collapse = "")))
           print(model$vals[nx[i]])
           result <- -Inf
           break
-        } else if (i >= start) {
-          result <- result + log(subtree$tree$f_by[nx[i]] / sum(subtree$tree$f_by))
         }
-        ## ctx <- rev(x[(i-max_depth+1):i])
-        j <- max(i - max_depth + 1, 1)
-        ctx <- nx[i:j]
-        #      print(paste(i,j))
+        result <- result + log(subtree$tree$f_by[nx[i]] / sum(subtree$tree$f_by))
+      } else if (verbose) {
+        cat("ignoring observation", i, "\n")
       }
+      ## ctx <- rev(x[(i-max_depth+1):i])
+      j <- max(i - max_depth + 1, 1)
+      ctx <- nx[i:j]
+      #      print(paste(i,j))
     }
     result <- as.numeric(result)
   }
+  attr(result, "nobs") <- max(0, length(x) - ignore)
   if (initial == "truncated") {
     attr(result, "df") <- model$nb_ctx * (length(model$vals) - 1)
-    attr(result, "nobs") <- max(0, length(x) - max_depth)
   } else if (initial == "specific") {
-    attr(result, "df") <- (model$nb_ctx + max_depth) * (length(model$vals) - 1)
-    attr(result, "nobs") <- length(x)
+    attr(result, "df") <- model$nb_ctx * (length(model$vals) - 1) + max_depth
   } else {
     attr(result, "df") <- (model$nb_ctx + count_full_nodes(model)) * (length(model$vals) - 1)
-    attr(result, "nobs") <- length(x)
   }
   result
 }

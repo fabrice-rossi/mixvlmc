@@ -22,7 +22,11 @@ match_ctx <- function(tree, x, keep_match = FALSE) {
       }
       result
     } else {
-      fmatch <- forward_match_all_ctx_counts(x, nb_vals, d, from)
+      if (d == 0) {
+        fmatch <- forward_match_all_ctx_counts(x, nb_vals, d, NULL)
+      } else {
+        fmatch <- forward_match_all_ctx_counts(x, nb_vals, d, from)
+      }
       children <- vector(mode = "list", nb_vals)
       nb_children <- 0
       for (v in 1:nb_vals) {
@@ -54,5 +58,9 @@ match_ctx <- function(tree, x, keep_match = FALSE) {
       result
     }
   }
-  recurse_match_ctx(tree, x, length(tree$vals), 0, NULL, tabulate(x + 1, nbins = length(tree$vals)))
+  init_from <- NULL
+  if (!is.null(tree$match)) {
+    init_from <- tree$match
+  }
+  recurse_match_ctx(tree, x, length(tree$vals), 0, init_from, tabulate(x + 1, nbins = length(tree$vals)))
 }

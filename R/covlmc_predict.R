@@ -62,7 +62,7 @@ predict.covlmc <- function(object, newdata, newcov, type = c("raw", "probs"),
   }
   assertthat::assert_that(
     (typeof(newdata) == typeof(object$vals)) &&
-      (class(newdata) == class(object$vals)),
+      methods::is(newdata, class(object$vals)),
     msg = "newdata is not compatible with the model state space"
   )
   nx <- to_dts(newdata, object$vals)

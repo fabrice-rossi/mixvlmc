@@ -89,9 +89,6 @@ tune_covlmc <- function(x, covariate, criterion = c("BIC", "AIC"),
   criterion <- match.arg(criterion)
   initial <- match.arg(initial)
   best_trimming <- match.arg(best_trimming)
-  if (initial == "extended") {
-    stop("log likelihood calculation for COVLMC is limited to truncated and specific likelihood")
-  }
   save <- match.arg(save)
   criterion <- match.arg(criterion)
   trimming <- match.arg(trimming)
@@ -121,6 +118,7 @@ tune_covlmc <- function(x, covariate, criterion = c("BIC", "AIC"),
   }
   results <- NULL
   model <- base_model
+  max_order <- depth(model)
   best_crit <- Inf
   if (verbose > 0) {
     cat("Initial criterion=", best_crit, "\n")
@@ -129,7 +127,15 @@ tune_covlmc <- function(x, covariate, criterion = c("BIC", "AIC"),
     all_models <- list()
   }
   repeat {
-    crit <- f_criterion(model)
+    if (initial == "truncated") {
+      ll <- loglikelihood(model,
+        newdata = x, initial = "truncated",
+        ignore = max_order, newcov = covariate
+      )
+    } else {
+      ll <- stats::logLik(model, initial = initial)
+    }
+    crit <- f_criterion(ll)
     if (crit <= best_crit) {
       best_crit <- crit
       best_model <- model
@@ -137,7 +143,6 @@ tune_covlmc <- function(x, covariate, criterion = c("BIC", "AIC"),
         cat("Improving criterion=", best_crit, "\n")
       }
     }
-    ll <- stats::logLik(model, initial = initial)
     a_result <- data.frame(
       alpha = alpha,
       depth = depth(model),

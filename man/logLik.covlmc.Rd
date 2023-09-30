@@ -10,14 +10,15 @@
 \item{object}{the covlmc representation.}
 
 \item{initial}{specifies the likelihood function, more precisely the way the
-first few observations for which contexts cannot be calculated are integrated
-in the likelihood. See \code{\link[=loglikelihood]{loglikelihood()}} for details.}
+first few observations for which contexts cannot be calculated are
+integrated in the likelihood. Defaults to \code{"truncated"}. See
+\code{\link[=loglikelihood]{loglikelihood()}} for details.}
 
 \item{...}{additional parameters for logLik.}
 }
 \value{
-an object of class \code{logLik}. This is a number,
-the log-likelihood of the (CO)VLMC with the following attributes:
+an object of class \code{logLik}. This is a number, the log-likelihood of
+the (CO)VLMC with the following attributes:
 \itemize{
 \item \code{df}: the number of parameters used by the VLMC for this likelihood calculation
 \item \code{nobs}: the number of observations included in this likelihood calculation

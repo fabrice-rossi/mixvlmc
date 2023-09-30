@@ -169,7 +169,7 @@ sun_model_tune
 #>  cutoff: 2.306 (quantile: 0.03175)
 #>  Number of contexts: 9 
 #>  Maximum context length: 5 
-#>  Selected by BIC (248.5057) with likelihood function "truncated" (-98.83247)
+#>  Selected by BIC (236.262) with likelihood function "truncated" (-98.83247)
 ```
 
 The results of the pruning process can be represented graphically:
