@@ -213,7 +213,7 @@ rec_depth <- function(ct) {
 
 #' Depth of a context tree
 #'
-#' This function return the depth of a context tree, i.e. the length of the
+#' This function returns the depth of a context tree, i.e. the length of the
 #' longest context represented in the tree.
 #'
 #' @param ct a context tree.

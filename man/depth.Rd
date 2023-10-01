@@ -13,7 +13,7 @@ depth(ct)
 the depth of the tree.
 }
 \description{
-This function return the depth of a context tree, i.e. the length of the
+This function returns the depth of a context tree, i.e. the length of the
 longest context represented in the tree.
 }
 \examples{
