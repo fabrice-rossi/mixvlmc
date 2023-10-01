@@ -112,7 +112,7 @@ contexts_extractor <- function(ct, reverse, extractor, control, summarize = no_s
 #' This function extracts from a context tree a description of all of its
 #' contexts.
 #'
-#' The default behavior consists in returning a list of all the contexts
+#' The default behaviour consists in returning a list of all the contexts
 #' contained in the tree (with `type="auto"` or `type="list"`). When
 #' `type="data.frame"`, the method returns a data.frame whose first column,
 #' named `context`, contains the contexts. Other columns contain context

@@ -24,7 +24,7 @@ This function extracts from a context tree a description of all of its
 contexts.
 }
 \details{
-The default behavior consists in returning a list of all the contexts
+The default behaviour consists in returning a list of all the contexts
 contained in the tree (with \code{type="auto"} or \code{type="list"}). When
 \code{type="data.frame"}, the method returns a data.frame whose first column,
 named \code{context}, contains the contexts. Other columns contain context
