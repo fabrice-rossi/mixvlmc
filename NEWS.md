@@ -6,6 +6,10 @@
   Those function are documented in  a new vignette (`vignette("prediction")`)
 * `contexts()` can now report the positions of each context in the original time
   series
+* nodes of context trees can be extracted individually as `ctx_node` objects 
+  using the `find_sequence()` function. A collection of new functions can be
+  used to manipulate the nodes and gain fine grain information on the 
+  corresponding sequences (issue #50). 
 * the log likelihood calculations performed by `logLik.vlmc()`, `logLik.covlmc()`
   `loglikelihood()` and `loglikelihood.covlmc()` have been revised, expanded to 
   include three possible definitions of the likelihood function, and documented 
