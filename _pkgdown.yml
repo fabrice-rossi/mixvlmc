@@ -31,6 +31,16 @@ reference:
   - draw.ctx_tree
   - draw_control
   - states
+- title: Context tree nodes
+  desc: Extract nodes from context trees and manipulate them.
+- contents:
+  - find_sequence
+  - as_sequence
+  - children
+  - counts
+  - is_context
+  - parent
+  - positions
 - title: Variable Length Markov Chain (VLMC)
   desc: Estimate VLMC from a time series and extract information from them.
 - contents:
