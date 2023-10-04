@@ -1,8 +1,17 @@
-new_ctx_node <- function(ctx, tree, node) {
+#' Create `ctx_node`
+#'
+#' @param ctx the sequence in reverse order
+#' @param tree the tree
+#' @param node the node representing the context
+#' @param rev whether the sequence should be reported in reverse order or in
+#'   temporal order
+#' @noRd
+new_ctx_node <- function(ctx, tree, node, rev) {
   structure(
     list(
       sequence = ctx, node = node, tree = tree,
-      is_context = count_local_context(node) > 0
+      is_context = count_local_context(node) > 0,
+      rev = rev
     ),
     class = "ctx_node"
   )
@@ -11,11 +20,18 @@ new_ctx_node <- function(ctx, tree, node) {
 #' @export
 print.ctx_node <- function(x, ...) {
   if (x$is_context) {
-    cat("Context: ")
+    cat("Context")
   } else {
-    cat("Sequence: ")
+    cat("Sequence")
   }
-  cat(paste(x$sequence, collapse = ", "), "\n")
+  if (x$rev) {
+    cat(" [R]: ")
+    x_seq <- x$sequence
+  } else {
+    cat(" [T]: ")
+    x_seq <- rev(x$sequence)
+  }
+  cat(paste(x_seq, collapse = ", "), "\n")
   cat(" followed by ", paste(paste(x$tree$vals, x$node$f_by, sep = " ("), collapse = "), "), ")\n", sep = "")
 }
 
@@ -27,13 +43,57 @@ assertthat::on_failure(is_ctx_node) <- function(call, env) {
   paste0(deparse(call$node), " is not a ctx_node object")
 }
 
+#' Report the ordering convention of the node
+#'
+#' This function returns `TRUE` if the node is use a reverse temporal ordering
+#' and `FALSE` in the other case.
+#'
+#' @param node a `ctx_node` object as returned by [find_sequence()]
+#' @returns `TRUE` if the node `node` use a reverse temporal ordering, `FALSE`
+#'   when this is not the case
+#' @examples
+#' dts <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 0)
+#' dts_ctree <- ctx_tree(dts, min_size = 1, max_depth = 3)
+#' is_reversed(find_sequence(dts_ctree, c(0, 0)))
+#' is_reversed(find_sequence(dts_ctree, c(1, 0), reverse = FALSE))
+#' @export
+#' @seealso [rev.ctx_node()]
+is_reversed <- function(node) {
+  assertthat::assert_that(is_ctx_node(node))
+  node$rev
+}
+
+#' Reverse Sequence
+#'
+#' This function reverses the order in which the sequence represented by the
+#' `ctx_node` parameter will be reported in other functions, mainly
+#' [as_sequence()].
+#'
+#' @param x a `ctx_node` object as returned by [find_sequence()]
+#' @returns a `ctx_node` using the opposite ordering convention as the parameter
+#'   of the function
+#' @export
+#' @examples
+#' dts <- c("A", "B", "C", "A", "A", "B", "B", "C", "C", "A")
+#' dts_tree <- ctx_tree(dts, max_depth = 3)
+#' res <- find_sequence(dts_tree, c("B", "A"))
+#' print(res)
+#' r_res <- rev(res)
+#' print(r_res)
+#' as_sequence(r_res)
+#' @seealso [is_reversed()]
+rev.ctx_node <- function(x) {
+  x$rev <- !x$rev
+  x
+}
+
 #' Extract the sequence encoded by a node
 #'
 #' This function returns the sequence represented by the `node` object.
 #'
 #' @param node a `ctx_node` object as returned by [find_sequence()]
 #' @param reverse specifies whether the sequence should be reported in reverse
-#'   temporal order (`TRUE`, default value) or in the temporal order (`FALSE`).
+#'   temporal order (`TRUE`) or in the temporal order (`FALSE`).
 #'
 #' @return the sequence represented by the `node` object, a vector
 #' @export
@@ -43,8 +103,11 @@ assertthat::on_failure(is_ctx_node) <- function(call, env) {
 #' dts_tree <- ctx_tree(dts, max_depth = 3)
 #' res <- find_sequence(dts_tree, "A")
 #' as_sequence(res)
-as_sequence <- function(node, reverse = TRUE) {
+as_sequence <- function(node, reverse) {
   assertthat::assert_that(is_ctx_node(node))
+  if (missing(reverse)) {
+    reverse <- node$rev
+  }
   if (reverse) {
     node$sequence
   } else {
@@ -88,7 +151,7 @@ find_sequence.ctx_tree <- function(ct, ctx, reverse = TRUE, ...) {
     if (isTRUE(ct$keep_match) && is.null(ct$match)) {
       ct$match <- 1:ct$data_size
     }
-    new_ctx_node(ctx, ct, ct)
+    new_ctx_node(ctx, ct, ct, reverse)
   } else {
     assertthat::assert_that((typeof(ctx) == typeof(ct$vals)) && methods::is(ctx, class(ct$vals)),
       msg = "ctx is not compatible with the model state space"
@@ -108,7 +171,7 @@ find_sequence.ctx_tree <- function(ct, ctx, reverse = TRUE, ...) {
       }
       current <- candidate
     }
-    new_ctx_node(ctx, ct, current)
+    new_ctx_node(ctx, ct, current, reverse)
   }
 }
 

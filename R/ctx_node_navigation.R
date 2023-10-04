@@ -26,7 +26,12 @@
 parent <- function(node) {
   assertthat::assert_that(is_ctx_node(node))
   if (length(node$sequence) >= 1) {
-    find_sequence(node$tree, node$sequence[-length(node$sequence)])
+    pre_res <- find_sequence(node$tree, node$sequence[-length(node$sequence)])
+    if (!node$rev) {
+      rev(pre_res)
+    } else {
+      pre_res
+    }
   } else {
     NULL
   }
@@ -69,7 +74,7 @@ children <- function(node) {
     for (k in seq_along(res)) {
       if (length(node$node$children[[k]]) > 0) {
         the_ctx <- c(node$sequence, node$tree$vals[k])
-        res[[k]] <- new_ctx_node(the_ctx, node$tree, node$node$children[[k]])
+        res[[k]] <- new_ctx_node(the_ctx, node$tree, node$node$children[[k]], node$rev)
       }
     }
     names(res) <- as.character(node$tree$vals)

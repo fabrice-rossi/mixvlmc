@@ -13,12 +13,23 @@ test_that("find_sequence finds all contexts", {
   dts <- c(rep(0:2, 3), rep(2:0, 3))
   dts_ctree <- ctx_tree(dts, min_size = 2)
   ## for a data.frame output to avoid the use of the context class!
-  ctx <- contexts(dts_ctree, type="data.frame", frequency = "detailed")
+  ctx <- contexts(dts_ctree, type = "data.frame", frequency = "detailed")
   for (k in 1:nrow(ctx)) {
     the_ctx <- find_sequence(dts_ctree, ctx$context[[k]])
     expect_false(is.null(the_ctx))
     expect_identical(as_sequence(the_ctx), ctx$context[[k]])
   }
+})
+
+test_that("reversing works", {
+  dts <- c(rep(0:2, 3), rep(2:0, 3))
+  dts_ctree <- ctx_tree(dts, min_size = 2)
+  a_node <- find_sequence(dts_ctree, 0:2, reverse = FALSE)
+  expect_false(is_reversed(a_node))
+  rev_node <- rev(a_node)
+  expect_true(is_reversed(rev_node))
+  drev_node <- find_sequence(dts_ctree, rev(0:2), reverse = TRUE)
+  expect_identical(rev_node, drev_node)
 })
 
 test_that("find_sequence finds all subsequences", {
@@ -30,6 +41,11 @@ test_that("find_sequence finds all subsequences", {
       the_ctx <- dts[k:(k + l)]
       the_match <- find_sequence(dts_ctree, the_ctx, reverse = FALSE)
       if (is.null(the_match)) {
+        all_ok <- FALSE
+        break
+      }
+      rev_the_match <- find_sequence(dts_ctree, rev(the_ctx), reverse = TRUE)
+      if (!identical(as_sequence(rev_the_match), as_sequence(rev(the_match)))) {
         all_ok <- FALSE
         break
       }
@@ -46,6 +62,8 @@ test_that("context objects are printed as expected", {
   dts_ctree <- ctx_tree(dts, min_size = 1, max_depth = 3)
   expect_snapshot(print(find_sequence(dts_ctree, c(0, 0))))
   expect_snapshot(print(find_sequence(dts_ctree, c(0, 1))))
+  expect_snapshot(print(rev(find_sequence(dts_ctree, c(0, 0)))))
+  expect_snapshot(print(rev(find_sequence(dts_ctree, c(0, 1)))))
 })
 
 test_that("counts are correctly reported", {
