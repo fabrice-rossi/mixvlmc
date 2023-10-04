@@ -30,10 +30,12 @@ reference:
 - contents:
   - ctx_tree
   - context_number
+  - contexts
   - contexts.ctx_tree
   - depth
   - draw.ctx_tree
   - draw_control
+  - print.contexts
   - states
 - title: Context tree nodes
   desc: Extract nodes from context trees and manipulate them.
@@ -43,8 +45,10 @@ reference:
   - children
   - counts
   - is_context
+  - is_reversed
   - parent
   - positions
+  - rev.ctx_node
 - title: Variable Length Markov Chain (VLMC)
   desc: Estimate VLMC from a time series and extract information from them.
 - contents:
@@ -109,7 +113,6 @@ reference:
 - title: Generics
   desc: Generic S3 methods defined by the package
 - contents:
-  - contexts
   - draw
   - metrics
 

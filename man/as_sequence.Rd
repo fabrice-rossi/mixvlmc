@@ -4,13 +4,13 @@
 \alias{as_sequence}
 \title{Extract the sequence encoded by a node}
 \usage{
-as_sequence(node, reverse = TRUE)
+as_sequence(node, reverse)
 }
 \arguments{
 \item{node}{a \code{ctx_node} object as returned by \code{\link[=find_sequence]{find_sequence()}}}
 
 \item{reverse}{specifies whether the sequence should be reported in reverse
-temporal order (\code{TRUE}, default value) or in the temporal order (\code{FALSE}).}
+temporal order (\code{TRUE}) or in the temporal order (\code{FALSE}).}
 }
 \value{
 the sequence represented by the \code{node} object, a vector
