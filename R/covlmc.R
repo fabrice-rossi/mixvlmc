@@ -741,41 +741,48 @@ assertthat::on_failure(is_covlmc) <- function(call, env) {
 }
 
 
-#' Cutoff values for pruning the context tree of a VLMC with covariates
+#' Cut off values for pruning the context tree of a VLMC with covariates
 #'
-#' This function returns all the cutoff values that should induce a pruning of
+#' This function returns all the cut off values that should induce a pruning of
 #' the context tree of a VLMC with covariates.
 #'
-#' Notice that the list of cutoff values returned by the function is not as
+#' Notice that the list of cut off values returned by the function is not as
 #' complete as the one computed for a VLMC without covariates. Indeed, pruning
-#' the coVLMC tree creates new pruning opportunities that are not evaluated
+#' the COVLMC tree creates new pruning opportunities that are not evaluated
 #' during the construction of the initial model, while all pruning opportunities
 #' are computed during the construction of a VLMC context tree. Nevertheless,
 #' the largest value returned by the function is guaranteed to produce the least
 #' pruned tree consistent with the reference one.
 #'
 #' For large COVLMC, some cut off values can be almost identical, with a
-#' difference of the order of the machine epsilon value. The `tolerance` parameter
-#' is used to keep only values that are different enough. This is done in the
-#' quantile scale, before transformations implemented when `raw` is `FALSE`.
+#' difference of the order of the machine epsilon value. The `tolerance`
+#' parameter is used to keep only values that are different enough. This is done
+#' in the quantile scale, before transformations implemented when `raw` is
+#' `FALSE`.
 #'
-#' Notice that the loglikelihood scale is not directly useful in coVLMC as
-#' the differences in model sizes are not constant through the pruning process.
-#' As a consequence, the "native" scale is not supported by this function.
+#' Notice that the loglikelihood scale is not directly useful in COVLMC as the
+#' differences in model sizes are not constant through the pruning process. As a
+#' consequence, this function does not provide `mode` parameter, contrarily to
+#' [cutoff.vlmc()].
 #'
-#' Setting `raw` to `TRUE` removes the small perturbation that are subtracted from
-#'  the log-likelihood ratio values computed from the coVLMC (in quantile scale).
+#' Setting `raw` to `TRUE` removes the small perturbation that are subtracted
+#' from the log-likelihood ratio values computed from the COVLMC (in quantile
+#' scale).
 #'
-#' @param vlmc a fitted covlmc model.
-#' @param mode specify whether the results should be "native" likelihood ratio
-#'   values or expressed in a "quantile" scale of a chi-squared distribution.
-#'   For covlmc, only the quantile scale is supported.
-#' @param raw specify whether the returned values should be limit values computed in the model or
-#'  modified values that guarantee pruning (see details)
-#' @param tolerance specify the minimum separation between two consecutive values of
-#'  the cut off in native mode (before any transformation). See details.
-#' @param ... additional arguments for the cutoff function.
-#' @returns a vector of cut off values, `NULL` is none can be computed
+#' As automated model selection is provided by [tune_covlmc()], the direct use of
+#' `cutoff` should be reserved to advanced exploration of the set of trees that
+#' can be obtained from a complex one, e.g. to implement model selection
+#' techniques that are not provided by [tune_covlmc()].
+#'
+#' @param model a fitted COVLMC model.
+#' @param raw specify whether the returned values should be limit values
+#'   computed in the model or modified values that guarantee pruning (see
+#'   details)
+#' @param tolerance specify the minimum separation between two consecutive
+#'   values of the cut off in native mode (before any transformation). See
+#'   details.
+#' @param ... additional arguments for the `cutoff` function.
+#' @returns a vector of cut off values, `NULL` if none can be computed
 #'
 #' @examples
 #' pc <- powerconsumption[powerconsumption$week == 5, ]
@@ -787,12 +794,8 @@ assertthat::on_failure(is_covlmc) <- function(call, env) {
 #' draw(m_cov)
 #' cutoff(m_cov)
 #' @export
-cutoff.covlmc <- function(vlmc, mode = c("quantile", "native"), raw = FALSE,
+cutoff.covlmc <- function(model, raw = FALSE,
                           tolerance = .Machine$double.eps^0.5, ...) {
-  mode <- match.arg(mode)
-  if (mode == "native") {
-    stop("native mode is not supported by covlmc objects")
-  }
   recurse_cutoff <- function(tree) {
     if (is.null(tree[["children"]])) {
       if (is.null(tree[["model"]])) {
@@ -802,7 +805,7 @@ cutoff.covlmc <- function(vlmc, mode = c("quantile", "native"), raw = FALSE,
         p_value <- NULL
         if (!is.null(tree$model[["p_value"]])) {
           p_value <- tree$model[["p_value"]]
-          if (is.na(p_value) || (length(tree$model[["coefficients"]]) == 1 && p_value > vlmc$alpha)) {
+          if (is.na(p_value) || (length(tree$model[["coefficients"]]) == 1 && p_value > model$alpha)) {
             p_value <- NULL
           }
         }
@@ -822,7 +825,7 @@ cutoff.covlmc <- function(vlmc, mode = c("quantile", "native"), raw = FALSE,
       c(df, tree$p_value, tree$merged_p_value)
     }
   }
-  preres <- recurse_cutoff(vlmc)
+  preres <- recurse_cutoff(model)
   if (is.null(preres)) {
     NULL
   } else {
