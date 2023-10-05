@@ -86,7 +86,7 @@ tune_vlmc <- function(x, criterion = c("BIC", "AIC"),
       break
     }
   }
-  cutoffs <- cutoff(base_model, mode = "native")
+  cutoffs <- cutoff(base_model, scale = "native")
   results <- data.frame(
     cutoff = c(cutoff, cutoffs),
     alpha = to_quantile(c(cutoff, cutoffs), length(states(base_model))),

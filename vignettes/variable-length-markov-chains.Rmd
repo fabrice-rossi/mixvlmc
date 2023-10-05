@@ -257,7 +257,7 @@ one. For instance in the following code
 ```{r}
 model_large <- vlmc(x, cutoff = 0.5 * log(length(x)))
 model_large
-model_cutoff <- cutoff(model_large, mode = "native")
+model_cutoff <- cutoff(model_large, scale = "native")
 model_cutoff
 ```
 we first adjust a "complex" model using

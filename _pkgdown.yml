@@ -82,7 +82,7 @@ reference:
   - tune_vlmc
   - plot.tune_vlmc
   - autoplot.tune_vlmc
-  - cutoff
+  - cutoff.vlmc
   - prune
 - subtitle: COVLMC
 - contents:
@@ -109,6 +109,7 @@ reference:
 - title: Generics
   desc: Generic S3 methods defined by the package
 - contents:
+  - cutoff
   - draw
   - metrics
 
