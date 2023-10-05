@@ -68,7 +68,7 @@ test_that("constant model metrics works as expected", {
   model <- constant_model(target, covariates, 3)
   m_model <- glm_metrics(model, covariates, target)
   expect_equal(m_model$accuracy, 1)
-  expect_equal(m_model$auc, NA)
+  expect_equal(m_model$auc, as.numeric(NA))
   cm <- table(target, target)
   cm_dm <- dimnames(cm)
   names(cm_dm) <- c("predicted value", "true value")
