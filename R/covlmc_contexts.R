@@ -49,7 +49,7 @@ covlmc_model_extractor <- function(res, model, control) {
   flex_cbind(res, cores)
 }
 
-covlmc_context_extractor <- function(path, ct, vals, control, is_leaf, p_summary) {
+covlmc_context_extractor <- function(tree, path, ct, vals, control, is_leaf, p_summary) {
   if (is.null(ct[["model"]])) {
     if (!is.null(ct[["merged_model"]])) {
       res <- NULL
@@ -59,7 +59,7 @@ covlmc_context_extractor <- function(path, ct, vals, control, is_leaf, p_summary
         } else {
           sub_path <- c(path, vals[v])
         }
-        l_res <- frequency_context_extractor(sub_path, ct$children[[v]], vals, control, is_leaf, p_summary)
+        l_res <- frequency_context_extractor(tree, sub_path, ct$children[[v]], vals, control, is_leaf, p_summary)
         l_res <- covlmc_model_extractor(l_res, ct$merged_model, control)
         if (isTRUE(control[["merging"]])) {
           l_res$merged <- TRUE
@@ -71,7 +71,7 @@ covlmc_context_extractor <- function(path, ct, vals, control, is_leaf, p_summary
       NULL
     }
   } else {
-    res <- frequency_context_extractor(path, ct, vals, control, is_leaf, p_summary)
+    res <- frequency_context_extractor(tree, path, ct, vals, control, is_leaf, p_summary)
     if (!is.null(control[["model"]]) || isTRUE(control[["hsize"]]) ||
       isTRUE(control[["metrics"]]) || isTRUE(control[["merging"]])) {
       res <- covlmc_model_extractor(res, ct$model, control)

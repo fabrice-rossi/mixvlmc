@@ -68,8 +68,8 @@ for the definition of predictive metrics).}
 \item{...}{additional arguments for the contexts function.}
 }
 \value{
-The list of the contexts represented in this tree or a data.frame
-with more content.
+The list of class \code{contexts} containing the contexts represented in
+this tree (as \code{ctx_node}) or a data.frame.
 }
 \description{
 This function extracts all the contexts from a fitted VLMC, possibly with
