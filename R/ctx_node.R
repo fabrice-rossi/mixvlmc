@@ -35,6 +35,11 @@ print.ctx_node <- function(x, ...) {
   cat(" followed by ", paste(paste(x$tree$vals, x$node$f_by, sep = " ("), collapse = "), "), ")\n", sep = "")
 }
 
+#' @export
+length.ctx_node <- function(x) {
+  length(x$sequence)
+}
+
 is_ctx_node <- function(node) {
   methods::is(node, "ctx_node")
 }
