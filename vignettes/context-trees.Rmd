@@ -88,23 +88,29 @@ Contexts can be extracted from a context tree using the `contexts()` function as
 ```{r}
 contexts(x_ctx)
 ```
-In general, the raw list of contexts is not very useful and `contexts()` can be parametrized to give additional information about the contexts. In the simple case of `ctx_tree`, setting the `frequency` parameter to `"total"` or `"detailed"` gives access to the distribution of $x_t$ for all the $t$ at which a context appears. 
+In general, the raw list of contexts is not directly useful and one should use the 
+node manipulation functions to leverage it (see below). A simple approach consists 
+in asking to `contexts()` a `data.frame` output that will contain additional information
+about the contexts. In the simple case of `ctx_tree`, setting the `frequency` 
+parameter to `"total"` or `"detailed"` gives access to the distribution of $x_t$ for 
+all the $t$ at which a context appears. 
 ```{r}
-contexts(x_ctx, frequency = "total")
+contexts(x_ctx, type = "data.frame", frequency = "total")
 ```
 With `frequency = "total"`, we obtain a data frame with a column `freq` that contains the number of occurrences of each context. 
 ```{r}
-contexts(x_ctx, frequency = "detailed")
+contexts(x_ctx, type = "data.frame", frequency = "detailed")
 ```
 
 With `frequency = "detailed"`, we obtain _in addition_ a column for each value in the state space $S$ which contains the distribution of $x_t$ for the occurrences of each context. For instance in the table above, the context $(0, 0)$ appears twice in $x$ and is followed once by $0$ and once by $1$.
 
 ## Direct manipulation of nodes
 Another way to extract information from a context tree, especially large ones, it
-to operate at the node level, using the `find_sequence()` function. For instance 
-exploring the `r context_number(y_ctx_min_1)` contexts obtained above with 
-`min_size=1` is not convenient, but we may be interested by e.g. the sequence
-`c("a", "a", "a")`. We look for a corresponding node in the tree with
+to operate at the node level, using the `find_sequence()` function (or the 
+`contexts()` function). For instance exploring the `r context_number(y_ctx_min_1)`
+contexts obtained above with `min_size=1` is not convenient, but we may be interested
+by e.g. the sequence `c("a", "a", "a")`. We look for a corresponding node in the tree
+with
 ```{r}
 node_aaa <- find_sequence(y_ctx_min_1, c("a", "a", "a"))
 node_aaa

@@ -3,8 +3,8 @@ vlmc_parent_summary <- function(ctx) {
 }
 
 vlmc_context_extractor <-
-  function(path, ct, vals, control, is_leaf, p_summary) {
-    res <- frequency_context_extractor(path, ct, vals, control, is_leaf, p_summary)
+  function(tree, path, ct, vals, control, is_leaf, p_summary) {
+    res <- frequency_context_extractor(tree, path, ct, vals, control, is_leaf, p_summary)
     if (is.null(res)) {
       NULL
     } else {
@@ -18,7 +18,7 @@ vlmc_context_extractor <-
           l_cont <- control
           l_cont$frequency <- "detailed"
           l_cont$counts <- "local"
-          lres <- frequency_context_extractor(path, ct, vals, l_cont, is_leaf, p_summary)
+          lres <- frequency_context_extractor(tree, path, ct, vals, l_cont, is_leaf, p_summary)
         } else {
           lres <- res
         }
