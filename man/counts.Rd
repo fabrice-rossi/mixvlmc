@@ -4,7 +4,7 @@
 \alias{counts}
 \title{Report the distribution of values that follow occurrences of a sequence}
 \usage{
-counts(node, frequency = c("detailed", "total"))
+counts(node, frequency = c("detailed", "total"), counts = c("desc", "local"))
 }
 \arguments{
 \item{node}{a \code{ctx_node} object as returned by \code{\link[=find_sequence]{find_sequence()}}}
@@ -13,6 +13,11 @@ counts(node, frequency = c("detailed", "total"))
 gives the number of occurrences of the sequence in the original sequence.
 \code{"detailed"} includes in addition the break down of these occurrences into
 all the possible states.}
+
+\item{counts}{specifies how the counts are computed. The default value
+\code{"desc"} includes both counts that are specific to the context (if any) and
+counts from the descendants of the context in the tree. When \code{counts = "local"} the counts include only the number of times the context appears
+without being the last part of a longer context.}
 }
 \value{
 either an integer when \code{frequency="total"} which gives the total
@@ -23,11 +28,11 @@ each column (see the description above).
 }
 \description{
 This function reports the number of occurrences of the sequence represented
-by \code{node} in the original time series used to build the associated
-context tree (not including a possible final occurrence not followed by any
-value at the end of the original time series). In addition if
-\code{frequency=="detailed"}, the function reports the frequencies of each of the
-possible value of the time series when they appear just after the sequence.
+by \code{node} in the original time series used to build the associated context
+tree (not including a possible final occurrence not followed by any value at
+the end of the original time series). In addition if \code{frequency=="detailed"},
+the function reports the frequencies of each of the possible value of the
+time series when they appear just after the sequence.
 }
 \examples{
 dts <- sample(as.factor(c("A", "B", "C")), 100, replace = TRUE)

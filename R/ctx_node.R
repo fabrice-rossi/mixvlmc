@@ -238,17 +238,22 @@ positions <- function(node) {
 #' Report the distribution of values that follow occurrences of a sequence
 #'
 #' This function reports the number of occurrences of the sequence represented
-#' by `node` in the original time series used to build the associated
-#' context tree (not including a possible final occurrence not followed by any
-#' value at the end of the original time series). In addition if
-#' `frequency=="detailed"`, the function reports the frequencies of each of the
-#' possible value of the time series when they appear just after the sequence.
+#' by `node` in the original time series used to build the associated context
+#' tree (not including a possible final occurrence not followed by any value at
+#' the end of the original time series). In addition if `frequency=="detailed"`,
+#' the function reports the frequencies of each of the possible value of the
+#' time series when they appear just after the sequence.
 #'
 #' @param node a `ctx_node` object as returned by [find_sequence()]
 #' @param frequency specifies the counts to be included in the result. `"total"`
 #'   gives the number of occurrences of the sequence in the original sequence.
 #'   `"detailed"` includes in addition the break down of these occurrences into
 #'   all the possible states.
+#' @param counts specifies how the counts are computed. The default value
+#'   `"desc"` includes both counts that are specific to the context (if any) and
+#'   counts from the descendants of the context in the tree. When `counts =
+#'   "local"` the counts include only the number of times the context appears
+#'   without being the last part of a longer context.
 #'
 #' @returns either an integer when `frequency="total"` which gives the total
 #'   number of occurrences of the sequence represented by `node` or a
@@ -264,15 +269,31 @@ positions <- function(node) {
 #' if (!is.null(subseq)) {
 #'   counts(subseq)
 #' }
-counts <- function(node, frequency = c("detailed", "total")) {
+counts <- function(node, frequency = c("detailed", "total"), counts = c("desc", "local")) {
   assertthat::assert_that(is_ctx_node(node))
   frequency <- match.arg(frequency)
+  counts <- match.arg(counts)
+  freqs <- node$node[["f_by"]]
+  if (counts == "local") {
+    if (!is.null(node$node[["children"]])) {
+      for (k in seq_along(node$node[["children"]])) {
+        child <- node$node[["children"]][[k]]
+        if (!is.null(child[["f_by"]])) {
+          freqs <- freqs - child[["f_by"]]
+        }
+      }
+    }
+  }
   if (frequency == "total") {
-    sum(node$node[["f_by"]])
+    sum(freqs)
   } else {
-    freq_by_val <- as.list(node$node[["f_by"]])
+    freq_by_val <- as.list(freqs)
     names(freq_by_val) <- as.character(node$tree$vals)
-    freq_by_val <- c(list(total = sum(node$node[["f_by"]])), freq_by_val)
+    freq_by_val <- c(list(total = sum(freqs)), freq_by_val)
     data.frame(freq_by_val, check.names = FALSE)
   }
+}
+
+probs <- function(node) {
+  node$node[["f_by"]] / sum(node$node[["f_by"]])
 }
