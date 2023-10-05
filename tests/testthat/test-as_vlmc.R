@@ -29,8 +29,8 @@ test_that("as_vlmc.ctx_tree obeys is basic contract", {
     keep_match = TRUE
   )
   expect_equal(
-    contexts(vlmc_from_tree, frequency = "detailed", cutoff = "native", positions = TRUE),
-    contexts(vlmc_direct, frequency = "detailed", cutoff = "native", positions = TRUE)
+    contexts(vlmc_from_tree, type = "data.frame", frequency = "detailed", cutoff = "native", positions = TRUE),
+    contexts(vlmc_direct, type = "data.frame", frequency = "detailed", cutoff = "native", positions = TRUE)
   )
   expect_equal(
     loglikelihood(vlmc_from_tree),
@@ -65,8 +65,8 @@ test_that("as_vlmc.ctx_tree applies pruning", {
   expect_true(is_vlmc(vlmc_from_tree))
   vlmc_direct <- vlmc(data_set$x, min_size = 4, max_depth = 10, alpha = 0.1)
   expect_equal(
-    contexts(vlmc_from_tree, frequency = "detailed", cutoff = "native"),
-    contexts(vlmc_direct, frequency = "detailed", cutoff = "native")
+    contexts(vlmc_from_tree, type = "data.frame", frequency = "detailed", cutoff = "native"),
+    contexts(vlmc_direct, type = "data.frame", frequency = "detailed", cutoff = "native")
   )
   expect_equal(
     loglikelihood(vlmc_from_tree),
@@ -80,8 +80,8 @@ test_that("as_vlmc.ctx_tree applies pruning", {
   expect_true(is_vlmc(vlmc_from_tree))
   vlmc_direct <- vlmc(data_set$x, min_size = 4, max_depth = 10, cutoff = 2)
   expect_equal(
-    contexts(vlmc_from_tree, frequency = "detailed", cutoff = "native"),
-    contexts(vlmc_direct, frequency = "detailed", cutoff = "native")
+    contexts(vlmc_from_tree, type = "data.frame", frequency = "detailed", cutoff = "native"),
+    contexts(vlmc_direct, type = "data.frame", frequency = "detailed", cutoff = "native")
   )
   expect_equal(
     loglikelihood(vlmc_from_tree),

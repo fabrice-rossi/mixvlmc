@@ -40,8 +40,10 @@ reference:
   - as_sequence
   - children
   - counts
+  - cutoff.ctx_node
   - is_context
   - is_reversed
+  - metrics.ctx_node
   - parent
   - positions
   - rev.ctx_node
