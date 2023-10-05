@@ -1,4 +1,4 @@
-covlmc_predictive_extractor <- function(path, ct, vals, control, is_leaf, p_summary) {
+covlmc_predictive_extractor <- function(tree, path, ct, vals, control, is_leaf, p_summary) {
   if (is.null(ct[["model"]])) {
     if (!is.null(ct[["merged_model"]])) {
       data.frame(

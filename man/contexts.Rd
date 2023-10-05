@@ -4,7 +4,7 @@
 \alias{contexts}
 \title{Contexts of a context tree}
 \usage{
-contexts(ct, type = c("auto", "list", "data.frame"), reverse = TRUE, ...)
+contexts(ct, type = c("list", "data.frame"), reverse = TRUE, ...)
 }
 \arguments{
 \item{ct}{a context tree.}
@@ -16,8 +16,8 @@ contexts(ct, type = c("auto", "list", "data.frame"), reverse = TRUE, ...)
 \item{...}{additional arguments for the contexts function.}
 }
 \value{
-The list of the contexts represented in this tree or a data.frame
-with more content.
+The list of class \code{contexts} containing the contexts represented in
+this tree (as \code{ctx_node}) or a data.frame.
 }
 \description{
 This function extracts from a context tree a description of all of its
@@ -25,11 +25,14 @@ contexts.
 }
 \details{
 The default behaviour consists in returning a list of all the contexts
-contained in the tree (with \code{type="auto"} or \code{type="list"}). When
+contained in the tree using \code{ctx_node} objects (as returned by e.g.
+\code{\link[=find_sequence]{find_sequence()}}) (with \code{type="list"}). The properties of the contexts can
+then be explored using adapted functions such as \code{\link[=counts]{counts()}} and
+\code{\link[=positions]{positions()}}. The result list is of class \code{contexts}. When
 \code{type="data.frame"}, the method returns a data.frame whose first column,
-named \code{context}, contains the contexts. Other columns contain context
-specific values which depend on the actual class of the tree and on
-additional parameters. An adapted return type is chosen when type="auto"`.
+named \code{context}, contains the contexts as vectors. Other columns contain
+context specific values which depend on the actual class of the tree and on
+additional parameters.
 }
 \section{State order in a context}{
  Notice that contexts are given by default
