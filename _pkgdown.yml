@@ -37,13 +37,19 @@ reference:
   desc: Extract nodes from context trees and manipulate them.
 - contents:
   - find_sequence
+  - find_sequence.covlmc
   - as_sequence
   - children
+  - covariate_memory
   - counts
   - cutoff.ctx_node
   - is_context
+  - is_merged
   - is_reversed
+  - merged_with
   - metrics.ctx_node
+  - metrics.ctx_node_covlmc
+  - model
   - parent
   - positions
   - rev.ctx_node

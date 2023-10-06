@@ -446,11 +446,26 @@ To explore the contexts in a programmatically way, one should rely on the `conte
 In particular, the `contexts()` function can report the model associated to each context, either
 by its parameters only:
 ```{r}
-contexts(elec_model, model = "coef")
+contexts(elec_model, type = "data.frame", model = "coef")
 ```
 or using the models themselves:
 ```{r}
-contexts(elec_model, model = "full")
+contexts(elec_model, type = "data.frame", model = "full")
+```
+
+As for context trees, focused analysis of specific contexts can be done by
+requesting a `ctx_node_covlmc` representation of the context of interest, for 
+instance via the `find_sequence.covlmc()` function, or with the default result type of
+`contexts()`
+```{r}
+ctxs <- contexts(elec_model)
+ctxs
+```
+Individual contexts can be analysed using a collection of dedicated functions,
+for instance
+```{r}
+model(ctxs[[2]])
+model(ctxs[[3]], model = "full")
 ```
 
 See `contexts.covlmc()` for details.

@@ -6,7 +6,7 @@
 \usage{
 \method{contexts}{covlmc}(
   ct,
-  type = c("auto", "list", "data.frame"),
+  type = c("list", "data.frame"),
   reverse = TRUE,
   frequency = NULL,
   positions = FALSE,
@@ -50,14 +50,15 @@ column, while \code{"full"} include the models themselves (as R objects) in a
 \code{model} column.}
 
 \item{hsize}{if TRUE, adds a \code{hsize} column to the result data frame that
-gives for each context the size of the history of covariates used by the model.}
+gives for each context the size of the history of covariates used by the
+model.}
 
-\item{metrics}{if TRUE, adds predictive metrics for each context (see \code{\link[=metrics]{metrics()}}
-for the definition of predictive metrics).}
+\item{metrics}{if TRUE, adds predictive metrics for each context (see
+\code{\link[=metrics]{metrics()}} for the definition of predictive metrics).}
 
 \item{merging}{if TRUE, adds a \code{merged} column to the result data frame. For
-a normal context, the value of \code{merged} is FALSE. Contexts that share the same
-model have a TRUE \code{merged} value.}
+a normal context, the value of \code{merged} is FALSE. Contexts that share the
+same model have a TRUE \code{merged} value.}
 
 \item{...}{additional arguments for the contexts function.}
 }
@@ -70,15 +71,21 @@ This function returns the different contexts present in a VLMC with
 covariates, possibly with some associated data.
 }
 \details{
-The result is a list of all contexts when \code{type="auto"} (or \code{type="list"}),
-and no details have been asked via specific parameters (e.g. by setting \code{model}
-to a non \code{NULL} value).
+When \code{type="list"}, all parameters are ignored, excepted \code{ct} and
+\code{reverse}. Indeed the result consists of a list of \code{ctx_node_covlmc}
+objects that can be queried to provide the information specified by the
+ignore parameters (see \code{\link[=counts]{counts()}}, \code{\link[=cutoff.ctx_node]{cutoff.ctx_node()}},
+\code{\link[=metrics.ctx_node]{metrics.ctx_node()}}, \code{\link[=positions]{positions()}}, \code{\link[=model]{model()}}, \code{\link[=merged_with]{merged_with()}} and
+\code{\link[=covariate_memory]{covariate_memory()}}).
 
-Other results are obtained only with \code{type="data.frame"} (or
-\code{type="auto"}). See \code{\link[=contexts.ctx_tree]{contexts.ctx_tree()}} for details about the \code{frequency}
-parameter. When \code{model} is non \code{NULL}, the resulting \code{data.frame} contains
-the models associated to each context (either the full R model or its
-coefficients).
+When \code{type="data.frame"}, the result is a \code{data.frame} that contains at
+least a \code{context} column storing the contexts as vectors (and not
+\code{ctx_node_covlmc} objects). The parameters specify additional columns for
+the resulting \code{data.frame}. See \code{\link[=contexts.ctx_tree]{contexts.ctx_tree()}} for details about the
+\code{frequency} parameter. When \code{model} is non \code{NULL}, the resulting
+\code{data.frame} contains the models associated to each context (either the
+full R model or its coefficients). Other columns are added is the
+corresponding parameters are set to \code{TRUE}.
 }
 \section{Positions}{
  A position of a context \code{ctx} in the time series \code{x} is an
@@ -101,8 +108,9 @@ breaks <- c(0, median(pc$active_power), max(pc$active_power))
 dts <- cut(pc$active_power, breaks = breaks)
 dts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
 m_cov <- covlmc(dts, dts_cov, min_size = 5)
-contexts(m_cov, model = "coef")
-contexts(m_cov, model = "full")
+contexts(m_cov)
+contexts(m_cov, type = "data.frame", model = "coef")
+contexts(m_cov, type = "data.frame", model = "full")
 }
 \seealso{
 \code{\link[=contexts.ctx_tree]{contexts.ctx_tree()}}, \code{\link[=contexts.vlmc]{contexts.vlmc()}}, \code{\link[=contexts.covlmc]{contexts.covlmc()}}.
