@@ -17,7 +17,7 @@ to_dts <- function(x, vals = NULL) {
     assertthat::assert_that(assertthat::noNA(fx), msg = "x contains unknown states")
     vals <- factor(levels(fx), levels(fx))
   }
-  list(ix = as.numeric(fx) - 1, fx = fx, vals = vals)
+  list(ix = as.integer(fx) - 1L, fx = fx, vals = vals)
 }
 
 signif_null <- function(x, digits) {
