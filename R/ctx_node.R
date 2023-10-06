@@ -102,7 +102,7 @@ rev.ctx_node <- function(x) {
 #' @param reverse specifies whether the sequence should be reported in reverse
 #'   temporal order (`TRUE`) or in the temporal order (`FALSE`).
 #'
-#' @return the sequence represented by the `node` object, a vector
+#' @returns the sequence represented by the `node` object, a vector
 #' @export
 #'
 #' @examples

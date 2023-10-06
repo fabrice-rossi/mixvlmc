@@ -14,26 +14,26 @@ test_that("trimming removes only what it should remove", {
       expect_true(object.size(t_m_cov) < object.size(t_m_cov_model))
       ## identical contexts
       expect_identical(
-        contexts(m_cov, hsize = TRUE, model = "coef", frequency = "detailed", metrics = TRUE, merging = TRUE),
-        contexts(t_m_cov_model, hsize = TRUE, model = "coef", frequency = "detailed", metrics = TRUE, merging = TRUE)
+        contexts(m_cov, type = "data.frame", hsize = TRUE, model = "coef", frequency = "detailed", metrics = TRUE, merging = TRUE),
+        contexts(t_m_cov_model, type = "data.frame", hsize = TRUE, model = "coef", frequency = "detailed", metrics = TRUE, merging = TRUE)
       )
       expect_identical(
-        contexts(m_cov, hsize = TRUE, model = "coef", frequency = "detailed", metrics = TRUE, merging = TRUE),
-        contexts(t_m_cov, hsize = TRUE, model = "coef", frequency = "detailed", metrics = TRUE, merging = TRUE)
+        contexts(m_cov, type = "data.frame", hsize = TRUE, model = "coef", frequency = "detailed", metrics = TRUE, merging = TRUE),
+        contexts(t_m_cov, type = "data.frame", hsize = TRUE, model = "coef", frequency = "detailed", metrics = TRUE, merging = TRUE)
       )
       ## still usable with keep_mode==TRUE
       expect_equal(
         loglikelihood(m_cov, newdata = dts, newcov = dts_cov),
         loglikelihood(t_m_cov_model, newdata = dts, newcov = dts_cov)
       )
-      expect_no_error(contexts(t_m_cov_model, hsize = TRUE, model = "full"))
+      expect_no_error(contexts(t_m_cov_model, type = "data.frame", hsize = TRUE, model = "full"))
       expect_equal(
         simulate(m_cov, nsim = 50, seed = 0, dts_cov),
         simulate(t_m_cov_model, nsim = 50, seed = 0, dts_cov)
       )
       ## errors
       expect_error(
-        contexts(t_m_cov, hsize = TRUE, model = "full"),
+        contexts(t_m_cov, type = "data.frame", hsize = TRUE, model = "full"),
         "Full model extraction is not supported by fully trimmed covlmc"
       )
       expect_error(

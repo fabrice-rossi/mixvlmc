@@ -53,7 +53,7 @@ vlmc_context_extractor <-
 #'   the context appears without being the last part of a longer context.
 #' @param metrics if TRUE, adds predictive metrics for each context (see
 #'   [metrics()] for the definition of predictive metrics).
-#' @details When `type="list"`, all parameters are ignored, expected `ct` and
+#' @details When `type="list"`, all parameters are ignored, excepted `ct` and
 #'   `reverse`. Indeed the result consists of a list of `ctx_node` objects that
 #'   can be queried to provide the information specified by the ignore
 #'   parameters (see [counts()], [cutoff.ctx_node()], [metrics.ctx_node()] and
@@ -61,19 +61,19 @@ vlmc_context_extractor <-
 #'
 #'   When `type="data.frame"`, the result is a `data.frame` that contains at
 #'   least a `context` column storing the contexts as vectors (and not
-#'   `ctx_node`). The parameters specify additional columns for the resulting
-#'   `data.frame`. The `frequency` is described in details in the documentation
-#'   of  [contexts.ctx_tree()]. When `cutoff` is non `NULL`, the resulting
-#'   `data.frame` contains a `cutoff` column with the cut off values, either in
-#'   quantile or in native scale. See [cutoff.vlmc()] and [prune.vlmc()] for the
-#'   definitions of cut off values and of the two scales.
+#'   `ctx_node` objects). The parameters specify additional columns for the
+#'   resulting `data.frame`. The `frequency` is described in details in the
+#'   documentation of  [contexts.ctx_tree()]. When `cutoff` is non `NULL`, the
+#'   resulting `data.frame` contains a `cutoff` column with the cut off values,
+#'   either in quantile or in native scale. See [cutoff.vlmc()] and
+#'   [prune.vlmc()] for the definitions of cut off values and of the two scales.
 #' @section Cut off values: The cut off values reported by `contexts.vlmc` can
 #'   be different from the ones reported by [cutoff.vlmc()] for three reasons:
 #'
-#'   1. [cutoff.vlmc()] reports only useful cut off values, i.e., cut off values that
-#'   should induce a simplification of the VLMC when used in [prune()]. This
-#'   exclude cut off values associated to simple contexts that are smaller than
-#'   the ones of their descendants in the context tree. Those values are
+#'   1. [cutoff.vlmc()] reports only useful cut off values, i.e., cut off values
+#'   that should induce a simplification of the VLMC when used in [prune()].
+#'   This exclude cut off values associated to simple contexts that are smaller
+#'   than the ones of their descendants in the context tree. Those values are
 #'   reported by `context.vlmc`.
 #'
 #'   2. `context.vlmc` reports only cut off values of actual contexts, while

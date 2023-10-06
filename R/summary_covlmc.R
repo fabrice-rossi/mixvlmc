@@ -1,6 +1,6 @@
 #' @exportS3Method
 summary.covlmc <- function(object, ...) {
-  ctx <- contexts(object, frequency = "detailed", hsize = TRUE)
+  ctx <- contexts(object, type = "data.frame", frequency = "detailed", hsize = TRUE)
   all_length <- sapply(ctx$context, length)
   delta_cov_depth <- all_length - ctx$hsize
   res <- list(
