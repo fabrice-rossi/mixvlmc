@@ -122,9 +122,9 @@ test_that("tune_covlmc trimming", {
   best_BIC_idx <- which.min(bt_covlmc$results$BIC)
   expect_identical(bt_covlmc$best_model, bt_covlmc$saved_models$all[[best_BIC_idx - 1]])
   for (model in bt_covlmc$saved_models$all) {
-    expect_no_error(contexts(model, hsize = TRUE, model = "full"))
+    expect_no_error(contexts(model, type = "data.frame", hsize = TRUE, model = "full"))
   }
-  expect_no_error(contexts(bt_covlmc$saved_models$initial, hsize = TRUE, model = "full"))
+  expect_no_error(contexts(bt_covlmc$saved_models$initial, type = "data.frame", hsize = TRUE, model = "full"))
   bt_covlmc <- tune_covlmc(x, df_y,
     criterion = "BIC", save = "all", trimming = "full",
     best_trimming = "full"
@@ -133,7 +133,7 @@ test_that("tune_covlmc trimming", {
   best_BIC_idx <- which.min(bt_covlmc$results$BIC)
   expect_identical(bt_covlmc$best_model, bt_covlmc$saved_models$all[[best_BIC_idx - 1]])
   for (model in bt_covlmc$saved_models$all) {
-    expect_error(contexts(model, hsize = TRUE, model = "full"))
+    expect_error(contexts(model, type = "data.frame", hsize = TRUE, model = "full"))
   }
-  expect_error(contexts(bt_covlmc$saved_models$initial, hsize = TRUE, model = "full"))
+  expect_error(contexts(bt_covlmc$saved_models$initial, type = "data.frame", hsize = TRUE, model = "full"))
 })

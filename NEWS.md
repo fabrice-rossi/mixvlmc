@@ -2,6 +2,7 @@
 
 ## Breaking changes
 * the `mode` parameter of `cutoff.vlmc()` has been renamed to `scale`
+* the `"auto"` type has been removed from `contexts()` variants 
 
 ## New features
 * new functions `predict.vlmc()` and `predict.covlmc()` can be used to make one 

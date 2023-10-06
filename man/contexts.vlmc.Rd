@@ -76,7 +76,7 @@ This function extracts all the contexts from a fitted VLMC, possibly with
 some associated data.
 }
 \details{
-When \code{type="list"}, all parameters are ignored, expected \code{ct} and
+When \code{type="list"}, all parameters are ignored, excepted \code{ct} and
 \code{reverse}. Indeed the result consists of a list of \code{ctx_node} objects that
 can be queried to provide the information specified by the ignore
 parameters (see \code{\link[=counts]{counts()}}, \code{\link[=cutoff.ctx_node]{cutoff.ctx_node()}}, \code{\link[=metrics.ctx_node]{metrics.ctx_node()}} and
@@ -84,21 +84,21 @@ parameters (see \code{\link[=counts]{counts()}}, \code{\link[=cutoff.ctx_node]{c
 
 When \code{type="data.frame"}, the result is a \code{data.frame} that contains at
 least a \code{context} column storing the contexts as vectors (and not
-\code{ctx_node}). The parameters specify additional columns for the resulting
-\code{data.frame}. The \code{frequency} is described in details in the documentation
-of  \code{\link[=contexts.ctx_tree]{contexts.ctx_tree()}}. When \code{cutoff} is non \code{NULL}, the resulting
-\code{data.frame} contains a \code{cutoff} column with the cut off values, either in
-quantile or in native scale. See \code{\link[=cutoff.vlmc]{cutoff.vlmc()}} and \code{\link[=prune.vlmc]{prune.vlmc()}} for the
-definitions of cut off values and of the two scales.
+\code{ctx_node} objects). The parameters specify additional columns for the
+resulting \code{data.frame}. The \code{frequency} is described in details in the
+documentation of  \code{\link[=contexts.ctx_tree]{contexts.ctx_tree()}}. When \code{cutoff} is non \code{NULL}, the
+resulting \code{data.frame} contains a \code{cutoff} column with the cut off values,
+either in quantile or in native scale. See \code{\link[=cutoff.vlmc]{cutoff.vlmc()}} and
+\code{\link[=prune.vlmc]{prune.vlmc()}} for the definitions of cut off values and of the two scales.
 }
 \section{Cut off values}{
  The cut off values reported by \code{contexts.vlmc} can
 be different from the ones reported by \code{\link[=cutoff.vlmc]{cutoff.vlmc()}} for three reasons:
 \enumerate{
-\item \code{\link[=cutoff.vlmc]{cutoff.vlmc()}} reports only useful cut off values, i.e., cut off values that
-should induce a simplification of the VLMC when used in \code{\link[=prune]{prune()}}. This
-exclude cut off values associated to simple contexts that are smaller than
-the ones of their descendants in the context tree. Those values are
+\item \code{\link[=cutoff.vlmc]{cutoff.vlmc()}} reports only useful cut off values, i.e., cut off values
+that should induce a simplification of the VLMC when used in \code{\link[=prune]{prune()}}.
+This exclude cut off values associated to simple contexts that are smaller
+than the ones of their descendants in the context tree. Those values are
 reported by \code{context.vlmc}.
 \item \code{context.vlmc} reports only cut off values of actual contexts, while
 \code{\link[=cutoff.vlmc]{cutoff.vlmc()}} reports cut off values for all nodes of the context tree.
