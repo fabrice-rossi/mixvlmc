@@ -5,15 +5,17 @@
 #' @param node the node representing the context
 #' @param rev whether the sequence should be reported in reverse order or in
 #'   temporal order
+#' @param ... additional parameters
+#' @param class finer class
 #' @noRd
-new_ctx_node <- function(ctx, tree, node, rev) {
+new_ctx_node <- function(ctx, tree, node, rev, ..., class = character()) {
   structure(
     list(
       sequence = ctx, node = node, tree = tree,
       is_context = count_local_context(node) > 0,
-      rev = rev
+      rev = rev, ...
     ),
-    class = "ctx_node"
+    class = c(class, "ctx_node")
   )
 }
 
