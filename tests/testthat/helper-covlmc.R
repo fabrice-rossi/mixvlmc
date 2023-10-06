@@ -307,3 +307,24 @@ create_demo_covlmc <- function() {
   }
   list(model = m_current, dts = x3, cov = df_y3, full_model = x3_covlmc)
 }
+
+create_merged_dataset <- function(n = 1000, seed = 0) {
+  withr::local_seed(seed)
+  y <- rnorm(n)
+  z <- sample(c("K", "L", "M"), n, replace = TRUE, prob = sample(1:4, 3, replace = TRUE))
+  cov <- data.frame(y = y, z = z)
+  mcov <- model.matrix(~ y + z, cov)
+  alpha_1 <- matrix(rnorm(2 * ncol(mcov)), ncol = 2)
+  alpha_2 <- matrix(rnorm(2 * ncol(mcov)), ncol = 2)
+  prob_1 <- t(apply(mcov %*% alpha_1, 1, \(x) c(1, exp(x)) / sum(exp(x) + 1)))
+  prob_2 <- t(apply(mcov %*% alpha_2, 1, \(x) c(1, exp(x)) / sum(exp(x) + 1)))
+  res <- rep(sample(1:3, 1), n)
+  for (k in 2:n) {
+    if (res[k - 1] == 1) {
+      res[k] <- sample(1:3, 1, prob = prob_1[k - 1, ])
+    } else {
+      res[k] <- sample(1:3, 1, prob = prob_2[k - 1, ])
+    }
+  }
+  list(dts = x, cov = cov)
+}

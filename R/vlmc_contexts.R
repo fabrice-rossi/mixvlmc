@@ -3,8 +3,8 @@ vlmc_parent_summary <- function(ctx) {
 }
 
 vlmc_context_extractor <-
-  function(path, ct, vals, control, is_leaf, p_summary) {
-    res <- frequency_context_extractor(path, ct, vals, control, is_leaf, p_summary)
+  function(tree, path, ct, vals, control, is_leaf, p_summary) {
+    res <- frequency_context_extractor(tree, path, ct, vals, control, is_leaf, p_summary)
     if (is.null(res)) {
       NULL
     } else {
@@ -18,7 +18,7 @@ vlmc_context_extractor <-
           l_cont <- control
           l_cont$frequency <- "detailed"
           l_cont$counts <- "local"
-          lres <- frequency_context_extractor(path, ct, vals, l_cont, is_leaf, p_summary)
+          lres <- frequency_context_extractor(tree, path, ct, vals, l_cont, is_leaf, p_summary)
         } else {
           lres <- res
         }
@@ -43,55 +43,59 @@ vlmc_context_extractor <-
 #'   each context (see [cutoff()] and [prune()]). The default result with
 #'   `cutoff=NULL` does not include those values. Setting `cutoff` to `quantile`
 #'   adds the cut off values in quantile scale, while `cutoff="native"` adds
-#'   them in the native scale. The returned values are directly based on the
-#'   log likelihood ratio computed in the context tree and are not modified to
+#'   them in the native scale. The returned values are directly based on the log
+#'   likelihood ratio computed in the context tree and are not modified to
 #'   ensure pruning (as when [cutoff()] is called by  `raw=TRUE`).
 #' @param counts specifies how the counts reported by `frequency` are computed.
 #'   The default value `"desc"` includes both counts that are specific to the
 #'   context (if any) and counts from the descendants of the context in the
 #'   tree. When `counts = "local"` the counts include only the number of times
 #'   the context appears without being the last part of a longer context.
-#' @param metrics if TRUE, adds predictive metrics for each context (see [metrics()]
-#'   for the definition of predictive metrics).
-#' @details The default result for `type="auto"` (or `type="list"`),
-#'   `frequency=NULL`, `cutoff=NULL` and `metrics=FALSE` is the list of all contexts.
+#' @param metrics if TRUE, adds predictive metrics for each context (see
+#'   [metrics()] for the definition of predictive metrics).
+#' @details When `type="list"`, all parameters are ignored, excepted `ct` and
+#'   `reverse`. Indeed the result consists of a list of `ctx_node` objects that
+#'   can be queried to provide the information specified by the ignore
+#'   parameters (see [counts()], [cutoff.ctx_node()], [metrics.ctx_node()] and
+#'   [positions()]).
 #'
-#'   Other results are obtained only with `type="auto"` or `type="data.frame"`.
-#'   See [contexts.ctx_tree()] for details about the `frequency` parameter. When
-#'   `cutoff` is non `NULL`, the resulting `data.frame` contains a `cutoff`
-#'   column with the cut off values, either in quantile or in native scale. See
-#'   [cutoff()] and [prune()] for the definitions of cut off values and of the
-#'   two scales.
+#'   When `type="data.frame"`, the result is a `data.frame` that contains at
+#'   least a `context` column storing the contexts as vectors (and not
+#'   `ctx_node` objects). The parameters specify additional columns for the
+#'   resulting `data.frame`. The `frequency` is described in details in the
+#'   documentation of  [contexts.ctx_tree()]. When `cutoff` is non `NULL`, the
+#'   resulting `data.frame` contains a `cutoff` column with the cut off values,
+#'   either in quantile or in native scale. See [cutoff.vlmc()] and
+#'   [prune.vlmc()] for the definitions of cut off values and of the two scales.
 #' @section Cut off values: The cut off values reported by `contexts.vlmc` can
-#'   be different from the ones reported by [cutoff()] for three reasons:
+#'   be different from the ones reported by [cutoff.vlmc()] for three reasons:
 #'
-#'   1. [cutoff()] reports only useful cut off values, i.e., cut off values that
-#'   should induce a simplification of the VLMC when used in [prune()]. This
-#'   exclude cut off values associated to simple contexts that are smaller than
-#'   the ones of their descendants in the context tree. Those values are
+#'   1. [cutoff.vlmc()] reports only useful cut off values, i.e., cut off values
+#'   that should induce a simplification of the VLMC when used in [prune()].
+#'   This exclude cut off values associated to simple contexts that are smaller
+#'   than the ones of their descendants in the context tree. Those values are
 #'   reported by `context.vlmc`.
 #'
 #'   2. `context.vlmc` reports only cut off values of actual contexts, while
-#'   [cutoff()] reports cut off values for all nodes of the context tree.
+#'   [cutoff.vlmc()] reports cut off values for all nodes of the context tree.
 #'
 #'   3. values are not modified to induce pruning, contrarily to the default
-#'   behaviour of [cutoff()]
+#'   behaviour of [cutoff.vlmc()]
 #'
 #' @examples
 #' dts <- sample(as.factor(c("A", "B", "C")), 100, replace = TRUE)
 #' model <- vlmc(dts, alpha = 0.5)
 #' contexts(model)
-#' contexts(model, frequency = "total")
-#' contexts(model, cutoff = "quantile")
+#' contexts(model, type = "data.frame", frequency = "total")
+#' contexts(model, type = "data.frame", cutoff = "quantile")
 #' @export
-contexts.vlmc <- function(ct, type = c("auto", "list", "data.frame"), reverse = TRUE, frequency = NULL,
+contexts.vlmc <- function(ct, type = c("list", "data.frame"), reverse = TRUE, frequency = NULL,
                           positions = FALSE, counts = c("desc", "local"), cutoff = NULL, metrics = FALSE, ...) {
   type <- match.arg(type)
   counts <- match.arg(counts)
-  if (is.null(cutoff) && counts == "desc" && !metrics) {
+  if (type == "list") {
     NextMethod()
   } else {
-    assertthat::assert_that(type %in% c("auto", "data.frame"))
     if (!is.null(frequency)) {
       assertthat::assert_that(frequency %in% c("total", "detailed"))
     }

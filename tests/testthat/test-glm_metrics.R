@@ -25,7 +25,7 @@ test_that("metrics for constant_model work as expected", {
   cm <- metrics_fix_names(table(f_target, f_target))
   expect_identical(mm$conf_mat, cm)
   expect_equal(mm$accuracy, sum(diag(cm)) / length(target))
-  expect_equal(mm$auc, NA)
+  expect_equal(mm$auc, as.numeric(NA))
 
   target2 <- sample(c(0, 1), nrow(x), replace = TRUE)
   mm <- glm_metrics(model, x, target2)
@@ -41,7 +41,7 @@ test_that("metrics for constant_model work as expected", {
   cm <- metrics_fix_names(table(target, target))
   expect_identical(mm$conf_mat, cm)
   expect_equal(mm$accuracy, sum(diag(cm)) / length(target))
-  expect_equal(mm$auc, NA)
+  expect_equal(mm$auc, as.numeric(NA))
 
   target2 <- factor(sample(c("a", "b", "c"), nrow(x), replace = TRUE), levels = c("a", "b", "c"))
   mm <- glm_metrics(model, x, target2)

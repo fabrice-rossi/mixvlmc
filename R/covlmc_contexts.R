@@ -49,7 +49,7 @@ covlmc_model_extractor <- function(res, model, control) {
   flex_cbind(res, cores)
 }
 
-covlmc_context_extractor <- function(path, ct, vals, control, is_leaf, p_summary) {
+covlmc_context_extractor <- function(tree, path, ct, vals, control, is_leaf, p_summary) {
   if (is.null(ct[["model"]])) {
     if (!is.null(ct[["merged_model"]])) {
       res <- NULL
@@ -59,7 +59,7 @@ covlmc_context_extractor <- function(path, ct, vals, control, is_leaf, p_summary
         } else {
           sub_path <- c(path, vals[v])
         }
-        l_res <- frequency_context_extractor(sub_path, ct$children[[v]], vals, control, is_leaf, p_summary)
+        l_res <- frequency_context_extractor(tree, sub_path, ct$children[[v]], vals, control, is_leaf, p_summary)
         l_res <- covlmc_model_extractor(l_res, ct$merged_model, control)
         if (isTRUE(control[["merging"]])) {
           l_res$merged <- TRUE
@@ -71,7 +71,7 @@ covlmc_context_extractor <- function(path, ct, vals, control, is_leaf, p_summary
       NULL
     }
   } else {
-    res <- frequency_context_extractor(path, ct, vals, control, is_leaf, p_summary)
+    res <- frequency_context_extractor(tree, path, ct, vals, control, is_leaf, p_summary)
     if (!is.null(control[["model"]]) || isTRUE(control[["hsize"]]) ||
       isTRUE(control[["metrics"]]) || isTRUE(control[["merging"]])) {
       res <- covlmc_model_extractor(res, ct$model, control)
@@ -80,6 +80,34 @@ covlmc_context_extractor <- function(path, ct, vals, control, is_leaf, p_summary
       }
     }
     res
+  }
+}
+
+covlmc_node_content_extractor <- function(tree, path, ct, vals, control, is_leaf, p_summary) {
+  if (is.null(ct[["model"]])) {
+    if (!is.null(ct[["merged_model"]])) {
+      res <- NULL
+      for (v in ct$merged) {
+        if (is.null(path)) {
+          sub_path <- vals[v]
+        } else {
+          sub_path <- c(path, vals[v])
+        }
+        l_res <- ct$children[[v]]
+        l_res$merged <- ct$merged
+        l_res$model <- ct$merged_model
+        l_res <- list(new_ctx_node(sub_path, tree, l_res, TRUE,
+          merged = TRUE,
+          parent = ct, index = v, class = "ctx_node_covlmc"
+        ))
+        res <- c(res, l_res)
+      }
+      res
+    } else {
+      NULL
+    }
+  } else {
+    list(new_ctx_node(path, tree, ct, TRUE, merged = FALSE, class = "ctx_node_covlmc"))
   }
 }
 
@@ -97,45 +125,52 @@ covlmc_context_extractor <- function(path, ct, vals, control, is_leaf, p_summary
 #'   column, while `"full"` include the models themselves (as R objects) in a
 #'   `model` column.
 #' @param hsize if TRUE, adds a `hsize` column to the result data frame that
-#'   gives for each context the size of the history of covariates used by the model.
+#'   gives for each context the size of the history of covariates used by the
+#'   model.
 #' @param ct a fitted covlmc model.
 #' @param counts specifies how the counts reported by `frequency` are computed.
 #'   The default value `"desc"` includes both counts that are specific to the
 #'   context (if any) and counts from the descendants of the context in the
 #'   tree. When `counts = "local"` the counts include only the number of times
 #'   the context appears without being the last part of a longer context.
-#' @param metrics if TRUE, adds predictive metrics for each context (see [metrics()]
-#'   for the definition of predictive metrics).
+#' @param metrics if TRUE, adds predictive metrics for each context (see
+#'   [metrics()] for the definition of predictive metrics).
 #' @param merging if TRUE, adds a `merged` column to the result data frame. For
-#'   a normal context, the value of `merged` is FALSE. Contexts that share the same
-#'   model have a TRUE `merged` value.
-#' @details The result is a list of all contexts when `type="auto"` (or `type="list"`),
-#'   and no details have been asked via specific parameters (e.g. by setting `model`
-#'   to a non `NULL` value).
+#'   a normal context, the value of `merged` is FALSE. Contexts that share the
+#'   same model have a TRUE `merged` value.
+#' @details When `type="list"`, all parameters are ignored, excepted `ct` and
+#'   `reverse`. Indeed the result consists of a list of `ctx_node_covlmc`
+#'   objects that can be queried to provide the information specified by the
+#'   ignore parameters (see [counts()], [cutoff.ctx_node()],
+#'   [metrics.ctx_node()], [positions()], [model()], [merged_with()] and
+#'   [covariate_memory()]).
 #'
-#'   Other results are obtained only with `type="data.frame"` (or
-#'   `type="auto"`). See [contexts.ctx_tree()] for details about the `frequency`
-#'   parameter. When `model` is non `NULL`, the resulting `data.frame` contains
-#'   the models associated to each context (either the full R model or its
-#'   coefficients).
+#'   When `type="data.frame"`, the result is a `data.frame` that contains at
+#'   least a `context` column storing the contexts as vectors (and not
+#'   `ctx_node_covlmc` objects). The parameters specify additional columns for
+#'   the resulting `data.frame`. See [contexts.ctx_tree()] for details about the
+#'   `frequency` parameter. When `model` is non `NULL`, the resulting
+#'   `data.frame` contains the models associated to each context (either the
+#'   full R model or its coefficients). Other columns are added is the
+#'   corresponding parameters are set to `TRUE`.
 #' @examples
 #' pc <- powerconsumption[powerconsumption$week == 5, ]
 #' breaks <- c(0, median(pc$active_power), max(pc$active_power))
 #' dts <- cut(pc$active_power, breaks = breaks)
 #' dts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
 #' m_cov <- covlmc(dts, dts_cov, min_size = 5)
-#' contexts(m_cov, model = "coef")
-#' contexts(m_cov, model = "full")
+#' contexts(m_cov)
+#' contexts(m_cov, type = "data.frame", model = "coef")
+#' contexts(m_cov, type = "data.frame", model = "full")
 #' @export
-contexts.covlmc <- function(ct, type = c("auto", "list", "data.frame"), reverse = TRUE, frequency = NULL,
+contexts.covlmc <- function(ct, type = c("list", "data.frame"), reverse = TRUE, frequency = NULL,
                             positions = FALSE, counts = c("desc", "local"), model = NULL, hsize = FALSE, metrics = FALSE,
                             merging = FALSE, ...) {
   type <- match.arg(type)
   counts <- match.arg(counts)
-  if (is.null(model) && !hsize && counts == "desc" && !metrics && !merging) {
-    NextMethod()
+  if (type == "list") {
+    new_context_list(contexts_extractor(ct, reverse, covlmc_node_content_extractor, list(class = "ctx_node_covlmc")))
   } else {
-    assertthat::assert_that(type %in% c("auto", "data.frame"))
     if (!is.null(frequency)) {
       assertthat::assert_that(frequency %in% c("total", "detailed"))
     }

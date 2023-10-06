@@ -6,7 +6,7 @@
 \usage{
 \method{contexts}{vlmc}(
   ct,
-  type = c("auto", "list", "data.frame"),
+  type = c("list", "data.frame"),
   reverse = TRUE,
   frequency = NULL,
   positions = FALSE,
@@ -45,47 +45,52 @@ the context appears without being the last part of a longer context.}
 each context (see \code{\link[=cutoff]{cutoff()}} and \code{\link[=prune]{prune()}}). The default result with
 \code{cutoff=NULL} does not include those values. Setting \code{cutoff} to \code{quantile}
 adds the cut off values in quantile scale, while \code{cutoff="native"} adds
-them in the native scale. The returned values are directly based on the
-log likelihood ratio computed in the context tree and are not modified to
+them in the native scale. The returned values are directly based on the log
+likelihood ratio computed in the context tree and are not modified to
 ensure pruning (as when \code{\link[=cutoff]{cutoff()}} is called by  \code{raw=TRUE}).}
 
-\item{metrics}{if TRUE, adds predictive metrics for each context (see \code{\link[=metrics]{metrics()}}
-for the definition of predictive metrics).}
+\item{metrics}{if TRUE, adds predictive metrics for each context (see
+\code{\link[=metrics]{metrics()}} for the definition of predictive metrics).}
 
 \item{...}{additional arguments for the contexts function.}
 }
 \value{
-The list of the contexts represented in this tree or a data.frame
-with more content.
+The list of class \code{contexts} containing the contexts represented in
+this tree (as \code{ctx_node}) or a data.frame.
 }
 \description{
 This function extracts all the contexts from a fitted VLMC, possibly with
 some associated data.
 }
 \details{
-The default result for \code{type="auto"} (or \code{type="list"}),
-\code{frequency=NULL}, \code{cutoff=NULL} and \code{metrics=FALSE} is the list of all contexts.
+When \code{type="list"}, all parameters are ignored, excepted \code{ct} and
+\code{reverse}. Indeed the result consists of a list of \code{ctx_node} objects that
+can be queried to provide the information specified by the ignore
+parameters (see \code{\link[=counts]{counts()}}, \code{\link[=cutoff.ctx_node]{cutoff.ctx_node()}}, \code{\link[=metrics.ctx_node]{metrics.ctx_node()}} and
+\code{\link[=positions]{positions()}}).
 
-Other results are obtained only with \code{type="auto"} or \code{type="data.frame"}.
-See \code{\link[=contexts.ctx_tree]{contexts.ctx_tree()}} for details about the \code{frequency} parameter. When
-\code{cutoff} is non \code{NULL}, the resulting \code{data.frame} contains a \code{cutoff}
-column with the cut off values, either in quantile or in native scale. See
-\code{\link[=cutoff]{cutoff()}} and \code{\link[=prune]{prune()}} for the definitions of cut off values and of the
-two scales.
+When \code{type="data.frame"}, the result is a \code{data.frame} that contains at
+least a \code{context} column storing the contexts as vectors (and not
+\code{ctx_node} objects). The parameters specify additional columns for the
+resulting \code{data.frame}. The \code{frequency} is described in details in the
+documentation of  \code{\link[=contexts.ctx_tree]{contexts.ctx_tree()}}. When \code{cutoff} is non \code{NULL}, the
+resulting \code{data.frame} contains a \code{cutoff} column with the cut off values,
+either in quantile or in native scale. See \code{\link[=cutoff.vlmc]{cutoff.vlmc()}} and
+\code{\link[=prune.vlmc]{prune.vlmc()}} for the definitions of cut off values and of the two scales.
 }
 \section{Cut off values}{
  The cut off values reported by \code{contexts.vlmc} can
-be different from the ones reported by \code{\link[=cutoff]{cutoff()}} for three reasons:
+be different from the ones reported by \code{\link[=cutoff.vlmc]{cutoff.vlmc()}} for three reasons:
 \enumerate{
-\item \code{\link[=cutoff]{cutoff()}} reports only useful cut off values, i.e., cut off values that
-should induce a simplification of the VLMC when used in \code{\link[=prune]{prune()}}. This
-exclude cut off values associated to simple contexts that are smaller than
-the ones of their descendants in the context tree. Those values are
+\item \code{\link[=cutoff.vlmc]{cutoff.vlmc()}} reports only useful cut off values, i.e., cut off values
+that should induce a simplification of the VLMC when used in \code{\link[=prune]{prune()}}.
+This exclude cut off values associated to simple contexts that are smaller
+than the ones of their descendants in the context tree. Those values are
 reported by \code{context.vlmc}.
 \item \code{context.vlmc} reports only cut off values of actual contexts, while
-\code{\link[=cutoff]{cutoff()}} reports cut off values for all nodes of the context tree.
+\code{\link[=cutoff.vlmc]{cutoff.vlmc()}} reports cut off values for all nodes of the context tree.
 \item values are not modified to induce pruning, contrarily to the default
-behaviour of \code{\link[=cutoff]{cutoff()}}
+behaviour of \code{\link[=cutoff.vlmc]{cutoff.vlmc()}}
 }
 }
 
@@ -108,8 +113,8 @@ reverse to \code{FALSE} for the reverse convention.
 dts <- sample(as.factor(c("A", "B", "C")), 100, replace = TRUE)
 model <- vlmc(dts, alpha = 0.5)
 contexts(model)
-contexts(model, frequency = "total")
-contexts(model, cutoff = "quantile")
+contexts(model, type = "data.frame", frequency = "total")
+contexts(model, type = "data.frame", cutoff = "quantile")
 }
 \seealso{
 \code{\link[=contexts.ctx_tree]{contexts.ctx_tree()}}, \code{\link[=contexts.vlmc]{contexts.vlmc()}}, \code{\link[=contexts.covlmc]{contexts.covlmc()}}.

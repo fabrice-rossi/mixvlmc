@@ -21,15 +21,15 @@ in rows and true values in columns
 }
 }
 \description{
-This function computes and returns predictive quality metrics for VLMC and
-VLMC with covariates.
+This function computes and returns predictive quality metrics for context
+based models such as VLMC and VLMC with covariates.
 }
 \details{
 A context based model computes transition probabilities for its contexts.
 Using a maximum transition probability decision rule, this can be used to
 predict the new state that is the more likely to follow the current one,
-given the context (see \code{\link[=predict.vlmc]{predict.vlmc()}}). The quality of these predictions
-is evaluated using standard metrics including:
+given the context (see \code{\link[=predict.vlmc]{predict.vlmc()}}). The quality of these predictions is
+evaluated using standard metrics including:
 \itemize{
 \item accuracy
 \item the full confusion matrix
@@ -52,11 +52,10 @@ metrics(model)
 
 }
 \references{
-David J. Hand and Robert J. Till (2001). "A Simple Generalisation of the Area
-Under the ROC Curve for Multiple Class Classification
-Problems." \emph{Machine Learning} 45(2), p. 171--186. DOI:
-\doi{10.1023/A:1010920819831}.
+David J. Hand and Robert J. Till (2001). "A Simple Generalisation
+of the Area Under the ROC Curve for Multiple Class Classification Problems."
+\emph{Machine Learning} 45(2), p. 171--186. DOI: \doi{10.1023/A:1010920819831}.
 }
 \seealso{
-\code{\link[=metrics.vlmc]{metrics.vlmc()}}, \code{\link[=contexts.covlmc]{contexts.covlmc()}}, \code{\link[=predict.vlmc]{predict.vlmc()}}.
+\code{\link[=metrics.vlmc]{metrics.vlmc()}}, \code{\link[=metrics.ctx_node]{metrics.ctx_node()}}, \code{\link[=contexts.vlmc]{contexts.vlmc()}}, \code{\link[=predict.vlmc]{predict.vlmc()}}.
 }

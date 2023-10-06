@@ -1,5 +1,5 @@
 frequency_context_extractor <-
-  function(path, ct, vals, control, is_leaf, p_summary) {
+  function(tree, path, ct, vals, control, is_leaf, p_summary) {
     if ((is_leaf && !is.null(ct[["f_by"]])) ||
       (!is_leaf && nb_sub_tree(ct) < length(vals))) {
       if (is.null(control[["frequency"]])) {
@@ -62,17 +62,17 @@ frequency_context_extractor <-
 #'   be reported in a `positions` column of the result data frame. The
 #'   availability of the positions depends on the way the context
 #'   tree was built. See details for the definition of a position.
-#' @details The default result for `type="auto"` (or `type="list"`) and
-#'   `frequency=NULL` is the list of all contexts.
+#' @details The `frequency` and `positions` parameters influence only the
+#'   results when `type="data.frame"`. In this case the resulting `data.frame`
+#'   has a `context` column storing the contexts. If `frequency="total"`, an
+#'   additional column named `freq` gives the number of occurrences of each
+#'   context in the series used to build the tree. If `frequency="detailed"`,
+#'   one additional column is added per state in the context space. Each column
+#'   records the number of times a given context is followed by the
+#'   corresponding value in the original series.
 #'
-#'   Other results are obtained only with `type="data.frame"` (or
-#'   `type="auto"`). In this case the resulting `data.frame` has a `context`
-#'   column storing the contexts. If `frequency="total"`, an additional column
-#'   named `freq` gives the number of occurrences of each context in the series
-#'   used to build the tree. If `frequency="detailed"`, one additional column is
-#'   added per state in the context space. Each column records the number of
-#'   times a given context is followed by the corresponding value in the
-#'   original series.
+#'   When `type="list"`, similar information can be obtained from the `ctx_node`
+#'   objects returned by the function as a `contexts` list.
 #'
 #' @section Positions: A position of a context `ctx` in the time series `x` is an
 #'   index value `t` such that the context ends with `x[t]`. Thus `x[t+1]` is after
@@ -83,31 +83,46 @@ frequency_context_extractor <-
 #' dts <- sample(as.factor(c("A", "B", "C")), 100, replace = TRUE)
 #' dts_tree <- ctx_tree(dts, max_depth = 3, min_size = 5)
 #' contexts(dts_tree)
-#' contexts(dts_tree, frequency = "total")
-#' contexts(dts_tree, frequency = "detailed")
+#' contexts(dts_tree, type = "data.frame", frequency = "total")
+#' contexts(dts_tree, type = "data.frame", frequency = "detailed")
 #' @export
-contexts.ctx_tree <- function(ct, type = c("auto", "list", "data.frame"),
+contexts.ctx_tree <- function(ct, type = c("list", "data.frame"),
                               reverse = TRUE, frequency = NULL,
                               positions = FALSE, ...) {
   type <- match.arg(type)
-  if (is.null(frequency) && isFALSE(positions)) {
-    basic_extractor <- switch(type,
-      "auto" = path_list_extractor,
-      "list" = path_list_extractor,
-      "data.frame" = path_df_extractor
-    )
-    contexts_extractor(ct, reverse, basic_extractor, NULL)
+  if (type == "list") {
+    new_context_list(contexts_extractor(ct, reverse, node_content_extractor, NULL))
   } else {
-    assertthat::assert_that(type %in% c("auto", "data.frame"))
     if (!is.null(frequency)) {
       assertthat::assert_that(frequency %in% c("total", "detailed"))
+      extractor <- frequency_context_extractor
+    } else if (positions) {
+      extractor <- frequency_context_extractor
+    } else {
+      extractor <- path_df_extractor
     }
     control <- list(frequency = frequency, positions = positions)
-    pre_res <- contexts_extractor(ct, reverse, frequency_context_extractor, control)
+    pre_res <- contexts_extractor(ct, reverse, extractor, control)
     if (positions) {
       pre_res$positions <- I(pre_res$positions)
     }
     pre_res
+  }
+}
+
+node_content_extractor <- function(tree, path, ct, vals, control, is_leaf, p_summary) {
+  if (is_leaf) {
+    if (is.null(ct[["f_by"]])) {
+      NULL
+    } else {
+      list(new_ctx_node(path, tree, ct, TRUE))
+    }
+  } else {
+    if (nb_sub_tree(ct) < length(vals)) {
+      list(new_ctx_node(path, tree, ct, TRUE))
+    } else {
+      NULL
+    }
   }
 }
 
