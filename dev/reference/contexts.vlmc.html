@@ -77,7 +77,7 @@ some associated data.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S3 method for vlmc</span></span>
 <span><span class="fu"><a href="contexts.html">contexts</a></span><span class="op">(</span></span>
 <span>  <span class="va">ct</span>,</span>
-<span>  type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"auto"</span>, <span class="st">"list"</span>, <span class="st">"data.frame"</span><span class="op">)</span>,</span>
+<span>  type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"list"</span>, <span class="st">"data.frame"</span><span class="op">)</span>,</span>
 <span>  reverse <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  frequency <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  positions <span class="op">=</span> <span class="cn">FALSE</span>,</span>
@@ -131,14 +131,14 @@ the context appears without being the last part of a longer context.</p></dd>
 each context (see <code><a href="cutoff.html">cutoff()</a></code> and <code><a href="prune.html">prune()</a></code>). The default result with
 <code>cutoff=NULL</code> does not include those values. Setting <code>cutoff</code> to <code>quantile</code>
 adds the cut off values in quantile scale, while <code>cutoff="native"</code> adds
-them in the native scale. The returned values are directly based on the
-log likelihood ratio computed in the context tree and are not modified to
+them in the native scale. The returned values are directly based on the log
+likelihood ratio computed in the context tree and are not modified to
 ensure pruning (as when <code><a href="cutoff.html">cutoff()</a></code> is called by  <code>raw=TRUE</code>).</p></dd>
 
 
 <dt>metrics</dt>
-<dd><p>if TRUE, adds predictive metrics for each context (see <code><a href="metrics.html">metrics()</a></code>
-for the definition of predictive metrics).</p></dd>
+<dd><p>if TRUE, adds predictive metrics for each context (see
+<code><a href="metrics.html">metrics()</a></code> for the definition of predictive metrics).</p></dd>
 
 
 <dt>...</dt>
@@ -149,32 +149,37 @@ for the definition of predictive metrics).</p></dd>
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     
 
-<p>The list of the contexts represented in this tree or a data.frame
-with more content.</p>
+<p>The list of class <code>contexts</code> containing the contexts represented in
+this tree (as <code>ctx_node</code>) or a data.frame.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>The default result for <code>type="auto"</code> (or <code>type="list"</code>),
-<code>frequency=NULL</code>, <code>cutoff=NULL</code> and <code>metrics=FALSE</code> is the list of all contexts.</p>
-<p>Other results are obtained only with <code>type="auto"</code> or <code>type="data.frame"</code>.
-See <code><a href="contexts.ctx_tree.html">contexts.ctx_tree()</a></code> for details about the <code>frequency</code> parameter. When
-<code>cutoff</code> is non <code>NULL</code>, the resulting <code>data.frame</code> contains a <code>cutoff</code>
-column with the cut off values, either in quantile or in native scale. See
-<code><a href="cutoff.html">cutoff()</a></code> and <code><a href="prune.html">prune()</a></code> for the definitions of cut off values and of the
-two scales.</p>
+    <p>When <code>type="list"</code>, all parameters are ignored, excepted <code>ct</code> and
+<code>reverse</code>. Indeed the result consists of a list of <code>ctx_node</code> objects that
+can be queried to provide the information specified by the ignore
+parameters (see <code><a href="counts.html">counts()</a></code>, <code><a href="cutoff.ctx_node.html">cutoff.ctx_node()</a></code>, <code><a href="metrics.ctx_node.html">metrics.ctx_node()</a></code> and
+<code><a href="positions.html">positions()</a></code>).</p>
+<p>When <code>type="data.frame"</code>, the result is a <code>data.frame</code> that contains at
+least a <code>context</code> column storing the contexts as vectors (and not
+<code>ctx_node</code> objects). The parameters specify additional columns for the
+resulting <code>data.frame</code>. The <code>frequency</code> is described in details in the
+documentation of  <code><a href="contexts.ctx_tree.html">contexts.ctx_tree()</a></code>. When <code>cutoff</code> is non <code>NULL</code>, the
+resulting <code>data.frame</code> contains a <code>cutoff</code> column with the cut off values,
+either in quantile or in native scale. See <code><a href="cutoff.vlmc.html">cutoff.vlmc()</a></code> and
+<code><a href="prune.html">prune.vlmc()</a></code> for the definitions of cut off values and of the two scales.</p>
     </div>
     <div class="section level2">
     <h2 id="cut-off-values">Cut off values<a class="anchor" aria-label="anchor" href="#cut-off-values"></a></h2>
     <p>The cut off values reported by <code>contexts.vlmc</code> can
-be different from the ones reported by <code><a href="cutoff.html">cutoff()</a></code> for three reasons:</p><ol><li><p><code><a href="cutoff.html">cutoff()</a></code> reports only useful cut off values, i.e., cut off values that
-should induce a simplification of the VLMC when used in <code><a href="prune.html">prune()</a></code>. This
-exclude cut off values associated to simple contexts that are smaller than
-the ones of their descendants in the context tree. Those values are
+be different from the ones reported by <code><a href="cutoff.vlmc.html">cutoff.vlmc()</a></code> for three reasons:</p><ol><li><p><code><a href="cutoff.vlmc.html">cutoff.vlmc()</a></code> reports only useful cut off values, i.e., cut off values
+that should induce a simplification of the VLMC when used in <code><a href="prune.html">prune()</a></code>.
+This exclude cut off values associated to simple contexts that are smaller
+than the ones of their descendants in the context tree. Those values are
 reported by <code>context.vlmc</code>.</p></li>
 <li><p><code>context.vlmc</code> reports only cut off values of actual contexts, while
-<code><a href="cutoff.html">cutoff()</a></code> reports cut off values for all nodes of the context tree.</p></li>
+<code><a href="cutoff.vlmc.html">cutoff.vlmc()</a></code> reports cut off values for all nodes of the context tree.</p></li>
 <li><p>values are not modified to induce pruning, contrarily to the default
-behaviour of <code><a href="cutoff.html">cutoff()</a></code></p></li>
+behaviour of <code><a href="cutoff.vlmc.html">cutoff.vlmc()</a></code></p></li>
 </ol></div>
     <div class="section level2">
     <h2 id="positions">Positions<a class="anchor" aria-label="anchor" href="#positions"></a></h2>
@@ -201,292 +206,146 @@ reverse to <code>FALSE</code> for the reverse convention.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">dts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A"</span>, <span class="st">"B"</span>, <span class="st">"C"</span><span class="op">)</span><span class="op">)</span>, <span class="fl">100</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="vlmc.html">vlmc</a></span><span class="op">(</span><span class="va">dts</span>, alpha <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="contexts.html">contexts</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] A A A</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Levels: A B C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[2]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] A A B A</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Levels: A B C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[3]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] A A B</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Levels: A B C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[4]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] A A C C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Levels: A B C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[5]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] A A C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Levels: A B C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[6]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] A B A A</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Levels: A B C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[7]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] A B A</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Levels: A B C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[8]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] A B B B B</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Levels: A B C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[9]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] A B B B</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Levels: A B C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[10]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] A B B</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Levels: A B C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[11]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] A B C A</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Levels: A B C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[12]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] A B C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Levels: A B C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[13]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] A C A</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Levels: A B C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[14]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] A C C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Levels: A B C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[15]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] A C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Levels: A B C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[16]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] B A</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Levels: A B C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[17]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] B B A</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Levels: A B C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[18]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] B B B B C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Levels: A B C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[19]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] B B B B</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Levels: A B C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[20]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] B B B C C B B</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Levels: A B C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[21]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] B B B C C B</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Levels: A B C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[22]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] B B B C C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Levels: A B C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[23]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] B B B C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Levels: A B C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[24]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] B B B</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Levels: A B C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[25]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] B B C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Levels: A B C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[26]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] B C A A</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Levels: A B C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[27]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] B C A B</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Levels: A B C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[28]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] B C A</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Levels: A B C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[29]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] B C C A</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Levels: A B C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[30]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] B C C B</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Levels: A B C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[31]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] B C C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Levels: A B C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[32]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] B C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Levels: A B C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[33]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] C A A A</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Levels: A B C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[34]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] C A A</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Levels: A B C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[35]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] C A B</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Levels: A B C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[36]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] C A C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Levels: A B C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[37]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] C B B</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Levels: A B C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[38]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] C B C C A</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Levels: A B C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[39]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] C B C C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Levels: A B C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[40]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] C B C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Levels: A B C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[41]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] C B</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Levels: A B C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[42]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] C C A C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Levels: A B C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[43]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] C C A</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Levels: A B C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[44]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] C C B B</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Levels: A B C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[45]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] C C B C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Levels: A B C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[46]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] C C B</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Levels: A B C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[47]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] C C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Levels: A B C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-in"><span><span class="fu"><a href="contexts.html">contexts</a></span><span class="op">(</span><span class="va">model</span>, frequency <span class="op">=</span> <span class="st">"total"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Contexts:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  A, A</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  A, B, A</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  A, B, C</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  A, B</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  A, C, A</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  A, C, B, A</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  A, C, B, B</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  A, C, B</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  A, C, C</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  B, A, A, C</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  B, A, A</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  B, A, C, C</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  B, A, C</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  B, A</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  B, B, A</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  B, B, C</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  B, B</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  B, C, A, C, A</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  B, C, A, C, B</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  B, C, A, C</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  B, C, A</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  B, C, B</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  B, C, C, B</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  B, C, C, C</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  B, C, C</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  C, A, B</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  C, A, C, A</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  C, A, C, B</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  C, A, C, C</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  C, A</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  C, B, A</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  C, B, B, C</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  C, B, B</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  C, B, C, A</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  C, B, C, C</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  C, B, C</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  C, C, A, B</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  C, C, A, C</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  C, C, A</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  C, C, B, C, C, B</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  C, C, B, C, C</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  C, C, B, C</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  C, C, B</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  C, C, C, A</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  C, C, C</span>
+<span class="r-in"><span><span class="fu"><a href="contexts.html">contexts</a></span><span class="op">(</span><span class="va">model</span>, type <span class="op">=</span> <span class="st">"data.frame"</span>, frequency <span class="op">=</span> <span class="st">"total"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         context freq</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1       A, A, A    2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2    A, A, B, A    2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3       A, A, B    4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4    A, A, C, C    2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5       A, A, C    3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6    A, B, A, A    2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7       A, B, A    4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8  A, B, B,....    2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9    A, B, B, B    3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10      A, B, B    4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11   A, B, C, A    2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 12      A, B, C    3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 13      A, C, A    3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 14      A, C, C    3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 15         A, C    8</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 16         B, A    6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 17      B, B, A    2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 18 B, B, B,....    2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 19   B, B, B, B    5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 20 B, B, B,....    2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 21 B, B, B,....    3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 22 B, B, B,....    3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 23   B, B, B, C    4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 24      B, B, B   10</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 25      B, B, C    5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 26   B, C, A, A    2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 27   B, C, A, B    3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 28      B, C, A    5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 29   B, C, C, A    2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 30   B, C, C, B    4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 31      B, C, C    7</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 32         B, C   13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 33   C, A, A, A    2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 34      C, A, A    4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 35      C, A, B    4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 36      C, A, C    4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 37      C, B, B    3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 38 C, B, C,....    2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 39   C, B, C, C    3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 40      C, B, C    5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 41         C, B    9</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 42   C, C, A, C    3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 43      C, C, A    4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 44   C, C, B, B    3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 45   C, C, B, C    2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 46      C, C, B    6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 47         C, C   13</span>
-<span class="r-in"><span><span class="fu"><a href="contexts.html">contexts</a></span><span class="op">(</span><span class="va">model</span>, cutoff <span class="op">=</span> <span class="st">"quantile"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1          A, A    5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2       A, B, A    3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3       A, B, C    3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4          A, B    7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5       A, C, A    3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6    A, C, B, A    2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7    A, C, B, B    4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8       A, C, B    7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9       A, C, C    4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10   B, A, A, C    2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11      B, A, A    4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12   B, A, C, C    2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13      B, A, C    3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14         B, A    9</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15      B, B, A    4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 16      B, B, C    4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 17         B, B    9</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 18 B, C, A,....    2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 19 B, C, A,....    2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 20   B, C, A, C    4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 21      B, C, A    6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 22      B, C, B    2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 23   B, C, C, B    2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 24   B, C, C, C    2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 25      B, C, C    5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 26      C, A, B    3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 27   C, A, C, A    2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 28   C, A, C, B    5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 29   C, A, C, C    2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 30         C, A   13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 31      C, B, A    2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 32   C, B, B, C    3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 33      C, B, B    7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 34   C, B, C, A    3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 35   C, B, C, C    3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 36      C, B, C    6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 37   C, C, A, B    2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 38   C, C, A, C    2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 39      C, C, A    4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 40 C, C, B,....    2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 41 C, C, B,....    3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 42   C, C, B, C    3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 43      C, C, B    5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 44   C, C, C, A    2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 45      C, C, C    4</span>
+<span class="r-in"><span><span class="fu"><a href="contexts.html">contexts</a></span><span class="op">(</span><span class="va">model</span>, type <span class="op">=</span> <span class="st">"data.frame"</span>, cutoff <span class="op">=</span> <span class="st">"quantile"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         context     cutoff</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1       A, A, A 0.19753086</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2    A, A, B, A 0.50000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3       A, A, B 0.70233196</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4    A, A, C, C 0.44444444</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5       A, A, C 0.88888889</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6    A, B, A, A 0.25000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7       A, B, A 0.43712861</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8  A, B, B,.... 0.44444444</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9    A, B, B, B 0.42187500</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10      A, B, B 0.87425722</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11   A, B, C, A 0.44444444</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 12      A, B, C 0.81141998</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 13      A, C, A 0.21093750</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 14      A, C, C 0.47460938</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 15         A, C 0.80260914</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 16         B, A 0.07513906</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 17      B, B, A 0.41522491</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 18 B, B, B,.... 0.32000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 19   B, B, B, B 0.87890625</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 20 B, B, B,.... 0.44444444</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 21 B, B, B,.... 1.00000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 22 B, B, B,.... 0.84375000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 23   B, B, B, C 0.96000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 24      B, B, B 0.84656341</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 25      B, B, C 0.34389467</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 26   B, C, A, A 0.32000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 27   B, C, A, B 0.43200000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 28      B, C, A 0.59178752</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 29   B, C, C, A 0.18367347</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 30   B, C, C, B 0.10662224</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 31      B, C, C 0.84391084</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 32         B, C 0.52627479</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 33   C, A, A, A 0.25000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 34      C, A, A 0.92592593</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 35      C, A, B 0.17146776</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 36      C, A, C 0.08779150</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 37      C, B, B 0.29629630</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 38 C, B, C,.... 0.44444444</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 39   C, B, C, C 0.86400000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 40      C, B, C 0.47629934</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 41         C, B 0.13730561</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 42   C, C, A, C 0.42187500</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 43      C, C, A 0.98820069</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 44   C, C, B, B 0.50000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 45   C, C, B, C 0.44444444</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 46      C, C, B 0.81590969</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 47         C, C 0.43886135</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1          A, A 0.02790816</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2       A, B, A 0.35422741</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3       A, B, C 0.15743440</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4          A, B 0.81079539</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5       A, C, A 0.39850583</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6    A, C, B, A 0.40816327</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7    A, C, B, B 0.49362148</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8       A, C, B 0.88573500</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9       A, C, C 0.30362349</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10   B, A, A, C 0.50000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11      B, A, A 0.93644262</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12   B, A, C, C 0.44444444</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13      B, A, C 0.88888889</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14         B, A 0.26835537</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15      B, B, A 0.49567873</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 16      B, B, C 0.49567873</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 17         B, B 0.19152277</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 18 B, C, A,.... 0.50000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 19 B, C, A,.... 0.50000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 20   B, C, A, C 0.59259259</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 21      B, C, A 0.92793728</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 22      B, C, B 0.28402367</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 23   B, C, C, B 0.36000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 24   B, C, C, C 0.48000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 25      B, C, C 0.80798722</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 26      C, A, B 0.29494766</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 27   C, A, C, A 0.19753086</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 28   C, A, C, B 0.21168860</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 29   C, A, C, C 0.04938272</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 30         C, A 0.59908430</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 31      C, B, A 0.21777778</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 32   C, B, B, C 0.31486880</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 33      C, B, B 0.84761949</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 34   C, B, C, A 0.12500000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 35   C, B, C, C 0.12500000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 36      C, B, C 0.29866667</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 37   C, C, A, B 0.25000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 38   C, C, A, C 0.25000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 39      C, C, A 0.71706173</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 40 C, C, B,.... 0.44444444</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 41 C, C, B,.... 1.00000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 42   C, C, B, C 0.86400000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 43      C, C, B 0.84165336</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 44   C, C, C, A 0.25000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 45      C, C, C 0.89632716</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

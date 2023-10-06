@@ -67,10 +67,17 @@
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="mixvlmc-development-version">mixvlmc (development version)<a class="anchor" aria-label="anchor" href="#mixvlmc-development-version"></a></h2>
 <div class="section level3">
+<h3 id="breaking-changes-development-version">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-development-version"></a></h3>
+<ul><li>the <code>mode</code> parameter of <code><a href="../reference/cutoff.vlmc.html">cutoff.vlmc()</a></code> has been renamed to <code>scale</code>
+</li>
+<li>the <code>"auto"</code> type has been removed from <code><a href="../reference/contexts.html">contexts()</a></code> variants</li>
+</ul></div>
+<div class="section level3">
 <h3 id="new-features-development-version">New features<a class="anchor" aria-label="anchor" href="#new-features-development-version"></a></h3>
 <ul><li>new functions <code><a href="../reference/predict.vlmc.html">predict.vlmc()</a></code> and <code><a href="../reference/predict.covlmc.html">predict.covlmc()</a></code> can be used to make one step ahead predictions of a time series based on a (CO)VLMC model (issue <a href="https://github.com/fabrice-rossi/mixvlmc/issues/46" class="external-link">#46</a>). Those function are documented in a new vignette (<code><a href="../articles/prediction.html">vignette("prediction")</a></code>)</li>
 <li>
 <code><a href="../reference/contexts.html">contexts()</a></code> can now report the positions of each context in the original time series</li>
+<li>nodes of context trees can be extracted individually as <code>ctx_node</code> objects using the <code><a href="../reference/find_sequence.html">find_sequence()</a></code> function. A collection of new functions can be used to manipulate the nodes and gain fine grain information on the corresponding sequences (issue <a href="https://github.com/fabrice-rossi/mixvlmc/issues/50" class="external-link">#50</a>).</li>
 <li>the log likelihood calculations performed by <code><a href="../reference/logLik.vlmc.html">logLik.vlmc()</a></code>, <code><a href="../reference/logLik.covlmc.html">logLik.covlmc()</a></code> <code><a href="../reference/loglikelihood.html">loglikelihood()</a></code> and <code><a href="../reference/loglikelihood.covlmc.html">loglikelihood.covlmc()</a></code> have been revised, expanded to include three possible definitions of the likelihood function, and documented in a new vignette (<code><a href="../articles/likelihood.html">vignette("likelihood")</a></code>)</li>
 <li>
 <code><a href="../reference/tune_vlmc.html">tune_vlmc()</a></code> and <code><a href="../reference/tune_covlmc.html">tune_covlmc()</a></code> can be used with the different likelihood function definitions</li>

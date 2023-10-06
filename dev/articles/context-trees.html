@@ -154,7 +154,7 @@ in the tree as the node of context <span class="math inline">\((0)\)</span> has 
 <h2 id="extracting-contexts-from-a-time-series-in-mixvlmc">Extracting contexts from a time series in mixvlmc<a class="anchor" aria-label="anchor" href="#extracting-contexts-from-a-time-series-in-mixvlmc"></a>
 </h2>
 <p>Mixvlmc can be used to compute all the contexts of a time series
-using the <code>ctx_tree</code> function/constructor as follows:</p>
+using the <code><a href="../reference/ctx_tree.html">ctx_tree()</a></code> function/constructor as follows:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/fabrice-rossi/mixvlmc" class="external-link">mixvlmc</a></span><span class="op">)</span></span>
@@ -200,8 +200,8 @@ contexts:</p>
 <span><span class="co">#&gt; Context tree on a, b, c </span></span>
 <span><span class="co">#&gt;  Number of contexts: 4607 </span></span>
 <span><span class="co">#&gt;  Maximum context length: 99</span></span></code></pre></div>
-<p>If we raise the depth limit, the number of contexts keeps
-increasing:</p>
+<p>Even if we decrease the depth limit the number of contexts remains
+very large:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">y_ctx_min_1_d_15</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ctx_tree.html">ctx_tree</a></span><span class="op">(</span><span class="va">y</span>, min_size <span class="op">=</span> <span class="fl">1</span>, max_depth <span class="op">=</span> <span class="fl">15</span><span class="op">)</span></span>
 <span><span class="va">y_ctx_min_1_d_15</span></span>
@@ -209,24 +209,22 @@ increasing:</p>
 <span><span class="co">#&gt;  Number of contexts: 1037 </span></span>
 <span><span class="co">#&gt;  Maximum context length: 15</span></span></code></pre></div>
 <p>Contexts can be extracted from a context tree using the
-<code>contexts</code> function as follows:</p>
+<code><a href="../reference/contexts.html">contexts()</a></code> function as follows:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/contexts.html">contexts</a></span><span class="op">(</span><span class="va">x_ctx</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [[1]]</span></span>
-<span><span class="co">#&gt; [1] 0 0</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [[2]]</span></span>
-<span><span class="co">#&gt; [1] 0</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [[3]]</span></span>
-<span><span class="co">#&gt; [1] 1</span></span></code></pre></div>
-<p>In general, the raw list of contexts is not very useful and
-<code>contexts</code> can be parametrized to give additional information
+<span><span class="co">#&gt; Contexts:</span></span>
+<span><span class="co">#&gt;  0, 0</span></span>
+<span><span class="co">#&gt;  0</span></span>
+<span><span class="co">#&gt;  1</span></span></code></pre></div>
+<p>In general, the raw list of contexts is not directly useful and one
+should use the node manipulation functions to leverage it (see below). A
+simple approach consists in asking to <code><a href="../reference/contexts.html">contexts()</a></code> a
+<code>data.frame</code> output that will contain additional information
 about the contexts. In the simple case of <code>ctx_tree</code>, setting
 the <code>frequency</code> parameter to <code>"total"</code> or
 <code>"detailed"</code> gives access to the distribution of <span class="math inline">\(x_t\)</span> for all the <span class="math inline">\(t\)</span> at which a context appears.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/contexts.html">contexts</a></span><span class="op">(</span><span class="va">x_ctx</span>, frequency <span class="op">=</span> <span class="st">"total"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/contexts.html">contexts</a></span><span class="op">(</span><span class="va">x_ctx</span>, type <span class="op">=</span> <span class="st">"data.frame"</span>, frequency <span class="op">=</span> <span class="st">"total"</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   context freq</span></span>
 <span><span class="co">#&gt; 1    0, 0    2</span></span>
 <span><span class="co">#&gt; 2       0    3</span></span>
@@ -235,7 +233,7 @@ the <code>frequency</code> parameter to <code>"total"</code> or
 column <code>freq</code> that contains the number of occurrences of each
 context.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/contexts.html">contexts</a></span><span class="op">(</span><span class="va">x_ctx</span>, frequency <span class="op">=</span> <span class="st">"detailed"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/contexts.html">contexts</a></span><span class="op">(</span><span class="va">x_ctx</span>, type <span class="op">=</span> <span class="st">"data.frame"</span>, frequency <span class="op">=</span> <span class="st">"detailed"</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   context freq 0 1</span></span>
 <span><span class="co">#&gt; 1    0, 0    2 1 1</span></span>
 <span><span class="co">#&gt; 2       0    3 2 1</span></span>
@@ -244,6 +242,69 @@ context.</p>
 addition</em> a column for each value in the state space <span class="math inline">\(S\)</span> which contains the distribution of
 <span class="math inline">\(x_t\)</span> for the occurrences of each
 context. For instance in the table above, the context <span class="math inline">\((0, 0)\)</span> appears twice in <span class="math inline">\(x\)</span> and is followed once by <span class="math inline">\(0\)</span> and once by <span class="math inline">\(1\)</span>.</p>
+</div>
+<div class="section level2">
+<h2 id="direct-manipulation-of-nodes">Direct manipulation of nodes<a class="anchor" aria-label="anchor" href="#direct-manipulation-of-nodes"></a>
+</h2>
+<p>Another way to extract information from a context tree, especially
+large ones, it to operate at the node level, using the
+<code><a href="../reference/find_sequence.html">find_sequence()</a></code> function (or the <code><a href="../reference/contexts.html">contexts()</a></code>
+function). For instance exploring the 4607 contexts obtained above with
+<code>min_size=1</code> is not convenient, but we may be interested by
+e.g. the sequence <code>c("a", "a", "a")</code>. We look for a
+corresponding node in the tree with</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">node_aaa</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/find_sequence.html">find_sequence</a></span><span class="op">(</span><span class="va">y_ctx_min_1</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"a"</span>, <span class="st">"a"</span>, <span class="st">"a"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">node_aaa</span></span>
+<span><span class="co">#&gt; Sequence [R]: a, a, a </span></span>
+<span><span class="co">#&gt;  followed by a (3), b (2), c (2)</span></span></code></pre></div>
+<p>As the result is not <code>NULL</code>, we know that the sequence
+appears in the original time series. It is not a context, as shown
+by</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/is_context.html">is_context</a></span><span class="op">(</span><span class="va">node_aaa</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] FALSE</span></span></code></pre></div>
+<p>In this particular case, it is likely to be caused by longer contexts
+for which <code>c("a", "a", "a")</code> is a suffix. This can be
+verified by looking at the children of <code>node_aaa</code>:</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/children.html">children</a></span><span class="op">(</span><span class="va">node_aaa</span><span class="op">)</span></span>
+<span><span class="co">#&gt; $a</span></span>
+<span><span class="co">#&gt; Context [R]: a, a, a, a </span></span>
+<span><span class="co">#&gt;  followed by a (0), b (1), c (2)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $b</span></span>
+<span><span class="co">#&gt; Context [R]: a, a, a, b </span></span>
+<span><span class="co">#&gt;  followed by a (1), b (0), c (0)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $c</span></span>
+<span><span class="co">#&gt; Context [R]: a, a, a, c </span></span>
+<span><span class="co">#&gt;  followed by a (2), b (1), c (0)</span></span></code></pre></div>
+<p>This shows that we have indeed three contexts that all end by
+<code>c("a", "a", "a")</code>.</p>
+<p>Nodes carry information about the sequences or contexts they
+represent. The number of occurrences of a sequence in the original time
+series is obtained with the <code><a href="../reference/counts.html">counts()</a></code> function as
+follows:</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/counts.html">counts</a></span><span class="op">(</span><span class="va">node_aaa</span>, frequency <span class="op">=</span> <span class="st">"total"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 7</span></span></code></pre></div>
+<p>Notice that as with <code><a href="../reference/contexts.html">contexts()</a></code> those occurrences cover
+only positions where the sequence is followed by at least one value. The
+distribution of those values is given by another call to
+<code><a href="../reference/counts.html">counts()</a></code>:</p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/counts.html">counts</a></span><span class="op">(</span><span class="va">node_aaa</span>, frequency <span class="op">=</span> <span class="st">"detailed"</span><span class="op">)</span></span>
+<span><span class="co">#&gt;   total a b c</span></span>
+<span><span class="co">#&gt; 1     7 3 2 2</span></span></code></pre></div>
+<p>If sequence positions were saved during the construction of the
+context tree, the <code>ctx_node</code> can report them using the
+<code><a href="../reference/positions.html">positions()</a></code> function:</p>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/positions.html">positions</a></span><span class="op">(</span><span class="va">node_aaa</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 15 25 26 73 74 83 84</span></span></code></pre></div>
+<p>See the documentation of the function for the definition of a
+position.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>

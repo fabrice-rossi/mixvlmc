@@ -633,7 +633,7 @@ characteristics compared to VLMC and context trees. In particular, the
 <code><a href="../reference/contexts.html">contexts()</a></code> function can report the model associated to each
 context, either by its parameters only:</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/contexts.html">contexts</a></span><span class="op">(</span><span class="va">elec_model</span>, model <span class="op">=</span> <span class="st">"coef"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/contexts.html">contexts</a></span><span class="op">(</span><span class="va">elec_model</span>, type <span class="op">=</span> <span class="st">"data.frame"</span>, model <span class="op">=</span> <span class="st">"coef"</span><span class="op">)</span></span>
 <span><span class="co">#&gt;        context         coef</span></span>
 <span><span class="co">#&gt; 1          low -1.49102....</span></span>
 <span><span class="co">#&gt; 2 typical, low 0.464305....</span></span>
@@ -644,7 +644,7 @@ context, either by its parameters only:</p>
 <span><span class="co">#&gt; 7         high 1.473892....</span></span></code></pre></div>
 <p>or using the models themselves:</p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/contexts.html">contexts</a></span><span class="op">(</span><span class="va">elec_model</span>, model <span class="op">=</span> <span class="st">"full"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/contexts.html">contexts</a></span><span class="op">(</span><span class="va">elec_model</span>, type <span class="op">=</span> <span class="st">"data.frame"</span>, model <span class="op">=</span> <span class="st">"full"</span><span class="op">)</span></span>
 <span><span class="co">#&gt;        context                                            model</span></span>
 <span><span class="co">#&gt; 1          low &lt;S4 class 'vglm' [package "VGAM"] with 37 slots&gt;</span></span>
 <span><span class="co">#&gt; 2 typical, low &lt;S4 class 'vglm' [package "VGAM"] with 37 slots&gt;</span></span>
@@ -653,6 +653,45 @@ context, either by its parameters only:</p>
 <span><span class="co">#&gt; 5 typical,.... &lt;S4 class 'vglm' [package "VGAM"] with 37 slots&gt;</span></span>
 <span><span class="co">#&gt; 6 typical,.... &lt;S4 class 'vglm' [package "VGAM"] with 37 slots&gt;</span></span>
 <span><span class="co">#&gt; 7         high &lt;S4 class 'vglm' [package "VGAM"] with 37 slots&gt;</span></span></code></pre></div>
+<p>As for context trees, focused analysis of specific contexts can be
+done by requesting a <code>ctx_node_covlmc</code> representation of the
+context of interest, for instance via the
+<code><a href="../reference/find_sequence.covlmc.html">find_sequence.covlmc()</a></code> function, or with the default result
+type of <code><a href="../reference/contexts.html">contexts()</a></code></p>
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">ctxs</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/contexts.html">contexts</a></span><span class="op">(</span><span class="va">elec_model</span><span class="op">)</span></span>
+<span><span class="va">ctxs</span></span>
+<span><span class="co">#&gt; Contexts:</span></span>
+<span><span class="co">#&gt;  low</span></span>
+<span><span class="co">#&gt;  typical, low</span></span>
+<span><span class="co">#&gt;  typical, typical, low</span></span>
+<span><span class="co">#&gt;  typical, typical, typical</span></span>
+<span><span class="co">#&gt;  typical, typical, high</span></span>
+<span><span class="co">#&gt;  typical, high</span></span>
+<span><span class="co">#&gt;  high</span></span></code></pre></div>
+<p>Individual contexts can be analysed using a collection of dedicated
+functions, for instance</p>
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/model.html">model</a></span><span class="op">(</span><span class="va">ctxs</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="co">#&gt;            [,1]</span></span>
+<span><span class="co">#&gt; [1,]  0.4643056</span></span>
+<span><span class="co">#&gt; [2,] -1.9924301</span></span>
+<span><span class="fu"><a href="../reference/model.html">model</a></span><span class="op">(</span><span class="va">ctxs</span><span class="op">[[</span><span class="fl">3</span><span class="op">]</span><span class="op">]</span>, model <span class="op">=</span> <span class="st">"full"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Call:</span></span>
+<span><span class="co">#&gt; VGAM::vglm(formula = target ~ 1, family = VGAM::multinomial(refLevel = 1), </span></span>
+<span><span class="co">#&gt;     data = mm, model = FALSE, x.arg = FALSE, y.arg = FALSE)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Coefficients:</span></span>
+<span><span class="co">#&gt; (Intercept):1 (Intercept):2 </span></span>
+<span><span class="co">#&gt;     0.3053816    -2.2335922 </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Degrees of Freedom: 138 Total; 136 Residual</span></span>
+<span><span class="co">#&gt; Residual deviance: 114.655 </span></span>
+<span><span class="co">#&gt; Log-likelihood: -57.32751 </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; This is a multinomial logit model with 3 levels</span></span></code></pre></div>
 <p>See <code><a href="../reference/contexts.covlmc.html">contexts.covlmc()</a></code> for details.</p>
 </div>
 </div>

@@ -363,7 +363,7 @@ following code</p>
 <span><span class="co">#&gt;  cutoff: 2.649 (quantile: 0.07071)</span></span>
 <span><span class="co">#&gt;  Number of contexts: 6 </span></span>
 <span><span class="co">#&gt;  Maximum context length: 3</span></span>
-<span><span class="va">model_cutoff</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cutoff.html">cutoff</a></span><span class="op">(</span><span class="va">model_large</span>, mode <span class="op">=</span> <span class="st">"native"</span><span class="op">)</span></span>
+<span><span class="va">model_cutoff</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cutoff.html">cutoff</a></span><span class="op">(</span><span class="va">model_large</span>, scale <span class="op">=</span> <span class="st">"native"</span><span class="op">)</span></span>
 <span><span class="va">model_cutoff</span></span>
 <span><span class="co">#&gt; [1] 3.177898 3.784875</span></span></code></pre></div>
 <p>we first adjust a “complex” model using `<code>cutoff=`2.65</code>
@@ -557,7 +557,7 @@ characteristics compared to context trees. In particular, the
 associated to each context as follows (compare to <code><a href="../reference/cutoff.html">cutoff()</a></code>
 above):</p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/contexts.html">contexts</a></span><span class="op">(</span><span class="va">model_large</span>, cutoff <span class="op">=</span> <span class="st">"native"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/contexts.html">contexts</a></span><span class="op">(</span><span class="va">model_large</span>, type <span class="op">=</span> <span class="st">"data.frame"</span>, cutoff <span class="op">=</span> <span class="st">"native"</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   context    cutoff</span></span>
 <span><span class="co">#&gt; 1 1, 1, 0 3.4813864</span></span>
 <span><span class="co">#&gt; 2    1, 1 0.7006631</span></span>
@@ -569,7 +569,7 @@ above):</p>
 representation of contexts, but they can be returned in the natural time
 sequence using <code>reverse=FALSE</code>, as in</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/contexts.html">contexts</a></span><span class="op">(</span><span class="va">model_large</span>, cutoff <span class="op">=</span> <span class="st">"quantile"</span>, reverse <span class="op">=</span> <span class="cn">FALSE</span>, frequency <span class="op">=</span> <span class="st">"detailed"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/contexts.html">contexts</a></span><span class="op">(</span><span class="va">model_large</span>, type <span class="op">=</span> <span class="st">"data.frame"</span>, cutoff <span class="op">=</span> <span class="st">"quantile"</span>, reverse <span class="op">=</span> <span class="cn">FALSE</span>, frequency <span class="op">=</span> <span class="st">"detailed"</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   context freq  0  1  2     cutoff</span></span>
 <span><span class="co">#&gt; 1 0, 1, 1    9  2  7  0 0.03076473</span></span>
 <span><span class="co">#&gt; 2    1, 1   29  6 14  9 0.49625611</span></span>
@@ -577,6 +577,28 @@ sequence using <code>reverse=FALSE</code>, as in</p>
 <span><span class="co">#&gt; 4    2, 1   20  6  6  8 0.41573421</span></span>
 <span><span class="co">#&gt; 5       1   69 21 29 19 0.40382287</span></span>
 <span><span class="co">#&gt; 6          200 65 69 66 1.00000000</span></span></code></pre></div>
+<p>As for context trees, focused analysis of specific contexts can be
+done by requesting a <code>ctx_node</code> representation of the context
+of interest, for instance via the <code><a href="../reference/find_sequence.html">find_sequence()</a></code> function,
+or with the default result type of <code><a href="../reference/contexts.html">contexts()</a></code></p>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">ctxs</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/contexts.html">contexts</a></span><span class="op">(</span><span class="va">model_large</span><span class="op">)</span></span>
+<span><span class="va">ctxs</span></span>
+<span><span class="co">#&gt; Contexts:</span></span>
+<span><span class="co">#&gt;  1, 1, 0</span></span>
+<span><span class="co">#&gt;  1, 1</span></span>
+<span><span class="co">#&gt;  1, 2, 2</span></span>
+<span><span class="co">#&gt;  1, 2</span></span>
+<span><span class="co">#&gt;  1</span></span>
+<span><span class="co">#&gt; </span></span></code></pre></div>
+<p>Individual contexts can be analysed using a collection of dedicated
+functions, for instance</p>
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/counts.html">counts</a></span><span class="op">(</span><span class="va">ctxs</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="co">#&gt;   total 0  1 2</span></span>
+<span><span class="co">#&gt; 1    29 6 14 9</span></span>
+<span><span class="fu"><a href="../reference/cutoff.html">cutoff</a></span><span class="op">(</span><span class="va">ctxs</span><span class="op">[[</span><span class="fl">3</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 0.05497558</span></span></code></pre></div>
 </div>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
