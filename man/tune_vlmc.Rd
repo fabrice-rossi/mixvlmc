@@ -8,21 +8,31 @@ tune_vlmc(
   x,
   criterion = c("BIC", "AIC"),
   initial = c("truncated", "specific", "extended"),
-  min_size = 2,
-  max_depth = 100,
+  alpha_init = NULL,
+  cutoff_init = NULL,
+  min_size = 2L,
+  max_depth = 100L,
   verbose = 0,
   save = c("best", "initial", "all")
 )
 }
 \arguments{
-\item{x}{a discrete time series; can be numeric, character, factor and logical.}
+\item{x}{a discrete time series; can be numeric, character, factor and
+logical.}
 
-\item{criterion}{criterion used to select the best model. Either \code{"BIC"} (default)
-or \code{"AIC"} (see details).}
+\item{criterion}{criterion used to select the best model. Either \code{"BIC"}
+(default) or \code{"AIC"} (see details).}
 
 \item{initial}{specifies the likelihood function, more precisely the way the
-first few observations for which contexts cannot be calculated are integrated
-in the likelihood. Default to \code{"truncated"}. See \code{\link[=loglikelihood]{loglikelihood()}} for details.}
+first few observations for which contexts cannot be calculated are
+integrated in the likelihood. Default to \code{"truncated"}. See
+\code{\link[=loglikelihood]{loglikelihood()}} for details.}
+
+\item{alpha_init}{if non \code{NULL} used as the initial cut off parameter (in
+quantile scale) to build the initial VLMC}
+
+\item{cutoff_init}{if non \code{NULL} used as the initial cut off parameter to
+build the initial VLMC. Takes precedence over \code{alpha_init} if specified.}
 
 \item{min_size}{integer >= 1 (default: 2). Minimum number of observations for
 a context in the growing phase of the initial context tree.}
@@ -30,14 +40,15 @@ a context in the growing phase of the initial context tree.}
 \item{max_depth}{integer >= 1 (default: 100). Longest context considered in
 growing phase of the initial context tree (see details).}
 
-\item{verbose}{integer >= 0 (default: 0). Verbosity level of the pruning process.}
+\item{verbose}{integer >= 0 (default: 0). Verbosity level of the pruning
+process.}
 
-\item{save}{specify which BIC models are saved during the pruning process. The default
-value \code{"best"} asks the function to keep only the best model according to
-the \code{criterion}. When \code{save="initial"} the function keeps \emph{in addition} the
-initial (complex) model which is then pruned during the selection process.
-When \code{save="all"}, the function returns all the models considered during the
-selection process.}
+\item{save}{specify which BIC models are saved during the pruning process.
+The default value \code{"best"} asks the function to keep only the best model
+according to the \code{criterion}. When \code{save="initial"} the function keeps \emph{in
+addition} the initial (complex) model which is then pruned during the
+selection process. When \code{save="all"}, the function returns all the models
+considered during the selection process.}
 }
 \value{
 a list with the following components:
@@ -47,9 +58,9 @@ a list with the following components:
 \item \code{initial}: the likelihood function used to select the optimal VLMC
 \item \code{results}: a data frame with details about the pruning process
 \item \code{saved_models}: a list of intermediate VLMCs if \code{save="initial"} or
-\code{save="all"}. It contains an \code{initial} component with the large VLMC obtained
-first and an \code{all} component with a list of all the \emph{other} VLMC obtained
-by pruning the initial one.
+\code{save="all"}. It contains an \code{initial} component with the large VLMC
+obtained first and an \code{all} component with a list of all the \emph{other} VLMC
+obtained by pruning the initial one.
 }
 }
 \description{
@@ -57,20 +68,22 @@ This function fits a Variable Length Markov Chain (VLMC) to a discrete time
 series by optimizing an information criterion (BIC or AIC).
 }
 \details{
-This function automates the process of fitting a large VLMC to a discrete time
-series with \code{\link[=vlmc]{vlmc()}} and of pruning the tree (with \code{\link[=cutoff]{cutoff()}} and \code{\link[=prune]{prune()}})
-to get an optimal with respect to an information criterion. To avoid missing
-long term dependencies, the function uses the \code{max_depth} parameter as an initial
-guess but then relies on an automatic increase of the value to make sure the
-initial context tree is only limited by the \code{min_size} parameter. The initial
-value of the \code{cutoff} parameter of \code{\link[=vlmc]{vlmc()}} is also set to conservative values
-(depending on the criterion) to avoid prior simplification of the context tree.
+This function automates the process of fitting a large VLMC to a discrete
+time series with \code{\link[=vlmc]{vlmc()}} and of pruning the tree (with \code{\link[=cutoff]{cutoff()}} and
+\code{\link[=prune]{prune()}}) to get an optimal with respect to an information criterion. To
+avoid missing long term dependencies, the function uses the \code{max_depth}
+parameter as an initial guess but then relies on an automatic increase of the
+value to make sure the initial context tree is only limited by the \code{min_size}
+parameter. The initial value of the \code{cutoff} parameter of \code{\link[=vlmc]{vlmc()}} is also
+set to conservative values (depending on the criterion) to avoid prior
+simplification of the context tree. This default value can be overridden
+using the \code{cutoff_init} or \code{alpha_init} parameter.
 
 Once the initial VLMC is obtained, the \code{\link[=cutoff]{cutoff()}} and \code{\link[=prune]{prune()}} functions are
-used to build all the VLMC models that could be generated using larger values of
-the initial cut off parameter. The best model is selected from this collection,
-including the initial complex tree, as the one that minimizes the chosen
-information criterion.
+used to build all the VLMC models that could be generated using larger values
+of the initial cut off parameter. The best model is selected from this
+collection, including the initial complex tree, as the one that minimizes the
+chosen information criterion.
 }
 \examples{
 dts <- sample(as.factor(c("A", "B", "C")), 100, replace = TRUE)
