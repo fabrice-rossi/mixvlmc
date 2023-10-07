@@ -308,13 +308,6 @@ vlmc <- function(x, alpha = 0.05, cutoff = NULL, min_size = 2L, max_depth = 100L
   if (length(vals) > max(10, 0.05 * length(x))) {
     warning(paste0("x as numerous unique values (", length(vals), ")"))
   }
-  ctx_tree <- grow_ctx_tree(ix, vals, min_size = min_size, max_depth = max_depth, compute_stats = !prune, keep_match = keep_match)
-  result <- ctx_tree
-  if (prune) {
-    result <- prune_ctx_tree(ctx_tree, alpha = alpha, cutoff = cutoff)
-  } else {
-    result <- new_ctx_tree(result$vals, result, class = "vlmc")
-  }
   if (is.null(cutoff)) {
     if (is.null(alpha) || !is.numeric(alpha) || alpha <= 0 || alpha > 1) {
       stop("the alpha parameter must be in (0, 1]")
@@ -326,6 +319,13 @@ vlmc <- function(x, alpha = 0.05, cutoff = NULL, min_size = 2L, max_depth = 100L
       stop("the cutoff parameter must be a non negative number")
     }
     alpha <- to_quantile(cutoff, length(vals))
+  }
+  ctx_tree <- grow_ctx_tree(ix, vals, min_size = min_size, max_depth = max_depth, compute_stats = !prune, keep_match = keep_match)
+  result <- ctx_tree
+  if (prune) {
+    result <- prune_ctx_tree(ctx_tree, alpha = alpha, cutoff = cutoff)
+  } else {
+    result <- new_ctx_tree(result$vals, result, class = "vlmc")
   }
   ## prepare for loglikelihoodcalculation
   result$alpha <- alpha
