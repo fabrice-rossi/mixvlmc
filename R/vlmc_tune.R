@@ -3,40 +3,49 @@
 #' This function fits a Variable Length Markov Chain (VLMC) to a discrete time
 #' series by optimizing an information criterion (BIC or AIC).
 #'
-#' This function automates the process of fitting a large VLMC to a discrete time
-#' series with [vlmc()] and of pruning the tree (with [cutoff()] and [prune()])
-#' to get an optimal with respect to an information criterion. To avoid missing
-#' long term dependencies, the function uses the `max_depth` parameter as an initial
-#' guess but then relies on an automatic increase of the value to make sure the
-#' initial context tree is only limited by the `min_size` parameter. The initial
-#' value of the `cutoff` parameter of [vlmc()] is also set to conservative values
-#' (depending on the criterion) to avoid prior simplification of the context tree.
+#' This function automates the process of fitting a large VLMC to a discrete
+#' time series with [vlmc()] and of pruning the tree (with [cutoff()] and
+#' [prune()]) to get an optimal with respect to an information criterion. To
+#' avoid missing long term dependencies, the function uses the `max_depth`
+#' parameter as an initial guess but then relies on an automatic increase of the
+#' value to make sure the initial context tree is only limited by the `min_size`
+#' parameter. The initial value of the `cutoff` parameter of [vlmc()] is also
+#' set to conservative values (depending on the criterion) to avoid prior
+#' simplification of the context tree. This default value can be overridden
+#' using the `cutoff_init` or `alpha_init` parameter.
 #'
 #' Once the initial VLMC is obtained, the [cutoff()] and [prune()] functions are
-#' used to build all the VLMC models that could be generated using larger values of
-#' the initial cut off parameter. The best model is selected from this collection,
-#' including the initial complex tree, as the one that minimizes the chosen
-#' information criterion.
+#' used to build all the VLMC models that could be generated using larger values
+#' of the initial cut off parameter. The best model is selected from this
+#' collection, including the initial complex tree, as the one that minimizes the
+#' chosen information criterion.
 #'
-#' @param x a discrete time series; can be numeric, character, factor and logical.
-#' @param criterion criterion used to select the best model. Either `"BIC"` (default)
-#'   or `"AIC"` (see details).
+#' @param x a discrete time series; can be numeric, character, factor and
+#'   logical.
+#' @param criterion criterion used to select the best model. Either `"BIC"`
+#'   (default) or `"AIC"` (see details).
 #' @param initial specifies the likelihood function, more precisely the way the
-#'   first few observations for which contexts cannot be calculated are integrated
-#'   in the likelihood. Default to `"truncated"`. See [loglikelihood()] for details.
+#'   first few observations for which contexts cannot be calculated are
+#'   integrated in the likelihood. Default to `"truncated"`. See
+#'   [loglikelihood()] for details.
+#' @param alpha_init if non `NULL` used as the initial cut off parameter (in
+#'   quantile scale) to build the initial VLMC
+#' @param cutoff_init if non `NULL` used as the initial cut off parameter to
+#'   build the initial VLMC. Takes precedence over `alpha_init` if specified.
 #' @param min_size integer >= 1 (default: 2). Minimum number of observations for
 #'   a context in the growing phase of the initial context tree.
 #' @param max_depth integer >= 1 (default: 100). Longest context considered in
 #'   growing phase of the initial context tree (see details).
 #' @param backend "R" or "C++" (default: "R"). Specifies the implementation used
 #'   to represent the context tree and to built it. See [vlmc()] for details.
-#' @param verbose integer >= 0 (default: 0). Verbosity level of the pruning process.
-#' @param save specify which BIC models are saved during the pruning process. The default
-#'   value `"best"` asks the function to keep only the best model according to
-#'   the `criterion`. When `save="initial"` the function keeps *in addition* the
-#'   initial (complex) model which is then pruned during the selection process.
-#'   When `save="all"`, the function returns all the models considered during the
-#'   selection process.
+#' @param verbose integer >= 0 (default: 0). Verbosity level of the pruning
+#'   process.
+#' @param save specify which BIC models are saved during the pruning process.
+#'   The default value `"best"` asks the function to keep only the best model
+#'   according to the `criterion`. When `save="initial"` the function keeps *in
+#'   addition* the initial (complex) model which is then pruned during the
+#'   selection process. When `save="all"`, the function returns all the models
+#'   considered during the selection process.
 #'
 #' @returns a list with the following components:
 #'
@@ -45,9 +54,9 @@
 #'   - `initial`: the likelihood function used to select the optimal VLMC
 #'   - `results`: a data frame with details about the pruning process
 #'   - `saved_models`: a list of intermediate VLMCs if `save="initial"` or
-#'   `save="all"`. It contains an `initial` component with the large VLMC obtained
-#'    first and an `all` component with a list of all the *other* VLMC obtained
-#'    by pruning the initial one.
+#'   `save="all"`. It contains an `initial` component with the large VLMC
+#'   obtained first and an `all` component with a list of all the *other* VLMC
+#'   obtained by pruning the initial one.
 #'
 #' @export
 #' @seealso [vlmc()], [cutoff()] and [prune()]
@@ -58,18 +67,41 @@
 #' draw(tune_result$best_model)
 tune_vlmc <- function(x, criterion = c("BIC", "AIC"),
                       initial = c("truncated", "specific", "extended"),
-                      min_size = 2, max_depth = 100,
+                      alpha_init = NULL, cutoff_init = NULL,
+                      min_size = 2L, max_depth = 100L,
                       backend = c("R", "C++"),
                       verbose = 0,
                       save = c("best", "initial", "all")) {
   criterion <- match.arg(criterion)
   initial <- match.arg(initial)
   save <- match.arg(save)
+  if (is.null(alpha_init) && is.null(cutoff_init)) {
+    if (criterion == "BIC") {
+      cutoff <- 0.25 * log(length(x))
+      f_criterion <- stats::BIC
+    } else {
+      cutoff <- 1
+      f_criterion <- stats::AIC
+    }
+  } else {
+    if (is.null(cutoff_init)) {
+      if (is.null(alpha_init) || !is.numeric(alpha_init) || alpha_init <= 0 || alpha_init > 1) {
+        stop("the alpha_init parameter must be in (0, 1]")
+      }
+      ## we need to compute the state model
+      nx <- to_dts(x)
+      cutoff <- to_native(alpha_init, length(nx$vals))
+    } else {
+      ## cutoff takes precedence
+      if (!is.numeric(cutoff_init) || cutoff_init < 0) {
+        stop("the cutoff_init parameter must be a non negative number")
+      }
+      cutoff <- cutoff_init
+    }
+  }
   if (criterion == "BIC") {
-    cutoff <- 0.25 * log(length(x))
     f_criterion <- stats::BIC
   } else {
-    cutoff <- 1
     f_criterion <- stats::AIC
   }
   if (verbose > 0) {

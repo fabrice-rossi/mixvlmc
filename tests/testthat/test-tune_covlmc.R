@@ -137,3 +137,13 @@ test_that("tune_covlmc trimming", {
   }
   expect_error(contexts(bt_covlmc$saved_models$initial, type = "data.frame", hsize = TRUE, model = "full"))
 })
+
+test_that("tune_covlmc selects the best model", {
+  withr::local_seed(0)
+  x <- sample(c("A", "B", "C"), 500, replace = TRUE)
+  y <- ifelse(runif(length(x)) > 0.5, c(x[-1], sample(c("A", "B", "C"), 1)), c(x[-c(1, 2)], sample(c("A", "B", "C"), 2, replace = TRUE)))
+  y <- as.factor(ifelse(runif(length(x)) > 0.2, y, sample(c("A", "B", "C"), 500, replace = TRUE)))
+  df_y <- data.frame(y = y, z = runif(length(y)))
+  covlmc_alpha <- tune_covlmc(x, df_y, alpha_init = 0.1, initial = "extended", criterion = "BIC")
+  expect_equal(covlmc_alpha$results$alpha[1], 0.1)
+})
