@@ -6,14 +6,14 @@
 \usage{
 \method{contexts}{covlmc}(
   ct,
-  type = c("list", "data.frame"),
+  sequence = FALSE,
   reverse = TRUE,
   frequency = NULL,
   positions = FALSE,
   counts = c("desc", "local"),
+  metrics = FALSE,
   model = NULL,
   hsize = FALSE,
-  metrics = FALSE,
   merging = FALSE,
   ...
 )
@@ -21,9 +21,10 @@
 \arguments{
 \item{ct}{a fitted covlmc model.}
 
-\item{type}{result type (see details).}
+\item{sequence}{if \code{TRUE} the function returns it results as a \code{data.frame},
+if \code{FALSE} (default) as a list of \code{ctx_node} objects. (see details)}
 
-\item{reverse}{logical (defaults to TRUE). See details.}
+\item{reverse}{logical (defaults to \code{TRUE}). See details.}
 
 \item{frequency}{specifies the counts to be included in the result
 data.frame. The default value of \code{NULL} does not include anything.
@@ -32,16 +33,19 @@ sequence. \code{"detailed"} includes in addition the break down of these
 occurrences into all the possible states.}
 
 \item{positions}{logical (defaults to FALSE). Specify whether the positions
-of each context in the time series used to build the context tree should
-be reported in a \code{positions} column of the result data frame. The
-availability of the positions depends on the way the context
-tree was built. See details for the definition of a position.}
+of each context in the time series used to build the context tree should be
+reported in a \code{positions} column of the result data frame. The availability
+of the positions depends on the way the context tree was built. See details
+for the definition of a position.}
 
 \item{counts}{specifies how the counts reported by \code{frequency} are computed.
 The default value \code{"desc"} includes both counts that are specific to the
 context (if any) and counts from the descendants of the context in the
 tree. When \code{counts = "local"} the counts include only the number of times
 the context appears without being the last part of a longer context.}
+
+\item{metrics}{if TRUE, adds predictive metrics for each context (see
+\code{\link[=metrics]{metrics()}} for the definition of predictive metrics).}
 
 \item{model}{specifies whether to include the model associated to a each
 context. The default result with \code{model=NULL} does not include any model.
@@ -53,9 +57,6 @@ column, while \code{"full"} include the models themselves (as R objects) in a
 gives for each context the size of the history of covariates used by the
 model.}
 
-\item{metrics}{if TRUE, adds predictive metrics for each context (see
-\code{\link[=metrics]{metrics()}} for the definition of predictive metrics).}
-
 \item{merging}{if TRUE, adds a \code{merged} column to the result data frame. For
 a normal context, the value of \code{merged} is FALSE. Contexts that share the
 same model have a TRUE \code{merged} value.}
@@ -63,35 +64,38 @@ same model have a TRUE \code{merged} value.}
 \item{...}{additional arguments for the contexts function.}
 }
 \value{
-the list of the contexts represented in this tree or a data.frame
-with more content.
+A list of class \code{contexts} containing the contexts represented in
+this tree (as \code{ctx_node_covlmc}) or a data.frame.
 }
 \description{
 This function returns the different contexts present in a VLMC with
 covariates, possibly with some associated data.
 }
 \details{
-When \code{type="list"}, all parameters are ignored, excepted \code{ct} and
-\code{reverse}. Indeed the result consists of a list of \code{ctx_node_covlmc}
-objects that can be queried to provide the information specified by the
-ignore parameters (see \code{\link[=counts]{counts()}}, \code{\link[=cutoff.ctx_node]{cutoff.ctx_node()}},
-\code{\link[=metrics.ctx_node]{metrics.ctx_node()}}, \code{\link[=positions]{positions()}}, \code{\link[=model]{model()}}, \code{\link[=merged_with]{merged_with()}} and
-\code{\link[=covariate_memory]{covariate_memory()}}).
+The default behaviour of the function is to return a list of all the
+contexts using \code{ctx_node_covlmc} objects (as returned by
+\code{\link[=find_sequence.covlmc]{find_sequence.covlmc()}}). The properties of the contexts can then be
+explored using adapted functions such as \code{\link[=counts]{counts()}}, \code{\link[=covariate_memory]{covariate_memory()}},
+\code{\link[=cutoff.ctx_node]{cutoff.ctx_node()}}, \code{\link[=metrics.ctx_node]{metrics.ctx_node()}}, \code{\link[=model]{model()}}, \code{\link[=merged_with]{merged_with()}} and
+\code{\link[=positions]{positions()}}.
 
-When \code{type="data.frame"}, the result is a \code{data.frame} that contains at
-least a \code{context} column storing the contexts as vectors (and not
-\code{ctx_node_covlmc} objects). The parameters specify additional columns for
-the resulting \code{data.frame}. See \code{\link[=contexts.ctx_tree]{contexts.ctx_tree()}} for details about the
-\code{frequency} parameter. When \code{model} is non \code{NULL}, the resulting
-\code{data.frame} contains the models associated to each context (either the
-full R model or its coefficients). Other columns are added is the
-corresponding parameters are set to \code{TRUE}.
+When \code{sequence=TRUE} the method returns a data.frame whose first column,
+named \code{context}, contains the contexts as vectors (i.e. the value returned
+by \code{as_sequence()} applied to a \code{ctx_node} object). Other columns contain
+context specific values specified by the additional parameters. Setting any
+of those parameters to a value that ask for reporting information will
+toggle the result type of the function to \code{data.frame}.
+
+See \code{\link[=contexts.ctx_tree]{contexts.ctx_tree()}} for details about the \code{frequency} parameter. When
+\code{model} is non \code{NULL}, the resulting \code{data.frame} contains the models
+associated to each context (either the full R model or its coefficients).
+Other columns are added is the corresponding parameters are set to \code{TRUE}.
 }
 \section{Positions}{
- A position of a context \code{ctx} in the time series \code{x} is an
-index value \code{t} such that the context ends with \code{x[t]}. Thus \code{x[t+1]} is after
-the context. For instance if \code{x=c(0, 0, 1, 1)} and \code{ctx=c(0, 1)} (in standard
-state order), then the position of \code{ctx} in \code{x} is 3.
+ A position of a context \code{ctx} in the time series \code{x} is
+an index value \code{t} such that the context ends with \code{x[t]}. Thus \code{x[t+1]} is
+after the context. For instance if \code{x=c(0, 0, 1, 1)} and \code{ctx=c(0, 1)} (in
+standard state order), then the position of \code{ctx} in \code{x} is 3.
 }
 
 \section{State order in a context}{
@@ -108,10 +112,18 @@ breaks <- c(0, median(pc$active_power), max(pc$active_power))
 dts <- cut(pc$active_power, breaks = breaks)
 dts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
 m_cov <- covlmc(dts, dts_cov, min_size = 5)
-contexts(m_cov)
-contexts(m_cov, type = "data.frame", model = "coef")
-contexts(m_cov, type = "data.frame", model = "full")
+## direct representation with ctx_node_covlmc objects
+m_cov_ctxs <- contexts(m_cov)
+m_cov_ctxs
+sapply(m_cov_ctxs, covariate_memory)
+sapply(m_cov_ctxs, is_merged)
+sapply(m_cov_ctxs, model)
+## data.frame interface
+contexts(m_cov, model = "coef")
+contexts(m_cov, model = "full", hsize = TRUE)
 }
 \seealso{
-\code{\link[=contexts.ctx_tree]{contexts.ctx_tree()}}, \code{\link[=contexts.vlmc]{contexts.vlmc()}}, \code{\link[=contexts.covlmc]{contexts.covlmc()}}.
+\code{\link[=find_sequence]{find_sequence()}} and \code{\link[=find_sequence.covlmc]{find_sequence.covlmc()}} for direct access to
+a specific context, and \code{\link[=contexts.ctx_tree]{contexts.ctx_tree()}}, \code{\link[=contexts.vlmc]{contexts.vlmc()}} and
+\code{\link[=contexts.covlmc]{contexts.covlmc()}} for concrete implementations of \code{contexts()}.
 }

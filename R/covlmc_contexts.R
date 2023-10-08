@@ -116,8 +116,8 @@ covlmc_node_content_extractor <- function(tree, path, ct, vals, control, is_leaf
 #' This function returns the different contexts present in a VLMC with
 #' covariates, possibly with some associated data.
 #'
-#' @returns the list of the contexts represented in this tree or a data.frame
-#'   with more content.
+#' @returns A list of class `contexts` containing the contexts represented in
+#'   this tree (as `ctx_node_covlmc`) or a data.frame.
 #' @inherit contexts.ctx_tree
 #' @param model specifies whether to include the model associated to a each
 #'   context. The default result with `model=NULL` does not include any model.
@@ -138,44 +138,63 @@ covlmc_node_content_extractor <- function(tree, path, ct, vals, control, is_leaf
 #' @param merging if TRUE, adds a `merged` column to the result data frame. For
 #'   a normal context, the value of `merged` is FALSE. Contexts that share the
 #'   same model have a TRUE `merged` value.
-#' @details When `type="list"`, all parameters are ignored, excepted `ct` and
-#'   `reverse`. Indeed the result consists of a list of `ctx_node_covlmc`
-#'   objects that can be queried to provide the information specified by the
-#'   ignore parameters (see [counts()], [cutoff.ctx_node()],
-#'   [metrics.ctx_node()], [positions()], [model()], [merged_with()] and
-#'   [covariate_memory()]).
+#' @details The default behaviour of the function is to return a list of all the
+#'   contexts using `ctx_node_covlmc` objects (as returned by
+#'   [find_sequence.covlmc()]). The properties of the contexts can then be
+#'   explored using adapted functions such as [counts()], [covariate_memory()],
+#'   [cutoff.ctx_node()], [metrics.ctx_node()], [model()], [merged_with()] and
+#'   [positions()].
 #'
-#'   When `type="data.frame"`, the result is a `data.frame` that contains at
-#'   least a `context` column storing the contexts as vectors (and not
-#'   `ctx_node_covlmc` objects). The parameters specify additional columns for
-#'   the resulting `data.frame`. See [contexts.ctx_tree()] for details about the
-#'   `frequency` parameter. When `model` is non `NULL`, the resulting
-#'   `data.frame` contains the models associated to each context (either the
-#'   full R model or its coefficients). Other columns are added is the
-#'   corresponding parameters are set to `TRUE`.
+#'   When `sequence=TRUE` the method returns a data.frame whose first column,
+#'   named `context`, contains the contexts as vectors (i.e. the value returned
+#'   by `as_sequence()` applied to a `ctx_node` object). Other columns contain
+#'   context specific values specified by the additional parameters. Setting any
+#'   of those parameters to a value that ask for reporting information will
+#'   toggle the result type of the function to `data.frame`.
+#'
+#'   See [contexts.ctx_tree()] for details about the `frequency` parameter. When
+#'   `model` is non `NULL`, the resulting `data.frame` contains the models
+#'   associated to each context (either the full R model or its coefficients).
+#'   Other columns are added is the corresponding parameters are set to `TRUE`.
 #' @examples
 #' pc <- powerconsumption[powerconsumption$week == 5, ]
 #' breaks <- c(0, median(pc$active_power), max(pc$active_power))
 #' dts <- cut(pc$active_power, breaks = breaks)
 #' dts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
 #' m_cov <- covlmc(dts, dts_cov, min_size = 5)
-#' contexts(m_cov)
-#' contexts(m_cov, type = "data.frame", model = "coef")
-#' contexts(m_cov, type = "data.frame", model = "full")
+#' ## direct representation with ctx_node_covlmc objects
+#' m_cov_ctxs <- contexts(m_cov)
+#' m_cov_ctxs
+#' sapply(m_cov_ctxs, covariate_memory)
+#' sapply(m_cov_ctxs, is_merged)
+#' sapply(m_cov_ctxs, model)
+#' ## data.frame interface
+#' contexts(m_cov, model = "coef")
+#' contexts(m_cov, model = "full", hsize = TRUE)
 #' @export
-contexts.covlmc <- function(ct, type = c("list", "data.frame"), reverse = TRUE, frequency = NULL,
-                            positions = FALSE, counts = c("desc", "local"), model = NULL, hsize = FALSE, metrics = FALSE,
+contexts.covlmc <- function(ct, sequence = FALSE, reverse = TRUE, frequency = NULL,
+                            positions = FALSE, counts = c("desc", "local"),
+                            metrics = FALSE, model = NULL, hsize = FALSE,
                             merging = FALSE, ...) {
-  type <- match.arg(type)
   counts <- match.arg(counts)
-  if (type == "list") {
+  if (!is.null(frequency)) {
+    assertthat::assert_that(frequency %in% c("total", "detailed"))
+  }
+  if (!is.null(model)) {
+    assertthat::assert_that(model %in% c("coef", "full"))
+  }
+  wants_df <- !is.null(frequency) || positions || metrics || !is.null(model) || hsize || merging
+  if (missing(sequence)) {
+    sequence <- wants_df
+  } else {
+    if (!sequence && wants_df) {
+      stop("sequence = 'FALSE' is incompatible with the other requested values")
+    }
+  }
+  if (!sequence) {
     new_context_list(contexts_extractor(ct, reverse, covlmc_node_content_extractor, list(class = "ctx_node_covlmc")))
   } else {
-    if (!is.null(frequency)) {
-      assertthat::assert_that(frequency %in% c("total", "detailed"))
-    }
     if (!is.null(model)) {
-      assertthat::assert_that(model %in% c("coef", "full"))
       if (model == "full" && isTRUE(ct$trimmed == "full")) {
         stop("Full model extraction is not supported by fully trimmed covlmc")
       }

@@ -6,7 +6,7 @@
 \usage{
 \method{contexts}{ctx_tree}(
   ct,
-  type = c("list", "data.frame"),
+  sequence = FALSE,
   reverse = TRUE,
   frequency = NULL,
   positions = FALSE,
@@ -16,9 +16,10 @@
 \arguments{
 \item{ct}{a context tree.}
 
-\item{type}{result type (see details).}
+\item{sequence}{if \code{TRUE} the function returns it results as a \code{data.frame},
+if \code{FALSE} (default) as a list of \code{ctx_node} objects. (see details)}
 
-\item{reverse}{logical (defaults to TRUE). See details.}
+\item{reverse}{logical (defaults to \code{TRUE}). See details.}
 
 \item{frequency}{specifies the counts to be included in the result
 data.frame. The default value of \code{NULL} does not include anything.
@@ -27,15 +28,15 @@ sequence. \code{"detailed"} includes in addition the break down of these
 occurrences into all the possible states.}
 
 \item{positions}{logical (defaults to FALSE). Specify whether the positions
-of each context in the time series used to build the context tree should
-be reported in a \code{positions} column of the result data frame. The
-availability of the positions depends on the way the context
-tree was built. See details for the definition of a position.}
+of each context in the time series used to build the context tree should be
+reported in a \code{positions} column of the result data frame. The availability
+of the positions depends on the way the context tree was built. See details
+for the definition of a position.}
 
 \item{...}{additional arguments for the contexts function.}
 }
 \value{
-The list of class \code{contexts} containing the contexts represented in
+A list of class \code{contexts} containing the contexts represented in
 this tree (as \code{ctx_node}) or a data.frame.
 }
 \description{
@@ -43,23 +44,29 @@ This function extracts from a context tree a description of all of its
 contexts.
 }
 \details{
-The \code{frequency} and \code{positions} parameters influence only the
-results when \code{type="data.frame"}. In this case the resulting \code{data.frame}
-has a \code{context} column storing the contexts. If \code{frequency="total"}, an
-additional column named \code{freq} gives the number of occurrences of each
-context in the series used to build the tree. If \code{frequency="detailed"},
-one additional column is added per state in the context space. Each column
-records the number of times a given context is followed by the
-corresponding value in the original series.
+The default behaviour of the function is to return a list of all the
+contexts using \code{ctx_node} objects (as returned by \code{\link[=find_sequence]{find_sequence()}}). The
+properties of the contexts can then be explored using adapted functions
+such as \code{\link[=counts]{counts()}} and \code{\link[=positions]{positions()}}.
 
-When \code{type="list"}, similar information can be obtained from the \code{ctx_node}
-objects returned by the function as a \code{contexts} list.
+When \code{sequence=TRUE} the method returns a data.frame whose first column,
+named \code{context}, contains the contexts as vectors (i.e. the value returned
+by \code{as_sequence()} applied to a \code{ctx_node} object). Other columns contain
+context specific values specified by the additional parameters. Setting any
+of those parameters to a value that ask for reporting information will
+toggle the result type of the function to \code{data.frame}.
+
+If \code{frequency="total"}, an additional column named \code{freq} gives the number
+of occurrences of each context in the series used to build the tree. If
+\code{frequency="detailed"}, one additional column is added per state in the
+context space. Each column records the number of times a given context is
+followed by the corresponding value in the original series.
 }
 \section{Positions}{
- A position of a context \code{ctx} in the time series \code{x} is an
-index value \code{t} such that the context ends with \code{x[t]}. Thus \code{x[t+1]} is after
-the context. For instance if \code{x=c(0, 0, 1, 1)} and \code{ctx=c(0, 1)} (in standard
-state order), then the position of \code{ctx} in \code{x} is 3.
+ A position of a context \code{ctx} in the time series \code{x} is
+an index value \code{t} such that the context ends with \code{x[t]}. Thus \code{x[t+1]} is
+after the context. For instance if \code{x=c(0, 0, 1, 1)} and \code{ctx=c(0, 1)} (in
+standard state order), then the position of \code{ctx} in \code{x} is 3.
 }
 
 \section{State order in a context}{
@@ -73,10 +80,15 @@ reverse to \code{FALSE} for the reverse convention.
 \examples{
 dts <- sample(as.factor(c("A", "B", "C")), 100, replace = TRUE)
 dts_tree <- ctx_tree(dts, max_depth = 3, min_size = 5)
+## direct representation with ctx_node objects
 contexts(dts_tree)
-contexts(dts_tree, type = "data.frame", frequency = "total")
-contexts(dts_tree, type = "data.frame", frequency = "detailed")
+## data.frame format
+contexts(dts_tree, sequence = TRUE)
+contexts(dts_tree, frequency = "total")
+contexts(dts_tree, frequency = "detailed")
 }
 \seealso{
-\code{\link[=contexts.ctx_tree]{contexts.ctx_tree()}}, \code{\link[=contexts.vlmc]{contexts.vlmc()}}, \code{\link[=contexts.covlmc]{contexts.covlmc()}}.
+\code{\link[=find_sequence]{find_sequence()}} and \code{\link[=find_sequence.covlmc]{find_sequence.covlmc()}} for direct access to
+a specific context, and \code{\link[=contexts.ctx_tree]{contexts.ctx_tree()}}, \code{\link[=contexts.vlmc]{contexts.vlmc()}} and
+\code{\link[=contexts.covlmc]{contexts.covlmc()}} for concrete implementations of \code{contexts()}.
 }

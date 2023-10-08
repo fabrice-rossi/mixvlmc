@@ -91,15 +91,16 @@ contexts(x_ctx)
 In general, the raw list of contexts is not directly useful and one should use the 
 node manipulation functions to leverage it (see below). A simple approach consists 
 in asking to `contexts()` a `data.frame` output that will contain additional information
-about the contexts. In the simple case of `ctx_tree`, setting the `frequency` 
+about the contexts. This is done implicitly when additional parameters are given to
+`contexts()`. In the simple case of `ctx_tree`, setting the `frequency` 
 parameter to `"total"` or `"detailed"` gives access to the distribution of $x_t$ for 
 all the $t$ at which a context appears. 
 ```{r}
-contexts(x_ctx, type = "data.frame", frequency = "total")
+contexts(x_ctx, frequency = "total")
 ```
 With `frequency = "total"`, we obtain a data frame with a column `freq` that contains the number of occurrences of each context. 
 ```{r}
-contexts(x_ctx, type = "data.frame", frequency = "detailed")
+contexts(x_ctx, frequency = "detailed")
 ```
 
 With `frequency = "detailed"`, we obtain _in addition_ a column for each value in the state space $S$ which contains the distribution of $x_t$ for the occurrences of each context. For instance in the table above, the context $(0, 0)$ appears twice in $x$ and is followed once by $0$ and once by $1$.

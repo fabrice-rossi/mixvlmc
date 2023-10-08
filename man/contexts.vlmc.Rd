@@ -6,7 +6,7 @@
 \usage{
 \method{contexts}{vlmc}(
   ct,
-  type = c("list", "data.frame"),
+  sequence = FALSE,
   reverse = TRUE,
   frequency = NULL,
   positions = FALSE,
@@ -19,9 +19,10 @@
 \arguments{
 \item{ct}{a context tree.}
 
-\item{type}{result type (see details).}
+\item{sequence}{if \code{TRUE} the function returns it results as a \code{data.frame},
+if \code{FALSE} (default) as a list of \code{ctx_node} objects. (see details)}
 
-\item{reverse}{logical (defaults to TRUE). See details.}
+\item{reverse}{logical (defaults to \code{TRUE}). See details.}
 
 \item{frequency}{specifies the counts to be included in the result
 data.frame. The default value of \code{NULL} does not include anything.
@@ -30,10 +31,10 @@ sequence. \code{"detailed"} includes in addition the break down of these
 occurrences into all the possible states.}
 
 \item{positions}{logical (defaults to FALSE). Specify whether the positions
-of each context in the time series used to build the context tree should
-be reported in a \code{positions} column of the result data frame. The
-availability of the positions depends on the way the context
-tree was built. See details for the definition of a position.}
+of each context in the time series used to build the context tree should be
+reported in a \code{positions} column of the result data frame. The availability
+of the positions depends on the way the context tree was built. See details
+for the definition of a position.}
 
 \item{counts}{specifies how the counts reported by \code{frequency} are computed.
 The default value \code{"desc"} includes both counts that are specific to the
@@ -55,7 +56,7 @@ ensure pruning (as when \code{\link[=cutoff]{cutoff()}} is called by  \code{raw=
 \item{...}{additional arguments for the contexts function.}
 }
 \value{
-The list of class \code{contexts} containing the contexts represented in
+A list of class \code{contexts} containing the contexts represented in
 this tree (as \code{ctx_node}) or a data.frame.
 }
 \description{
@@ -63,20 +64,24 @@ This function extracts all the contexts from a fitted VLMC, possibly with
 some associated data.
 }
 \details{
-When \code{type="list"}, all parameters are ignored, excepted \code{ct} and
-\code{reverse}. Indeed the result consists of a list of \code{ctx_node} objects that
-can be queried to provide the information specified by the ignore
-parameters (see \code{\link[=counts]{counts()}}, \code{\link[=cutoff.ctx_node]{cutoff.ctx_node()}}, \code{\link[=metrics.ctx_node]{metrics.ctx_node()}} and
-\code{\link[=positions]{positions()}}).
+The default behaviour of the function is to return a list of all the
+contexts using \code{ctx_node} objects (as returned by \code{\link[=find_sequence]{find_sequence()}}). The
+properties of the contexts can then be explored using adapted functions
+such as \code{\link[=counts]{counts()}}, \code{\link[=cutoff.ctx_node]{cutoff.ctx_node()}}, \code{\link[=metrics.ctx_node]{metrics.ctx_node()}} and
+\code{\link[=positions]{positions()}}.
 
-When \code{type="data.frame"}, the result is a \code{data.frame} that contains at
-least a \code{context} column storing the contexts as vectors (and not
-\code{ctx_node} objects). The parameters specify additional columns for the
-resulting \code{data.frame}. The \code{frequency} is described in details in the
-documentation of  \code{\link[=contexts.ctx_tree]{contexts.ctx_tree()}}. When \code{cutoff} is non \code{NULL}, the
-resulting \code{data.frame} contains a \code{cutoff} column with the cut off values,
-either in quantile or in native scale. See \code{\link[=cutoff.vlmc]{cutoff.vlmc()}} and
-\code{\link[=prune.vlmc]{prune.vlmc()}} for the definitions of cut off values and of the two scales.
+When \code{sequence=TRUE} the method returns a data.frame whose first column,
+named \code{context}, contains the contexts as vectors (i.e. the value returned
+by \code{as_sequence()} applied to a \code{ctx_node} object). Other columns contain
+context specific values specified by the additional parameters. Setting any
+of those parameters to a value that ask for reporting information will
+toggle the result type of the function to \code{data.frame}.
+
+The \code{frequency} parameter is described in details in the documentation of
+\code{\link[=contexts.ctx_tree]{contexts.ctx_tree()}}. When \code{cutoff} is non \code{NULL}, the resulting
+\code{data.frame} contains a \code{cutoff} column with the cut off values, either in
+quantile or in native scale. See \code{\link[=cutoff.vlmc]{cutoff.vlmc()}} and \code{\link[=prune.vlmc]{prune.vlmc()}} for the
+definitions of cut off values and of the two scales.
 }
 \section{Cut off values}{
  The cut off values reported by \code{contexts.vlmc} can
@@ -95,10 +100,10 @@ behaviour of \code{\link[=cutoff.vlmc]{cutoff.vlmc()}}
 }
 
 \section{Positions}{
- A position of a context \code{ctx} in the time series \code{x} is an
-index value \code{t} such that the context ends with \code{x[t]}. Thus \code{x[t+1]} is after
-the context. For instance if \code{x=c(0, 0, 1, 1)} and \code{ctx=c(0, 1)} (in standard
-state order), then the position of \code{ctx} in \code{x} is 3.
+ A position of a context \code{ctx} in the time series \code{x} is
+an index value \code{t} such that the context ends with \code{x[t]}. Thus \code{x[t+1]} is
+after the context. For instance if \code{x=c(0, 0, 1, 1)} and \code{ctx=c(0, 1)} (in
+standard state order), then the position of \code{ctx} in \code{x} is 3.
 }
 
 \section{State order in a context}{
@@ -112,10 +117,19 @@ reverse to \code{FALSE} for the reverse convention.
 \examples{
 dts <- sample(as.factor(c("A", "B", "C")), 100, replace = TRUE)
 model <- vlmc(dts, alpha = 0.5)
-contexts(model)
-contexts(model, type = "data.frame", frequency = "total")
-contexts(model, type = "data.frame", cutoff = "quantile")
+## direct representation with ctx_node objects
+model_ctxs <- contexts(model)
+model_ctxs
+sapply(model_ctxs, cutoff, scale = "quantile")
+sapply(model_ctxs, cutoff, scale = "native")
+sapply(model_ctxs, function(x) metrics(x)$accuracy)
+## data.frame format
+contexts(model, frequency = "total")
+contexts(model, cutoff = "quantile")
+contexts(model, cutoff = "native", metrics = TRUE)
 }
 \seealso{
-\code{\link[=contexts.ctx_tree]{contexts.ctx_tree()}}, \code{\link[=contexts.vlmc]{contexts.vlmc()}}, \code{\link[=contexts.covlmc]{contexts.covlmc()}}.
+\code{\link[=find_sequence]{find_sequence()}} and \code{\link[=find_sequence.covlmc]{find_sequence.covlmc()}} for direct access to
+a specific context, and \code{\link[=contexts.ctx_tree]{contexts.ctx_tree()}}, \code{\link[=contexts.vlmc]{contexts.vlmc()}} and
+\code{\link[=contexts.covlmc]{contexts.covlmc()}} for concrete implementations of \code{contexts()}.
 }

@@ -58,45 +58,62 @@ frequency_context_extractor <-
 #'   sequence. `"detailed"` includes in addition the break down of these
 #'   occurrences into all the possible states.
 #' @param positions logical (defaults to FALSE). Specify whether the positions
-#'   of each context in the time series used to build the context tree should
-#'   be reported in a `positions` column of the result data frame. The
-#'   availability of the positions depends on the way the context
-#'   tree was built. See details for the definition of a position.
-#' @details The `frequency` and `positions` parameters influence only the
-#'   results when `type="data.frame"`. In this case the resulting `data.frame`
-#'   has a `context` column storing the contexts. If `frequency="total"`, an
-#'   additional column named `freq` gives the number of occurrences of each
-#'   context in the series used to build the tree. If `frequency="detailed"`,
-#'   one additional column is added per state in the context space. Each column
-#'   records the number of times a given context is followed by the
-#'   corresponding value in the original series.
+#'   of each context in the time series used to build the context tree should be
+#'   reported in a `positions` column of the result data frame. The availability
+#'   of the positions depends on the way the context tree was built. See details
+#'   for the definition of a position.
 #'
-#'   When `type="list"`, similar information can be obtained from the `ctx_node`
-#'   objects returned by the function as a `contexts` list.
+#' @details The default behaviour of the function is to return a list of all the
+#'   contexts using `ctx_node` objects (as returned by [find_sequence()]). The
+#'   properties of the contexts can then be explored using adapted functions
+#'   such as [counts()] and [positions()].
 #'
-#' @section Positions: A position of a context `ctx` in the time series `x` is an
-#'   index value `t` such that the context ends with `x[t]`. Thus `x[t+1]` is after
-#'   the context. For instance if `x=c(0, 0, 1, 1)` and `ctx=c(0, 1)` (in standard
-#'   state order), then the position of `ctx` in `x` is 3.
+#'   When `sequence=TRUE` the method returns a data.frame whose first column,
+#'   named `context`, contains the contexts as vectors (i.e. the value returned
+#'   by `as_sequence()` applied to a `ctx_node` object). Other columns contain
+#'   context specific values specified by the additional parameters. Setting any
+#'   of those parameters to a value that ask for reporting information will
+#'   toggle the result type of the function to `data.frame`.
+#'
+#'   If `frequency="total"`, an additional column named `freq` gives the number
+#'   of occurrences of each context in the series used to build the tree. If
+#'   `frequency="detailed"`, one additional column is added per state in the
+#'   context space. Each column records the number of times a given context is
+#'   followed by the corresponding value in the original series.
+#'
+#' @section Positions: A position of a context `ctx` in the time series `x` is
+#'   an index value `t` such that the context ends with `x[t]`. Thus `x[t+1]` is
+#'   after the context. For instance if `x=c(0, 0, 1, 1)` and `ctx=c(0, 1)` (in
+#'   standard state order), then the position of `ctx` in `x` is 3.
 #'
 #' @examples
 #' dts <- sample(as.factor(c("A", "B", "C")), 100, replace = TRUE)
 #' dts_tree <- ctx_tree(dts, max_depth = 3, min_size = 5)
+#' ## direct representation with ctx_node objects
 #' contexts(dts_tree)
-#' contexts(dts_tree, type = "data.frame", frequency = "total")
-#' contexts(dts_tree, type = "data.frame", frequency = "detailed")
+#' ## data.frame format
+#' contexts(dts_tree, sequence = TRUE)
+#' contexts(dts_tree, frequency = "total")
+#' contexts(dts_tree, frequency = "detailed")
 #' @export
-contexts.ctx_tree <- function(ct, type = c("list", "data.frame"),
+contexts.ctx_tree <- function(ct, sequence = FALSE,
                               reverse = TRUE, frequency = NULL,
                               positions = FALSE, ...) {
-  type <- match.arg(type)
-  if (type == "list") {
+  if (!is.null(frequency)) {
+    assertthat::assert_that(frequency %in% c("total", "detailed"))
+  }
+  wants_df <- !is.null(frequency) || positions
+  if (missing(sequence)) {
+    sequence <- wants_df
+  } else {
+    if (!sequence && wants_df) {
+      stop("sequence = 'FALSE' is incompatible with with the other requested values")
+    }
+  }
+  if (!sequence) {
     new_context_list(contexts_extractor(ct, reverse, node_content_extractor, NULL))
   } else {
-    if (!is.null(frequency)) {
-      assertthat::assert_that(frequency %in% c("total", "detailed"))
-      extractor <- frequency_context_extractor
-    } else if (positions) {
+    if (!is.null(frequency) || positions) {
       extractor <- frequency_context_extractor
     } else {
       extractor <- path_df_extractor

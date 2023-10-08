@@ -122,11 +122,13 @@ contexts_extractor <- function(ct, reverse, extractor, control, summarize = no_s
 #' contained in the tree using `ctx_node` objects (as returned by e.g.
 #' [find_sequence()]) (with `type="list"`). The properties of the contexts can
 #' then be explored using adapted functions such as [counts()] and
-#' [positions()]. The result list is of class `contexts`. When
-#' `type="data.frame"`, the method returns a data.frame whose first column,
-#' named `context`, contains the contexts as vectors. Other columns contain
-#' context specific values which depend on the actual class of the tree and on
-#' additional parameters.
+#' [positions()]. The result list is of class `contexts`. When `sequence=TRUE`,
+#' the method returns a data.frame whose first column, named `context`, contains
+#' the contexts as vectors (i.e. the value returned by `as_sequence()` applied
+#' to a `ctx_node` object). Other columns contain context specific values which
+#' depend on the actual class of the tree and on additional parameters. In all
+#' implementations of `contexts()`, setting the additional parameters to any no
+#' default value leads to a `data.frame` result.
 #'
 #' @section State order in a context: Notice that contexts are given by default
 #'   in the "reverse" order used by the VLMC papers: older values are on the
@@ -135,20 +137,23 @@ contexts_extractor <- function(ct, reverse, extractor, control, summarize = no_s
 #'   reverse to `FALSE` for the reverse convention.
 #'
 #' @param ct a context tree.
-#' @param type result type (see details).
-#' @param reverse logical (defaults to TRUE). See details.
+#' @param sequence if `TRUE` the function returns it results as a `data.frame`,
+#'   if `FALSE` (default) as a list of `ctx_node` objects. (see details)
+#' @param reverse logical (defaults to `TRUE`). See details.
 #' @param ... additional arguments for the contexts function.
 #'
-#' @returns The list of class `contexts` containing the contexts represented in
+#' @returns A list of class `contexts` containing the contexts represented in
 #'   this tree (as `ctx_node`) or a data.frame.
 #' @examples
 #' dts <- sample(as.factor(c("A", "B", "C")), 100, replace = TRUE)
 #' dts_tree <- ctx_tree(dts, max_depth = 3, min_size = 5)
 #' contexts(dts_tree)
-#' contexts(dts_tree, "data.frame", TRUE)
-#' @seealso [contexts.ctx_tree()], [contexts.vlmc()], [contexts.covlmc()].
+#' contexts(dts_tree, TRUE, TRUE)
+#' @seealso [find_sequence()] and [find_sequence.covlmc()] for direct access to
+#'   a specific context, and [contexts.ctx_tree()], [contexts.vlmc()] and
+#'   [contexts.covlmc()] for concrete implementations of `contexts()`.
 #' @export
-contexts <- function(ct, type = c("list", "data.frame"), reverse = TRUE, ...) {
+contexts <- function(ct, sequence = FALSE, reverse = TRUE, ...) {
   UseMethod("contexts")
 }
 

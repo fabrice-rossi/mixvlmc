@@ -53,20 +53,24 @@ vlmc_context_extractor <-
 #'   the context appears without being the last part of a longer context.
 #' @param metrics if TRUE, adds predictive metrics for each context (see
 #'   [metrics()] for the definition of predictive metrics).
-#' @details When `type="list"`, all parameters are ignored, excepted `ct` and
-#'   `reverse`. Indeed the result consists of a list of `ctx_node` objects that
-#'   can be queried to provide the information specified by the ignore
-#'   parameters (see [counts()], [cutoff.ctx_node()], [metrics.ctx_node()] and
-#'   [positions()]).
+#' @details The default behaviour of the function is to return a list of all the
+#'   contexts using `ctx_node` objects (as returned by [find_sequence()]). The
+#'   properties of the contexts can then be explored using adapted functions
+#'   such as [counts()], [cutoff.ctx_node()], [metrics.ctx_node()] and
+#'   [positions()].
 #'
-#'   When `type="data.frame"`, the result is a `data.frame` that contains at
-#'   least a `context` column storing the contexts as vectors (and not
-#'   `ctx_node` objects). The parameters specify additional columns for the
-#'   resulting `data.frame`. The `frequency` is described in details in the
-#'   documentation of  [contexts.ctx_tree()]. When `cutoff` is non `NULL`, the
-#'   resulting `data.frame` contains a `cutoff` column with the cut off values,
-#'   either in quantile or in native scale. See [cutoff.vlmc()] and
-#'   [prune.vlmc()] for the definitions of cut off values and of the two scales.
+#'   When `sequence=TRUE` the method returns a data.frame whose first column,
+#'   named `context`, contains the contexts as vectors (i.e. the value returned
+#'   by `as_sequence()` applied to a `ctx_node` object). Other columns contain
+#'   context specific values specified by the additional parameters. Setting any
+#'   of those parameters to a value that ask for reporting information will
+#'   toggle the result type of the function to `data.frame`.
+#'
+#'   The `frequency` parameter is described in details in the documentation of
+#'   [contexts.ctx_tree()]. When `cutoff` is non `NULL`, the resulting
+#'   `data.frame` contains a `cutoff` column with the cut off values, either in
+#'   quantile or in native scale. See [cutoff.vlmc()] and [prune.vlmc()] for the
+#'   definitions of cut off values and of the two scales.
 #' @section Cut off values: The cut off values reported by `contexts.vlmc` can
 #'   be different from the ones reported by [cutoff.vlmc()] for three reasons:
 #'
@@ -85,23 +89,37 @@ vlmc_context_extractor <-
 #' @examples
 #' dts <- sample(as.factor(c("A", "B", "C")), 100, replace = TRUE)
 #' model <- vlmc(dts, alpha = 0.5)
-#' contexts(model)
-#' contexts(model, type = "data.frame", frequency = "total")
-#' contexts(model, type = "data.frame", cutoff = "quantile")
+#' ## direct representation with ctx_node objects
+#' model_ctxs <- contexts(model)
+#' model_ctxs
+#' sapply(model_ctxs, cutoff, scale = "quantile")
+#' sapply(model_ctxs, cutoff, scale = "native")
+#' sapply(model_ctxs, function(x) metrics(x)$accuracy)
+#' ## data.frame format
+#' contexts(model, frequency = "total")
+#' contexts(model, cutoff = "quantile")
+#' contexts(model, cutoff = "native", metrics = TRUE)
 #' @export
-contexts.vlmc <- function(ct, type = c("list", "data.frame"), reverse = TRUE, frequency = NULL,
+contexts.vlmc <- function(ct, sequence = FALSE, reverse = TRUE, frequency = NULL,
                           positions = FALSE, counts = c("desc", "local"), cutoff = NULL, metrics = FALSE, ...) {
-  type <- match.arg(type)
   counts <- match.arg(counts)
-  if (type == "list") {
+  if (!is.null(frequency)) {
+    assertthat::assert_that(frequency %in% c("total", "detailed"))
+  }
+  if (!is.null(cutoff)) {
+    assertthat::assert_that(cutoff %in% c("quantile", "native"))
+  }
+  wants_df <- !is.null(frequency) || positions || !is.null(cutoff) || metrics
+  if (missing(sequence)) {
+    sequence <- wants_df
+  } else {
+    if (!sequence && wants_df) {
+      stop("sequence = 'FALSE' is incompatible with the other requested values")
+    }
+  }
+  if (!sequence) {
     NextMethod()
   } else {
-    if (!is.null(frequency)) {
-      assertthat::assert_that(frequency %in% c("total", "detailed"))
-    }
-    if (!is.null(cutoff)) {
-      assertthat::assert_that(cutoff %in% c("quantile", "native"))
-    }
     control <- list(frequency = frequency, counts = counts, p_value = !is.null(cutoff), metrics = metrics, positions = positions)
     preres <- contexts_extractor(ct, reverse, vlmc_context_extractor, control, vlmc_parent_summary)
     if (!is.null(cutoff)) {

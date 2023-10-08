@@ -39,7 +39,7 @@ test_that("contexts print as expected", {
   dts <- sample(c("A", "B", "C"), 100, replace = TRUE)
   dts_tree <- ctx_tree(dts, max_depth = 4)
   expect_type(contexts(dts_tree), "list")
-  expect_s3_class(contexts(dts_tree, type = "data.frame"), "data.frame")
+  expect_s3_class(contexts(dts_tree, sequence = TRUE), "data.frame")
 })
 
 test_that("contexts reversing reverses", {
@@ -52,8 +52,8 @@ test_that("contexts reversing reverses", {
     expect_identical(as_sequence(rev_ctx[[k]]), rev(as_sequence(def_ctx[[k]])))
   }
   ## data frame case
-  def_ctx <- contexts(dts_tree, type = "data.frame", frequency = "detailed")
-  rev_ctx <- contexts(dts_tree, type = "data.frame", frequency = "detailed", reverse = FALSE)
+  def_ctx <- contexts(dts_tree, frequency = "detailed")
+  rev_ctx <- contexts(dts_tree, frequency = "detailed", reverse = FALSE)
   expect_equal(dim(rev_ctx), dim(def_ctx))
   for (k in 1:nrow(def_ctx)) {
     expect_identical(rev_ctx$context[[k]], rev(def_ctx$context[[k]]))
@@ -64,18 +64,18 @@ test_that("contexts reversing reverses", {
 test_that("context format is consistent", {
   dts <- sample(c("A", "B", "C"), 100, replace = TRUE)
   dts_tree <- ctx_tree(dts, max_depth = 4)
-  raw_ctx <- contexts(dts_tree, type = "data.frame")
+  raw_ctx <- contexts(dts_tree, sequence = TRUE)
   expect_named(raw_ctx, c("context"))
-  freq_ctx <- contexts(dts_tree, type = "data.frame", frequency = "total")
+  freq_ctx <- contexts(dts_tree, frequency = "total")
   expect_named(freq_ctx, c("context", "freq"))
-  full_ctx <- contexts(dts_tree, type = "data.frame", frequency = "detailed")
+  full_ctx <- contexts(dts_tree, frequency = "detailed")
   expect_named(full_ctx, c("context", "freq", "A", "B", "C"))
 })
 
 test_that("basic count consistency", {
   dts <- sample(c("A", "B", "C"), 100, replace = TRUE)
   dts_tree <- ctx_tree(dts, max_depth = 4)
-  full_ctx <- contexts(dts_tree, type = "data.frame", frequency = "detailed")
+  full_ctx <- contexts(dts_tree, frequency = "detailed")
   expect_equal(nrow(full_ctx), context_number(dts_tree))
   totals <- apply(full_ctx[3:5], 1, sum)
   expect_equal(full_ctx$freq, totals)
@@ -84,7 +84,7 @@ test_that("basic count consistency", {
 test_that("contexts positions are valid", {
   dts <- sample(c("A", "B", "C"), 100, replace = TRUE)
   dts_tree <- ctx_tree(dts, max_depth = 4, keep_position = TRUE)
-  full_ctx <- contexts(dts_tree, type = "data.frame", frequency = "detailed", positions = TRUE)
+  full_ctx <- contexts(dts_tree, frequency = "detailed", positions = TRUE)
   ## check first the consistency (we remove matches at the end of the dts)
   expect_equal(
     sapply(full_ctx[["positions"]], \(x) length(x[x != length(dts)])),
