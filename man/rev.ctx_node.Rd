@@ -21,7 +21,7 @@ This function reverses the order in which the sequence represented by the
 \examples{
 dts <- c("A", "B", "C", "A", "A", "B", "B", "C", "C", "A")
 dts_tree <- ctx_tree(dts, max_depth = 3)
-res <- find_sequence(dts_tree, c("B", "A"))
+res <- find_sequence(dts_tree, c("A", "B"))
 print(res)
 r_res <- rev(res)
 print(r_res)

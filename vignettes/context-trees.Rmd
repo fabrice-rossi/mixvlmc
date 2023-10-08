@@ -21,20 +21,31 @@ Variable Length Markov Chain (VLMC) models provide parsimonious high order Marko
 ## Contexts
 ### Definition
 
-We consider a time series $x=(x_i)_{i\geq 1}$ with values in a finite set $S$, its state space. A context $c$ is a finite sequence of elements of $S$, $c=(c_1, \ldots, c_k)$ _observed_ in $x$. $c$ is _observed_ in $x$ if there is $t$ such that
+We consider a time series $x=(x_i)_{i\geq 1}$ with values in a finite set $S$, its state space. A context $c$ is a finite sequence of elements of $S$, $c=(c_k, \ldots, c_1)$ _observed_ in $x$. $c$ is _observed_ in $x$ if there is $t$ such that
 $$
 x_{t-1}=c_1, x_{t-2}=c_2, \ldots, x_{t-k}=c_k.
 $$
-Notice that $c$ is written in a _reverse_ order, in the sense that $c_1$ is the most recent value in $x$ while $c_k$ is the oldest one. Thus the sub-sequence observed in $x$ is $(c_k, c_{k-1}, \ldots, c_1)$. We follow Bühlmann and Wyner convention. 
+Notice that $c$ is numbered in a _reverse_ order, in the sense that $c_1$ is
+the most recent value in $x$ while $c_k$ is the oldest one. Thus the
+sub-sequence observed in $x$. In numerous papers, for instance in the works 
+of Bühlmann and Wyner, the convention is to reverse the temporal order and to 
+write $c=(c_1, \ldots, c_k)$, keeping $c_1$ as the most recent value and $c_k$
+as the oldest one. In `mixvlmc` we use the more natural convention of writing
+contexts in temporal order, but many functions offer a `reverse` parameter 
+than can be used to switch to Bühlmann and Wyner convention. 
 
-For instance, if $S=\{0, 1\}$ and $x=(0, 0, 0, 1, 1, 1)$
+Back to examples, if $S=\{0, 1\}$ and $x=(0, 0, 0, 1, 1, 1)$
 
 - $(0, 0)$ is a context of $x$ with $t=3$ and $t=4$;
 - $(0, 1, 0)$ is not a context of $x$.
 
 ### Context trees
 
-The contexts of a time series can be represented by a tree. The root of the tree stands for the empty context. The children of the root represent the contexts of length 1. In general, if a node represents the context $c=(c_1, \ldots, c_k)$, then contexts of the form $c'=(c_1, \ldots, c_k, c_{k+1})$ are represented by the children of the node. 
+The contexts of a time series can be represented by a tree. The root of the tree stands for the empty context. The children of the root represent the
+contexts of length 1. In general, if a node represents the context $c=(c_k,
+\ldots, c_1)$, then contexts of the form $c'=(c_{k+1}, c_k, \ldots, c_1)$ are
+represented by the children of the node. Descending in the context tree 
+corresponds to adding to the past of the context. 
 
 Let us consider again $x=(0, 0, 0, 1, 1, 1)$ and all contexts that appear _at least twice_ in $x$ (i.e. which are observed for at least two different values of $t$). An ASCII art representation of the corresponding context tree is:
 ```
@@ -44,7 +55,7 @@ Let us consider again $x=(0, 0, 0, 1, 1, 1)$ and all contexts that appear _at le
 '-- 1
 ```
 
-The tree represents 2 size one contexts ($(0)$ and $(1)$), the direct children of the root (shown as a star `*`). It represents in addition 1 size 2 contexts, $(0, 0)$. Notice that for instance, $(0, 1)$ is not a context in the tree as the node of context $(0)$ has only one child labelled by $0$. 
+The tree represents 2 size one contexts ($(0)$ and $(1)$), the direct children of the root (shown as a star `*`). It represents in addition 1 size 2 contexts, $(0, 0)$. Notice that for instance, $(1, 0)$ is not a context in the tree as the node of context $(0)$ has only one child labelled by $0$. 
 
 ## Extracting contexts from a time series in mixvlmc
 Mixvlmc can be used to compute all the contexts of a time series using the `ctx_tree()` function/constructor as follows:

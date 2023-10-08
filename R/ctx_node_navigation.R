@@ -26,7 +26,7 @@
 parent <- function(node) {
   assertthat::assert_that(is_ctx_node(node))
   if (length(node$sequence) >= 1) {
-    pre_res <- find_sequence(node$tree, node$sequence[-length(node$sequence)])
+    pre_res <- find_sequence(node$tree, node$sequence[-length(node$sequence)], reverse = TRUE)
     if (!node$rev) {
       rev(pre_res)
     } else {
@@ -40,18 +40,19 @@ parent <- function(node) {
 #' Find the children nodes of a node in a context tree
 #'
 #' This function returns a list (possibly empty) of `ctx_node` objects. Each
-#' object represents one of the children of the node represented by the
-#' `node` parameter.
+#' object represents one of the children of the node represented by the `node`
+#' parameter.
 #'
 #' Each node of a context tree represents a sequence. When [find_sequence()] is
-#' called with success, the returned object represents the corresponding
-#' node in the context tree. If this node has no child, the present
-#' function returns an empty list. When the node has at least one child, the
-#' function returns a list with one value for each element in the state space
-#' (see [states()]). The value is `NULL` if the corresponding child is empty,
-#' while it is a `ctx_node` object when the child is present. Each `ctx_node`
-#' object is associated to the sequence obtained by adding to the past of
-#' the sequence represented by `node` an observation of the associated state.
+#' called with success, the returned object represents the corresponding node in
+#' the context tree. If this node has no child, the present function returns an
+#' empty list. When the node has at least one child, the function returns a list
+#' with one value for each element in the state space (see [states()]). The
+#' value is `NULL` if the corresponding child is empty, while it is a `ctx_node`
+#' object when the child is present. Each `ctx_node` object is associated to the
+#' sequence obtained by adding to the past of the sequence represented by `node`
+#' an observation of the associated state (this corresponds to an extension to
+#' the left of the sequence in temporal order).
 #'
 #' @param node a `ctx_node` object as returned by [find_sequence()]
 #' @returns a list of `ctx_node` objects, see details.
@@ -61,9 +62,9 @@ parent <- function(node) {
 #' ctx_00 <- find_sequence(dts_ctree, c(0, 0))
 #' ## this context can only be extended in the past by 1:
 #' children(ctx_00)
-#' ctx_01 <- find_sequence(dts_ctree, c(0, 1))
+#' ctx_10 <- find_sequence(dts_ctree, c(1, 0))
 #' ## this context can be extended by both states
-#' children(ctx_01)
+#' children(ctx_10)
 #' @export
 children <- function(node) {
   assertthat::assert_that(is_ctx_node(node))

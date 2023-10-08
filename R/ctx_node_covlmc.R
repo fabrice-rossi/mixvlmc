@@ -25,17 +25,17 @@ assertthat::on_failure(is_ctx_node_covlmc) <- function(call, env) {
 #'
 #' ## not in the tree
 #' vals <- states(m_cov)
-#' find_sequence(m_cov, c(vals[2], vals[2]), reverse = FALSE)
+#' find_sequence(m_cov, c(vals[2], vals[2]))
 #' ## in the tree but not a context
-#' node <- find_sequence(m_cov, c(vals[1]), reverse = FALSE)
+#' node <- find_sequence(m_cov, c(vals[1]))
 #' node
 #' is_context(node)
 #' ## in the tree and a context
-#' node <- find_sequence(m_cov, c(vals[1], vals[1]), reverse = FALSE)
+#' node <- find_sequence(m_cov, c(vals[1], vals[1]))
 #' node
 #' is_context(node)
 #' model(node)
-find_sequence.covlmc <- function(ct, ctx, reverse = TRUE, ...) {
+find_sequence.covlmc <- function(ct, ctx, reverse = FALSE, ...) {
   if (length(ctx) == 0) {
     if (isTRUE(ct$keep_match) && is.null(ct$match)) {
       ct$match <- 1:ct$data_size
@@ -116,7 +116,7 @@ find_sequence.covlmc <- function(ct, ctx, reverse = TRUE, ...) {
 #' dts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
 #' m_cov <- covlmc(dts, dts_cov, min_size = 10)
 #' vals <- states(m_cov)
-#' node <- find_sequence(m_cov, c(vals[1], vals[1]), reverse = FALSE)
+#' node <- find_sequence(m_cov, c(vals[1], vals[1]))
 #' node
 #' model(node)
 #' model(node, model = "full")

@@ -52,7 +52,7 @@ assertthat::on_failure(is_ctx_node) <- function(call, env) {
 
 #' Report the ordering convention of the node
 #'
-#' This function returns `TRUE` if the node is use a reverse temporal ordering
+#' This function returns `TRUE` if the node is using a reverse temporal ordering
 #' and `FALSE` in the other case.
 #'
 #' @param node a `ctx_node` object as returned by [find_sequence()]
@@ -62,7 +62,7 @@ assertthat::on_failure(is_ctx_node) <- function(call, env) {
 #' dts <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 0)
 #' dts_ctree <- ctx_tree(dts, min_size = 1, max_depth = 3)
 #' is_reversed(find_sequence(dts_ctree, c(0, 0)))
-#' is_reversed(find_sequence(dts_ctree, c(1, 0), reverse = FALSE))
+#' is_reversed(find_sequence(dts_ctree, c(1, 0), reverse = TRUE))
 #' @export
 #' @seealso [rev.ctx_node()]
 is_reversed <- function(node) {
@@ -83,7 +83,7 @@ is_reversed <- function(node) {
 #' @examples
 #' dts <- c("A", "B", "C", "A", "A", "B", "B", "C", "C", "A")
 #' dts_tree <- ctx_tree(dts, max_depth = 3)
-#' res <- find_sequence(dts_tree, c("B", "A"))
+#' res <- find_sequence(dts_tree, c("A", "B"))
 #' print(res)
 #' r_res <- rev(res)
 #' print(r_res)
@@ -100,7 +100,9 @@ rev.ctx_node <- function(x) {
 #'
 #' @param node a `ctx_node` object as returned by [find_sequence()]
 #' @param reverse specifies whether the sequence should be reported in reverse
-#'   temporal order (`TRUE`) or in the temporal order (`FALSE`).
+#'   temporal order (`TRUE`) or in the temporal order (`FALSE`). Defaults to the
+#'   order associated to the `ctx_node` which is determined by the parameters of
+#'   the call to [contexts()] or [find_sequence()].
 #'
 #' @returns the sequence represented by the `node` object, a vector
 #' @export
@@ -135,25 +137,32 @@ as_sequence <- function(node, reverse) {
 #'
 #' @param ct a context tree.
 #' @param ctx a sequence to search in the context tree
-#' @param reverse specifies whether the sequence `ctx` is given the reverse
-#'   temporal order (`TRUE`, default value) or in the temporal order (`FALSE`).
+#' @param reverse specifies whether the sequence `ctx` is given the
+#'   temporal order (`FALSE`, default value) or in the reverse temporal order
+#'   (`TRUE`). See the dedicated section.
 #' @param ... additional parameters for the find_sequence function
 #' @returns an object of class `ctx_node` if the sequence `ctx` is represented
 #'   in the context tree, `NULL` when this is not the case.
+#' @section State order in a sequence: sequence are given by default
+#'   in the temporal order and not in the "reverse" order used by many VLMC
+#'   research papers: older values are on the left. For instance, the context
+#'   `c(1, 0)` is reported if the sequence 0, then 1 appeared in the time series
+#'   used to build the context tree. In the present function, `reverse` refers
+#'   both to the order used for the `ctx` parameter and for the default order used by the resulting `ctx_node` object.
 #' @examples
 #' dts <- c("A", "B", "C", "A", "A", "B", "B", "C", "C", "A")
 #' dts_tree <- ctx_tree(dts, max_depth = 3)
 #' find_sequence(dts_tree, "A")
 #' ## returns NULL as "A" "C" does not appear in dts
-#' find_sequence(dts_tree, c("A", "C"), reverse = FALSE)
+#' find_sequence(dts_tree, c("A", "C"))
 #' @export
-find_sequence <- function(ct, ctx, reverse = TRUE, ...) {
+find_sequence <- function(ct, ctx, reverse = FALSE, ...) {
   UseMethod("find_sequence")
 }
 
 #' @export
 #' @rdname find_sequence
-find_sequence.ctx_tree <- function(ct, ctx, reverse = TRUE, ...) {
+find_sequence.ctx_tree <- function(ct, ctx, reverse = FALSE, ...) {
   if (length(ctx) == 0) {
     if (isTRUE(ct$keep_match) && is.null(ct$match)) {
       ct$match <- 1:ct$data_size
@@ -194,9 +203,9 @@ find_sequence.ctx_tree <- function(ct, ctx, reverse = TRUE, ...) {
 #' dts <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 0)
 #' dts_ctree <- ctx_tree(dts, min_size = 1, max_depth = 3)
 #' draw(dts_ctree)
-#' ## 0, 0 is a context but 0, 1 is not
+#' ## 0, 0 is a context but 1, 0 is not
 #' is_context(find_sequence(dts_ctree, c(0, 0)))
-#' is_context(find_sequence(dts_ctree, c(0, 1)))
+#' is_context(find_sequence(dts_ctree, c(1, 0)))
 #' @export
 is_context <- function(node) {
   assertthat::assert_that(is_ctx_node(node))
@@ -225,7 +234,7 @@ is_context <- function(node) {
 #' @examples
 #' dts <- sample(as.factor(c("A", "B", "C")), 100, replace = TRUE)
 #' dts_tree <- ctx_tree(dts, max_depth = 3, min_size = 5)
-#' subseq <- find_sequence(dts_tree, factor(c("A", "B"), levels = c("A", "B", "C")))
+#' subseq <- find_sequence(dts_tree, factor(c("B", "A"), levels = c("A", "B", "C")))
 #' if (!is.null(subseq)) {
 #'   positions(subseq)
 #' }

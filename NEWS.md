@@ -4,6 +4,7 @@
 * the `mode` parameter of `cutoff.vlmc()` has been renamed to `scale`
 * the `type` has been removed from `contexts()` variants and the default
   result format has been modified significantly
+* `contexts()` are now reported by default in temporal order
 
 ## New features
 * `contexts()` can now report the positions of each context in the original time

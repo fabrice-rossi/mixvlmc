@@ -14,19 +14,20 @@ a list of \code{ctx_node} objects, see details.
 }
 \description{
 This function returns a list (possibly empty) of \code{ctx_node} objects. Each
-object represents one of the children of the node represented by the
-\code{node} parameter.
+object represents one of the children of the node represented by the \code{node}
+parameter.
 }
 \details{
 Each node of a context tree represents a sequence. When \code{\link[=find_sequence]{find_sequence()}} is
-called with success, the returned object represents the corresponding
-node in the context tree. If this node has no child, the present
-function returns an empty list. When the node has at least one child, the
-function returns a list with one value for each element in the state space
-(see \code{\link[=states]{states()}}). The value is \code{NULL} if the corresponding child is empty,
-while it is a \code{ctx_node} object when the child is present. Each \code{ctx_node}
-object is associated to the sequence obtained by adding to the past of
-the sequence represented by \code{node} an observation of the associated state.
+called with success, the returned object represents the corresponding node in
+the context tree. If this node has no child, the present function returns an
+empty list. When the node has at least one child, the function returns a list
+with one value for each element in the state space (see \code{\link[=states]{states()}}). The
+value is \code{NULL} if the corresponding child is empty, while it is a \code{ctx_node}
+object when the child is present. Each \code{ctx_node} object is associated to the
+sequence obtained by adding to the past of the sequence represented by \code{node}
+an observation of the associated state (this corresponds to an extension to
+the left of the sequence in temporal order).
 }
 \examples{
 dts <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 0)
@@ -34,7 +35,7 @@ dts_ctree <- ctx_tree(dts, min_size = 1, max_depth = 3)
 ctx_00 <- find_sequence(dts_ctree, c(0, 0))
 ## this context can only be extended in the past by 1:
 children(ctx_00)
-ctx_01 <- find_sequence(dts_ctree, c(0, 1))
+ctx_10 <- find_sequence(dts_ctree, c(1, 0))
 ## this context can be extended by both states
-children(ctx_01)
+children(ctx_10)
 }

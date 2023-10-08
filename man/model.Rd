@@ -34,7 +34,7 @@ dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.
 dts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
 m_cov <- covlmc(dts, dts_cov, min_size = 10)
 vals <- states(m_cov)
-node <- find_sequence(m_cov, c(vals[1], vals[1]), reverse = FALSE)
+node <- find_sequence(m_cov, c(vals[1], vals[1]))
 node
 model(node)
 model(node, model = "full")

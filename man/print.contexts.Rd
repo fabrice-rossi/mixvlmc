@@ -9,8 +9,10 @@
 \arguments{
 \item{x}{the \code{contexts} object to print}
 
-\item{reverse}{specifies whether the contexts should be reported in reverse
-temporal order (\code{TRUE}, default value) or in the temporal order (\code{FALSE}).}
+\item{reverse}{specifies whether the contexts should be reported in
+temporal order (\code{FALSE}, default value) or in reverse temporal order (\code{TRUE}).
+If the parameter is not specified, the contexts are displayed in order
+specified by the call to \code{contexts()} used to build the context list.}
 
 \item{...}{additional arguments for the print function.}
 }

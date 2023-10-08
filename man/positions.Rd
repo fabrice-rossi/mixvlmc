@@ -29,7 +29,7 @@ order), then the position of \code{ctx} in \code{x} is 3.
 \examples{
 dts <- sample(as.factor(c("A", "B", "C")), 100, replace = TRUE)
 dts_tree <- ctx_tree(dts, max_depth = 3, min_size = 5)
-subseq <- find_sequence(dts_tree, factor(c("A", "B"), levels = c("A", "B", "C")))
+subseq <- find_sequence(dts_tree, factor(c("B", "A"), levels = c("A", "B", "C")))
 if (!is.null(subseq)) {
   positions(subseq)
 }
