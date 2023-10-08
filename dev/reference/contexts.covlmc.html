@@ -77,14 +77,14 @@ covariates, possibly with some associated data.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S3 method for covlmc</span></span>
 <span><span class="fu"><a href="contexts.html">contexts</a></span><span class="op">(</span></span>
 <span>  <span class="va">ct</span>,</span>
-<span>  type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"list"</span>, <span class="st">"data.frame"</span><span class="op">)</span>,</span>
-<span>  reverse <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  sequence <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  reverse <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  frequency <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  positions <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  counts <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"desc"</span>, <span class="st">"local"</span><span class="op">)</span>,</span>
+<span>  metrics <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  model <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  hsize <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  metrics <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  merging <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -96,12 +96,13 @@ covariates, possibly with some associated data.</p>
 <dd><p>a fitted covlmc model.</p></dd>
 
 
-<dt>type</dt>
-<dd><p>result type (see details).</p></dd>
+<dt>sequence</dt>
+<dd><p>if <code>TRUE</code> the function returns its results as a <code>data.frame</code>,
+if <code>FALSE</code> (default) as a list of <code>ctx_node</code> objects. (see details)</p></dd>
 
 
 <dt>reverse</dt>
-<dd><p>logical (defaults to TRUE). See details.</p></dd>
+<dd><p>logical (defaults to <code>FALSE</code>). See details.</p></dd>
 
 
 <dt>frequency</dt>
@@ -114,10 +115,10 @@ occurrences into all the possible states.</p></dd>
 
 <dt>positions</dt>
 <dd><p>logical (defaults to FALSE). Specify whether the positions
-of each context in the time series used to build the context tree should
-be reported in a <code>positions</code> column of the result data frame. The
-availability of the positions depends on the way the context
-tree was built. See details for the definition of a position.</p></dd>
+of each context in the time series used to build the context tree should be
+reported in a <code>positions</code> column of the result data frame. The availability
+of the positions depends on the way the context tree was built. See details
+for the definition of a position.</p></dd>
 
 
 <dt>counts</dt>
@@ -126,6 +127,11 @@ The default value <code>"desc"</code> includes both counts that are specific to 
 context (if any) and counts from the descendants of the context in the
 tree. When <code>counts = "local"</code> the counts include only the number of times
 the context appears without being the last part of a longer context.</p></dd>
+
+
+<dt>metrics</dt>
+<dd><p>if TRUE, adds predictive metrics for each context (see
+<code><a href="metrics.html">metrics()</a></code> for the definition of predictive metrics).</p></dd>
 
 
 <dt>model</dt>
@@ -142,11 +148,6 @@ gives for each context the size of the history of covariates used by the
 model.</p></dd>
 
 
-<dt>metrics</dt>
-<dd><p>if TRUE, adds predictive metrics for each context (see
-<code><a href="metrics.html">metrics()</a></code> for the definition of predictive metrics).</p></dd>
-
-
 <dt>merging</dt>
 <dd><p>if TRUE, adds a <code>merged</code> column to the result data frame. For
 a normal context, the value of <code>merged</code> is FALSE. Contexts that share the
@@ -161,44 +162,50 @@ same model have a TRUE <code>merged</code> value.</p></dd>
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     
 
-<p>the list of the contexts represented in this tree or a data.frame
-with more content.</p>
+<p>A list of class <code>contexts</code> containing the contexts represented in
+this tree (as <code>ctx_node_covlmc</code>) or a data.frame.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>When <code>type="list"</code>, all parameters are ignored, excepted <code>ct</code> and
-<code>reverse</code>. Indeed the result consists of a list of <code>ctx_node_covlmc</code>
-objects that can be queried to provide the information specified by the
-ignore parameters (see <code><a href="counts.html">counts()</a></code>, <code><a href="cutoff.ctx_node.html">cutoff.ctx_node()</a></code>,
-<code><a href="metrics.ctx_node.html">metrics.ctx_node()</a></code>, <code><a href="positions.html">positions()</a></code>, <code><a href="model.html">model()</a></code>, <code><a href="merged_with.html">merged_with()</a></code> and
-<code><a href="covariate_memory.html">covariate_memory()</a></code>).</p>
-<p>When <code>type="data.frame"</code>, the result is a <code>data.frame</code> that contains at
-least a <code>context</code> column storing the contexts as vectors (and not
-<code>ctx_node_covlmc</code> objects). The parameters specify additional columns for
-the resulting <code>data.frame</code>. See <code><a href="contexts.ctx_tree.html">contexts.ctx_tree()</a></code> for details about the
-<code>frequency</code> parameter. When <code>model</code> is non <code>NULL</code>, the resulting
-<code>data.frame</code> contains the models associated to each context (either the
-full R model or its coefficients). Other columns are added is the
-corresponding parameters are set to <code>TRUE</code>.</p>
+    <p>The default behaviour of the function is to return a list of all the
+contexts using <code>ctx_node_covlmc</code> objects (as returned by
+<code><a href="find_sequence.covlmc.html">find_sequence.covlmc()</a></code>). The properties of the contexts can then be
+explored using adapted functions such as <code><a href="counts.html">counts()</a></code>, <code><a href="covariate_memory.html">covariate_memory()</a></code>,
+<code><a href="cutoff.ctx_node.html">cutoff.ctx_node()</a></code>, <code><a href="metrics.ctx_node.html">metrics.ctx_node()</a></code>, <code><a href="model.html">model()</a></code>, <code><a href="merged_with.html">merged_with()</a></code> and
+<code><a href="positions.html">positions()</a></code>.</p>
+<p>When <code>sequence=TRUE</code> the method returns a data.frame whose first column,
+named <code>context</code>, contains the contexts as vectors (i.e. the value returned
+by <code><a href="as_sequence.html">as_sequence()</a></code> applied to a <code>ctx_node</code> object). Other columns contain
+context specific values specified by the additional parameters. Setting any
+of those parameters to a value that ask for reporting information will
+toggle the result type of the function to <code>data.frame</code>.</p>
+<p>See <code><a href="contexts.ctx_tree.html">contexts.ctx_tree()</a></code> for details about the <code>frequency</code> parameter. When
+<code>model</code> is non <code>NULL</code>, the resulting <code>data.frame</code> contains the models
+associated to each context (either the full R model or its coefficients).
+Other columns are added is the corresponding parameters are set to <code>TRUE</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="positions">Positions<a class="anchor" aria-label="anchor" href="#positions"></a></h2>
-    <p>A position of a context <code>ctx</code> in the time series <code>x</code> is an
-index value <code>t</code> such that the context ends with <code>x[t]</code>. Thus <code>x[t+1]</code> is after
-the context. For instance if <code>x=c(0, 0, 1, 1)</code> and <code>ctx=c(0, 1)</code> (in standard
-state order), then the position of <code>ctx</code> in <code>x</code> is 3.</p>
+    <p>A position of a context <code>ctx</code> in the time series <code>x</code> is
+an index value <code>t</code> such that the context ends with <code>x[t]</code>. Thus <code>x[t+1]</code> is
+after the context. For instance if <code>x=c(0, 0, 1, 1)</code> and <code>ctx=c(0, 1)</code> (in
+standard state order), then the position of <code>ctx</code> in <code>x</code> is 3.</p>
     </div>
     <div class="section level2">
     <h2 id="state-order-in-a-context">State order in a context<a class="anchor" aria-label="anchor" href="#state-order-in-a-context"></a></h2>
     <p>Notice that contexts are given by default
-in the "reverse" order used by the VLMC papers: older values are on the
-right. For instance, the context <code>c(0, 1)</code> is reported if the sequence 1,
-then 0 appeared in the time series used to build the context tree. Set
-reverse to <code>FALSE</code> for the reverse convention.</p>
+in the temporal order and not in the "reverse" order used by many VLMC
+research papers: older values are on the left. For instance, the context
+<code>c(1, 0)</code> is reported if the sequence 0, then 1 appeared in the time series
+used to build the context tree. Set reverse to <code>TRUE</code> for the reverse
+convention which is somewhat easier to relate to the way the context trees
+are represented by <code><a href="draw.html">draw()</a></code> (i.e. recent values at the top the tree).</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="contexts.ctx_tree.html">contexts.ctx_tree()</a></code>, <code><a href="contexts.vlmc.html">contexts.vlmc()</a></code>, <code>contexts.covlmc()</code>.</p></div>
+    <div class="dont-index"><p><code><a href="find_sequence.html">find_sequence()</a></code> and <code><a href="find_sequence.covlmc.html">find_sequence.covlmc()</a></code> for direct access to
+a specific context, and <code><a href="contexts.ctx_tree.html">contexts.ctx_tree()</a></code>, <code><a href="contexts.vlmc.html">contexts.vlmc()</a></code> and
+<code>contexts.covlmc()</code> for concrete implementations of <code><a href="contexts.html">contexts()</a></code>.</p></div>
     </div>
 
     <div class="section level2">
@@ -208,24 +215,48 @@ reverse to <code>FALSE</code> for the reverse convention.</p>
 <span class="r-in"><span><span class="va">dts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cut.html" class="external-link">cut</a></span><span class="op">(</span><span class="va">pc</span><span class="op">$</span><span class="va">active_power</span>, breaks <span class="op">=</span> <span class="va">breaks</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">dts_cov</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>day_night <span class="op">=</span> <span class="op">(</span><span class="va">pc</span><span class="op">$</span><span class="va">hour</span> <span class="op">&gt;=</span> <span class="fl">7</span> <span class="op">&amp;</span> <span class="va">pc</span><span class="op">$</span><span class="va">hour</span> <span class="op">&lt;=</span> <span class="fl">17</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">m_cov</span> <span class="op">&lt;-</span> <span class="fu"><a href="covlmc.html">covlmc</a></span><span class="op">(</span><span class="va">dts</span>, <span class="va">dts_cov</span>, min_size <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="contexts.html">contexts</a></span><span class="op">(</span><span class="va">m_cov</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co">## direct representation with ctx_node_covlmc objects</span></span></span>
+<span class="r-in"><span><span class="va">m_cov_ctxs</span> <span class="op">&lt;-</span> <span class="fu"><a href="contexts.html">contexts</a></span><span class="op">(</span><span class="va">m_cov</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">m_cov_ctxs</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Contexts:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  (0,1.34], (0,1.34], (0,1.34]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  (0,1.34], (0,1.34], (1.34,7.54]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  (0,1.34], (1.34,7.54]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  (1.34,7.54], (0,1.34], (0,1.34]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  (1.34,7.54], (0,1.34]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  (1.34,7.54]</span>
-<span class="r-in"><span><span class="fu"><a href="contexts.html">contexts</a></span><span class="op">(</span><span class="va">m_cov</span>, type <span class="op">=</span> <span class="st">"data.frame"</span>, model <span class="op">=</span> <span class="st">"coef"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="va">m_cov_ctxs</span>, <span class="va">covariate_memory</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 3 1 0 0</span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="va">m_cov_ctxs</span>, <span class="va">is_merged</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] FALSE FALSE FALSE FALSE</span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="va">m_cov_ctxs</span>, <span class="va">model</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     (Intercept) day_night_1TRUE day_night_2TRUE day_night_3TRUE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       -2.813042        2.177964       -4.448526        2.417832 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [[2]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     (Intercept) day_night_1TRUE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       -19.56607        18.38741 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [[3]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   -1.856298 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [[4]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    2.535411 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-in"><span><span class="co">## data.frame interface</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="contexts.html">contexts</a></span><span class="op">(</span><span class="va">m_cov</span>, model <span class="op">=</span> <span class="st">"coef"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        context         coef</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1 (0,1.34].... -2.81304....</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2 (0,1.34].... -19.5660....</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3 (0,1.34].... -1.85629....</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2 (1.34,7..... -19.5660....</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3 (1.34,7..... -1.85629....</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 4  (1.34,7.54] 2.535411....</span>
-<span class="r-in"><span><span class="fu"><a href="contexts.html">contexts</a></span><span class="op">(</span><span class="va">m_cov</span>, type <span class="op">=</span> <span class="st">"data.frame"</span>, model <span class="op">=</span> <span class="st">"full"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>        context        model</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 (0,1.34].... c(`(Inte....</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2 (0,1.34].... c(`(Inte....</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3 (0,1.34].... c(`(Inte....</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4  (1.34,7.54] c(`(Inte....</span>
+<span class="r-in"><span><span class="fu"><a href="contexts.html">contexts</a></span><span class="op">(</span><span class="va">m_cov</span>, model <span class="op">=</span> <span class="st">"full"</span>, hsize <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        context        model hsize</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 (0,1.34].... c(`(Inte....     3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2 (1.34,7..... c(`(Inte....     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3 (1.34,7..... c(`(Inte....     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  (1.34,7.54] c(`(Inte....     0</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

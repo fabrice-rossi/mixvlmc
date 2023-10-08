@@ -74,7 +74,7 @@ contexts.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">contexts</span><span class="op">(</span><span class="va">ct</span>, type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"list"</span>, <span class="st">"data.frame"</span><span class="op">)</span>, reverse <span class="op">=</span> <span class="cn">TRUE</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">contexts</span><span class="op">(</span><span class="va">ct</span>, sequence <span class="op">=</span> <span class="cn">FALSE</span>, reverse <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -83,12 +83,13 @@ contexts.</p>
 <dd><p>a context tree.</p></dd>
 
 
-<dt>type</dt>
-<dd><p>result type (see details).</p></dd>
+<dt>sequence</dt>
+<dd><p>if <code>TRUE</code> the function returns its results as a <code>data.frame</code>,
+if <code>FALSE</code> (default) as a list of <code>ctx_node</code> objects. (see details)</p></dd>
 
 
 <dt>reverse</dt>
-<dd><p>logical (defaults to TRUE). See details.</p></dd>
+<dd><p>logical (defaults to <code>FALSE</code>). See details.</p></dd>
 
 
 <dt>...</dt>
@@ -99,7 +100,7 @@ contexts.</p>
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     
 
-<p>The list of class <code>contexts</code> containing the contexts represented in
+<p>A list of class <code>contexts</code> containing the contexts represented in
 this tree (as <code>ctx_node</code>) or a data.frame.</p>
     </div>
     <div class="section level2">
@@ -108,23 +109,29 @@ this tree (as <code>ctx_node</code>) or a data.frame.</p>
 contained in the tree using <code>ctx_node</code> objects (as returned by e.g.
 <code><a href="find_sequence.html">find_sequence()</a></code>) (with <code>type="list"</code>). The properties of the contexts can
 then be explored using adapted functions such as <code><a href="counts.html">counts()</a></code> and
-<code><a href="positions.html">positions()</a></code>. The result list is of class <code>contexts</code>. When
-<code>type="data.frame"</code>, the method returns a data.frame whose first column,
-named <code>context</code>, contains the contexts as vectors. Other columns contain
-context specific values which depend on the actual class of the tree and on
-additional parameters.</p>
+<code><a href="positions.html">positions()</a></code>. The result list is of class <code>contexts</code>. When <code>sequence=TRUE</code>,
+the method returns a data.frame whose first column, named <code>context</code>, contains
+the contexts as vectors (i.e. the value returned by <code><a href="as_sequence.html">as_sequence()</a></code> applied
+to a <code>ctx_node</code> object). Other columns contain context specific values which
+depend on the actual class of the tree and on additional parameters. In all
+implementations of <code>contexts()</code>, setting the additional parameters to any no
+default value leads to a <code>data.frame</code> result.</p>
     </div>
     <div class="section level2">
     <h2 id="state-order-in-a-context">State order in a context<a class="anchor" aria-label="anchor" href="#state-order-in-a-context"></a></h2>
     <p>Notice that contexts are given by default
-in the "reverse" order used by the VLMC papers: older values are on the
-right. For instance, the context <code>c(0, 1)</code> is reported if the sequence 1,
-then 0 appeared in the time series used to build the context tree. Set
-reverse to <code>FALSE</code> for the reverse convention.</p>
+in the temporal order and not in the "reverse" order used by many VLMC
+research papers: older values are on the left. For instance, the context
+<code>c(1, 0)</code> is reported if the sequence 0, then 1 appeared in the time series
+used to build the context tree. Set reverse to <code>TRUE</code> for the reverse
+convention which is somewhat easier to relate to the way the context trees
+are represented by <code><a href="draw.html">draw()</a></code> (i.e. recent values at the top the tree).</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="contexts.ctx_tree.html">contexts.ctx_tree()</a></code>, <code><a href="contexts.vlmc.html">contexts.vlmc()</a></code>, <code><a href="contexts.covlmc.html">contexts.covlmc()</a></code>.</p></div>
+    <div class="dont-index"><p><code><a href="find_sequence.html">find_sequence()</a></code> and <code><a href="find_sequence.covlmc.html">find_sequence.covlmc()</a></code> for direct access to
+a specific context, and <code><a href="contexts.ctx_tree.html">contexts.ctx_tree()</a></code>, <code><a href="contexts.vlmc.html">contexts.vlmc()</a></code> and
+<code><a href="contexts.covlmc.html">contexts.covlmc()</a></code> for concrete implementations of <code>contexts()</code>.</p></div>
     </div>
 
     <div class="section level2">
@@ -133,36 +140,40 @@ reverse to <code>FALSE</code> for the reverse convention.</p>
 <span class="r-in"><span><span class="va">dts_tree</span> <span class="op">&lt;-</span> <span class="fu"><a href="ctx_tree.html">ctx_tree</a></span><span class="op">(</span><span class="va">dts</span>, max_depth <span class="op">=</span> <span class="fl">3</span>, min_size <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">contexts</span><span class="op">(</span><span class="va">dts_tree</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Contexts:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  A, A, A</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  B, A, A</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  A, A</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  A, B, C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  A, B</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  A, C</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  B, B, A</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  C, B, A</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  B, A</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  B, B</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  B, C, C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  B, C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  C, A, A</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  C, A</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  C, B, B</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  A, B</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  B, B</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  A, C, B</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  C, B</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  A, A, C</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  B, A, C</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  A, C</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  C, B, C</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  B, C</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  C, C</span>
-<span class="r-in"><span><span class="fu">contexts</span><span class="op">(</span><span class="va">dts_tree</span>, <span class="st">"data.frame"</span>, <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">contexts</span><span class="op">(</span><span class="va">dts_tree</span>, <span class="cn">TRUE</span>, <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    context</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1  A, A, A</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  A, A, B</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2     A, A</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3  A, B, C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4     A, B</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5     A, C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6     B, A</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7     B, B</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8  B, C, C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9     B, C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10 C, A, A</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11    C, A</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 12 C, B, B</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 13    C, B</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 14    C, C</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3  A, B, B</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  A, B, C</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5     A, B</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6     A, C</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7     B, A</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8     B, B</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9  B, C, A</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10    B, C</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11 C, A, A</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12 C, A, B</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13    C, A</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14 C, B, C</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15    C, B</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 16    C, C</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

@@ -170,15 +170,14 @@ VLMC. We have <em>in addition</em> another sequence of random variables
 <span class="math inline">\(Y_l\in \mathbb{R}^p\)</span> is can be
 relaxed to more general spaces.</p>
 <p>A COVLMC puts restriction on the conditional probabilities of <span class="math inline">\(X_n\)</span> given the past of <em>both</em>
-sequences. To simplify the presentation, we denote <span class="math inline">\(X^k_l\)</span> the sequence of random variables
+sequences. To simplify the presentation, we denote <span class="math inline">\(X^k_m\)</span> the sequence of random variables
 <span class="math display">\[
-X^k_m=(X_k, X_{k-1}, \ldots, X_m),
+X_k^m=(X_k, X_{k-1}, \ldots, X_m),
 \]</span> and we use similar notations for the values taken by the
 variables <span class="math inline">\(x^k_m\)</span>, as well as for
-<span class="math inline">\(Y^k_m\)</span> and <span class="math inline">\(y^k_m\)</span>. We use here the traditional
-reverser ordering in which <span class="math inline">\(X_k\)</span> is
-the more recent variable and <span class="math inline">\(X_m\)</span>
-the oldest.</p>
+<span class="math inline">\(Y^k_m\)</span> and <span class="math inline">\(y^k_m\)</span>. The notation accommodates both
+temporal order if <span class="math inline">\(k&lt;m\)</span> and
+reverse temporal if <span class="math inline">\(k&gt;m\)</span>.</p>
 <p>A pair of sequences <span class="math inline">\(\mathbf{X}\)</span>
 and <span class="math inline">\(\mathbf{Y}\)</span> is a COVLMC if there
 is a maximal order <span class="math inline">\(l_{\max}\)</span> and a
@@ -213,9 +212,9 @@ example in <code><a href="../articles/variable-length-markov-chains.html">vignet
 assume that <span class="math inline">\(l_{\max}=3\)</span> and that
 <span class="math inline">\(l\)</span> is given by <span class="math display">\[
 \begin{align*}
-l(0, a, b)&amp;=1&amp;\forall a, \forall b,\\
-l(1, 1, c)&amp;=2&amp;\forall c,\\
-l(1, 0, 0)&amp;=3,&amp;\\
+l(a, b, 0)&amp;=1&amp;\forall a, \forall b,\\
+l(c, 1, 1)&amp;=2&amp;\forall c,\\
+l(0, 0, 1)&amp;=3,&amp;\\
 l(1, 0, 1)&amp;=3.&amp;\\
 \end{align*}
 \]</span> In practice the COVLMC is therefore fully described by
@@ -633,25 +632,25 @@ characteristics compared to VLMC and context trees. In particular, the
 <code><a href="../reference/contexts.html">contexts()</a></code> function can report the model associated to each
 context, either by its parameters only:</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/contexts.html">contexts</a></span><span class="op">(</span><span class="va">elec_model</span>, type <span class="op">=</span> <span class="st">"data.frame"</span>, model <span class="op">=</span> <span class="st">"coef"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/contexts.html">contexts</a></span><span class="op">(</span><span class="va">elec_model</span>, model <span class="op">=</span> <span class="st">"coef"</span><span class="op">)</span></span>
 <span><span class="co">#&gt;        context         coef</span></span>
 <span><span class="co">#&gt; 1          low -1.49102....</span></span>
-<span><span class="co">#&gt; 2 typical, low 0.464305....</span></span>
-<span><span class="co">#&gt; 3 typical,.... 0.305381....</span></span>
+<span><span class="co">#&gt; 2 low, typical 0.464305....</span></span>
+<span><span class="co">#&gt; 3 low, typ.... 0.305381....</span></span>
 <span><span class="co">#&gt; 4 typical,.... 1.839226....</span></span>
-<span><span class="co">#&gt; 5 typical,.... 2.772588....</span></span>
-<span><span class="co">#&gt; 6 typical,.... 3.367295....</span></span>
+<span><span class="co">#&gt; 5 high, ty.... 2.772588....</span></span>
+<span><span class="co">#&gt; 6 high, ty.... 3.367295....</span></span>
 <span><span class="co">#&gt; 7         high 1.473892....</span></span></code></pre></div>
 <p>or using the models themselves:</p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/contexts.html">contexts</a></span><span class="op">(</span><span class="va">elec_model</span>, type <span class="op">=</span> <span class="st">"data.frame"</span>, model <span class="op">=</span> <span class="st">"full"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/contexts.html">contexts</a></span><span class="op">(</span><span class="va">elec_model</span>, model <span class="op">=</span> <span class="st">"full"</span><span class="op">)</span></span>
 <span><span class="co">#&gt;        context                                            model</span></span>
 <span><span class="co">#&gt; 1          low &lt;S4 class 'vglm' [package "VGAM"] with 37 slots&gt;</span></span>
-<span><span class="co">#&gt; 2 typical, low &lt;S4 class 'vglm' [package "VGAM"] with 37 slots&gt;</span></span>
-<span><span class="co">#&gt; 3 typical,.... &lt;S4 class 'vglm' [package "VGAM"] with 37 slots&gt;</span></span>
+<span><span class="co">#&gt; 2 low, typical &lt;S4 class 'vglm' [package "VGAM"] with 37 slots&gt;</span></span>
+<span><span class="co">#&gt; 3 low, typ.... &lt;S4 class 'vglm' [package "VGAM"] with 37 slots&gt;</span></span>
 <span><span class="co">#&gt; 4 typical,.... &lt;S4 class 'vglm' [package "VGAM"] with 37 slots&gt;</span></span>
-<span><span class="co">#&gt; 5 typical,.... &lt;S4 class 'vglm' [package "VGAM"] with 37 slots&gt;</span></span>
-<span><span class="co">#&gt; 6 typical,.... &lt;S4 class 'vglm' [package "VGAM"] with 37 slots&gt;</span></span>
+<span><span class="co">#&gt; 5 high, ty.... &lt;S4 class 'vglm' [package "VGAM"] with 37 slots&gt;</span></span>
+<span><span class="co">#&gt; 6 high, ty.... &lt;S4 class 'vglm' [package "VGAM"] with 37 slots&gt;</span></span>
 <span><span class="co">#&gt; 7         high &lt;S4 class 'vglm' [package "VGAM"] with 37 slots&gt;</span></span></code></pre></div>
 <p>As for context trees, focused analysis of specific contexts can be
 done by requesting a <code>ctx_node_covlmc</code> representation of the
@@ -663,11 +662,11 @@ type of <code><a href="../reference/contexts.html">contexts()</a></code></p>
 <span><span class="va">ctxs</span></span>
 <span><span class="co">#&gt; Contexts:</span></span>
 <span><span class="co">#&gt;  low</span></span>
-<span><span class="co">#&gt;  typical, low</span></span>
-<span><span class="co">#&gt;  typical, typical, low</span></span>
+<span><span class="co">#&gt;  low, typical</span></span>
+<span><span class="co">#&gt;  low, typical, typical</span></span>
 <span><span class="co">#&gt;  typical, typical, typical</span></span>
-<span><span class="co">#&gt;  typical, typical, high</span></span>
-<span><span class="co">#&gt;  typical, high</span></span>
+<span><span class="co">#&gt;  high, typical, typical</span></span>
+<span><span class="co">#&gt;  high, typical</span></span>
 <span><span class="co">#&gt;  high</span></span></code></pre></div>
 <p>Individual contexts can be analysed using a collection of dedicated
 functions, for instance</p>

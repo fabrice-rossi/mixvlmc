@@ -85,8 +85,10 @@ ctx_node objects."><meta name="robots" content="noindex"><!-- mathjax --><script
 
 
 <dt>reverse</dt>
-<dd><p>specifies whether the contexts should be reported in reverse
-temporal order (<code>TRUE</code>, default value) or in the temporal order (<code>FALSE</code>).</p></dd>
+<dd><p>specifies whether the contexts should be reported in
+temporal order (<code>FALSE</code>, default value) or in reverse temporal order (<code>TRUE</code>).
+If the parameter is not specified, the contexts are displayed in order
+specified by the call to <code><a href="contexts.html">contexts()</a></code> used to build the context list.</p></dd>
 
 
 <dt>...</dt>
@@ -111,9 +113,9 @@ temporal order (<code>TRUE</code>, default value) or in the temporal order (<cod
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="contexts.html">contexts</a></span><span class="op">(</span><span class="va">dts_tree</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Contexts:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  A</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  B, A</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  A, B</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  B</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  C, B</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  B, C</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  C</span>
 </code></pre></div>
     </div>

@@ -108,15 +108,20 @@ context.</p>
 </h3>
 <p>We consider a time series <span class="math inline">\(x=(x_i)_{i\geq
 1}\)</span> with values in a finite set <span class="math inline">\(S\)</span>, its state space. A context <span class="math inline">\(c\)</span> is a finite sequence of elements of
-<span class="math inline">\(S\)</span>, <span class="math inline">\(c=(c_1, \ldots, c_k)\)</span> <em>observed</em> in
+<span class="math inline">\(S\)</span>, <span class="math inline">\(c=(c_k, \ldots, c_1)\)</span> <em>observed</em> in
 <span class="math inline">\(x\)</span>. <span class="math inline">\(c\)</span> is <em>observed</em> in <span class="math inline">\(x\)</span> if there is <span class="math inline">\(t\)</span> such that <span class="math display">\[
 x_{t-1}=c_1, x_{t-2}=c_2, \ldots, x_{t-k}=c_k.
-\]</span> Notice that <span class="math inline">\(c\)</span> is written
+\]</span> Notice that <span class="math inline">\(c\)</span> is numbered
 in a <em>reverse</em> order, in the sense that <span class="math inline">\(c_1\)</span> is the most recent value in <span class="math inline">\(x\)</span> while <span class="math inline">\(c_k\)</span> is the oldest one. Thus the
-sub-sequence observed in <span class="math inline">\(x\)</span> is <span class="math inline">\((c_k, c_{k-1}, \ldots, c_1)\)</span>. We follow
-Bühlmann and Wyner convention.</p>
-<p>For instance, if <span class="math inline">\(S=\{0, 1\}\)</span> and
-<span class="math inline">\(x=(0, 0, 0, 1, 1, 1)\)</span></p>
+sub-sequence observed in <span class="math inline">\(x\)</span>. In
+numerous papers, for instance in the works of Bühlmann and Wyner, the
+convention is to reverse the temporal order and to write <span class="math inline">\(c=(c_1, \ldots, c_k)\)</span>, keeping <span class="math inline">\(c_1\)</span> as the most recent value and <span class="math inline">\(c_k\)</span> as the oldest one. In
+<code>mixvlmc</code> we use the more natural convention of writing
+contexts in temporal order, but many functions offer a
+<code>reverse</code> parameter than can be used to switch to Bühlmann
+and Wyner convention.</p>
+<p>Back to examples, if <span class="math inline">\(S=\{0, 1\}\)</span>
+and <span class="math inline">\(x=(0, 0, 0, 1, 1, 1)\)</span></p>
 <ul>
 <li>
 <span class="math inline">\((0, 0)\)</span> is a context of <span class="math inline">\(x\)</span> with <span class="math inline">\(t=3\)</span> and <span class="math inline">\(t=4\)</span>;</li>
@@ -131,9 +136,11 @@ Bühlmann and Wyner convention.</p>
 <p>The contexts of a time series can be represented by a tree. The root
 of the tree stands for the empty context. The children of the root
 represent the contexts of length 1. In general, if a node represents the
-context <span class="math inline">\(c=(c_1, \ldots, c_k)\)</span>, then
-contexts of the form <span class="math inline">\(c'=(c_1, \ldots,
-c_k, c_{k+1})\)</span> are represented by the children of the node.</p>
+context <span class="math inline">\(c=(c_k, \ldots, c_1)\)</span>, then
+contexts of the form <span class="math inline">\(c'=(c_{k+1}, c_k,
+\ldots, c_1)\)</span> are represented by the children of the node.
+Descending in the context tree corresponds to adding to the past of the
+context.</p>
 <p>Let us consider again <span class="math inline">\(x=(0, 0, 0, 1, 1,
 1)\)</span> and all contexts that appear <em>at least twice</em> in
 <span class="math inline">\(x\)</span> (i.e. which are observed for at
@@ -146,7 +153,7 @@ An ASCII art representation of the corresponding context tree is:</p>
 <p>The tree represents 2 size one contexts (<span class="math inline">\((0)\)</span> and <span class="math inline">\((1)\)</span>), the direct children of the root
 (shown as a star <code>*</code>). It represents in addition 1 size 2
 contexts, <span class="math inline">\((0, 0)\)</span>. Notice that for
-instance, <span class="math inline">\((0, 1)\)</span> is not a context
+instance, <span class="math inline">\((1, 0)\)</span> is not a context
 in the tree as the node of context <span class="math inline">\((0)\)</span> has only one child labelled by <span class="math inline">\(0\)</span>.</p>
 </div>
 </div>
@@ -220,11 +227,14 @@ very large:</p>
 should use the node manipulation functions to leverage it (see below). A
 simple approach consists in asking to <code><a href="../reference/contexts.html">contexts()</a></code> a
 <code>data.frame</code> output that will contain additional information
-about the contexts. In the simple case of <code>ctx_tree</code>, setting
-the <code>frequency</code> parameter to <code>"total"</code> or
-<code>"detailed"</code> gives access to the distribution of <span class="math inline">\(x_t\)</span> for all the <span class="math inline">\(t\)</span> at which a context appears.</p>
+about the contexts. This is done implicitly when additional parameters
+are given to <code><a href="../reference/contexts.html">contexts()</a></code>. In the simple case of
+<code>ctx_tree</code>, setting the <code>frequency</code> parameter to
+<code>"total"</code> or <code>"detailed"</code> gives access to the
+distribution of <span class="math inline">\(x_t\)</span> for all the
+<span class="math inline">\(t\)</span> at which a context appears.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/contexts.html">contexts</a></span><span class="op">(</span><span class="va">x_ctx</span>, type <span class="op">=</span> <span class="st">"data.frame"</span>, frequency <span class="op">=</span> <span class="st">"total"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/contexts.html">contexts</a></span><span class="op">(</span><span class="va">x_ctx</span>, frequency <span class="op">=</span> <span class="st">"total"</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   context freq</span></span>
 <span><span class="co">#&gt; 1    0, 0    2</span></span>
 <span><span class="co">#&gt; 2       0    3</span></span>
@@ -233,7 +243,7 @@ the <code>frequency</code> parameter to <code>"total"</code> or
 column <code>freq</code> that contains the number of occurrences of each
 context.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/contexts.html">contexts</a></span><span class="op">(</span><span class="va">x_ctx</span>, type <span class="op">=</span> <span class="st">"data.frame"</span>, frequency <span class="op">=</span> <span class="st">"detailed"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/contexts.html">contexts</a></span><span class="op">(</span><span class="va">x_ctx</span>, frequency <span class="op">=</span> <span class="st">"detailed"</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   context freq 0 1</span></span>
 <span><span class="co">#&gt; 1    0, 0    2 1 1</span></span>
 <span><span class="co">#&gt; 2       0    3 2 1</span></span>
@@ -256,7 +266,7 @@ corresponding node in the tree with</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">node_aaa</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/find_sequence.html">find_sequence</a></span><span class="op">(</span><span class="va">y_ctx_min_1</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"a"</span>, <span class="st">"a"</span>, <span class="st">"a"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">node_aaa</span></span>
-<span><span class="co">#&gt; Sequence [R]: a, a, a </span></span>
+<span><span class="co">#&gt; Sequence [T]: a, a, a </span></span>
 <span><span class="co">#&gt;  followed by a (3), b (2), c (2)</span></span></code></pre></div>
 <p>As the result is not <code>NULL</code>, we know that the sequence
 appears in the original time series. It is not a context, as shown
@@ -270,15 +280,15 @@ verified by looking at the children of <code>node_aaa</code>:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/children.html">children</a></span><span class="op">(</span><span class="va">node_aaa</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $a</span></span>
-<span><span class="co">#&gt; Context [R]: a, a, a, a </span></span>
+<span><span class="co">#&gt; Context [T]: a, a, a, a </span></span>
 <span><span class="co">#&gt;  followed by a (0), b (1), c (2)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $b</span></span>
-<span><span class="co">#&gt; Context [R]: a, a, a, b </span></span>
+<span><span class="co">#&gt; Context [T]: b, a, a, a </span></span>
 <span><span class="co">#&gt;  followed by a (1), b (0), c (0)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $c</span></span>
-<span><span class="co">#&gt; Context [R]: a, a, a, c </span></span>
+<span><span class="co">#&gt; Context [T]: c, a, a, a </span></span>
 <span><span class="co">#&gt;  followed by a (2), b (1), c (0)</span></span></code></pre></div>
 <p>This shows that we have indeed three contexts that all end by
 <code>c("a", "a", "a")</code>.</p>

@@ -81,7 +81,7 @@ not represented in the tree, the function return <code>NULL</code>.</p>
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S3 method for covlmc</span></span>
-<span><span class="fu"><a href="find_sequence.html">find_sequence</a></span><span class="op">(</span><span class="va">ct</span>, <span class="va">ctx</span>, reverse <span class="op">=</span> <span class="cn">TRUE</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="find_sequence.html">find_sequence</a></span><span class="op">(</span><span class="va">ct</span>, <span class="va">ctx</span>, reverse <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -95,8 +95,9 @@ not represented in the tree, the function return <code>NULL</code>.</p>
 
 
 <dt>reverse</dt>
-<dd><p>specifies whether the sequence <code>ctx</code> is given the reverse
-temporal order (<code>TRUE</code>, default value) or in the temporal order (<code>FALSE</code>).</p></dd>
+<dd><p>specifies whether the sequence <code>ctx</code> is given the
+temporal order (<code>FALSE</code>, default value) or in the reverse temporal order
+(<code>TRUE</code>). See the dedicated section.</p></dd>
 
 
 <dt>...</dt>
@@ -116,6 +117,15 @@ in the context tree, <code>NULL</code> when this is not the case</p>
 be used on the resulting object to test if the sequence is in addition a
 proper context.</p>
     </div>
+    <div class="section level2">
+    <h2 id="state-order-in-a-sequence">State order in a sequence<a class="anchor" aria-label="anchor" href="#state-order-in-a-sequence"></a></h2>
+    <p>sequence are given by default
+in the temporal order and not in the "reverse" order used by many VLMC
+research papers: older values are on the left. For instance, the context
+<code>c(1, 0)</code> is reported if the sequence 0, then 1 appeared in the time series
+used to build the context tree. In the present function, <code>reverse</code> refers
+both to the order used for the <code>ctx</code> parameter and for the default order used by the resulting <code>ctx_node</code> object.</p>
+    </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
@@ -126,17 +136,17 @@ proper context.</p>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## not in the tree</span></span></span>
 <span class="r-in"><span><span class="va">vals</span> <span class="op">&lt;-</span> <span class="fu"><a href="states.html">states</a></span><span class="op">(</span><span class="va">m_cov</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="find_sequence.html">find_sequence</a></span><span class="op">(</span><span class="va">m_cov</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">vals</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span>, <span class="va">vals</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span>, reverse <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="find_sequence.html">find_sequence</a></span><span class="op">(</span><span class="va">m_cov</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">vals</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span>, <span class="va">vals</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
 <span class="r-in"><span><span class="co">## in the tree but not a context</span></span></span>
-<span class="r-in"><span><span class="va">node</span> <span class="op">&lt;-</span> <span class="fu"><a href="find_sequence.html">find_sequence</a></span><span class="op">(</span><span class="va">m_cov</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">vals</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span>, reverse <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">node</span> <span class="op">&lt;-</span> <span class="fu"><a href="find_sequence.html">find_sequence</a></span><span class="op">(</span><span class="va">m_cov</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">vals</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">node</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Sequence [T]: (0,1.34] </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  followed by (0,1.34] (466), (1.34,7.54] (37)</span>
 <span class="r-in"><span><span class="fu"><a href="is_context.html">is_context</a></span><span class="op">(</span><span class="va">node</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] FALSE</span>
 <span class="r-in"><span><span class="co">## in the tree and a context</span></span></span>
-<span class="r-in"><span><span class="va">node</span> <span class="op">&lt;-</span> <span class="fu"><a href="find_sequence.html">find_sequence</a></span><span class="op">(</span><span class="va">m_cov</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">vals</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, <span class="va">vals</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span>, reverse <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">node</span> <span class="op">&lt;-</span> <span class="fu"><a href="find_sequence.html">find_sequence</a></span><span class="op">(</span><span class="va">m_cov</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">vals</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, <span class="va">vals</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">node</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Context [T]: (0,1.34], (0,1.34] </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  followed by (0,1.34] (433), (1.34,7.54] (32)</span>

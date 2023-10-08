@@ -161,9 +161,9 @@
 <p>The representation uses simple ASCII art to display the contexts of the VLMC organized into a tree (see <code><a href="articles/context-trees.html">vignette("context-trees")</a></code> for a more detailed introduction):</p>
 <ul>
 <li>the root <code>*</code> corresponds to an empty context;</li>
-<li>one can read contexts by following branches (represented by 2 dashes <code>--</code>) down to their ends (the leaves): for instance <span class="math inline">(1,0,1,0,0,0)</span> is one of the contexts of the tree.</li>
+<li>one can read contexts by following branches (represented by 2 dashes <code>--</code>) down to their ends (the leaves): for instance <span class="math inline">(0,0,0,1,0,1)</span> is one of the contexts of the tree.</li>
 </ul>
-<p>Here the context <span class="math inline">(1,0,1,0,0,0)</span> is associated to the transition probabilities <span class="math inline">(1,0)</span>. This means that when one observes this context in the time series, it is <em>always</em> followed by a 0. Notice that contexts are traditionally written from the most recent value to the oldest one. Thus, the context <span class="math inline">(1,0,1,0,0,0)</span> corresponds to the sub time series <span class="math inline">(0,0,0,1,0,1)</span>.</p>
+<p>Here the context <span class="math inline">(0,0,0,1,0,1)</span> is associated to the transition probabilities <span class="math inline">(1,0)</span>. This means that when one observes this context in the time series, it is <em>always</em> followed by a 0. Notice that contexts are extends to the left when we go down in the tree as deep nodes corresponds to older values. Some papers prefer to write contexts from the most recent value to the oldest one. With this convention, the “reverse” context <span class="math inline">(1,0,1,0,0,0)</span> corresponds to the sub time series <span class="math inline">(0,0,0,1,0,1)</span>. Unless otherwise specified, we write contexts in the temporal order.</p>
 <div class="section level4">
 <h4 id="bic-based-model-selection">BIC based model selection<a class="anchor" aria-label="anchor" href="#bic-based-model-selection"></a>
 </h4>

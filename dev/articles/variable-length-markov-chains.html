@@ -132,8 +132,8 @@ completely <span class="math display">\[
 \mathbb{P}(X_n=x_n|X_{n-1}=x_{n-1}, X_{n-2}=x_{n-2}, \ldots,
 X_{n-m}=x_{n-m})
 \]</span> for all values of <span class="math inline">\(x_n\)</span> and
-for <em>a single</em> context <span class="math inline">\((x_{n-1},
-x_{n-2}, \ldots, x_{n-m})\)</span>.<br>
+for <em>a single</em> context <span class="math inline">\((x_{n-m},
+\ldots, x_{n-2}, x_{n-1})\)</span>.<br>
 There are <span class="math inline">\(k^{m-1}\)</span> such contexts and
 thus we need a total of <span class="math inline">\((k-1)k^{m-1}\)</span> parameters to specify
 completely a Markov chain of order <span class="math inline">\(m\)</span> on a state space with <span class="math inline">\(k\)</span> states.</p>
@@ -175,15 +175,15 @@ consider that the dependency order can depend on the context itself.</p>
 (<span class="math inline">\(k=2\)</span>) and a Markov chain of order
 3. We need to specify for instance the probability of <span class="math inline">\(X_n=1\)</span> given the eight possible contexts,
 from <span class="math inline">\((0, 0, 0)\)</span> to <span class="math inline">\((1, 1, 1)\)</span>. A possible choice is</p>
-<pre><code><span><span class="co">#&gt;   Probablity n-1 n-2 n-3</span></span>
-<span><span class="co">#&gt; 1        0.1   0   0   0</span></span>
-<span><span class="co">#&gt; 2        0.2   1   0   0</span></span>
-<span><span class="co">#&gt; 3        0.1   0   1   0</span></span>
-<span><span class="co">#&gt; 4        0.3   1   1   0</span></span>
-<span><span class="co">#&gt; 5        0.1   0   0   1</span></span>
-<span><span class="co">#&gt; 6        0.4   1   0   1</span></span>
-<span><span class="co">#&gt; 7        0.1   0   1   1</span></span>
-<span><span class="co">#&gt; 8        0.3   1   1   1</span></span></code></pre>
+<pre><code><span><span class="co">#&gt;   n-3 n-2 n-1 Probablity</span></span>
+<span><span class="co">#&gt; 1   0   0   0        0.1</span></span>
+<span><span class="co">#&gt; 2   1   0   0        0.1</span></span>
+<span><span class="co">#&gt; 3   0   1   0        0.1</span></span>
+<span><span class="co">#&gt; 4   1   1   0        0.1</span></span>
+<span><span class="co">#&gt; 5   0   0   1        0.2</span></span>
+<span><span class="co">#&gt; 6   1   0   1        0.4</span></span>
+<span><span class="co">#&gt; 7   0   1   1        0.3</span></span>
+<span><span class="co">#&gt; 8   1   1   1        0.3</span></span></code></pre>
 <p>In this table, several contexts share the same conditional
 probability distribution. For instance <span class="math display">\[
 \mathbb{P}(X_n=1|X_{n-1}=0,
@@ -209,7 +209,7 @@ the last state is 0</li>
 <span class="math inline">\((1, 1)\)</span> : second order memory
 when the two last states are 1</li>
 <li>
-<span class="math inline">\((1, 0, 0)\)</span> and <span class="math inline">\((1, 0, 1)\)</span> : full third order memory</li>
+<span class="math inline">\((0, 0, 1)\)</span> and <span class="math inline">\((1, 0, 1)\)</span> : full third order memory</li>
 </ul>
 <p>This third order Markov chain is parsimonious in the sense that it
 can be described by the four contexts and their associated probability
@@ -229,25 +229,26 @@ is a VLMC if there is a maximal order <span class="math inline">\(l_{\max}\)</sp
 \mathbb{P}(X_n=x_n|X_{n-1}=x_{n-1}, X_{n-2}=x_{n-2}, \ldots,
 X_{1}=x_{1})=\\
 \mathbb{P}(X_n=x_n|X_{n-1}=x_{n-1}, X_{n-2}=x_{n-2}, \ldots,
-X_{n-l(x_{n-1},\ldots,x_{n-l_{\max}})}=x_{n-l(x_{n-1},\ldots,x_{n-l_{\max}})}).
+X_{n-l(x_{n-l_{\max}}, \ldots, x_{n-1})}=x_{n-l(x_{n-l_{\max}}, \ldots,
+x_{n-1})}).
 \end{multline}
 \]</span> In other words, the memory length (the order) is
-<em>variable</em> and given by <span class="math inline">\(l(x_{n-1},\ldots,x_{n-l_{\max}})\)</span>.</p>
+<em>variable</em> and given by <span class="math inline">\(l(x_{n-l_{\max}}, \dots, x_{n-1})\)</span>.</p>
 <p>The memory length function generates a <em>context</em> function
 <span class="math inline">\(c\)</span> which keeps in the past the part
 needed to obtain the conditional distribution: <span class="math inline">\(c\)</span> is a function from <span class="math inline">\(S^{l_{\max}}\)</span> to <span class="math inline">\(\bigcup_{k=0}^{l_{\max}}S^k\)</span> given by:
 <span class="math display">\[
-c(x_1, x_2, \ldots, x_{l_{\max}})=(x_1,\ldots,x_{l(x_1, x_2, \ldots,
-x_{l_{\max}})})
+c(x_{n-l_{\max}}, \ldots, x_{n-1})=(x_{l(x_{n-l_{\max}}, \ldots,
+x_{n-1})}, \ldots, x_{n-1})
 \]</span> The image by <span class="math inline">\(c\)</span> of <span class="math inline">\(S^{l_{\max}}\)</span> is the set of contexts of
 the VLMC which is entirely specified by <span class="math inline">\(l\)</span> and one conditional distribution by
 unique context.</p>
 <p>In the above example, <span class="math inline">\(l_{\max}=3\)</span>
 and <span class="math inline">\(l\)</span> is defined from <span class="math inline">\(\{0, 1\}^3\)</span> to <span class="math inline">\(\{0, 1, 2, 3\}\)</span> by <span class="math display">\[
 \begin{align*}
-l(0, a, b)&amp;=1&amp;\forall a, \forall b,\\
-l(1, 1, c)&amp;=2&amp;\forall c,\\
-l(1, 0, 0)&amp;=3,&amp;\\
+l(a, b, 0)&amp;=1&amp;\forall a, \forall b,\\
+l(c, 1, 1)&amp;=2&amp;\forall c,\\
+l(0, 0, 1)&amp;=3,&amp;\\
 l(1, 0, 1)&amp;=3.&amp;\\
 \end{align*}
 \]</span></p>
@@ -557,19 +558,19 @@ characteristics compared to context trees. In particular, the
 associated to each context as follows (compare to <code><a href="../reference/cutoff.html">cutoff()</a></code>
 above):</p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/contexts.html">contexts</a></span><span class="op">(</span><span class="va">model_large</span>, type <span class="op">=</span> <span class="st">"data.frame"</span>, cutoff <span class="op">=</span> <span class="st">"native"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/contexts.html">contexts</a></span><span class="op">(</span><span class="va">model_large</span>, cutoff <span class="op">=</span> <span class="st">"native"</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   context    cutoff</span></span>
-<span><span class="co">#&gt; 1 1, 1, 0 3.4813864</span></span>
+<span><span class="co">#&gt; 1 0, 1, 1 3.4813864</span></span>
 <span><span class="co">#&gt; 2    1, 1 0.7006631</span></span>
-<span><span class="co">#&gt; 3 1, 2, 2 2.9008662</span></span>
-<span><span class="co">#&gt; 4    1, 2 0.8777091</span></span>
+<span><span class="co">#&gt; 3 2, 2, 1 2.9008662</span></span>
+<span><span class="co">#&gt; 4    2, 1 0.8777091</span></span>
 <span><span class="co">#&gt; 5       1 0.9067789</span></span>
 <span><span class="co">#&gt; 6         0.0000000</span></span></code></pre></div>
 <p>Notice that by default <code><a href="../reference/contexts.html">contexts()</a></code> uses the reverse
 representation of contexts, but they can be returned in the natural time
 sequence using <code>reverse=FALSE</code>, as in</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/contexts.html">contexts</a></span><span class="op">(</span><span class="va">model_large</span>, type <span class="op">=</span> <span class="st">"data.frame"</span>, cutoff <span class="op">=</span> <span class="st">"quantile"</span>, reverse <span class="op">=</span> <span class="cn">FALSE</span>, frequency <span class="op">=</span> <span class="st">"detailed"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/contexts.html">contexts</a></span><span class="op">(</span><span class="va">model_large</span>, cutoff <span class="op">=</span> <span class="st">"quantile"</span>, reverse <span class="op">=</span> <span class="cn">FALSE</span>, frequency <span class="op">=</span> <span class="st">"detailed"</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   context freq  0  1  2     cutoff</span></span>
 <span><span class="co">#&gt; 1 0, 1, 1    9  2  7  0 0.03076473</span></span>
 <span><span class="co">#&gt; 2    1, 1   29  6 14  9 0.49625611</span></span>
@@ -585,10 +586,10 @@ or with the default result type of <code><a href="../reference/contexts.html">co
 <code class="sourceCode R"><span><span class="va">ctxs</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/contexts.html">contexts</a></span><span class="op">(</span><span class="va">model_large</span><span class="op">)</span></span>
 <span><span class="va">ctxs</span></span>
 <span><span class="co">#&gt; Contexts:</span></span>
-<span><span class="co">#&gt;  1, 1, 0</span></span>
+<span><span class="co">#&gt;  0, 1, 1</span></span>
 <span><span class="co">#&gt;  1, 1</span></span>
-<span><span class="co">#&gt;  1, 2, 2</span></span>
-<span><span class="co">#&gt;  1, 2</span></span>
+<span><span class="co">#&gt;  2, 2, 1</span></span>
+<span><span class="co">#&gt;  2, 1</span></span>
 <span><span class="co">#&gt;  1</span></span>
 <span><span class="co">#&gt; </span></span></code></pre></div>
 <p>Individual contexts can be analysed using a collection of dedicated

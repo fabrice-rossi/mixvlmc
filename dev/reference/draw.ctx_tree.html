@@ -121,24 +121,28 @@ tree.</p>
 <span class="r-in"><span><span class="va">ctree_c</span> <span class="op">&lt;-</span> <span class="fu"><a href="ctx_tree.html">ctx_tree</a></span><span class="op">(</span><span class="va">dts_c</span>, min_size <span class="op">=</span> <span class="fl">10</span>, max_depth <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="draw.html">draw</a></span><span class="op">(</span><span class="va">ctree_c</span>, frequency <span class="op">=</span> <span class="st">"total"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> * (100)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> +-- A (29)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |   '-- B (14)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> '-- B (36)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> +-- A (30)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |   +-- A (11)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |   '-- B (10)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> '-- B (34)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> |   +-- A (10)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |   '-- CD (17)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> '-- CD (34)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     +-- A (11)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     '-- B (14)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |   '-- B (11)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |   '-- CD (13)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> '-- CD (35)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     +-- B (12)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     '-- CD (13)</span>
 <span class="r-in"><span><span class="fu"><a href="draw.html">draw</a></span><span class="op">(</span><span class="va">ctree_c</span>, frequency <span class="op">=</span> <span class="st">"detailed"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> * (29,36,35)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> +-- A (7,10,12)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |   '-- B (3,4,7)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> '-- B (14,8,14)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |   +-- A (4,2,4)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |   '-- CD (9,2,6)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> '-- CD (8,17,9)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     +-- A (1,6,4)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     '-- B (4,7,3)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> * (30,34,36)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> +-- A (11,10,9)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |   +-- A (6,4,1)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |   '-- B (3,4,3)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> '-- B (10,11,13)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |   +-- A (4,4,2)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |   '-- B (0,5,6)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |   '-- CD (6,2,5)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> '-- CD (9,13,13)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     +-- B (1,4,7)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     '-- CD (5,6,2)</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
