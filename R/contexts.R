@@ -131,15 +131,17 @@ contexts_extractor <- function(ct, reverse, extractor, control, summarize = no_s
 #' default value leads to a `data.frame` result.
 #'
 #' @section State order in a context: Notice that contexts are given by default
-#'   in the "reverse" order used by the VLMC papers: older values are on the
-#'   right. For instance, the context `c(0, 1)` is reported if the sequence 1,
-#'   then 0 appeared in the time series used to build the context tree. Set
-#'   reverse to `FALSE` for the reverse convention.
+#'   in the temporal order and not in the "reverse" order used by many VLMC
+#'   research papers: older values are on the left. For instance, the context
+#'   `c(1, 0)` is reported if the sequence 0, then 1 appeared in the time series
+#'   used to build the context tree. Set reverse to `TRUE` for the reverse
+#'   convention which is somewhat easier to relate to the way the context trees
+#'   are represented by [draw()] (i.e. recent values at the top the tree).
 #'
 #' @param ct a context tree.
-#' @param sequence if `TRUE` the function returns it results as a `data.frame`,
+#' @param sequence if `TRUE` the function returns its results as a `data.frame`,
 #'   if `FALSE` (default) as a list of `ctx_node` objects. (see details)
-#' @param reverse logical (defaults to `TRUE`). See details.
+#' @param reverse logical (defaults to `FALSE`). See details.
 #' @param ... additional arguments for the contexts function.
 #'
 #' @returns A list of class `contexts` containing the contexts represented in
@@ -153,7 +155,7 @@ contexts_extractor <- function(ct, reverse, extractor, control, summarize = no_s
 #'   a specific context, and [contexts.ctx_tree()], [contexts.vlmc()] and
 #'   [contexts.covlmc()] for concrete implementations of `contexts()`.
 #' @export
-contexts <- function(ct, sequence = FALSE, reverse = TRUE, ...) {
+contexts <- function(ct, sequence = FALSE, reverse = FALSE, ...) {
   UseMethod("contexts")
 }
 
@@ -167,8 +169,10 @@ new_context_list <- function(ctx_list, ..., class = character()) {
 #' `ctx_node` objects.
 #'
 #' @param x the `contexts` object to print
-#' @param reverse specifies whether the contexts should be reported in reverse
-#'   temporal order (`TRUE`, default value) or in the temporal order (`FALSE`).
+#' @param reverse specifies whether the contexts should be reported in
+#'   temporal order (`FALSE`, default value) or in reverse temporal order (`TRUE`).
+#'   If the parameter is not specified, the contexts are displayed in order
+#'   specified by the call to `contexts()` used to build the context list.
 #' @param ... additional arguments for the print function.
 #' @returns the `x` object, invisibly
 #' @seealso [contexts()]
@@ -179,9 +183,16 @@ new_context_list <- function(ctx_list, ..., class = character()) {
 #' print(contexts(dts_tree))
 print.contexts <- function(x, reverse = TRUE, ...) {
   cat("Contexts:\n")
-  for (i in seq_along(x)) {
-    the_seq <- as_sequence(x[[i]], reverse = reverse)
-    cat(" ", paste(the_seq, collapse = ", "), "\n", sep = "")
+  if (missing(reverse)) {
+    for (i in seq_along(x)) {
+      the_seq <- as_sequence(x[[i]])
+      cat(" ", paste(the_seq, collapse = ", "), "\n", sep = "")
+    }
+  } else {
+    for (i in seq_along(x)) {
+      the_seq <- as_sequence(x[[i]], reverse = reverse)
+      cat(" ", paste(the_seq, collapse = ", "), "\n", sep = "")
+    }
   }
   invisible(x)
 }

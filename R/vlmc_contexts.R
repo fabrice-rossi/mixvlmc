@@ -100,7 +100,7 @@ vlmc_context_extractor <-
 #' contexts(model, cutoff = "quantile")
 #' contexts(model, cutoff = "native", metrics = TRUE)
 #' @export
-contexts.vlmc <- function(ct, sequence = FALSE, reverse = TRUE, frequency = NULL,
+contexts.vlmc <- function(ct, sequence = FALSE, reverse = FALSE, frequency = NULL,
                           positions = FALSE, counts = c("desc", "local"), cutoff = NULL, metrics = FALSE, ...) {
   counts <- match.arg(counts)
   if (!is.null(frequency)) {

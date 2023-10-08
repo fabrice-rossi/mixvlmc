@@ -6,8 +6,8 @@ test_that("parent navigation works", {
   for (k in 1:(length(dts) - 2)) {
     for (l in 1:(min(3, length(dts) - 1 - k))) {
       the_ctx <- dts[k:(k + l)]
-      the_match <- find_sequence(dts_ctree, the_ctx, reverse = FALSE)
-      the_pmatch <- find_sequence(dts_ctree, the_ctx[-1], reverse = FALSE)
+      the_match <- find_sequence(dts_ctree, the_ctx)
+      the_pmatch <- find_sequence(dts_ctree, the_ctx[-1])
       if (!identical(parent(the_match), the_pmatch)) {
         all_ok <- FALSE
         break
@@ -28,8 +28,8 @@ test_that("children navigation works", {
   for (k in 1:(length(dts) - 2)) {
     for (l in 1:(min(3, length(dts) - 1 - k))) {
       the_ctx <- dts[(k + 1):(k + l)]
-      the_match <- find_sequence(dts_ctree, the_ctx, reverse = FALSE)
-      the_cmatch <- find_sequence(dts_ctree, dts[k:(k + l)], reverse = FALSE)
+      the_match <- find_sequence(dts_ctree, the_ctx)
+      the_cmatch <- find_sequence(dts_ctree, dts[k:(k + l)])
       the_children <- children(the_match)
       if (!length(the_children) == 5 || !identical(the_children[[dts[k]]], the_cmatch)) {
         all_ok <- FALSE

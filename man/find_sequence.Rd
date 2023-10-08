@@ -5,17 +5,18 @@
 \alias{find_sequence.ctx_tree}
 \title{Find the node of a sequence in a context tree}
 \usage{
-find_sequence(ct, ctx, reverse = TRUE, ...)
+find_sequence(ct, ctx, reverse = FALSE, ...)
 
-\method{find_sequence}{ctx_tree}(ct, ctx, reverse = TRUE, ...)
+\method{find_sequence}{ctx_tree}(ct, ctx, reverse = FALSE, ...)
 }
 \arguments{
 \item{ct}{a context tree.}
 
 \item{ctx}{a sequence to search in the context tree}
 
-\item{reverse}{specifies whether the sequence \code{ctx} is given the reverse
-temporal order (\code{TRUE}, default value) or in the temporal order (\code{FALSE}).}
+\item{reverse}{specifies whether the sequence \code{ctx} is given the
+temporal order (\code{FALSE}, default value) or in the reverse temporal order
+(\code{TRUE}). See the dedicated section.}
 
 \item{...}{additional parameters for the find_sequence function}
 }
@@ -34,10 +35,19 @@ The function looks for sequences in general. The \code{\link[=is_context]{is_con
 be used on the resulting object to test if the sequence is in addition a
 proper context.
 }
+\section{State order in a sequence}{
+ sequence are given by default
+in the temporal order and not in the "reverse" order used by many VLMC
+research papers: older values are on the left. For instance, the context
+\code{c(1, 0)} is reported if the sequence 0, then 1 appeared in the time series
+used to build the context tree. In the present function, \code{reverse} refers
+both to the order used for the \code{ctx} parameter and for the default order used by the resulting \code{ctx_node} object.
+}
+
 \examples{
 dts <- c("A", "B", "C", "A", "A", "B", "B", "C", "C", "A")
 dts_tree <- ctx_tree(dts, max_depth = 3)
 find_sequence(dts_tree, "A")
 ## returns NULL as "A" "C" does not appear in dts
-find_sequence(dts_tree, c("A", "C"), reverse = FALSE)
+find_sequence(dts_tree, c("A", "C"))
 }

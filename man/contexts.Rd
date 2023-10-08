@@ -4,15 +4,15 @@
 \alias{contexts}
 \title{Contexts of a context tree}
 \usage{
-contexts(ct, sequence = FALSE, reverse = TRUE, ...)
+contexts(ct, sequence = FALSE, reverse = FALSE, ...)
 }
 \arguments{
 \item{ct}{a context tree.}
 
-\item{sequence}{if \code{TRUE} the function returns it results as a \code{data.frame},
+\item{sequence}{if \code{TRUE} the function returns its results as a \code{data.frame},
 if \code{FALSE} (default) as a list of \code{ctx_node} objects. (see details)}
 
-\item{reverse}{logical (defaults to \code{TRUE}). See details.}
+\item{reverse}{logical (defaults to \code{FALSE}). See details.}
 
 \item{...}{additional arguments for the contexts function.}
 }
@@ -39,10 +39,12 @@ default value leads to a \code{data.frame} result.
 }
 \section{State order in a context}{
  Notice that contexts are given by default
-in the "reverse" order used by the VLMC papers: older values are on the
-right. For instance, the context \code{c(0, 1)} is reported if the sequence 1,
-then 0 appeared in the time series used to build the context tree. Set
-reverse to \code{FALSE} for the reverse convention.
+in the temporal order and not in the "reverse" order used by many VLMC
+research papers: older values are on the left. For instance, the context
+\code{c(1, 0)} is reported if the sequence 0, then 1 appeared in the time series
+used to build the context tree. Set reverse to \code{TRUE} for the reverse
+convention which is somewhat easier to relate to the way the context trees
+are represented by \code{\link[=draw]{draw()}} (i.e. recent values at the top the tree).
 }
 
 \examples{

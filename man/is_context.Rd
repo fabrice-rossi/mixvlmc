@@ -21,7 +21,7 @@ in the other case.
 dts <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 0)
 dts_ctree <- ctx_tree(dts, min_size = 1, max_depth = 3)
 draw(dts_ctree)
-## 0, 0 is a context but 0, 1 is not
+## 0, 0 is a context but 1, 0 is not
 is_context(find_sequence(dts_ctree, c(0, 0)))
-is_context(find_sequence(dts_ctree, c(0, 1)))
+is_context(find_sequence(dts_ctree, c(1, 0)))
 }

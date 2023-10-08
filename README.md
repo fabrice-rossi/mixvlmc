@@ -121,14 +121,17 @@ detailed introduction):
 - the root `*` corresponds to an empty context;
 - one can read contexts by following branches (represented by 2 dashes
   `--`) down to their ends (the leaves): for instance
-  $(1, 0, 1, 0, 0, 0)$ is one of the contexts of the tree.
+  $(0, 0, 0, 1, 0, 1)$ is one of the contexts of the tree.
 
-Here the context $(1, 0, 1, 0, 0, 0)$ is associated to the transition
+Here the context $(0, 0, 0, 1, 0, 1)$ is associated to the transition
 probabilities $(1, 0)$. This means that when one observes this context
 in the time series, it is *always* followed by a 0. Notice that contexts
-are traditionally written from the most recent value to the oldest one.
-Thus, the context $(1, 0, 1, 0, 0, 0)$ corresponds to the sub time
-series $(0, 0, 0, 1, 0, 1)$.
+are extends to the left when we go down in the tree as deep nodes
+corresponds to older values. Some papers prefer to write contexts from
+the most recent value to the oldest one. With this convention, the
+“reverse” context $(1, 0, 1, 0, 0, 0)$ corresponds to the sub time
+series $(0, 0, 0, 1, 0, 1)$. Unless otherwise specified, we write
+contexts in the temporal order.
 
 #### BIC based model selection
 

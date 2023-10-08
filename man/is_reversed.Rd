@@ -14,14 +14,14 @@ is_reversed(node)
 when this is not the case
 }
 \description{
-This function returns \code{TRUE} if the node is use a reverse temporal ordering
+This function returns \code{TRUE} if the node is using a reverse temporal ordering
 and \code{FALSE} in the other case.
 }
 \examples{
 dts <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 0)
 dts_ctree <- ctx_tree(dts, min_size = 1, max_depth = 3)
 is_reversed(find_sequence(dts_ctree, c(0, 0)))
-is_reversed(find_sequence(dts_ctree, c(1, 0), reverse = FALSE))
+is_reversed(find_sequence(dts_ctree, c(1, 0), reverse = TRUE))
 }
 \seealso{
 \code{\link[=rev.ctx_node]{rev.ctx_node()}}

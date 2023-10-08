@@ -10,7 +10,9 @@ as_sequence(node, reverse)
 \item{node}{a \code{ctx_node} object as returned by \code{\link[=find_sequence]{find_sequence()}}}
 
 \item{reverse}{specifies whether the sequence should be reported in reverse
-temporal order (\code{TRUE}) or in the temporal order (\code{FALSE}).}
+temporal order (\code{TRUE}) or in the temporal order (\code{FALSE}). Defaults to the
+order associated to the \code{ctx_node} which is determined by the parameters of
+the call to \code{\link[=contexts]{contexts()}} or \code{\link[=find_sequence]{find_sequence()}}.}
 }
 \value{
 the sequence represented by the \code{node} object, a vector

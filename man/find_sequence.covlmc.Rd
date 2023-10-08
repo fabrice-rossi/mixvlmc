@@ -4,15 +4,16 @@
 \alias{find_sequence.covlmc}
 \title{Find the node of a sequence in a COVLMC context tree}
 \usage{
-\method{find_sequence}{covlmc}(ct, ctx, reverse = TRUE, ...)
+\method{find_sequence}{covlmc}(ct, ctx, reverse = FALSE, ...)
 }
 \arguments{
 \item{ct}{a context tree.}
 
 \item{ctx}{a sequence to search in the context tree}
 
-\item{reverse}{specifies whether the sequence \code{ctx} is given the reverse
-temporal order (\code{TRUE}, default value) or in the temporal order (\code{FALSE}).}
+\item{reverse}{specifies whether the sequence \code{ctx} is given the
+temporal order (\code{FALSE}, default value) or in the reverse temporal order
+(\code{TRUE}). See the dedicated section.}
 
 \item{...}{additional parameters for the find_sequence function}
 }
@@ -31,6 +32,15 @@ The function looks for sequences in general. The \code{\link[=is_context]{is_con
 be used on the resulting object to test if the sequence is in addition a
 proper context.
 }
+\section{State order in a sequence}{
+ sequence are given by default
+in the temporal order and not in the "reverse" order used by many VLMC
+research papers: older values are on the left. For instance, the context
+\code{c(1, 0)} is reported if the sequence 0, then 1 appeared in the time series
+used to build the context tree. In the present function, \code{reverse} refers
+both to the order used for the \code{ctx} parameter and for the default order used by the resulting \code{ctx_node} object.
+}
+
 \examples{
 pc <- powerconsumption[powerconsumption$week == 5, ]
 dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1))))
@@ -39,13 +49,13 @@ m_cov <- covlmc(dts, dts_cov, min_size = 10)
 
 ## not in the tree
 vals <- states(m_cov)
-find_sequence(m_cov, c(vals[2], vals[2]), reverse = FALSE)
+find_sequence(m_cov, c(vals[2], vals[2]))
 ## in the tree but not a context
-node <- find_sequence(m_cov, c(vals[1]), reverse = FALSE)
+node <- find_sequence(m_cov, c(vals[1]))
 node
 is_context(node)
 ## in the tree and a context
-node <- find_sequence(m_cov, c(vals[1], vals[1]), reverse = FALSE)
+node <- find_sequence(m_cov, c(vals[1], vals[1]))
 node
 is_context(node)
 model(node)

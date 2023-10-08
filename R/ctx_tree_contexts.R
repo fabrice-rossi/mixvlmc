@@ -97,7 +97,7 @@ frequency_context_extractor <-
 #' contexts(dts_tree, frequency = "detailed")
 #' @export
 contexts.ctx_tree <- function(ct, sequence = FALSE,
-                              reverse = TRUE, frequency = NULL,
+                              reverse = FALSE, frequency = NULL,
                               positions = FALSE, ...) {
   if (!is.null(frequency)) {
     assertthat::assert_that(frequency %in% c("total", "detailed"))

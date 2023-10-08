@@ -3,7 +3,7 @@ test_that("find_sequence finds actual sequences", {
   dts_ctree <- ctx_tree(dts, min_size = 2)
   expect_null(find_sequence(dts_ctree, c(1L, 1L)))
   for (i in 0:2) {
-    expect_false(is.null(find_sequence(dts_ctree, 0:i)))
+    expect_false(is.null(find_sequence(dts_ctree, i:0)))
   }
   ## empty context
   expect_false(is.null(find_sequence(dts_ctree, list())))
@@ -24,7 +24,7 @@ test_that("find_sequence finds all contexts", {
 test_that("reversing works", {
   dts <- c(rep(0:2, 3), rep(2:0, 3))
   dts_ctree <- ctx_tree(dts, min_size = 2)
-  a_node <- find_sequence(dts_ctree, 0:2, reverse = FALSE)
+  a_node <- find_sequence(dts_ctree, 0:2)
   expect_false(is_reversed(a_node))
   rev_node <- rev(a_node)
   expect_true(is_reversed(rev_node))
@@ -39,7 +39,7 @@ test_that("find_sequence finds all subsequences", {
   for (k in 1:(length(dts) - 2)) {
     for (l in 0:(min(4, length(dts) - 1 - k))) {
       the_ctx <- dts[k:(k + l)]
-      the_match <- find_sequence(dts_ctree, the_ctx, reverse = FALSE)
+      the_match <- find_sequence(dts_ctree, the_ctx)
       if (is.null(the_match)) {
         all_ok <- FALSE
         break
@@ -61,9 +61,9 @@ test_that("context objects are printed as expected", {
   dts <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 0)
   dts_ctree <- ctx_tree(dts, min_size = 1, max_depth = 3)
   expect_snapshot(print(find_sequence(dts_ctree, c(0, 0))))
-  expect_snapshot(print(find_sequence(dts_ctree, c(0, 1))))
+  expect_snapshot(print(find_sequence(dts_ctree, c(1, 0))))
   expect_snapshot(print(rev(find_sequence(dts_ctree, c(0, 0)))))
-  expect_snapshot(print(rev(find_sequence(dts_ctree, c(0, 1)))))
+  expect_snapshot(print(rev(find_sequence(dts_ctree, c(1, 0)))))
 })
 
 test_that("counts are correctly reported", {
@@ -74,7 +74,7 @@ test_that("counts are correctly reported", {
   for (k in 1:(length(dts) - 2)) {
     for (l in 0:(min(3, length(dts) - 1 - k))) {
       the_ctx <- dts[k:(k + l)]
-      the_match <- find_sequence(dts_ctree, the_ctx, reverse = FALSE)
+      the_match <- find_sequence(dts_ctree, the_ctx)
       if (is.null(the_match)) {
         all_ok <- FALSE
         break

@@ -45,15 +45,15 @@ test_that("contexts print as expected", {
 test_that("contexts reversing reverses", {
   dts <- sample(c("A", "B", "C"), 100, replace = TRUE)
   dts_tree <- ctx_tree(dts, max_depth = 4)
-  def_ctx <- contexts(dts_tree)
-  rev_ctx <- contexts(dts_tree, reverse = FALSE)
+  def_ctx <- contexts(dts_tree, reverse = TRUE)
+  rev_ctx <- contexts(dts_tree)
   expect_length(rev_ctx, length(def_ctx))
   for (k in seq_along(def_ctx)) {
     expect_identical(as_sequence(rev_ctx[[k]]), rev(as_sequence(def_ctx[[k]])))
   }
   ## data frame case
-  def_ctx <- contexts(dts_tree, frequency = "detailed")
-  rev_ctx <- contexts(dts_tree, frequency = "detailed", reverse = FALSE)
+  def_ctx <- contexts(dts_tree, frequency = "detailed", reverse = TRUE)
+  rev_ctx <- contexts(dts_tree, frequency = "detailed")
   expect_equal(dim(rev_ctx), dim(def_ctx))
   for (k in 1:nrow(def_ctx)) {
     expect_identical(rev_ctx$context[[k]], rev(def_ctx$context[[k]]))
@@ -94,7 +94,7 @@ test_that("contexts positions are valid", {
   all_valid <- TRUE
   for (k in 1:nrow(full_ctx)) {
     positions <- full_ctx[["positions"]][[k]]
-    ctx <- rev(full_ctx[["context"]][[k]])
+    ctx <- full_ctx[["context"]][[k]]
     for (pos in positions) {
       for (l in seq_along(ctx)) {
         if (ctx[l] != dts[pos - length(ctx) + l]) {

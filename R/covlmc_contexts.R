@@ -172,7 +172,7 @@ covlmc_node_content_extractor <- function(tree, path, ct, vals, control, is_leaf
 #' contexts(m_cov, model = "coef")
 #' contexts(m_cov, model = "full", hsize = TRUE)
 #' @export
-contexts.covlmc <- function(ct, sequence = FALSE, reverse = TRUE, frequency = NULL,
+contexts.covlmc <- function(ct, sequence = FALSE, reverse = FALSE, frequency = NULL,
                             positions = FALSE, counts = c("desc", "local"),
                             metrics = FALSE, model = NULL, hsize = FALSE,
                             merging = FALSE, ...) {
