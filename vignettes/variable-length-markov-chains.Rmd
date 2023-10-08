@@ -369,13 +369,13 @@ function. VLMC contexts have additional characteristics compared to context tree
 In particular, the `contexts()` function can report the log likelihood ratio associated
 to each context as follows (compare to `cutoff()` above):
 ```{r}
-contexts(model_large, type = "data.frame", cutoff = "native")
+contexts(model_large, cutoff = "native")
 ```
 Notice that by default `contexts()` uses the reverse representation of contexts, 
 but they can  be returned in the natural time sequence using `reverse=FALSE`, as
 in 
 ```{r}
-contexts(model_large, type = "data.frame", cutoff = "quantile", reverse = FALSE, frequency = "detailed")
+contexts(model_large, cutoff = "quantile", reverse = FALSE, frequency = "detailed")
 ```
 
 As for context trees, focused analysis of specific contexts can be done by
