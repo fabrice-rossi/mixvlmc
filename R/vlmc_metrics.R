@@ -110,7 +110,7 @@ print.metrics.vlmc <- function(x, ...) {
   for (k in seq_along(rn)) {
     cat(paste("  ", rn[k], " ", pcm[k], sep = ""), "\n")
   }
-  cat(paste(" Accurary:", signif(x$accuracy, 4), "\n"))
+  cat(paste(" Accuracy:", signif(x$accuracy, 4), "\n"))
   cat(paste(" AUC:", signif(x$auc, 4), "\n"))
   invisible(x)
 }

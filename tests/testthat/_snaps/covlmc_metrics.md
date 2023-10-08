@@ -12,7 +12,7 @@
         low     129 39      0    
         typical 38  470     46   
         high    1   45      240  
-       Accurary: 0.8323 
+       Accuracy: 0.8323 
        AUC: 0.9 
 
 # metrics.covlmc objects print as expected
@@ -29,6 +29,6 @@
         low     129 39      0    
         typical 38  470     46   
         high    1   45      240  
-       Accurary: 0.8323 
+       Accuracy: 0.8323 
        AUC: 0.9284 
 
