@@ -351,21 +351,24 @@ void SuffixTree::add_initial_match(int first) {
       current->positions->push_back(-1);
       int el = current->edge_length();
       int move = std::min(el, (int)(x.length() - x_pos));
+      // progress along the edge
       for(int k = 1; k < move; k++) {
         if(x[x_pos + k] != x[current->start + k]) {
           // we need to break the edge to avoid introducing fake matches
-          EdgeNode* end_of_edge =
-              new EdgeNode(current, current->start + k, current->end);
-          end_of_edge->positions = new std::vector<int>(
-              current->positions->begin(), current->positions->end());
-          end_of_edge->positions->pop_back();
-          end_of_edge->total_count = current->total_count;
-          end_of_edge->counts = new std::unordered_map<int, int>(
+          EdgeNode* start_of_edge =
+              new EdgeNode(current->parent, current->start, current->start + k);
+          start_of_edge->depth = current->parent->depth + k;
+          start_of_edge->children[x[current->start + k]] = current;
+          start_of_edge->total_count = current->total_count;
+          start_of_edge->counts = new std::unordered_map<int, int>(
               current->counts->begin(), current->counts->end());
-          end_of_edge->children = current->children;
-          current->children.clear();
-          current->children[x[current->start + k]] = end_of_edge;
-          current->end = current->start + k;
+          start_of_edge->positions = new std::vector<int>(
+              current->positions->begin(), current->positions->end());
+          start_of_edge->parent->children[x[current->start]] = start_of_edge;
+          current->parent = start_of_edge;
+          current->start = current->start + k;
+          current->positions->pop_back();
+          x_pos = x.length();
           break;
         }
       }
