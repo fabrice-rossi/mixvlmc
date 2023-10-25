@@ -239,7 +239,12 @@ is_context <- function(node) {
 #'   positions(subseq)
 #' }
 positions <- function(node) {
-  assertthat::assert_that(is_ctx_node(node))
+  UseMethod("positions")
+}
+
+#' @export
+#' @rdname positions
+positions.ctx_node <- function(node) {
   if (is.null(node$node[["match"]])) {
     stop("Cannot report positions if they were not saved")
   }
@@ -280,8 +285,17 @@ positions <- function(node) {
 #' if (!is.null(subseq)) {
 #'   counts(subseq)
 #' }
-counts <- function(node, frequency = c("detailed", "total"), counts = c("desc", "local")) {
-  assertthat::assert_that(is_ctx_node(node))
+counts <- function(node,
+                   frequency = c("detailed", "total"),
+                   counts = c("desc", "local")) {
+  UseMethod("counts")
+}
+
+#' @export
+#' @rdname counts
+counts.ctx_node <- function(node,
+                            frequency = c("detailed", "total"),
+                            counts = c("desc", "local")) {
   frequency <- match.arg(frequency)
   counts <- match.arg(counts)
   freqs <- node$node[["f_by"]]

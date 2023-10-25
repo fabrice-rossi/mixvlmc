@@ -666,8 +666,8 @@ NumericVector SuffixTree::cutoff() const {
 }
 
 List SuffixTree::representation() {
-  std::vector<Rcpp::IntegerVector> tree_structure{};
-  std::vector<Rcpp::IntegerVector> tree_counts{};
+  std::vector<IntegerVector> tree_structure{};
+  std::vector<IntegerVector> tree_counts{};
   root->flatten(x, max_x + 1, tree_structure, tree_counts);
   int nb = (int)tree_structure.size();
   List preres(nb);
@@ -843,7 +843,7 @@ IntegerVector SuffixTree::simulate(IntegerVector start,
           pre_res = sample2(current->counts, max_x, current->total_count);
           break;
         default:
-          pre_res = Rcpp::as<IntegerVector>(Rcpp::as<Function>(r_sample)(
+          pre_res = as<IntegerVector>(as<Function>(r_sample)(
                         max_x + 1, (int)1, true,
                         map_to_counts(current->counts, max_x)))[0] -
                     1;
@@ -968,6 +968,110 @@ NumericMatrix SuffixTree::predict_probs(const IntegerVector& y,
         }
       }
     }
+  }
+  return result;
+}
+
+XPtr<EdgeNode> SuffixTree::raw_find_sequence(const IntegerVector& y) const {
+  auto current = root;
+  int y_pos = 0;
+  while(y_pos < y.length()) {
+    // try to progress along an edge
+    if(auto child = current->children.find(y[y_pos]);
+       child != current->children.end()) {
+      current = child->second;
+      int el = current->edge_length();
+      int move = std::min(el, (int)(y.length() - y_pos));
+      for(int k = 1; k < move; k++) {
+        if(y[y_pos + k] != x[current->start + k]) {
+          // not found!
+          return XPtr<EdgeNode>(nullptr, false);
+        }
+      }
+      int new_from = y_pos + move;
+      if(new_from == y.length()) {
+        // found!
+        return XPtr<EdgeNode>(current, false);
+      } else {
+        // let's progress
+        y_pos = new_from;
+      }
+    } else {
+      // no edge -> not found
+      return XPtr<EdgeNode>(nullptr, false);
+    }
+  }
+  return XPtr<EdgeNode>(root, false);  // default (empty sequence)
+}
+
+List SuffixTree::raw_contexts() const {
+  std::vector<IntegerVector> ctxs{};
+  std::vector<const EdgeNode*> subs{};
+  std::vector<int> pre{};
+  pre.reserve(x.size());
+  root->raw_contexts(x, max_x + 1, pre, subs, ctxs);
+  int nb = (int)ctxs.size();
+  List the_contexts(nb);
+  List the_ptrs(nb);
+  for(int i = 0; i < nb; i++) {
+    the_contexts[i] = ctxs[i];
+    the_ptrs[i] = XPtr<EdgeNode>((EdgeNode*)(subs[i]), false);
+  }
+  return List::create(Named("ctxs") = the_contexts, Named("ptrs") = the_ptrs);
+}
+
+bool SuffixTree::node_is_context(const XPtr<EdgeNode>& node) const {
+  return node->children.size() <= max_x;
+}
+
+IntegerVector SuffixTree::node_counts(const XPtr<EdgeNode>& node) const {
+  return map_to_counts(node->counts, max_x);
+}
+
+IntegerVector SuffixTree::node_local_counts(const XPtr<EdgeNode>& node) const {
+  Rcpp::IntegerVector result = map_to_counts(node->counts, max_x);
+  for(auto child : node->children) {
+    if(child.first >= 0) {
+      for(auto count : *(child.second->counts)) {
+        result[count.first] -= count.second;
+      }
+    }
+  }
+  return result;
+}
+
+IntegerVector SuffixTree::node_positions(const XPtr<EdgeNode>& node) const {
+  // this modifies the stored positions, but this has no adverse
+  // consequences
+  std::sort(node->positions->rbegin(), node->positions->rend());
+  return IntegerVector(node->positions->begin(), node->positions->end());
+}
+
+XPtr<EdgeNode> SuffixTree::node_parent(const XPtr<EdgeNode>& node,
+                                       int length) const {
+  int pos = node->depth - length + 1;  // +1 as we look for the parent
+  if(pos < node->edge_length()) {
+    // middle of an edge
+    return node;
+  } else {
+    // we really need the parent
+    return XPtr<EdgeNode>(node->parent, false);
+  }
+}
+
+List SuffixTree::node_children(const XPtr<EdgeNode>& node, int length) const {
+  List result(max_x + 1);
+  if(node->depth == length) {
+    // explicit node or end of edge
+    for(auto child : node->children) {
+      if(child.first >= 0) {
+        result[child.first] = XPtr<EdgeNode>(child.second, false);
+      }
+    }
+  } else {
+    // middle of an edge
+    int pos = length - node->depth + node->end;
+    result[x[pos]] = node;
   }
   return result;
 }

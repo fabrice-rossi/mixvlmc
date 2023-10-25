@@ -24,7 +24,12 @@
 #' identical(parent(ctx_00), find_sequence(dts_ctree, c(0)))
 #' @export
 parent <- function(node) {
-  assertthat::assert_that(is_ctx_node(node))
+  UseMethod("parent")
+}
+
+#' @export
+#' @rdname parent
+parent.ctx_node <- function(node) {
   if (length(node$sequence) >= 1) {
     pre_res <- find_sequence(node$tree, node$sequence[-length(node$sequence)], reverse = TRUE)
     if (!node$rev) {
@@ -67,7 +72,12 @@ parent <- function(node) {
 #' children(ctx_10)
 #' @export
 children <- function(node) {
-  assertthat::assert_that(is_ctx_node(node))
+  UseMethod("children")
+}
+
+#' @export
+#' @rdname children
+children.ctx_node <- function(node) {
   if (is.null(node$node[["children"]])) {
     list()
   } else {

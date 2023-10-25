@@ -1,7 +1,7 @@
 #' @exportS3Method
 summary.vlmc <- function(object, ...) {
-  ctx <- contexts(object, type = "data.frame", frequency = "detailed")
-  all_length <- sapply(ctx$context, length)
+  ctx <- contexts(object, frequency = "detailed")
+  all_length <- lengths(ctx$context)
   res <- list(
     state_space = states(object),
     nb = nrow(ctx),

@@ -17,4 +17,3 @@ count_occurrences <- function(where, what) {
   }
   res
 }
-

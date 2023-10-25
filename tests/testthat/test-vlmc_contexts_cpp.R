@@ -1,7 +1,7 @@
 test_that("context format is consistent", {
   dts <- sample(c("A", "B", "C"), 100, replace = TRUE)
   model <- vlmc(dts, alpha = 0.5, keep_match = TRUE, backend = "C++")
-  raw_ctx <- contexts(model, type = "data.frame")
+  raw_ctx <- contexts(model, sequence = TRUE)
   expect_named(raw_ctx, c("context"))
   freq_ctx <- contexts(model, frequency = "total")
   expect_named(freq_ctx, c("context", "freq"))

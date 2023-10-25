@@ -8,7 +8,7 @@ test_that("the C++ context algorithm selects the same PST as the R implementatio
     tree$compute_counts(x_rev[1], FALSE)
     tree$prune_context(2, length(x) / 10, model$cutoff)
     ctx_cpp <- tree$contexts(1, -1)
-    ctx_r <- contexts(model)
+    ctx_r <- unclass(contexts(model, sequence = TRUE, reverse = TRUE)[["context"]])
     expect_equal(length(ctx_cpp), length(ctx_r))
     expect_true(compare_ctx(ctx_r, ctx_cpp))
   }

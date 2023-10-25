@@ -5,7 +5,7 @@
 //' @name Position
 //' Subsequence match position representation
 //'
-//' An of Position gives the complete position of a subsequence matched by
+//' An instance of Position gives the complete position of a subsequence matched by
 //' a SuffixTree as a pair: the EdgeNode and the position on the edge is the
 //' match is implicit.
 //'

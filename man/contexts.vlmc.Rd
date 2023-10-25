@@ -19,8 +19,8 @@
 
 \method{contexts}{vlmc_cpp}(
   ct,
-  type = c("auto", "list", "data.frame"),
-  reverse = TRUE,
+  sequence = FALSE,
+  reverse = FALSE,
   frequency = NULL,
   positions = FALSE,
   counts = c("desc", "local"),

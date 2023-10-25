@@ -1,4 +1,3 @@
-#include "ContextNode.h"
 #include "SuffixTree.h"
 RCPP_MODULE(suffixtree) {
   using namespace Rcpp;
@@ -63,6 +62,22 @@ RCPP_MODULE(suffixtree) {
               "Reduce the memory usage of the tree by removing positions")
       .method("predict_raw", &SuffixTree::predict_raw, "Predict values")
       .method("predict_probs", &SuffixTree::predict_probs,
-              "Predict probabilities");
+              "Predict probabilities")
+      .method("raw_find_sequence", &SuffixTree::raw_find_sequence,
+              "Find a subsequence")
+      .method("raw_contexts", &SuffixTree::raw_contexts,
+              "Return the contexts as pointers")
+      .method("node_is_context", &SuffixTree::node_is_context,
+              "Test whether a node is a context")
+      .method("node_counts", &SuffixTree::node_counts,
+              "Report the counts associated to a node")
+      .method("node_local_counts", &SuffixTree::node_local_counts,
+              "Report the local counts associated to a node")
+      .method("node_positions", &SuffixTree::node_positions,
+              "Report the position associated to a node")
+      .method("node_parent", &SuffixTree::node_parent,
+              "Report the parent of a node")
+      .method("node_children", &SuffixTree::node_children,
+              "Return the children of a node");
   function("build_suffix_tree", &build_suffix_tree);
 }

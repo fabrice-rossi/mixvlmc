@@ -1,22 +1,34 @@
 #' @export
 #' @rdname contexts.vlmc
-contexts.vlmc_cpp <- function(ct, type = c("auto", "list", "data.frame"), reverse = TRUE, frequency = NULL,
+contexts.vlmc_cpp <- function(ct, sequence = FALSE, reverse = FALSE, frequency = NULL,
                               positions = FALSE, counts = c("desc", "local"), cutoff = NULL, metrics = FALSE, ...) {
   if (extptr_is_null(ct$root$.pointer)) {
     stop("Missing C++ representation!\nThis object was probably restored from a saved object.\n")
   }
-  type <- match.arg(type)
   counts <- match.arg(counts)
-  if (is.null(cutoff) && counts == "desc" && !metrics) {
-    NextMethod()
+  if (!is.null(frequency)) {
+    assertthat::assert_that(frequency %in% c("total", "detailed"))
+  }
+  if (!is.null(cutoff)) {
+    assertthat::assert_that(cutoff %in% c("quantile", "native"))
+  }
+  wants_df <- !is.null(frequency) || positions || !is.null(cutoff) || metrics
+  if (missing(sequence)) {
+    sequence <- wants_df
   } else {
-    assertthat::assert_that(type %in% c("auto", "data.frame"))
-    if (!is.null(frequency)) {
-      assertthat::assert_that(frequency %in% c("total", "detailed"))
+    if (!sequence && wants_df) {
+      stop("sequence = 'FALSE' is incompatible with the other requested values")
     }
-    if (!is.null(cutoff)) {
-      assertthat::assert_that(cutoff %in% c("quantile", "native"))
+  }
+  if (!sequence) {
+    pre_res <- ct$root$raw_contexts()
+    res <- vector(mode = "list", length = length(pre_res$ptrs))
+    for (k in seq_along(res)) {
+      ctx <- ct$vals[pre_res$ctxs[[k]] + 1]
+      res[[k]] <- new_ctx_node_cpp(ctx, ct, pre_res$ptrs[[k]], reverse)
     }
+    new_context_list(res)
+  } else {
     with_local <- metrics || counts == "local"
     if (!is.null(frequency)) {
       assertthat::assert_that(frequency %in% c("total", "detailed"))

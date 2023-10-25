@@ -5,6 +5,10 @@ compare_ctx <- function(ctx1, ctx2, verbose = TRUE) {
     }
     return(FALSE)
   }
+  if (inherits(ctx1, "contexts")) {
+    ctx1 <- lapply(ctx1, as_sequence)
+    ctx2 <- lapply(ctx2, as_sequence)
+  }
   if (is.data.frame(ctx1)) {
     if (!identical(dim(ctx1), dim(ctx2))) {
       if (verbose) {

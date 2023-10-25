@@ -1,6 +1,6 @@
 test_that("find_sequence finds actual sequences", {
   dts <- c(rep(0:2, 3), rep(2:0, 3))
-  dts_ctree <- ctx_tree(dts, min_size = 2)
+  dts_ctree <- ctx_tree(dts, min_size = 2, backend = "C++")
   expect_null(find_sequence(dts_ctree, c(1L, 1L)))
   for (i in 0:2) {
     expect_false(is.null(find_sequence(dts_ctree, i:0)))
@@ -11,7 +11,7 @@ test_that("find_sequence finds actual sequences", {
 
 test_that("find_sequence finds all contexts", {
   dts <- c(rep(0:2, 3), rep(2:0, 3))
-  dts_ctree <- ctx_tree(dts, min_size = 2)
+  dts_ctree <- ctx_tree(dts, min_size = 2, backend = "C++")
   ## for a data.frame output to avoid the use of the context class!
   ctx <- contexts(dts_ctree, frequency = "detailed")
   for (k in 1:nrow(ctx)) {
@@ -23,7 +23,7 @@ test_that("find_sequence finds all contexts", {
 
 test_that("reversing works", {
   dts <- c(rep(0:2, 3), rep(2:0, 3))
-  dts_ctree <- ctx_tree(dts, min_size = 2)
+  dts_ctree <- ctx_tree(dts, min_size = 2, backend = "C++")
   a_node <- find_sequence(dts_ctree, 0:2)
   expect_false(is_reversed(a_node))
   rev_node <- rev(a_node)
@@ -33,8 +33,9 @@ test_that("reversing works", {
 })
 
 test_that("find_sequence finds all subsequences", {
+  withr::local_seed(2)
   dts <- sample(letters[1:4], 100, replace = TRUE)
-  dts_ctree <- ctx_tree(dts, min_size = 1, max_depth = 5)
+  dts_ctree <- ctx_tree(dts, min_size = 1, max_depth = 5, backend = "C++")
   all_ok <- TRUE
   for (k in 1:(length(dts) - 2)) {
     for (l in 0:(min(4, length(dts) - 1 - k))) {
@@ -59,7 +60,7 @@ test_that("find_sequence finds all subsequences", {
 
 test_that("context objects are printed as expected", {
   dts <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 0)
-  dts_ctree <- ctx_tree(dts, min_size = 1, max_depth = 3)
+  dts_ctree <- ctx_tree(dts, min_size = 1, max_depth = 3, backend = "C++")
   expect_snapshot(print(find_sequence(dts_ctree, c(0, 0))))
   expect_snapshot(print(find_sequence(dts_ctree, c(1, 0))))
   expect_snapshot(print(rev(find_sequence(dts_ctree, c(0, 0)))))
@@ -69,7 +70,7 @@ test_that("context objects are printed as expected", {
 test_that("counts are correctly reported", {
   withr::local_seed(0)
   dts <- sample(1:5, 100, replace = TRUE)
-  dts_ctree <- ctx_tree(dts, min_size = 1, max_depth = 4)
+  dts_ctree <- ctx_tree(dts, min_size = 1, max_depth = 4, backend = "C++")
   all_ok <- TRUE
   for (k in 1:(length(dts) - 2)) {
     for (l in 0:(min(3, length(dts) - 1 - k))) {
@@ -101,7 +102,7 @@ test_that("counts are correctly reported", {
 test_that("positions are correctly reported", {
   withr::local_seed(0)
   dts <- sample(1:5, 100, replace = TRUE)
-  dts_ctree <- ctx_tree(dts, min_size = 1, max_depth = 4)
+  dts_ctree <- ctx_tree(dts, min_size = 1, max_depth = 4, backend = "C++")
   all_ok <- TRUE
   for (k in 1:(length(dts) - 2)) {
     for (l in 0:(min(3, length(dts) - 1 - k))) {
@@ -123,7 +124,7 @@ test_that("positions are correctly reported", {
 
 test_that("node nature is correctly reported", {
   dts <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 0)
-  dts_ctree <- ctx_tree(dts, min_size = 1, max_depth = 3)
+  dts_ctree <- ctx_tree(dts, min_size = 1, max_depth = 3, backend = "C++")
   ## 0, 0 is a context but 0, 1 is not
   expect_true(is_context(find_sequence(dts_ctree, c(0, 0), reverse = TRUE)))
   expect_false(is_context(find_sequence(dts_ctree, c(0, 1), reverse = TRUE)))

@@ -90,6 +90,15 @@ class SuffixTree {
                                   bool final_pred) const;
   Rcpp::NumericMatrix predict_probs(const Rcpp::IntegerVector& y,
                                     bool final_pred) const;
+  // ctx_node_cpp support
+  Rcpp::XPtr<EdgeNode> raw_find_sequence(const Rcpp::IntegerVector& y) const;
+  Rcpp::List raw_contexts() const;
+  bool node_is_context(const Rcpp::XPtr<EdgeNode>& node) const;
+  Rcpp::IntegerVector node_counts(const Rcpp::XPtr<EdgeNode>& node) const;
+  Rcpp::IntegerVector node_local_counts(const Rcpp::XPtr<EdgeNode>& node) const;
+  Rcpp::IntegerVector node_positions(const Rcpp::XPtr<EdgeNode>& node) const;
+  Rcpp::XPtr<EdgeNode> node_parent(const Rcpp::XPtr<EdgeNode>& node, int length) const;
+  Rcpp::List node_children(const Rcpp::XPtr<EdgeNode>& node, int length) const;
 };
 
 SuffixTree* build_suffix_tree(const Rcpp::IntegerVector& x, int nb_vals);
