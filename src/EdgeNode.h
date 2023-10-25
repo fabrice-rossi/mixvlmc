@@ -93,6 +93,12 @@ class EdgeNode {
                       int cdepth,
                       int& mdepth);
 
+  bool raw_contexts(const Rcpp::IntegerVector& x,
+                    int nb_vals,
+                              std::vector<int>& pre,
+                              std::vector<const EdgeNode*>& subs,
+                      std::vector<Rcpp::IntegerVector>& ctxs) const;
+
   // insert in subs (recursively) all subsequences of length at most
   // max_length that appear at least min_counts time in the original
   // sequence (x). It only_ctx is true, the subsequences must be contexts

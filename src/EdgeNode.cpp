@@ -167,6 +167,70 @@ void EdgeNode::compute_counts(int first,
   }
 }
 
+bool EdgeNode::raw_contexts(const IntegerVector& x,
+                            int nb_vals,
+                            std::vector<int>& pre,
+                            std::vector<const EdgeNode*>& subs,
+                            std::vector<IntegerVector>& ctxs) const {
+  bool is_sub = false;
+  // let us first handle the root
+  if(start < 0) {
+    int nb_sub = 0;
+    for(auto child : children) {
+      if(child.first >= 0 &&
+         child.second->raw_contexts(x, nb_vals, pre, subs, ctxs)) {
+        nb_sub++;
+      }
+    }
+    if(nb_sub < nb_vals) {
+      // we consider the empty context
+      subs.push_back(this);
+      ctxs.push_back(IntegerVector(pre.begin(), pre.end()));
+      return true;
+    } else {
+      return false;
+    }
+  } else {
+    // non root
+    size_t before = pre.size();
+    // if the edge length is larger than one, then we are sure to keep the
+    // subsequence as a context (single child)
+    if(edge_length() > 1) {
+      is_sub = true;
+    }
+    // for the raw context approach, we postpone any implicit node
+    // handling
+    // we do not keep the sentinel value if it is present
+    int the_end = std::min((int)x.size(), end) - 1;
+    for(int i = start; i < the_end; i++) {
+      pre.push_back(x[i]);
+      subs.push_back(this);
+      ctxs.push_back(IntegerVector(pre.begin(), pre.end()));
+    }
+    // add the final element of the edge
+    pre.push_back(x[the_end]);
+    // let us handle the children
+    int nb_sub = 0;
+    is_sub = true;
+    for(auto child : children) {
+      // do not recurse in sentinel nodes
+      if(child.first >= 0 &&
+         child.second->raw_contexts(x, nb_vals, pre, subs, ctxs)) {
+        nb_sub++;
+      }
+    }
+    // the current subsequence is a context if some of the potential longer
+    // subsequences have not
+    // been included
+    if(nb_sub < nb_vals) {
+      subs.push_back(this);
+      ctxs.push_back(IntegerVector(pre.begin(), pre.end()));
+    }
+    pre.resize(before);
+  }
+  return is_sub;
+}
+
 bool EdgeNode::subsequences(const ExtractionConditions& when,
                             const ExtractionContent& what,
                             const Rcpp::IntegerVector& x,
