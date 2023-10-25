@@ -43,6 +43,7 @@ Imports:
     VGAM,
     withr
 LinkingTo: Rcpp
+SystemRequirements: C++17
 RoxygenNote: 7.2.3
 Suggests: 
     data.table,
