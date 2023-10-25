@@ -49,14 +49,14 @@ prune.vlmc_cpp <- function(vlmc, alpha = 0.05, cutoff = NULL, ...) {
   result
 }
 
-#' @rdname cutoff
+#' @rdname cutoff.vlmc
 #' @export
-cutoff.vlmc_cpp <- function(vlmc, mode = c("quantile", "native"), raw = FALSE,
+cutoff.vlmc_cpp <- function(model, scale = c("quantile", "native"), raw = FALSE,
                             tolerance = .Machine$double.eps^0.5, ...) {
-  if (extptr_is_null(vlmc$root$.pointer)) {
+  if (extptr_is_null(model$root$.pointer)) {
     stop("Missing C++ representation!\nThis object was probably restored from a saved object.\n")
   }
-  mode <- match.arg(mode)
-  pre_result <- relaxed_unique(vlmc$root$cutoff(), tolerance)
-  guaranteed_pruning(pre_result, length(vlmc$vals), mode, raw)
+  scale <- match.arg(scale)
+  pre_result <- relaxed_unique(model$root$cutoff(), tolerance)
+  guaranteed_pruning(pre_result, length(model$vals), scale, raw)
 }
