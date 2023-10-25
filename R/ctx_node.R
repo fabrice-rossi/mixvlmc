@@ -320,5 +320,10 @@ counts.ctx_node <- function(node,
 }
 
 probs <- function(node) {
+  UseMethod("probs")
+}
+
+#' @export
+probs.ctx_node <- function(node) {
   node$node[["f_by"]] / sum(node$node[["f_by"]])
 }
