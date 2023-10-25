@@ -571,7 +571,7 @@ List SuffixTree::full_contexts(int min_counts,
     res[next_col] = cutoff;
     col_names[next_col] = "cutoff";
   }
-  for(int i = 0; i < ctxs->size(); i++) {
+  for(int i = 0; i < ((int)ctxs->size()); i++) {
     delete(*ctxs)[i];
   }
   delete ctxs;
@@ -813,7 +813,7 @@ IntegerVector SuffixTree::simulate(IntegerVector start,
   }
   Nullable<Function> r_sample = R_NilValue;
   if(method > 1) {
-    r_sample = Nullable(Function("sample.int"));
+    r_sample = Nullable<Function>(Function("sample.int"));
   }
   RNGScope scope;
   // final result
@@ -1021,7 +1021,7 @@ List SuffixTree::raw_contexts() const {
 }
 
 bool SuffixTree::node_is_context(const XPtr<EdgeNode>& node) const {
-  return node->children.size() <= max_x;
+  return ((int)node->children.size()) <= max_x;
 }
 
 IntegerVector SuffixTree::node_counts(const XPtr<EdgeNode>& node) const {
