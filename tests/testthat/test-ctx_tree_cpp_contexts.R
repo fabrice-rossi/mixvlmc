@@ -10,45 +10,6 @@ test_that("the C++ backend find the same contexts as the R one", {
   }
 })
 
-test_that("C++ contexts return the appropriate data format", {
-  dts <- sample(c("A", "B", "C"), 100, replace = TRUE)
-  dts_tree <- ctx_tree(dts, max_depth = 4, backend = "C++")
-  expect_type(contexts(dts_tree), "list")
-  expect_s3_class(contexts(dts_tree, sequence = TRUE), "data.frame")
-})
-
-test_that("C++ contexts reversing reverses", {
-  dts <- sample(c("A", "B", "C"), 100, replace = TRUE)
-  dts_tree <- ctx_tree(dts, max_depth = 4, backend = "C++")
-  def_ctx <- contexts(dts_tree)
-  rev_ctx <- contexts(dts_tree, reverse = TRUE)
-  expect_length(rev_ctx, length(def_ctx))
-  for (k in seq_along(def_ctx)) {
-    expect_identical(as_sequence(rev_ctx[[k]]), as_sequence(rev(def_ctx[[k]])))
-  }
-})
-
-test_that("C++ context format is consistent", {
-  dts <- sample(c("A", "B", "C"), 100, replace = TRUE)
-  dts_tree <- ctx_tree(dts, max_depth = 4, backend = "C++")
-  raw_ctx <- contexts(dts_tree, sequence = TRUE)
-  expect_named(raw_ctx, c("context"))
-  freq_ctx <- contexts(dts_tree, frequency = "total")
-  expect_named(freq_ctx, c("context", "freq"))
-  full_ctx <- contexts(dts_tree, frequency = "detailed")
-  expect_named(full_ctx, c("context", "freq", "A", "B", "C"))
-})
-
-test_that("C++ basic count consistency", {
-  dts <- sample(c("A", "B", "C"), 100, replace = TRUE)
-  dts_tree_cpp <- ctx_tree(dts, max_depth = 4, backend = "C++")
-  full_ctx_cpp <- contexts(dts_tree_cpp, frequency = "detailed")
-  expect_equal(nrow(full_ctx_cpp), context_number(dts_tree_cpp))
-  totals <- apply(full_ctx_cpp[3:5], 1, sum)
-  names(totals) <- NULL
-  expect_equal(full_ctx_cpp$freq, totals)
-})
-
 test_that("the C++ backend find the same detailed contexts as the R one (up to ordering)", {
   withr::local_seed(0)
   for (k in 1:9) {

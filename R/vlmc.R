@@ -268,7 +268,8 @@ prune.vlmc <- function(vlmc, alpha = 0.05, cutoff = NULL, ...) {
 #' convenience parameter to avoid setting `alpha=1` (which essentially prevents
 #' any pruning). Automated model selection is provided by [tune_vlmc()].
 #'
-#' @param x a discrete time series; can be numeric, character, factor or logical.
+#' @param x a discrete time series; can be numeric, character, factor or
+#'   logical.
 #' @param alpha number in (0,1] (default: 0.05) cut off value in quantile scale
 #'   in the pruning phase.
 #' @param cutoff non negative number: cut off value in native (likelihood ratio)
@@ -280,26 +281,19 @@ prune.vlmc <- function(vlmc, alpha = 0.05, cutoff = NULL, ...) {
 #'   growing phase of the context tree.
 #' @param prune logical: specify whether the context tree should be pruned
 #'   (default behaviour).
-#' @param keep_match logical: specify whether to keep the context matches (default to FALSE)
-#' @param backend "R" or "C++" (default: "R"). Specifies the implementation used
-#'   to represent the context tree and to built it. See details.
-#' @section Back ends:
-#'
-#' Two back ends are available to compute context trees:
-#'
-#' - the "R" back end represents the tree in pure R data structures (nested lists)
-#'   that be easily processed further in pure R (C++ helper functions are used to
-#'   speed up the construction).
-#' - the "C++" back end represents the tree with C++ classes. The tree is built
-#'   with an optimised suffix tree algorithm which speeds up the construction by
-#'   at least a factor 10 in standard settings. As the tree is kept outside of
-#'   R direct reach, context trees built with the C++ back end cannot be saved
-#'   directly with e.g. `saveRDS`. In addition the C++ back end is experimental.
+#' @param keep_match logical: specify whether to keep the context matches
+#'   (default to FALSE)
+#' @param backend "R" or "C++" (default: as specified by the "mixvlmc.backend"
+#'   option). Specifies the implementation used to represent the context tree
+#'   and to built it. See details.
+#' @inheritSection ctx_tree Back ends
 #'
 #' @returns a fitted vlmc model.
 #' @examples
 #' pc <- powerconsumption[powerconsumption$week == 5, ]
-#' dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.25, 0.5, 0.75, 1))))
+#' dts <- cut(pc$active_power,
+#'   breaks = c(0, quantile(pc$active_power, probs = c(0.25, 0.5, 0.75, 1)))
+#' )
 #' model <- vlmc(dts)
 #' draw(model)
 #' depth(model)
@@ -313,11 +307,11 @@ prune.vlmc <- function(vlmc, alpha = 0.05, cutoff = NULL, ...) {
 #' @export
 #' @seealso [cutoff()], [prune()] and [tune_vlmc()]
 #' @references Bühlmann, P. and Wyner, A. J. (1999), "Variable length Markov
-#'   chains. Ann. Statist." 27 (2)
-#'   480-513 \doi{10.1214/aos/1018031204}
+#'   chains. Ann. Statist." 27 (2) 480-513 \doi{10.1214/aos/1018031204}
 vlmc <- function(x, alpha = 0.05, cutoff = NULL, min_size = 2L, max_depth = 100L,
-                 prune = TRUE, keep_match = FALSE, backend = c("R", "C++")) {
-  backend <- match.arg(backend)
+                 prune = TRUE, keep_match = FALSE,
+                 backend = getOption("mixvlmc.backend", "R")) {
+  backend <- match.arg(backend, c("R", "C++"))
   # data conversion
   nx <- to_dts(x)
   ix <- nx$ix

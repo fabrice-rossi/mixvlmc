@@ -28,84 +28,100 @@ test_that("the context tree construction finds the specified contexts", {
   )
 })
 
-test_that("contexts return the appropriate data format", {
+test_that("contexts print as expected", {
   withr::local_seed(0)
   dts <- sample(c("A", "B", "C"), 100, replace = TRUE)
   dts_tree <- ctx_tree(dts, max_depth = 4)
   expect_snapshot(contexts(dts_tree))
 })
 
-test_that("contexts print as expected", {
+test_that("contexts return the appropriate data format", {
   dts <- sample(c("A", "B", "C"), 100, replace = TRUE)
-  dts_tree <- ctx_tree(dts, max_depth = 4)
-  expect_type(contexts(dts_tree), "list")
-  expect_s3_class(contexts(dts_tree, sequence = TRUE), "data.frame")
+  for (backend in c("R", "C++")) {
+    withr::local_options("mixvlmc.backend" = backend)
+    dts_tree <- ctx_tree(dts, max_depth = 4)
+    expect_type(contexts(dts_tree), "list")
+    expect_s3_class(contexts(dts_tree, sequence = TRUE), "data.frame")
+  }
 })
 
 test_that("contexts reversing reverses", {
   dts <- sample(c("A", "B", "C"), 100, replace = TRUE)
-  dts_tree <- ctx_tree(dts, max_depth = 4)
-  def_ctx <- contexts(dts_tree, reverse = TRUE)
-  rev_ctx <- contexts(dts_tree)
-  expect_length(rev_ctx, length(def_ctx))
-  for (k in seq_along(def_ctx)) {
-    expect_identical(as_sequence(rev_ctx[[k]]), rev(as_sequence(def_ctx[[k]])))
+  for (backend in c("R", "C++")) {
+    withr::local_options("mixvlmc.backend" = backend)
+    dts_tree <- ctx_tree(dts, max_depth = 4)
+    def_ctx <- contexts(dts_tree, reverse = TRUE)
+    rev_ctx <- contexts(dts_tree)
+    expect_length(rev_ctx, length(def_ctx))
+    for (k in seq_along(def_ctx)) {
+      expect_identical(as_sequence(rev_ctx[[k]]), rev(as_sequence(def_ctx[[k]])))
+    }
+    ## data frame case
+    def_ctx <- contexts(dts_tree, frequency = "detailed", reverse = TRUE)
+    rev_ctx <- contexts(dts_tree, frequency = "detailed")
+    expect_equal(dim(rev_ctx), dim(def_ctx))
+    for (k in 1:nrow(def_ctx)) {
+      expect_identical(rev_ctx$context[[k]], rev(def_ctx$context[[k]]))
+    }
+    expect_identical(rev_ctx[-1], def_ctx[-1])
   }
-  ## data frame case
-  def_ctx <- contexts(dts_tree, frequency = "detailed", reverse = TRUE)
-  rev_ctx <- contexts(dts_tree, frequency = "detailed")
-  expect_equal(dim(rev_ctx), dim(def_ctx))
-  for (k in 1:nrow(def_ctx)) {
-    expect_identical(rev_ctx$context[[k]], rev(def_ctx$context[[k]]))
-  }
-  expect_identical(rev_ctx[-1], def_ctx[-1])
 })
 
 test_that("context format is consistent", {
   dts <- sample(c("A", "B", "C"), 100, replace = TRUE)
-  dts_tree <- ctx_tree(dts, max_depth = 4)
-  raw_ctx <- contexts(dts_tree, sequence = TRUE)
-  expect_named(raw_ctx, c("context"))
-  freq_ctx <- contexts(dts_tree, frequency = "total")
-  expect_named(freq_ctx, c("context", "freq"))
-  full_ctx <- contexts(dts_tree, frequency = "detailed")
-  expect_named(full_ctx, c("context", "freq", "A", "B", "C"))
+  for (backend in c("R", "C++")) {
+    withr::local_options("mixvlmc.backend" = backend)
+    dts_tree <- ctx_tree(dts, max_depth = 4)
+    raw_ctx <- contexts(dts_tree, sequence = TRUE)
+    expect_named(raw_ctx, c("context"))
+    freq_ctx <- contexts(dts_tree, frequency = "total")
+    expect_named(freq_ctx, c("context", "freq"))
+    full_ctx <- contexts(dts_tree, frequency = "detailed")
+    expect_named(full_ctx, c("context", "freq", "A", "B", "C"))
+  }
 })
 
 test_that("basic count consistency", {
   dts <- sample(c("A", "B", "C"), 100, replace = TRUE)
-  dts_tree <- ctx_tree(dts, max_depth = 4)
-  full_ctx <- contexts(dts_tree, frequency = "detailed")
-  expect_equal(nrow(full_ctx), context_number(dts_tree))
-  totals <- apply(full_ctx[3:5], 1, sum)
-  expect_equal(full_ctx$freq, totals)
+  for (backend in c("R", "C++")) {
+    withr::local_options("mixvlmc.backend" = backend)
+    dts_tree <- ctx_tree(dts, max_depth = 4)
+    full_ctx <- contexts(dts_tree, frequency = "detailed")
+    expect_equal(nrow(full_ctx), context_number(dts_tree))
+    totals <- apply(full_ctx[3:5], 1, sum)
+    names(totals) <- NULL
+    expect_equal(full_ctx$freq, totals)
+  }
 })
 
 test_that("contexts positions are valid", {
   dts <- sample(c("A", "B", "C"), 100, replace = TRUE)
-  dts_tree <- ctx_tree(dts, max_depth = 4, keep_position = TRUE)
-  full_ctx <- contexts(dts_tree, frequency = "detailed", positions = TRUE)
-  ## check first the consistency (we remove matches at the end of the dts)
-  expect_equal(
-    sapply(full_ctx[["positions"]], \(x) length(x[x != length(dts)])),
-    full_ctx$freq
-  )
-  ## then we check all the matches
-  all_valid <- TRUE
-  for (k in 1:nrow(full_ctx)) {
-    positions <- full_ctx[["positions"]][[k]]
-    ctx <- full_ctx[["context"]][[k]]
-    for (pos in positions) {
-      for (l in seq_along(ctx)) {
-        if (ctx[l] != dts[pos - length(ctx) + l]) {
-          all_valid <- FALSE
+  for (backend in c("R", "C++")) {
+    withr::local_options("mixvlmc.backend" = backend)
+    dts_tree <- ctx_tree(dts, max_depth = 4, keep_position = TRUE)
+    full_ctx <- contexts(dts_tree, frequency = "detailed", positions = TRUE)
+    ## check first the consistency (we remove matches at the end of the dts)
+    expect_equal(
+      sapply(full_ctx[["positions"]], \(x) length(x[x != length(dts)])),
+      full_ctx$freq
+    )
+    ## then we check all the matches
+    all_valid <- TRUE
+    for (k in 1:nrow(full_ctx)) {
+      positions <- full_ctx[["positions"]][[k]]
+      ctx <- full_ctx[["context"]][[k]]
+      for (pos in positions) {
+        for (l in seq_along(ctx)) {
+          if (ctx[l] != dts[pos - length(ctx) + l]) {
+            all_valid <- FALSE
+            break
+          }
+        }
+        if (!all_valid) {
           break
         }
       }
-      if (!all_valid) {
-        break
-      }
+      expect_true(all_valid)
     }
-    expect_true(all_valid)
   }
 })

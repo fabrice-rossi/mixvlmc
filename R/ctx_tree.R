@@ -112,26 +112,28 @@ grow_ctx_tree <- function(x, vals, min_size, max_depth, covsize = 0L, keep_match
 #' stores the frequencies of the states that follow each context. Optionally,
 #' the positions of the contexts in the time series can be stored in the tree.
 #'
-#' @param x a discrete time series; can be numeric, character, factor or logical.
+#' @param x a discrete time series; can be numeric, character, factor or
+#'   logical.
 #' @param min_size integer >= 1 (default: 2). Minimum number of observations for
 #'   a context to be included in the tree.
 #' @param max_depth integer >= 1 (default: 100). Maximum length of a context to
 #'   be included in the tree.
 #' @param keep_position logical (default: TRUE). Should the context tree keep
 #'   the position of the contexts.
-#' @param backend "R" or "C++" (default: "R"). Specifies the implementation used
-#'   to represent the context tree and to built it. See details.
+#' @param backend "R" or "C++" (default: as specified by the "mixvlmc.backend"
+#'   option). Specifies the implementation used to represent the context tree
+#'   and to built it. See details.
 #' @section Back ends:
 #'
-#' Two back ends are available to compute context trees:
+#'   Two back ends are available to compute context trees:
 #'
 #' - the "R" back end represents the tree in pure R data structures (nested lists)
-#'   that be easily processed further in pure R (C++ helper functions are used to
-#'   speed up the construction).
+#'   that be easily processed further in pure R (C++ helper functions are used
+#'   to speed up the construction).
 #' - the "C++" back end represents the tree with C++ classes. The tree is built
 #'   with an optimised suffix tree algorithm which speeds up the construction by
-#'   at least a factor 10 in standard settings. As the tree is kept outside of
-#'   R direct reach, context trees built with the C++ back end cannot be saved
+#'   at least a factor 10 in standard settings. As the tree is kept outside of R
+#'   direct reach, context trees built with the C++ back end cannot be saved
 #'   directly with e.g. `saveRDS`. In addition the C++ back end is experimental.
 #'
 #' @returns a context tree (of class that inherits from `ctx_tree`).
@@ -143,8 +145,8 @@ grow_ctx_tree <- function(x, vals, min_size, max_depth, covsize = 0L, keep_match
 #' dts_ctree <- ctx_tree(dts, min_size = 1, max_depth = 2)
 #' draw(dts_ctree)
 ctx_tree <- function(x, min_size = 2L, max_depth = 100L, keep_position = TRUE,
-                     backend = c("R", "C++")) {
-  backend <- match.arg(backend)
+                     backend = getOption("mixvlmc.backend", "R")) {
+  backend <- match.arg(backend, c("R", "C++"))
   nx <- to_dts(x)
   ix <- nx$ix
   vals <- nx$vals

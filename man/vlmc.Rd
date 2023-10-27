@@ -12,11 +12,12 @@ vlmc(
   max_depth = 100L,
   prune = TRUE,
   keep_match = FALSE,
-  backend = c("R", "C++")
+  backend = getOption("mixvlmc.backend", "R")
 )
 }
 \arguments{
-\item{x}{a discrete time series; can be numeric, character, factor or logical.}
+\item{x}{a discrete time series; can be numeric, character, factor or
+logical.}
 
 \item{alpha}{number in (0,1] (default: 0.05) cut off value in quantile scale
 in the pruning phase.}
@@ -34,10 +35,12 @@ growing phase of the context tree.}
 \item{prune}{logical: specify whether the context tree should be pruned
 (default behaviour).}
 
-\item{keep_match}{logical: specify whether to keep the context matches (default to FALSE)}
+\item{keep_match}{logical: specify whether to keep the context matches
+(default to FALSE)}
 
-\item{backend}{"R" or "C++" (default: "R"). Specifies the implementation used
-to represent the context tree and to built it. See details.}
+\item{backend}{"R" or "C++" (default: as specified by the "mixvlmc.backend"
+option). Specifies the implementation used to represent the context tree
+and to built it. See details.}
 }
 \value{
 a fitted vlmc model.
@@ -70,19 +73,21 @@ any pruning). Automated model selection is provided by \code{\link[=tune_vlmc]{t
 Two back ends are available to compute context trees:
 \itemize{
 \item the "R" back end represents the tree in pure R data structures (nested lists)
-that be easily processed further in pure R (C++ helper functions are used to
-speed up the construction).
+that be easily processed further in pure R (C++ helper functions are used
+to speed up the construction).
 \item the "C++" back end represents the tree with C++ classes. The tree is built
 with an optimised suffix tree algorithm which speeds up the construction by
-at least a factor 10 in standard settings. As the tree is kept outside of
-R direct reach, context trees built with the C++ back end cannot be saved
+at least a factor 10 in standard settings. As the tree is kept outside of R
+direct reach, context trees built with the C++ back end cannot be saved
 directly with e.g. \code{saveRDS}. In addition the C++ back end is experimental.
 }
 }
 
 \examples{
 pc <- powerconsumption[powerconsumption$week == 5, ]
-dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.25, 0.5, 0.75, 1))))
+dts <- cut(pc$active_power,
+  breaks = c(0, quantile(pc$active_power, probs = c(0.25, 0.5, 0.75, 1)))
+)
 model <- vlmc(dts)
 draw(model)
 depth(model)
@@ -96,8 +101,7 @@ draw(robust_model)
 }
 \references{
 Bühlmann, P. and Wyner, A. J. (1999), "Variable length Markov
-chains. Ann. Statist." 27 (2)
-480-513 \doi{10.1214/aos/1018031204}
+chains. Ann. Statist." 27 (2) 480-513 \doi{10.1214/aos/1018031204}
 }
 \seealso{
 \code{\link[=cutoff]{cutoff()}}, \code{\link[=prune]{prune()}} and \code{\link[=tune_vlmc]{tune_vlmc()}}

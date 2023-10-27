@@ -26,6 +26,16 @@ three or more values;
 
 The first option \code{"glm"} is recommended as both \code{\link[stats:glm]{stats::glm()}} and \code{\link[VGAM:vglm]{VGAM::vglm()}}
 are able to detect and deal with degeneracy in the data set.
+\item \code{mixvlmc.backend}: specifies the implementation used for the context tree
+construction in \code{\link[=ctx_tree]{ctx_tree()}}, \code{\link[=vlmc]{vlmc()}} and \code{\link[=tune_vlmc]{tune_vlmc()}}. Two values are
+supported:
+\itemize{
+\item \code{"R"} (default value): this corresponds to the original almost pure R
+implementation.
+\item \code{"C++"}: this corresponds to the experimental C++ implementation. This
+version is significantly faster than the R version, but is still
+considered experimental.
+}
 }
 }
 
