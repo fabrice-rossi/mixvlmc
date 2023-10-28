@@ -31,7 +31,8 @@ double kl_criterion(const std::unordered_map<int, int>* c_counts,
                     int p_total) {
   double res = 0;
   for(auto pcount : *p_counts) {
-    if(auto ccount = c_counts->find(pcount.first); ccount != c_counts->end()) {
+    auto ccount = c_counts->find(pcount.first);
+    if(ccount != c_counts->end()) {
       res += log(((double)ccount->second) * p_total /
                  (((double)pcount.second) * c_total)) *
              ccount->second;

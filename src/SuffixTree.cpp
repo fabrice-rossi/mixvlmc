@@ -135,8 +135,8 @@ void SuffixTree::insert(const IntegerVector& x_, int nb_vals) {
         a_pos = i;
       }
       // is there an ongoing edge?
-      if(auto child = active->children.find(a_edge);
-         child != active->children.end()) {
+      auto child = active->children.find(a_edge);
+      if(child != active->children.end()) {
         // there is one
         EdgeNode* current = child->second;
         // make sure we are still inside the edge!
@@ -240,8 +240,8 @@ Position SuffixTree::find_subsequence(const IntegerVector& y) const {
   int y_pos = 0;
   while(y_pos < y.length()) {
     // try to progress along an edge
-    if(auto child = current->children.find(y[y_pos]);
-       child != current->children.end()) {
+    auto child = current->children.find(y[y_pos]);
+    if(child != current->children.end()) {
       current = child->second;
       int el = current->edge_length();
       int move = std::min(el, (int)(y.length() - y_pos));
@@ -297,8 +297,8 @@ bool SuffixTree::is_suffix(const IntegerVector& y) const {
     int el = where.node->edge_length();
     if(where.edge == el - 1) {
       // end of the edge. Let's check for a sentinel node
-      if(auto child = where.node->children.find(-1);
-         child != where.node->children.end()) {
+      auto child = where.node->children.find(-1);
+      if(child != where.node->children.end()) {
         // there is an edge with a sentinel
         return true;
       } else {
@@ -360,8 +360,8 @@ void SuffixTree::add_initial_match(int first) {
     if(x_pos >= 0) {
       val = x[x_pos];
     }
-    if(auto child = current->children.find(val);
-       child != current->children.end()) {
+    auto child = current->children.find(val);
+    if(child != current->children.end()) {
       current = child->second;
       current->positions->push_back(-1);
       int el = current->edge_length();
@@ -734,7 +734,8 @@ void SuffixTree::compute_reverse() {
   // root case
   root->reverse = new std::unordered_map<int, EdgeNode*>{};
   for(int i = 0; i <= max_x; i++) {
-    if(auto child = root->children.find(i); child != root->children.end()) {
+    auto child = root->children.find(i);
+    if(child != root->children.end()) {
       (*(root->reverse))[i] = child->second;
     } else {
       (*(root->reverse))[i] = root;
@@ -753,7 +754,8 @@ IntegerVector SuffixTree::extend_left(const IntegerVector& y, int v) const {
     stop("cannot extend to the left without reverse links");
   }
   if(y.size() == 0) {
-    if(auto child = root->children.find(v); child != root->children.end()) {
+    auto child = root->children.find(v);
+    if(child != root->children.end()) {
       IntegerVector result(1);
       result[0] = v;
       return result;
@@ -787,8 +789,8 @@ double SuffixTree::loglikelihood(const IntegerVector& y,
   int ny = y.size();
   for(int i = 0; i < ny; i++) {
     if(i >= ignore && (extended || i >= max_depth)) {
-      if(auto child = current->counts->find(y[i]);
-         child != current->counts->end()) {
+      auto child = current->counts->find(y[i]);
+      if(child != current->counts->end()) {
         if(child->second == 0) {
           if(verbose) {  // # nocov start
             Rcout << i << " " << y[i]
@@ -816,8 +818,8 @@ double SuffixTree::loglikelihood(const IntegerVector& y,
     int max_ctx = std::min(i + 1, max_depth);
     int pos = i - current->depth;
     while(current->depth < max_ctx) {
-      if(auto child = current->children.find(y[pos]);
-         child != current->children.end()) {
+      auto child = current->children.find(y[pos]);
+      if(child != current->children.end()) {
         current = child->second;
         pos--;
       } else {
@@ -905,8 +907,8 @@ IntegerVector SuffixTree::simulate(IntegerVector start,
       } else {
         to_search = burnin_sample[pos];
       }
-      if(auto child = current->children.find(to_search);
-         child != current->children.end()) {
+      auto child = current->children.find(to_search);
+      if(child != current->children.end()) {
         current = child->second;
         pos--;
       } else {
@@ -961,8 +963,8 @@ IntegerVector SuffixTree::predict_raw(const IntegerVector& y,
       int max_ctx = std::min(i + 1, max_depth);
       int pos = i - current->depth;
       while(current->depth < max_ctx) {
-        if(auto child = current->children.find(y[pos]);
-           child != current->children.end()) {
+        auto child = current->children.find(y[pos]);
+        if(child != current->children.end()) {
           current = child->second;
           pos--;
         } else {
@@ -996,8 +998,8 @@ NumericMatrix SuffixTree::predict_probs(const IntegerVector& y,
       int max_ctx = std::min(i + 1, max_depth);
       int pos = i - current->depth;
       while(current->depth < max_ctx) {
-        if(auto child = current->children.find(y[pos]);
-           child != current->children.end()) {
+        auto child = current->children.find(y[pos]);
+        if(child != current->children.end()) {
           current = child->second;
           pos--;
         } else {
@@ -1014,8 +1016,8 @@ XPtr<EdgeNode> SuffixTree::raw_find_sequence(const IntegerVector& y) const {
   int y_pos = 0;
   while(y_pos < y.length()) {
     // try to progress along an edge
-    if(auto child = current->children.find(y[y_pos]);
-       child != current->children.end()) {
+    auto child = current->children.find(y[y_pos]);
+    if(child != current->children.end()) {
       current = child->second;
       int el = current->edge_length();
       int move = std::min(el, (int)(y.length() - y_pos));

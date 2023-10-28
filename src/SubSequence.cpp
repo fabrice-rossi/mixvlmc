@@ -45,7 +45,8 @@ SubSequence::SubSequence(std::vector<int> _ctx,
 }
 
 int SubSequence::count(int val) const {
-  if(auto count = p_counts->find(val); count != p_counts->end()) {
+  auto count = p_counts->find(val);
+  if(count != p_counts->end()) {
     return count->second;
   } else {
     return 0;

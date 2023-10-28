@@ -157,7 +157,8 @@ void EdgeNode::compute_counts(int first,
       }
       // update counts
       for(auto count : *(child.second->counts)) {
-        if(auto current = counts->find(count.first); current != counts->end()) {
+        auto current = counts->find(count.first);
+        if(current != counts->end()) {
           current->second += count.second;
         } else {
           (*counts)[count.first] = count.second;
@@ -628,8 +629,8 @@ void EdgeNode::compute_reverse(
     for(auto prev : *parent_map) {
       if(depth == prev.second->depth) {
         // full matching, maybe be increased
-        if(auto child = prev.second->children.find(x[start]);
-           child != prev.second->children.end()) {
+        auto child = prev.second->children.find(x[start]);
+        if(child != prev.second->children.end()) {
           // success, we can extend the match
           (*reverse)[prev.first] = child->second;
         } else {
