@@ -43,9 +43,7 @@ rec_draw_cpp <- function(label, prefix, tree, ct, vals, control, node2txt, param
 #' @export
 #' @rdname draw.ctx_tree
 draw.ctx_tree_cpp <- function(ct, control = draw_control(), frequency = NULL, ...) {
-  if (extptr_is_null(ct$root$.pointer)) {
-    stop("Missing C++ representation!\nThis object was probably restored from a saved object.\n")
-  }
+  restore_ctx_tree_cpp(ct)
   ct_r <- ct$root$representation()
   if (is.null(frequency)) {
     rec_draw_cpp(control$root, "", ct_r, ct_r[[1]], ct$vals, control, NULL, list(...))

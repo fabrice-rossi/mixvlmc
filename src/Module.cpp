@@ -36,6 +36,9 @@ RCPP_MODULE(suffixtree) {
               "Return significant cut off values")
       .method("representation", &SuffixTree::representation,
               "Return a representation in R of the tree")
+      .method("restoration_info", &SuffixTree::restoration_info,
+              "Return a list whose content can be used to rebuild the tree "
+              "from scratch")
       .method("make_explicit", &SuffixTree::make_explicit,
               "Make all nodes explicit")
       .method("compute_reverse", &SuffixTree::compute_reverse,

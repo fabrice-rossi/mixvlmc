@@ -28,11 +28,16 @@ class SuffixTree {
   bool has_reverse;
   int max_depth;
   int nb_ctx;
+  // for restoration
+  int first_value;
+  int min_size;
+  int max_length;
 
   SuffixTree(EdgeNode* _root);
   SuffixTree* clone_from_root(EdgeNode* new_root,
                               int _max_depth,
-                              int _nb_ctx) const;
+                              int _nb_ctx,
+                              int _first_value) const;
   void invalidate();
   int x_at(int pos) const;
   Position find_subsequence(const Rcpp::IntegerVector& y) const;
@@ -71,6 +76,7 @@ class SuffixTree {
   int nb_contexts() const;
   Rcpp::NumericVector cutoff() const;
   Rcpp::List representation();
+  Rcpp::List restoration_info();
   void make_explicit();
   void compute_reverse();
   Rcpp::IntegerVector extend_left(const Rcpp::IntegerVector& y, int v) const;
@@ -97,7 +103,8 @@ class SuffixTree {
   Rcpp::IntegerVector node_counts(const Rcpp::XPtr<EdgeNode>& node) const;
   Rcpp::IntegerVector node_local_counts(const Rcpp::XPtr<EdgeNode>& node) const;
   Rcpp::IntegerVector node_positions(const Rcpp::XPtr<EdgeNode>& node) const;
-  Rcpp::XPtr<EdgeNode> node_parent(const Rcpp::XPtr<EdgeNode>& node, int length) const;
+  Rcpp::XPtr<EdgeNode> node_parent(const Rcpp::XPtr<EdgeNode>& node,
+                                   int length) const;
   Rcpp::List node_children(const Rcpp::XPtr<EdgeNode>& node, int length) const;
 };
 

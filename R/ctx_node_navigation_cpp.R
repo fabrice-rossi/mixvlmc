@@ -9,7 +9,7 @@
 #' parent(ctx_00)
 #' identical(parent(ctx_00), find_sequence(dts_ctree, c(0)))
 parent.ctx_node_cpp <- function(node) {
-  if (extptr_is_null(node$tree$root$.pointer)) {
+  if (extptr_is_null(node$node)) {
     stop("Missing C++ representation!\nThis object was probably restored from a saved object.\n")
   }
   if (length(node$sequence) >= 1) {
@@ -33,7 +33,7 @@ parent.ctx_node_cpp <- function(node) {
 #' ## this context can be extended by both states
 #' children(ctx_10)
 children.ctx_node_cpp <- function(node) {
-  if (extptr_is_null(node$tree$root$.pointer)) {
+  if (extptr_is_null(node$node)) {
     stop("Missing C++ representation!\nThis object was probably restored from a saved object.\n")
   }
   raw_result <- node$tree$root$node_children(node$node, length(node$sequence))

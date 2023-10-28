@@ -75,11 +75,13 @@ Two back ends are available to compute context trees:
 \item the "R" back end represents the tree in pure R data structures (nested lists)
 that be easily processed further in pure R (C++ helper functions are used
 to speed up the construction).
-\item the "C++" back end represents the tree with C++ classes. The tree is built
-with an optimised suffix tree algorithm which speeds up the construction by
-at least a factor 10 in standard settings. As the tree is kept outside of R
-direct reach, context trees built with the C++ back end cannot be saved
-directly with e.g. \code{saveRDS}. In addition the C++ back end is experimental.
+\item the "C++" back end represents the tree with C++ classes. This back end is
+considered experimental. The tree is built with an optimised suffix tree
+algorithm which speeds up the construction by at least a factor 10 in
+standard settings. As the tree is kept outside of R direct reach, context
+trees built with the C++ back end must be restored after a
+\code{saveRDS()}/\code{readRDS()} sequence. This is done automatically by recomputing
+completely the context tree.
 }
 }
 

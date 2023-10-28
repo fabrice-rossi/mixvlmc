@@ -21,6 +21,9 @@ new_ctx_node_cpp <- function(ctx, tree, node, rev, ..., class = character()) {
 
 #' @export
 print.ctx_node_cpp <- function(x, ...) {
+  if (extptr_is_null(x$node)) {
+    stop("Missing C++ representation!\nThis object was probably restored from a saved object.\n")
+  }
   if (x$is_context) {
     cat("Context")
   } else {
@@ -42,9 +45,7 @@ print.ctx_node_cpp <- function(x, ...) {
 #' @export
 #' @rdname find_sequence
 find_sequence.ctx_tree_cpp <- function(ct, ctx, reverse = FALSE, ...) {
-  if (extptr_is_null(ct$root$.pointer)) {
-    stop("Missing C++ representation!\nThis object was probably restored from a saved object.\n")
-  }
+  restore_ctx_tree_cpp(ct)
   if (length(ctx) == 0) {
     if (isTRUE(ct$keep_match) && is.null(ct$match)) {
       ct$match <- 1:ct$data_size
@@ -71,6 +72,9 @@ find_sequence.ctx_tree_cpp <- function(ct, ctx, reverse = FALSE, ...) {
 #' @export
 #' @rdname positions
 positions.ctx_node_cpp <- function(node) {
+  if (extptr_is_null(node$node)) {
+    stop("Missing C++ representation!\nThis object was probably restored from a saved object.\n")
+  }
   if (!node$tree$root$has_positions) {
     stop("Cannot report positions if they were not saved")
   }
@@ -82,6 +86,9 @@ positions.ctx_node_cpp <- function(node) {
 counts.ctx_node_cpp <- function(node,
                                 frequency = c("detailed", "total"),
                                 counts = c("desc", "local")) {
+  if (extptr_is_null(node$node)) {
+    stop("Missing C++ representation!\nThis object was probably restored from a saved object.\n")
+  }
   frequency <- match.arg(frequency)
   counts <- match.arg(counts)
   if (counts == "desc") {
