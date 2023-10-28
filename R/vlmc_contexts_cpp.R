@@ -2,7 +2,7 @@
 #' @rdname contexts.vlmc
 contexts.vlmc_cpp <- function(ct, sequence = FALSE, reverse = FALSE, frequency = NULL,
                               positions = FALSE, counts = c("desc", "local"), cutoff = NULL, metrics = FALSE, ...) {
-  restore_vlmc_cpp(ct)
+  restore_model(ct)
   counts <- match.arg(counts)
   if (!is.null(frequency)) {
     assertthat::assert_that(frequency %in% c("total", "detailed"))

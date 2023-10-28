@@ -11,7 +11,7 @@
 #' model <- vlmc(dts, backend = "C++", keep_match = TRUE)
 #' model <- trim(model)
 trim.vlmc_cpp <- function(ct, ...) {
-  restore_vlmc_cpp(ct)
+  restore_model(ct)
   if (ct$root$has_positions) {
     ct$root <- ct$root$trim()
   }

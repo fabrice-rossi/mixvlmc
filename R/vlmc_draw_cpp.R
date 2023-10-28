@@ -1,7 +1,7 @@
 #' @export
 #' @rdname draw.vlmc
 draw.vlmc_cpp <- function(ct, control = draw_control(), prob = TRUE, ...) {
-  restore_vlmc_cpp(ct)
+  restore_model(ct)
   ct_r <- ct$root$representation()
   if (is.null(prob)) {
     rec_draw_cpp(control$root, "", ct_r, ct_r[[1]], ct$vals, control, NULL, list(...))

@@ -1,4 +1,5 @@
-restore_vlmc_cpp <- function(tree) {
+#' @export
+restore_model.vlmc_cpp <- function(tree) {
   if (extptr_is_null(tree$root$.pointer)) {
     cpp_tree <- build_suffix_tree(
       tree$restoration$rev_x,
@@ -19,12 +20,21 @@ restore_vlmc_cpp <- function(tree) {
     tree$root@.xData$.pointer <- cpp_tree@.xData$.pointer
     tree$root@.xData$.cppclass <- cpp_tree@.xData$.cppclass
     tree$root@.xData$.module <- cpp_tree@.xData$.module
+    ## we need to unbind all the functions in .xData to avoid issues
+    content <- rlang::env_names(tree$root@.xData)
+    internals <- stringr::str_starts(content, "\\.")
+    to_keep <- c("compute_counts", "prune_context", "make_explicit",
+                 "compute_reverse", "getClass", "initialize", "finalize")
+    to_remove <- setdiff(content[!internals], to_keep)
+    for (fn in to_remove) {
+      rlang::env_unbind(tree$root@.xData, fn)
+    }
   }
 }
 
 #' @export
 print.vlmc_cpp <- function(x, ...) {
-  restore_vlmc_cpp(x)
+  restore_model(x)
   cat(paste(
     "VLMC context tree on",
     paste(x$vals, collapse = ", ")
@@ -42,7 +52,7 @@ print.vlmc_cpp <- function(x, ...) {
 #' @rdname prune
 #' @export
 prune.vlmc_cpp <- function(vlmc, alpha = 0.05, cutoff = NULL, ...) {
-  restore_vlmc_cpp(vlmc)
+  restore_model(vlmc)
   if (is.null(cutoff)) {
     if (is.null(alpha) || !is.numeric(alpha) || alpha <= 0 || alpha > 1) {
       stop("the alpha parameter must be in (0, 1]")
@@ -78,7 +88,7 @@ prune.vlmc_cpp <- function(vlmc, alpha = 0.05, cutoff = NULL, ...) {
 #' @export
 cutoff.vlmc_cpp <- function(model, scale = c("quantile", "native"), raw = FALSE,
                             tolerance = .Machine$double.eps^0.5, ...) {
-  restore_vlmc_cpp(model)
+  restore_model(model)
   scale <- match.arg(scale)
   pre_result <- relaxed_unique(model$root$cutoff(), tolerance)
   guaranteed_pruning(pre_result, length(model$vals), scale, raw)

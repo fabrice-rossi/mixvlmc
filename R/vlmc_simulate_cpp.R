@@ -24,7 +24,7 @@
 #'
 #' @export
 simulate.vlmc_cpp <- function(object, nsim = 1, seed = NULL, init = NULL, burnin = 0L, sample = c("fast", "slow", "R"), ...) {
-  restore_vlmc_cpp(object)
+  restore_model(object)
   sample <- match.arg(sample)
   if (!is.null(seed)) {
     attr(seed, "kind") <- as.list(RNGkind())

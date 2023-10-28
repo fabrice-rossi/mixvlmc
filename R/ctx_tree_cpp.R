@@ -8,7 +8,12 @@ new_ctx_tree_cpp <- function(vals, suffix_tree, ..., class = character()) {
   preres
 }
 
-restore_ctx_tree_cpp <- function(tree) {
+restore_model <- function(tree) {
+  UseMethod("restore_model")
+}
+
+#' @export
+restore_model.ctx_tree_cpp <- function(tree) {
   if (extptr_is_null(tree$root$.pointer)) {
     cpp_tree <- build_suffix_tree(
       tree$restoration$rev_x,
@@ -32,7 +37,7 @@ restore_ctx_tree_cpp <- function(tree) {
 
 #' @export
 print.ctx_tree_cpp <- function(x, ...) {
-  restore_ctx_tree_cpp(x)
+  restore_model(x)
   cat(paste(
     "Context tree on",
     paste(x$vals, collapse = ", ")

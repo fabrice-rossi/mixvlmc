@@ -13,7 +13,7 @@ loglikelihood.vlmc_cpp <- function(vlmc,
                                    initial = c("truncated", "specific", "extended"),
                                    ignore,
                                    ...) {
-  restore_vlmc_cpp(vlmc)
+  restore_model(vlmc)
   initial <- match.arg(initial)
   if (missing(ignore)) {
     if (initial == "truncated") {
