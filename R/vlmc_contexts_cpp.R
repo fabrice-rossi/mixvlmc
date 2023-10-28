@@ -1,9 +1,13 @@
 #' @export
 #' @rdname contexts.vlmc
 contexts.vlmc_cpp <- function(ct, sequence = FALSE, reverse = FALSE, frequency = NULL,
-                              positions = FALSE, counts = c("desc", "local"), cutoff = NULL, metrics = FALSE, ...) {
+                              positions = FALSE, local = FALSE, cutoff = NULL,
+                              metrics = FALSE, ...) {
   restore_model(ct)
-  counts <- match.arg(counts)
+  assertthat::assert_that(rlang::is_logical(sequence))
+  assertthat::assert_that(rlang::is_logical(reverse))
+  assertthat::assert_that(rlang::is_logical(local))
+  assertthat::assert_that(rlang::is_logical(metrics))
   if (!is.null(frequency)) {
     assertthat::assert_that(frequency %in% c("total", "detailed"))
   }
@@ -27,7 +31,7 @@ contexts.vlmc_cpp <- function(ct, sequence = FALSE, reverse = FALSE, frequency =
     }
     new_context_list(res)
   } else {
-    with_local <- metrics || counts == "local"
+    with_local <- metrics || local
     if (!is.null(frequency)) {
       assertthat::assert_that(frequency %in% c("total", "detailed"))
     }
@@ -35,15 +39,15 @@ contexts.vlmc_cpp <- function(ct, sequence = FALSE, reverse = FALSE, frequency =
     res <- data.frame(context = I(ctx_recode(pre_res$context, reverse, ct$vals)))
     if (!is.null(frequency)) {
       if (frequency == "detailed") {
-        if (counts == "local") {
-          res <- cbind(res, pre_res$local_counts)
+        if (local) {
+          res <- cbind(res, pre_res$local)
         } else {
           res <- cbind(res, pre_res$counts)
         }
         names(res)[3:(2 + length(ct$vals))] <- ct$vals
       } else {
-        if (counts == "local") {
-          res$freq <- pre_res$local_counts$freq
+        if (local) {
+          res$freq <- pre_res$local$freq
         } else {
           res$freq <- pre_res$counts$freq
         }
@@ -63,8 +67,8 @@ contexts.vlmc_cpp <- function(ct, sequence = FALSE, reverse = FALSE, frequency =
       the_metrics <- NULL
       for (k in 1:nrow(res)) {
         fake_data <- generate_fake_data(
-          pre_res$local_counts[k, 1],
-          pre_res$local_counts[k, -1, drop = FALSE],
+          pre_res$local[k, 1],
+          pre_res$local[k, -1, drop = FALSE],
           pre_res$counts[k, -1, drop = FALSE] / pre_res$counts[k, 1],
           ct$vals
         )

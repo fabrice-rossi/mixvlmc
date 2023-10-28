@@ -94,11 +94,11 @@ positions.ctx_node_cpp <- function(node) {
 #' @rdname counts
 counts.ctx_node_cpp <- function(node,
                                 frequency = c("detailed", "total"),
-                                counts = c("desc", "local")) {
+                                local = FALSE) {
   restore_ctx_node_cpp(node)
   frequency <- match.arg(frequency)
-  counts <- match.arg(counts)
-  if (counts == "desc") {
+  assertthat::assert_that(rlang::is_logical(local))
+  if (!local) {
     freqs <- node$tree$root$node_counts(node$node_env$node)
   } else {
     freqs <- node$tree$root$node_local_counts(node$node_env$node)

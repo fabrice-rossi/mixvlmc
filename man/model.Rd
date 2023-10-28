@@ -4,15 +4,15 @@
 \alias{model}
 \title{Logistic model of a COVLMC context}
 \usage{
-model(node, model = c("coef", "full"))
+model(node, type = c("coef", "full"))
 }
 \arguments{
 \item{node}{A \code{ctx_node_covlmc} object as returned by \code{\link[=find_sequence]{find_sequence()}} or
 \code{\link[=contexts.covlmc]{contexts.covlmc()}}}
 
-\item{model}{specifies the model information to return, either the
-coefficients only (\code{model="coef"} default case) or the full model object
-(\code{model="full"}}
+\item{type}{specifies the model information to return, either the
+coefficients only (\code{type="coef"} default case) or the full model object
+(\code{type="full"})}
 }
 \value{
 if \code{node} is a context, the coefficients of the logistic model (as a
@@ -37,6 +37,6 @@ vals <- states(m_cov)
 node <- find_sequence(m_cov, c(vals[1], vals[1]))
 node
 model(node)
-model(node, model = "full")
+model(node, type = "full")
 
 }

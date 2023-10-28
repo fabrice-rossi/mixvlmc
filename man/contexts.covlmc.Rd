@@ -10,7 +10,7 @@
   reverse = FALSE,
   frequency = NULL,
   positions = FALSE,
-  counts = c("desc", "local"),
+  local = FALSE,
   metrics = FALSE,
   model = NULL,
   hsize = FALSE,
@@ -38,11 +38,12 @@ reported in a \code{positions} column of the result data frame. The availability
 of the positions depends on the way the context tree was built. See details
 for the definition of a position.}
 
-\item{counts}{specifies how the counts reported by \code{frequency} are computed.
-The default value \code{"desc"} includes both counts that are specific to the
-context (if any) and counts from the descendants of the context in the
-tree. When \code{counts = "local"} the counts include only the number of times
-the context appears without being the last part of a longer context.}
+\item{local}{specifies how the counts reported by \code{frequency} are computed.
+When \code{local} is \code{FALSE} (default value) the counts include both counts that
+are specific to the context (if any) and counts from the descendants of the
+context in the tree. When \code{local} is \code{TRUE} the counts include only the
+number of times the context appears without being the last part of a longer
+context.}
 
 \item{metrics}{if TRUE, adds predictive metrics for each context (see
 \code{\link[=metrics]{metrics()}} for the definition of predictive metrics).}

@@ -14,10 +14,10 @@ vlmc_context_extractor <-
         res <- cbind(res, data.frame(cutoff = local_kl))
       }
       if (isTRUE(control$metric)) {
-        if (isFALSE(control[["frequency"]] == "detailed") || isFALSE(control[["counts"]] == "local")) {
+        if (isFALSE(control[["frequency"]] == "detailed") || isFALSE(control[["local"]])) {
           l_cont <- control
           l_cont$frequency <- "detailed"
-          l_cont$counts <- "local"
+          l_cont$local <- TRUE
           lres <- frequency_context_extractor(tree, path, ct, vals, l_cont, is_leaf, p_summary)
         } else {
           lres <- res
@@ -46,11 +46,12 @@ vlmc_context_extractor <-
 #'   them in the native scale. The returned values are directly based on the log
 #'   likelihood ratio computed in the context tree and are not modified to
 #'   ensure pruning (as when [cutoff()] is called by  `raw=TRUE`).
-#' @param counts specifies how the counts reported by `frequency` are computed.
-#'   The default value `"desc"` includes both counts that are specific to the
-#'   context (if any) and counts from the descendants of the context in the
-#'   tree. When `counts = "local"` the counts include only the number of times
-#'   the context appears without being the last part of a longer context.
+#' @param local specifies how the counts reported by `frequency` are computed.
+#'   When `local` is `FALSE` (default value) the counts include both counts that
+#'   are specific to the context (if any) and counts from the descendants of the
+#'   context in the tree. When `local` is `TRUE` the counts include only the
+#'   number of times the context appears without being the last part of a longer
+#'   context.
 #' @param metrics if TRUE, adds predictive metrics for each context (see
 #'   [metrics()] for the definition of predictive metrics).
 #' @details The default behaviour of the function is to return a list of all the
@@ -101,8 +102,12 @@ vlmc_context_extractor <-
 #' contexts(model, cutoff = "native", metrics = TRUE)
 #' @export
 contexts.vlmc <- function(ct, sequence = FALSE, reverse = FALSE, frequency = NULL,
-                          positions = FALSE, counts = c("desc", "local"), cutoff = NULL, metrics = FALSE, ...) {
-  counts <- match.arg(counts)
+                          positions = FALSE, local = FALSE, cutoff = NULL,
+                          metrics = FALSE, ...) {
+  assertthat::assert_that(rlang::is_logical(sequence))
+  assertthat::assert_that(rlang::is_logical(reverse))
+  assertthat::assert_that(rlang::is_logical(local))
+  assertthat::assert_that(rlang::is_logical(metrics))
   if (!is.null(frequency)) {
     assertthat::assert_that(frequency %in% c("total", "detailed"))
   }
@@ -120,8 +125,14 @@ contexts.vlmc <- function(ct, sequence = FALSE, reverse = FALSE, frequency = NUL
   if (!sequence) {
     NextMethod()
   } else {
-    control <- list(frequency = frequency, counts = counts, p_value = !is.null(cutoff), metrics = metrics, positions = positions)
-    preres <- contexts_extractor(ct, reverse, vlmc_context_extractor, control, vlmc_parent_summary)
+    control <- list(
+      frequency = frequency, local = local, p_value = !is.null(cutoff),
+      metrics = metrics, positions = positions
+    )
+    preres <- contexts_extractor(
+      ct, reverse, vlmc_context_extractor, control,
+      vlmc_parent_summary
+    )
     if (!is.null(cutoff)) {
       if ((cutoff == "quantile")) {
         preres$cutoff <- to_quantile(preres$cutoff, length(ct$vals))

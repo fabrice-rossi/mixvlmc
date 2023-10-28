@@ -6,11 +6,11 @@
 \alias{counts.ctx_node_cpp}
 \title{Report the distribution of values that follow occurrences of a sequence}
 \usage{
-counts(node, frequency = c("detailed", "total"), counts = c("desc", "local"))
+counts(node, frequency = c("detailed", "total"), local = FALSE)
 
-\method{counts}{ctx_node}(node, frequency = c("detailed", "total"), counts = c("desc", "local"))
+\method{counts}{ctx_node}(node, frequency = c("detailed", "total"), local = FALSE)
 
-\method{counts}{ctx_node_cpp}(node, frequency = c("detailed", "total"), counts = c("desc", "local"))
+\method{counts}{ctx_node_cpp}(node, frequency = c("detailed", "total"), local = FALSE)
 }
 \arguments{
 \item{node}{a \code{ctx_node} object as returned by \code{\link[=find_sequence]{find_sequence()}}}
@@ -20,10 +20,11 @@ gives the number of occurrences of the sequence in the original sequence.
 \code{"detailed"} includes in addition the break down of these occurrences into
 all the possible states.}
 
-\item{counts}{specifies how the counts are computed. The default value
-\code{"desc"} includes both counts that are specific to the context (if any) and
-counts from the descendants of the context in the tree. When \code{counts = "local"} the counts include only the number of times the context appears
-without being the last part of a longer context.}
+\item{local}{specifies how the counts are computed. When \code{local} is \code{FALSE}
+(default value) the counts include both counts that are specific to the
+context (if any) and counts from the descendants of the context in the
+tree. When \code{local} is \code{TRUE} the counts include only the number of times
+the context appears without being the last part of a longer context.}
 }
 \value{
 either an integer when \code{frequency="total"} which gives the total

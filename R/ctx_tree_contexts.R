@@ -33,7 +33,7 @@ frequency_context_extractor <-
             res[["positions"]] <- list(ct[["match"]] + length(path))
           }
         }
-        if (!is_leaf && isTRUE(control$counts == "local")) {
+        if (!is_leaf && isTRUE(control[["local"]])) {
           ## remove sub counts
           for (child in ct$children) {
             if (!is.null(child[["f_by"]])) {

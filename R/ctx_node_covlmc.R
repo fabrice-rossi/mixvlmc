@@ -103,9 +103,9 @@ find_sequence.covlmc <- function(ct, ctx, reverse = FALSE, ...) {
 #'
 #' @param node A `ctx_node_covlmc` object as returned by [find_sequence()] or
 #'   [contexts.covlmc()]
-#' @param model specifies the model information to return, either the
-#'   coefficients only (`model="coef"` default case) or the full model object
-#'   (`model="full"`
+#' @param type specifies the model information to return, either the
+#'   coefficients only (`type="coef"` default case) or the full model object
+#'   (`type="full"`)
 #' @export
 #' @returns if `node` is a context, the coefficients of the logistic model (as a
 #'   vector or a matrix depending on the size of the state space) or a logistic
@@ -119,16 +119,16 @@ find_sequence.covlmc <- function(ct, ctx, reverse = FALSE, ...) {
 #' node <- find_sequence(m_cov, c(vals[1], vals[1]))
 #' node
 #' model(node)
-#' model(node, model = "full")
+#' model(node, type = "full")
 #'
-model <- function(node, model = c("coef", "full")) {
+model <- function(node, type = c("coef", "full")) {
   assertthat::assert_that(is_ctx_node_covlmc(node))
-  model <- match.arg(model)
-  if (model == "full" && isTRUE(node$tree$trimmed == "full")) {
+  type <- match.arg(type)
+  if (type == "full" && isTRUE(node$tree$trimmed == "full")) {
     stop("Full model extraction is not supported by fully trimmed covlmc")
   }
   if (!is.null(node$node[["model"]])) {
-    if (model == "full") {
+    if (type == "full") {
       node$node[["model"]]$model
     } else {
       node$node[["model"]]$coefficients

@@ -128,11 +128,12 @@ covlmc_node_content_extractor <- function(tree, path, ct, vals, control, is_leaf
 #'   gives for each context the size of the history of covariates used by the
 #'   model.
 #' @param ct a fitted covlmc model.
-#' @param counts specifies how the counts reported by `frequency` are computed.
-#'   The default value `"desc"` includes both counts that are specific to the
-#'   context (if any) and counts from the descendants of the context in the
-#'   tree. When `counts = "local"` the counts include only the number of times
-#'   the context appears without being the last part of a longer context.
+#' @param local specifies how the counts reported by `frequency` are computed.
+#'   When `local` is `FALSE` (default value) the counts include both counts that
+#'   are specific to the context (if any) and counts from the descendants of the
+#'   context in the tree. When `local` is `TRUE` the counts include only the
+#'   number of times the context appears without being the last part of a longer
+#'   context.
 #' @param metrics if TRUE, adds predictive metrics for each context (see
 #'   [metrics()] for the definition of predictive metrics).
 #' @param merging if TRUE, adds a `merged` column to the result data frame. For
@@ -173,10 +174,15 @@ covlmc_node_content_extractor <- function(tree, path, ct, vals, control, is_leaf
 #' contexts(m_cov, model = "full", hsize = TRUE)
 #' @export
 contexts.covlmc <- function(ct, sequence = FALSE, reverse = FALSE, frequency = NULL,
-                            positions = FALSE, counts = c("desc", "local"),
+                            positions = FALSE, local = FALSE,
                             metrics = FALSE, model = NULL, hsize = FALSE,
                             merging = FALSE, ...) {
-  counts <- match.arg(counts)
+  assertthat::assert_that(rlang::is_logical(sequence))
+  assertthat::assert_that(rlang::is_logical(reverse))
+  assertthat::assert_that(rlang::is_logical(local))
+  assertthat::assert_that(rlang::is_logical(metrics))
+  assertthat::assert_that(rlang::is_logical(hsize))
+  assertthat::assert_that(rlang::is_logical(merging))
   if (!is.null(frequency)) {
     assertthat::assert_that(frequency %in% c("total", "detailed"))
   }
@@ -200,7 +206,7 @@ contexts.covlmc <- function(ct, sequence = FALSE, reverse = FALSE, frequency = N
       }
     }
     control <- list(
-      frequency = frequency, counts = counts, model = model,
+      frequency = frequency, local = local, model = model,
       hsize = hsize, metrics = metrics, merging = merging,
       positions = positions
     )

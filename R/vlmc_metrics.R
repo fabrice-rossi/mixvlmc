@@ -57,7 +57,7 @@ generate_fake_data <- function(freq, counts, probs, vals) {
 #'
 #' @exportS3Method
 metrics.vlmc <- function(model, ...) {
-  all_ctx <- contexts(model, type = "data.frame", frequency = "detailed", counts = "local")
+  all_ctx <- contexts(model, type = "data.frame", frequency = "detailed", local = TRUE)
   all_ctx_global <- contexts(model, type = "data.frame", frequency = "detailed")
   probs <- sweep(as.matrix(all_ctx_global[, -(1:2)]), 1, all_ctx_global$freq, "/")
   counts <- as.matrix(all_ctx[, -(1:2)])
