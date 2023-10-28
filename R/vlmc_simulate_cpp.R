@@ -24,9 +24,7 @@
 #'
 #' @export
 simulate.vlmc_cpp <- function(object, nsim = 1, seed = NULL, init = NULL, burnin = 0L, sample = c("fast", "slow", "R"), ...) {
-  if (extptr_is_null(object$root$.pointer)) {
-    stop("Missing C++ representation!\nThis object was probably restored from a saved object.\n")
-  }
+  restore_vlmc_cpp(object)
   sample <- match.arg(sample)
   if (!is.null(seed)) {
     attr(seed, "kind") <- as.list(RNGkind())

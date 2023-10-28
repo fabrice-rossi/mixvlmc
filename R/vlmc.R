@@ -243,6 +243,7 @@ prune.vlmc <- function(vlmc, alpha = 0.05, cutoff = NULL, ...) {
   }
   ## preserve the construction information
   result$max_depth <- vlmc$max_depth
+  result$pruned <- TRUE
   result
 }
 
@@ -352,6 +353,7 @@ vlmc <- function(x, alpha = 0.05, cutoff = NULL, min_size = 2L, max_depth = 100L
     result$root$compute_reverse()
     ## with the C++ backend, max_depth is only used during pruning
     result$max_depth <- FALSE
+    result$restoration <- cpp_tree$restoration_info()
   }
   ## prepare for loglikelihood calculation
   result$alpha <- alpha
@@ -375,6 +377,7 @@ vlmc <- function(x, alpha = 0.05, cutoff = NULL, min_size = 2L, max_depth = 100L
       result$match <- 0:(length(x) - 1)
     }
   }
+  result$pruned <- prune
   result
 }
 

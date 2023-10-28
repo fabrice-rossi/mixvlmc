@@ -78,6 +78,26 @@ test_that("vlmc returns an object with all the needed internal fields", {
   expect_named(model, c(
     "root", "max_depth", "vals", "depth",
     "nb_ctx", "alpha", "cutoff", "ix", "extended_ll",
-    "keep_match", "data_size"
+    "keep_match", "data_size", "restoration", "pruned"
   ), ignore.order = TRUE)
+})
+
+test_that("automatic C++ representation restoration works", {
+  data_set <- build_markov_chain(500, 2, seed = 6)
+  model <- vlmc(data_set$x, cutoff = 0.1, keep_match = TRUE, backend = "C++")
+  expect_false(extptr_is_null(model$root$.pointer))
+  model_path <- withr::local_tempfile(fileext = ".Rds")
+  saveRDS(model, model_path)
+  restored_model <- readRDS(model_path)
+  expect_true(extptr_is_null(restored_model$root$.pointer))
+  ctxs_orig <- contexts(model,
+    frequency = "detailed", positions = TRUE,
+    cutoff = "quantile", metrics = TRUE
+  )
+  ctxs_restored <- contexts(restored_model,
+    frequency = "detailed", positions = TRUE,
+    cutoff = "quantile", metrics = TRUE
+  )
+  expect_false(extptr_is_null(restored_model$root$.pointer))
+  expect_true(compare_ctx(ctxs_orig, ctxs_restored))
 })

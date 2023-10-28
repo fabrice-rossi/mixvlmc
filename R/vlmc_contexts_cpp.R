@@ -2,9 +2,7 @@
 #' @rdname contexts.vlmc
 contexts.vlmc_cpp <- function(ct, sequence = FALSE, reverse = FALSE, frequency = NULL,
                               positions = FALSE, counts = c("desc", "local"), cutoff = NULL, metrics = FALSE, ...) {
-  if (extptr_is_null(ct$root$.pointer)) {
-    stop("Missing C++ representation!\nThis object was probably restored from a saved object.\n")
-  }
+  restore_vlmc_cpp(ct)
   counts <- match.arg(counts)
   if (!is.null(frequency)) {
     assertthat::assert_that(frequency %in% c("total", "detailed"))

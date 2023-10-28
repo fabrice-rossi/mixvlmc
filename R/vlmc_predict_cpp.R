@@ -9,9 +9,7 @@
 #' predict(model, dts[1:5], "probs")
 predict.vlmc_cpp <- function(object, newdata, type = c("raw", "probs"),
                              final_pred = TRUE, ...) {
-  if (extptr_is_null(object$root$.pointer)) {
-    stop("Missing C++ representation!\nThis object was probably restored from a saved object.\n")
-  }
+  restore_vlmc_cpp(object)
   type <- match.arg(type)
   assertthat::assert_that(rlang::is_logical(final_pred))
   if (!missing(newdata) && !is.null(newdata)) {

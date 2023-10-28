@@ -25,7 +25,8 @@ SuffixTree::SuffixTree(EdgeNode* _root)
       nb_ctx(0),
       first_value(-1),
       min_size(1),
-      max_length(-1) {}
+      max_length(-1),
+      cut_off(0) {}
 
 SuffixTree::SuffixTree()
     : sentinel(-1),
@@ -39,7 +40,8 @@ SuffixTree::SuffixTree()
       nb_ctx(0),
       first_value(-1),
       min_size(1),
-      max_length(-1) {
+      max_length(-1),
+      cut_off(0) {
   root = new EdgeNode(nullptr, -1, -1);
 }
 
@@ -75,6 +77,7 @@ void SuffixTree::invalidate() {
   first_value = -1;
   min_size = 1;
   max_length = -1;
+  cut_off = 0;
 }
 
 int SuffixTree::x_at(int pos) const {
@@ -619,6 +622,7 @@ void SuffixTree::prune_context(int min_counts, int max_length, double K) {
               nb_ctx);
   min_size = min_counts;
   this->max_length = max_length;
+  cut_off = K;
 }
 
 SuffixTree* SuffixTree::clone_prune(int min_counts, int max_length) const {
@@ -655,6 +659,7 @@ SuffixTree* SuffixTree::clone_prune_context(int min_counts,
   result->compute_reverse();
   result->min_size = min_counts;
   result->max_length = max_length;
+  result->cut_off = K;
   return result;
 }
 
@@ -710,7 +715,8 @@ List SuffixTree::restoration_info() {
                       Named("max_x") = max_x,
                       Named("last_value") = first_value,
                       Named("min_size") = min_size,
-                      Named("max_depth") = max_length);
+                      Named("max_depth") = max_length,
+                      Named("cut_off") = cut_off);
 }
 
 void SuffixTree::make_explicit() {

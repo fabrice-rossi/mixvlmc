@@ -13,9 +13,7 @@ loglikelihood.vlmc_cpp <- function(vlmc,
                                    initial = c("truncated", "specific", "extended"),
                                    ignore,
                                    ...) {
-  if (extptr_is_null(vlmc$root$.pointer)) {
-    stop("Missing C++ representation!\nThis object was probably restored from a saved object.\n")
-  }
+  restore_vlmc_cpp(vlmc)
   initial <- match.arg(initial)
   if (missing(ignore)) {
     if (initial == "truncated") {

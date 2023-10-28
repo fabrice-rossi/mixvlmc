@@ -11,9 +11,7 @@
 #' model <- vlmc(dts, backend = "C++", keep_match = TRUE)
 #' model <- trim(model)
 trim.vlmc_cpp <- function(ct, ...) {
-  if (extptr_is_null(ct$root$.pointer)) {
-    stop("Missing C++ representation!\nThis object was probably restored from a saved object.\n")
-  }
+  restore_vlmc_cpp(ct)
   if (ct$root$has_positions) {
     ct$root <- ct$root$trim()
   }

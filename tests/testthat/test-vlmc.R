@@ -72,6 +72,6 @@ test_that("vlmc returns an object with all the needed internal fields", {
   expect_named(model, c(
     "children", "f_by", "max_depth", "vals", "depth",
     "nb_ctx", "alpha", "cutoff", "ix", "extended_ll",
-    "keep_match", "data_size"
+    "keep_match", "data_size", "pruned"
   ), ignore.order = TRUE)
 })

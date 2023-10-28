@@ -32,6 +32,7 @@ class SuffixTree {
   int first_value;
   int min_size;
   int max_length;
+  double cut_off;
 
   SuffixTree(EdgeNode* _root);
   SuffixTree* clone_from_root(EdgeNode* new_root,
