@@ -2,11 +2,32 @@
 
 ## Breaking changes
 * the `mode` parameter of `cutoff.vlmc()` has been renamed to `scale`
-* the `type` has been removed from `contexts()` variants and the default
-  result format has been modified significantly
-* `contexts()` are now reported by default in temporal order
+* the `type` parameter has been removed from `contexts()` variants and the 
+  default result format has been modified significantly
+* the `counts` parameter from `contexts.vlmc()` and `contexts.covlmc()` has
+  been replaced by a logical parameter named `local`
+* `contexts()` sequences are now reported by default in temporal order
 
 ## New features
+### C++ backend
+The main major new feature of this version is the inclusion of a C++ 
+implementation of context tree and VLMC construction. A new option 
+`mixvlmc.backend` can be used to switch globally from the original `"R"` 
+implementation to the new `"C++"` back end. A new `backend` parameter has
+been added to `ctx_tree()`, `vlmc()` and `tune_vlmc()` to enable local back end
+selection. 
+
+The C++ implementation is significantly faster than the R implementation, at 
+least by a factor 10. While it has been thoroughly tested, it is still 
+considered experimental notably because it does not apply to COVLMC (setting the 
+global  option to `"C++"` has not effect on COVLMC model construction). For 
+context trees and VLMC, results should not depend on the back end, at least 
+within numerical precision. The only notable difference is the ordering of the 
+contexts which differs between back ends: in a call to `contexts()`, the first 
+context for the R back end will generally not be the first context for the C++ 
+back end. 
+
+### Other new features
 * `contexts()` can now report the positions of each context in the original time
   series
 * nodes of context trees can be extracted individually as `ctx_node` objects 
