@@ -19,6 +19,14 @@ restore_ctx_tree_cpp <- function(tree) {
     tree$root@.xData$.pointer <- cpp_tree@.xData$.pointer
     tree$root@.xData$.cppclass <- cpp_tree@.xData$.cppclass
     tree$root@.xData$.module <- cpp_tree@.xData$.module
+    ## we need to unbind all the functions in .xData to avoid issues
+    content <- rlang::env_names(tree$root@.xData)
+    internals <- stringr::str_starts(content, "\\.")
+    to_keep <- c("compute_counts", "prune", "getClass", "initialize", "finalize")
+    to_remove <- setdiff(content[!internals], to_keep)
+    for (fn in to_remove) {
+      rlang::env_unbind(tree$root@.xData, fn)
+    }
   }
 }
 
