@@ -440,7 +440,7 @@ draw(elec_model)
 The `draw.covlmc()` function is more advanced than its VLMC counterpart. It provides more detailed information, particularly regarding p-values associated with pruning operations. The "merging" p-value corresponds to replacing some of the contexts with a single joint model, while the "collapsing" p-value is associated to pruning all the sub-contexts of a context. P-values associated to specific models correspond to reducing the memory of the corresponding model, that is discarding the dependency 
 of the conditional probability towards the oldest covariates. 
 
-To explore the contexts in a programmatically way, one should rely on the `contexts()` function. COVLMC contexts have additional characteristics compared to VLMC and context trees.
+To explore the contexts in a programmatic way, one should rely on the `contexts()` function. COVLMC contexts have additional characteristics compared to VLMC and context trees.
 In particular, the `contexts()` function can report the model associated to each context, either
 by its parameters only:
 ```{r}
