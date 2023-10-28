@@ -239,7 +239,12 @@ is_context <- function(node) {
 #'   positions(subseq)
 #' }
 positions <- function(node) {
-  assertthat::assert_that(is_ctx_node(node))
+  UseMethod("positions")
+}
+
+#' @export
+#' @rdname positions
+positions.ctx_node <- function(node) {
   if (is.null(node$node[["match"]])) {
     stop("Cannot report positions if they were not saved")
   }
@@ -260,12 +265,11 @@ positions <- function(node) {
 #'   gives the number of occurrences of the sequence in the original sequence.
 #'   `"detailed"` includes in addition the break down of these occurrences into
 #'   all the possible states.
-#' @param counts specifies how the counts are computed. The default value
-#'   `"desc"` includes both counts that are specific to the context (if any) and
-#'   counts from the descendants of the context in the tree. When `counts =
-#'   "local"` the counts include only the number of times the context appears
-#'   without being the last part of a longer context.
-#'
+#' @param local specifies how the counts are computed. When `local` is `FALSE`
+#'   (default value) the counts include both counts that are specific to the
+#'   context (if any) and counts from the descendants of the context in the
+#'   tree. When `local` is `TRUE` the counts include only the number of times
+#'   the context appears without being the last part of a longer context.
 #' @returns either an integer when `frequency="total"` which gives the total
 #'   number of occurrences of the sequence represented by `node` or a
 #'   `data.frame` with a `total` column with the same value and a column for
@@ -280,12 +284,21 @@ positions <- function(node) {
 #' if (!is.null(subseq)) {
 #'   counts(subseq)
 #' }
-counts <- function(node, frequency = c("detailed", "total"), counts = c("desc", "local")) {
-  assertthat::assert_that(is_ctx_node(node))
+counts <- function(node,
+                   frequency = c("detailed", "total"),
+                   local = FALSE) {
+  UseMethod("counts")
+}
+
+#' @export
+#' @rdname counts
+counts.ctx_node <- function(node,
+                            frequency = c("detailed", "total"),
+                            local = FALSE) {
   frequency <- match.arg(frequency)
-  counts <- match.arg(counts)
+  assertthat::assert_that(rlang::is_logical(local))
   freqs <- node$node[["f_by"]]
-  if (counts == "local") {
+  if (local) {
     if (!is.null(node$node[["children"]])) {
       for (k in seq_along(node$node[["children"]])) {
         child <- node$node[["children"]][[k]]
@@ -306,5 +319,10 @@ counts <- function(node, frequency = c("detailed", "total"), counts = c("desc", 
 }
 
 probs <- function(node) {
+  UseMethod("probs")
+}
+
+#' @export
+probs.ctx_node <- function(node) {
   node$node[["f_by"]] / sum(node$node[["f_by"]])
 }

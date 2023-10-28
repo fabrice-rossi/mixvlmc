@@ -9,10 +9,10 @@ test_that("models are correctly reported", {
     model <- covlmc(dts, df_y, alpha = 0.01, min_size = 3 / 2)
     ctxs_obj <- contexts(model)
     ctxs_df <- contexts(model, type = "data.frame", model = "coef")
-    ctxs_coef <- lapply(ctxs_obj, model, model = "coef")
+    ctxs_coef <- lapply(ctxs_obj, model, type = "coef")
     expect_identical(ctxs_coef, unclass(ctxs_df$coef))
     ctxs_df_f <- contexts(model, type = "data.frame", model = "full")
-    ctxs_full <- lapply(ctxs_obj, model, model = "full")
+    ctxs_full <- lapply(ctxs_obj, model, type = "full")
     expect_identical(ctxs_full, unclass(ctxs_df_f$model))
   }
 })
@@ -48,8 +48,8 @@ test_that("merged models are correctly reported", {
       for (j in seq_along(mwith)) {
         if (!is.null(mwith[[j]])) {
           expect_identical(
-            model(ctxs_obj[[k]], model = "full"),
-            model(mwith[[j]], model = "full")
+            model(ctxs_obj[[k]], type = "full"),
+            model(mwith[[j]], type = "full")
           )
         }
       }

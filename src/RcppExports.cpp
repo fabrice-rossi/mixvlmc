@@ -46,11 +46,55 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// kl_crit
+double kl_crit(IntegerVector p, IntegerVector q);
+RcppExport SEXP _mixvlmc_kl_crit(SEXP pSEXP, SEXP qSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< IntegerVector >::type p(pSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type q(qSEXP);
+    rcpp_result_gen = Rcpp::wrap(kl_crit(p, q));
+    return rcpp_result_gen;
+END_RCPP
+}
+// mixvlmc_sample
+IntegerVector mixvlmc_sample(IntegerVector p, int n);
+RcppExport SEXP _mixvlmc_mixvlmc_sample(SEXP pSEXP, SEXP nSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< IntegerVector >::type p(pSEXP);
+    Rcpp::traits::input_parameter< int >::type n(nSEXP);
+    rcpp_result_gen = Rcpp::wrap(mixvlmc_sample(p, n));
+    return rcpp_result_gen;
+END_RCPP
+}
+// mixvlmc_sample2
+IntegerVector mixvlmc_sample2(IntegerVector p, int n);
+RcppExport SEXP _mixvlmc_mixvlmc_sample2(SEXP pSEXP, SEXP nSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< IntegerVector >::type p(pSEXP);
+    Rcpp::traits::input_parameter< int >::type n(nSEXP);
+    rcpp_result_gen = Rcpp::wrap(mixvlmc_sample2(p, n));
+    return rcpp_result_gen;
+END_RCPP
+}
+
+RcppExport SEXP extptr_is_null_(void *);
+RcppExport SEXP _rcpp_module_boot_suffixtree();
 
 static const R_CallMethodDef CallEntries[] = {
     {"_mixvlmc_after", (DL_FUNC) &_mixvlmc_after, 1},
     {"_mixvlmc_before", (DL_FUNC) &_mixvlmc_before, 1},
     {"_mixvlmc_forward_match_all_ctx_counts", (DL_FUNC) &_mixvlmc_forward_match_all_ctx_counts, 4},
+    {"_mixvlmc_kl_crit", (DL_FUNC) &_mixvlmc_kl_crit, 2},
+    {"_mixvlmc_mixvlmc_sample", (DL_FUNC) &_mixvlmc_mixvlmc_sample, 2},
+    {"_mixvlmc_mixvlmc_sample2", (DL_FUNC) &_mixvlmc_mixvlmc_sample2, 2},
+    {"_rcpp_module_boot_suffixtree", (DL_FUNC) &_rcpp_module_boot_suffixtree, 0},
+    {"extptr_is_null_", (DL_FUNC) &extptr_is_null_, 1},
     {NULL, NULL, 0}
 };
 

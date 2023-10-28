@@ -62,7 +62,7 @@ cutoff.ctx_node <- function(model, scale = c("quantile", "native"), raw = FALSE,
 #' @export
 metrics.ctx_node <- function(model, ...) {
   c_probs <- matrix(probs(model), nrow = 1)
-  c_freq <- counts(model, counts = "local")
+  c_freq <- counts(model, local = TRUE)
   fake_data <- generate_fake_data(
     c_freq$total,
     c_freq[, 2:ncol(c_freq), drop = FALSE],

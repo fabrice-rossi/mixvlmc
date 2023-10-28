@@ -11,14 +11,18 @@ summary.ctx_tree <- function(object, ...) {
   structure(res, class = "summary.ctx_tree")
 }
 
+print_summary_ctx_tree <- function(x) {
+  cat(paste(" Number of contexts:", x$nb, "\n"))
+  cat(paste(" Maximum context length:", x$depth, "\n"))
+  cat(paste(" Average context length:", signif(x$avg_depth, 4), "\n"))
+}
+
 #' @exportS3Method
 print.summary.ctx_tree <- function(x, ...) {
   cat(paste(
     "Context tree on",
     paste(x$state_space, collapse = ", ")
   ), "\n")
-  cat(paste(" Number of contexts:", x$nb, "\n"))
-  cat(paste(" Maximum context length:", x$depth, "\n"))
-  cat(paste(" Average context length:", x$avg_depth, "\n"))
+  print_summary_ctx_tree(x)
   invisible(x)
 }

@@ -13,6 +13,14 @@
 #'
 #'    The first option `"glm"` is recommended as both [stats::glm()] and [VGAM::vglm()]
 #'    are able to detect and deal with degeneracy in the data set.
+#' - `mixvlmc.backend`: specifies the implementation used for the context tree
+#'    construction in [ctx_tree()], [vlmc()] and [tune_vlmc()]. Two values are
+#'    supported:
+#'    - `"R"` (default value): this corresponds to the original almost pure R
+#'      implementation.
+#'    - `"C++"`: this corresponds to the experimental C++ implementation. This
+#'      version is significantly faster than the R version, but is still
+#'      considered experimental.
 #'
 #' @docType package
 "_PACKAGE"

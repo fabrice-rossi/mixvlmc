@@ -243,6 +243,7 @@ prune.vlmc <- function(vlmc, alpha = 0.05, cutoff = NULL, ...) {
   }
   ## preserve the construction information
   result$max_depth <- vlmc$max_depth
+  result$pruned <- TRUE
   result
 }
 
@@ -268,7 +269,8 @@ prune.vlmc <- function(vlmc, alpha = 0.05, cutoff = NULL, ...) {
 #' convenience parameter to avoid setting `alpha=1` (which essentially prevents
 #' any pruning). Automated model selection is provided by [tune_vlmc()].
 #'
-#' @param x a discrete time series; can be numeric, character, factor or logical.
+#' @param x a discrete time series; can be numeric, character, factor or
+#'   logical.
 #' @param alpha number in (0,1] (default: 0.05) cut off value in quantile scale
 #'   in the pruning phase.
 #' @param cutoff non negative number: cut off value in native (likelihood ratio)
@@ -280,11 +282,19 @@ prune.vlmc <- function(vlmc, alpha = 0.05, cutoff = NULL, ...) {
 #'   growing phase of the context tree.
 #' @param prune logical: specify whether the context tree should be pruned
 #'   (default behaviour).
-#' @param keep_match logical: specify whether to keep the context matches (default to FALSE)
+#' @param keep_match logical: specify whether to keep the context matches
+#'   (default to FALSE)
+#' @param backend "R" or "C++" (default: as specified by the "mixvlmc.backend"
+#'   option). Specifies the implementation used to represent the context tree
+#'   and to built it. See details.
+#' @inheritSection ctx_tree Back ends
+#'
 #' @returns a fitted vlmc model.
 #' @examples
 #' pc <- powerconsumption[powerconsumption$week == 5, ]
-#' dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.25, 0.5, 0.75, 1))))
+#' dts <- cut(pc$active_power,
+#'   breaks = c(0, quantile(pc$active_power, probs = c(0.25, 0.5, 0.75, 1)))
+#' )
 #' model <- vlmc(dts)
 #' draw(model)
 #' depth(model)
@@ -298,16 +308,15 @@ prune.vlmc <- function(vlmc, alpha = 0.05, cutoff = NULL, ...) {
 #' @export
 #' @seealso [cutoff()], [prune()] and [tune_vlmc()]
 #' @references Bühlmann, P. and Wyner, A. J. (1999), "Variable length Markov
-#'   chains. Ann. Statist." 27 (2)
-#'   480-513 \doi{10.1214/aos/1018031204}
-vlmc <- function(x, alpha = 0.05, cutoff = NULL, min_size = 2L, max_depth = 100L, prune = TRUE, keep_match = FALSE) {
+#'   chains. Ann. Statist." 27 (2) 480-513 \doi{10.1214/aos/1018031204}
+vlmc <- function(x, alpha = 0.05, cutoff = NULL, min_size = 2L, max_depth = 100L,
+                 prune = TRUE, keep_match = FALSE,
+                 backend = getOption("mixvlmc.backend", "R")) {
+  backend <- match.arg(backend, c("R", "C++"))
   # data conversion
   nx <- to_dts(x)
   ix <- nx$ix
   vals <- nx$vals
-  if (length(vals) > max(10, 0.05 * length(x))) {
-    warning(paste0("x as numerous unique values (", length(vals), ")"))
-  }
   if (is.null(cutoff)) {
     if (is.null(alpha) || !is.numeric(alpha) || alpha <= 0 || alpha > 1) {
       stop("the alpha parameter must be in (0, 1]")
@@ -320,31 +329,55 @@ vlmc <- function(x, alpha = 0.05, cutoff = NULL, min_size = 2L, max_depth = 100L
     }
     alpha <- to_quantile(cutoff, length(vals))
   }
-  ctx_tree <- grow_ctx_tree(ix, vals, min_size = min_size, max_depth = max_depth, compute_stats = !prune, keep_match = keep_match)
-  result <- ctx_tree
-  if (prune) {
-    result <- prune_ctx_tree(ctx_tree, alpha = alpha, cutoff = cutoff)
-  } else {
-    result <- new_ctx_tree(result$vals, result, class = "vlmc")
+  if (length(vals) > max(10, 0.05 * length(x))) {
+    warning(paste0("x as numerous unique values (", length(vals), ")"))
   }
-  ## prepare for loglikelihoodcalculation
+  if (backend == "R") {
+    ctx_tree <- grow_ctx_tree(ix, vals, min_size = min_size, max_depth = max_depth, compute_stats = !prune, keep_match = keep_match)
+    result <- ctx_tree
+    if (prune) {
+      result <- prune_ctx_tree(ctx_tree, alpha = alpha, cutoff = cutoff)
+    } else {
+      result <- new_ctx_tree(result$vals, result, class = "vlmc")
+    }
+  } else {
+    cpp_tree <- build_suffix_tree(rev(ix)[-1], length(nx$vals))
+    cpp_tree$compute_counts(ix[length(ix)], keep_match)
+    if (prune) {
+      cpp_tree$prune_context(min_size, max_depth, cutoff)
+    } else {
+      cpp_tree$prune(min_size, max_depth)
+    }
+    result <- new_ctx_tree_cpp(vals, cpp_tree, class = c("vlmc_cpp", "vlmc"))
+    result$root$make_explicit()
+    result$root$compute_reverse()
+    ## with the C++ backend, max_depth is only used during pruning
+    result$max_depth <- FALSE
+    result$restoration <- cpp_tree$restoration_info()
+  }
+  ## prepare for loglikelihood calculation
   result$alpha <- alpha
   result$cutoff <- cutoff
   if (depth(result) > 0) {
     result$ix <- ix[1:min(depth(result), length(x))]
-    ivlmc <- match_ctx(result, result$ix)
-    result$extended_ll <- rec_loglikelihood_vlmc(ivlmc, TRUE)
+    if (backend == "R") {
+      ivlmc <- match_ctx(result, result$ix)
+      result$extended_ll <- rec_loglikelihood_vlmc(ivlmc, TRUE)
+    } else {
+      result$extended_ll <- result$root$loglikelihood(result$ix, 0, TRUE, FALSE)
+    }
   } else {
     result$extended_ll <- 0
   }
   result$keep_match <- keep_match
   result$data_size <- length(x)
-  if (keep_match) {
+  if (backend == "R" && keep_match) {
     ## handle the case where the root is context
     if (!is_full_node(result)) {
       result$match <- 0:(length(x) - 1)
     }
   }
+  result$pruned <- prune
   result
 }
 

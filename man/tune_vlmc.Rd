@@ -12,6 +12,7 @@ tune_vlmc(
   cutoff_init = NULL,
   min_size = 2L,
   max_depth = 100L,
+  backend = getOption("mixvlmc.backend", "R"),
   verbose = 0,
   save = c("best", "initial", "all")
 )
@@ -39,6 +40,10 @@ a context in the growing phase of the initial context tree.}
 
 \item{max_depth}{integer >= 1 (default: 100). Longest context considered in
 growing phase of the initial context tree (see details).}
+
+\item{backend}{backend "R" or "C++" (default: as specified by the
+"mixvlmc.backend" option). Specifies the implementation used to represent
+the context tree and to built it. See \code{\link[=vlmc]{vlmc()}} for details.}
 
 \item{verbose}{integer >= 0 (default: 0). Verbosity level of the pruning
 process.}

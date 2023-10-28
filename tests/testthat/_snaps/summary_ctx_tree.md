@@ -6,5 +6,5 @@
       Context tree on 0, 1 
        Number of contexts: 32 
        Maximum context length: 5 
-       Average context length: 4.84375 
+       Average context length: 4.844 
 

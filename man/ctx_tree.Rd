@@ -4,10 +4,17 @@
 \alias{ctx_tree}
 \title{Build a context tree for a discrete time series}
 \usage{
-ctx_tree(x, min_size = 2L, max_depth = 100L, keep_position = TRUE)
+ctx_tree(
+  x,
+  min_size = 2L,
+  max_depth = 100L,
+  keep_position = TRUE,
+  backend = getOption("mixvlmc.backend", "R")
+)
 }
 \arguments{
-\item{x}{a discrete time series; can be numeric, character, factor or logical.}
+\item{x}{a discrete time series; can be numeric, character, factor or
+logical.}
 
 \item{min_size}{integer >= 1 (default: 2). Minimum number of observations for
 a context to be included in the tree.}
@@ -17,9 +24,13 @@ be included in the tree.}
 
 \item{keep_position}{logical (default: TRUE). Should the context tree keep
 the position of the contexts.}
+
+\item{backend}{"R" or "C++" (default: as specified by the "mixvlmc.backend"
+option). Specifies the implementation used to represent the context tree
+and to built it. See details.}
 }
 \value{
-a context tree (of class \code{ctx_tree}).
+a context tree (of class that inherits from \code{ctx_tree}).
 }
 \description{
 This function builds a context tree for a time series.
@@ -30,6 +41,24 @@ than \code{max_depth} that appear at least \code{min_size} times in the time ser
 stores the frequencies of the states that follow each context. Optionally,
 the positions of the contexts in the time series can be stored in the tree.
 }
+\section{Back ends}{
+
+
+Two back ends are available to compute context trees:
+\itemize{
+\item the "R" back end represents the tree in pure R data structures (nested lists)
+that be easily processed further in pure R (C++ helper functions are used
+to speed up the construction).
+\item the "C++" back end represents the tree with C++ classes. This back end is
+considered experimental. The tree is built with an optimised suffix tree
+algorithm which speeds up the construction by at least a factor 10 in
+standard settings. As the tree is kept outside of R direct reach, context
+trees built with the C++ back end must be restored after a
+\code{saveRDS()}/\code{readRDS()} sequence. This is done automatically by recomputing
+completely the context tree.
+}
+}
+
 \examples{
 dts <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 0)
 ## get all contexts of length 2

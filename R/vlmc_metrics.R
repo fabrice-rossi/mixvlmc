@@ -28,7 +28,7 @@ generate_fake_data <- function(freq, counts, probs, vals) {
     for (k in seq_along(freq)) {
       if (freq[k] > 0) {
         new_pos <- pos + freq[k]
-        predictor[pos:(new_pos - 1), ] <- matrix(probs[k, ], ncol = ncol(predictor), nrow = freq[k], byrow = TRUE)
+        predictor[pos:(new_pos - 1), ] <- matrix(as.numeric(probs[k, ]), ncol = ncol(predictor), nrow = freq[k], byrow = TRUE)
         pos <- new_pos
       }
     }
@@ -57,7 +57,7 @@ generate_fake_data <- function(freq, counts, probs, vals) {
 #'
 #' @exportS3Method
 metrics.vlmc <- function(model, ...) {
-  all_ctx <- contexts(model, type = "data.frame", frequency = "detailed", counts = "local")
+  all_ctx <- contexts(model, type = "data.frame", frequency = "detailed", local = TRUE)
   all_ctx_global <- contexts(model, type = "data.frame", frequency = "detailed")
   probs <- sweep(as.matrix(all_ctx_global[, -(1:2)]), 1, all_ctx_global$freq, "/")
   counts <- as.matrix(all_ctx[, -(1:2)])

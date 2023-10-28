@@ -1,4 +1,4 @@
-# contexts return the appropriate data format
+# contexts print as expected
 
     Code
       contexts(dts_tree)
