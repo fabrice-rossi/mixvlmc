@@ -23,8 +23,10 @@ restore_model.vlmc_cpp <- function(tree) {
     ## we need to unbind all the functions in .xData to avoid issues
     content <- rlang::env_names(tree$root@.xData)
     internals <- stringr::str_starts(content, "\\.")
-    to_keep <- c("compute_counts", "prune_context", "make_explicit",
-                 "compute_reverse", "getClass", "initialize", "finalize")
+    to_keep <- c(
+      "compute_counts", "prune_context", "make_explicit",
+      "compute_reverse", "getClass", "initialize", "finalize"
+    )
     to_remove <- setdiff(content[!internals], to_keep)
     for (fn in to_remove) {
       rlang::env_unbind(tree$root@.xData, fn)

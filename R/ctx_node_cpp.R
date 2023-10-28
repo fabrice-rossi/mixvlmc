@@ -1,3 +1,15 @@
+restore_ctx_node_cpp <- function(node) {
+  restore_model(node$tree)
+  if (extptr_is_null(node$node_env$node)) {
+    if (length(node$sequence) > 0) {
+      nx <- to_dts(node$sequence, node$tree$vals)
+      node$node_env$node <- node$tree$root$raw_find_sequence(nx$ix)
+    } else {
+      node$node_env$node <- node$tree$root$raw_find_sequence(integer())
+    }
+  }
+}
+
 #' Create `ctx_node_cpp`
 #'
 #' @param ctx the sequence in reverse order
@@ -9,9 +21,10 @@
 #' @param class finer class
 #' @noRd
 new_ctx_node_cpp <- function(ctx, tree, node, rev, ..., class = character()) {
+  node_env <- rlang::new_environment(list(node = node))
   structure(
     list(
-      sequence = ctx, node = node, tree = tree,
+      sequence = ctx, node_env = node_env, tree = tree,
       is_context = tree$root$node_is_context(node),
       rev = rev, ...
     ),
@@ -21,9 +34,7 @@ new_ctx_node_cpp <- function(ctx, tree, node, rev, ..., class = character()) {
 
 #' @export
 print.ctx_node_cpp <- function(x, ...) {
-  if (extptr_is_null(x$node)) {
-    stop("Missing C++ representation!\nThis object was probably restored from a saved object.\n")
-  }
+  restore_ctx_node_cpp(x)
   if (x$is_context) {
     cat("Context")
   } else {
@@ -37,7 +48,7 @@ print.ctx_node_cpp <- function(x, ...) {
     x_seq <- rev(x$sequence)
   }
   cat(paste(x_seq, collapse = ", "), "\n")
-  counts <- x$tree$root$node_counts(x$node)
+  counts <- x$tree$root$node_counts(x$node_env$node)
   cat(" followed by ", paste(paste(x$tree$vals, counts, sep = " ("), collapse = "), "), ")\n", sep = "")
 }
 
@@ -45,7 +56,7 @@ print.ctx_node_cpp <- function(x, ...) {
 #' @export
 #' @rdname find_sequence
 find_sequence.ctx_tree_cpp <- function(ct, ctx, reverse = FALSE, ...) {
-  restore_ctx_tree_cpp(ct)
+  restore_model(ct)
   if (length(ctx) == 0) {
     if (isTRUE(ct$keep_match) && is.null(ct$match)) {
       ct$match <- 1:ct$data_size
@@ -72,13 +83,11 @@ find_sequence.ctx_tree_cpp <- function(ct, ctx, reverse = FALSE, ...) {
 #' @export
 #' @rdname positions
 positions.ctx_node_cpp <- function(node) {
-  if (extptr_is_null(node$node)) {
-    stop("Missing C++ representation!\nThis object was probably restored from a saved object.\n")
-  }
+  restore_ctx_node_cpp(node)
   if (!node$tree$root$has_positions) {
     stop("Cannot report positions if they were not saved")
   }
-  node$tree$data_size - node$tree$root$node_positions(node$node) - 1L
+  node$tree$data_size - node$tree$root$node_positions(node$node_env$node) - 1L
 }
 
 #' @export
@@ -86,15 +95,13 @@ positions.ctx_node_cpp <- function(node) {
 counts.ctx_node_cpp <- function(node,
                                 frequency = c("detailed", "total"),
                                 counts = c("desc", "local")) {
-  if (extptr_is_null(node$node)) {
-    stop("Missing C++ representation!\nThis object was probably restored from a saved object.\n")
-  }
+  restore_ctx_node_cpp(node)
   frequency <- match.arg(frequency)
   counts <- match.arg(counts)
   if (counts == "desc") {
-    freqs <- node$tree$root$node_counts(node$node)
+    freqs <- node$tree$root$node_counts(node$node_env$node)
   } else {
-    freqs <- node$tree$root$node_local_counts(node$node)
+    freqs <- node$tree$root$node_local_counts(node$node_env$node)
   }
   if (frequency == "total") {
     sum(freqs)
