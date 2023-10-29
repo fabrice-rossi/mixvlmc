@@ -61,7 +61,6 @@ The package is loaded in a standard way.
 
 ```{r}
 library(mixvlmc)
-## we use ggplot2 for graphics but this is not a dependency of the package
 library(ggplot2)
 ```
 
