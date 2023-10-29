@@ -1,7 +1,7 @@
 Package: mixvlmc
 Type: Package
 Title: Variable Length Markov Chains with Covariates
-Version: 0.2.0
+Version: 0.2.0.9000
 Authors@R: 
     c(person(given = "Fabrice",
              family = "Rossi",
