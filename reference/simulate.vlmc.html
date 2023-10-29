@@ -12,7 +12,7 @@ given vlmc object."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/aj
     
     <a class="navbar-brand me-2" href="../index.html">mixvlmc</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.2.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -26,16 +26,24 @@ given vlmc object."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/aj
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
+    <h6 class="dropdown-header" data-toc-skip>Getting started</h6>
     <a class="dropdown-item" href="../articles/context-trees.html">Context trees</a>
-    <a class="dropdown-item" href="../articles/covlmc.html">Variable Length Markov Chains with Covariates (COVLMC)</a>
-    <a class="dropdown-item" href="../articles/sampling.html">Sampling from (CO)VLMC</a>
     <a class="dropdown-item" href="../articles/variable-length-markov-chains.html">Variable length Markov chains (VLMC)</a>
+    <a class="dropdown-item" href="../articles/covlmc.html">Variable Length Markov Chains with Covariates (COVLMC)</a>
+    <div class="dropdown-divider"></div>
+    <h6 class="dropdown-header" data-toc-skip>Advanced topics</h6>
+    <a class="dropdown-item" href="../articles/likelihood.html">Likelihood calculation</a>
+    <a class="dropdown-item" href="../articles/prediction.html">Predicting with (CO)VLMC</a>
+    <a class="dropdown-item" href="../articles/sampling.html">Sampling from (CO)VLMC</a>
+    <div class="dropdown-divider"></div>
+    <a class="dropdown-item" href="../articles/index.html">More articles...</a>
   </div>
 </li>
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-news">News</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-news">
     <h6 class="dropdown-header" data-toc-skip>Releases</h6>
+    <a class="external-link dropdown-item" href="https://fabrice-rossi.github.io/blog/posts/mixvlmc-0-2.html">mixvlmc 0.2.0</a>
     <a class="external-link dropdown-item" href="https://fabrice-rossi.github.io/blog/posts/mixvlmc-0-1.html">mixvlmc 0.1.1</a>
     <div class="dropdown-divider"></div>
     <a class="dropdown-item" href="../news/index.html">Changelog</a>
@@ -70,7 +78,7 @@ given vlmc object.</p>
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S3 method for vlmc</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/stats/simulate.html" class="external-link">simulate</a></span><span class="op">(</span><span class="va">object</span>, nsim <span class="op">=</span> <span class="fl">1</span>, seed <span class="op">=</span> <span class="cn">NULL</span>, init <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/stats/simulate.html" class="external-link">simulate</a></span><span class="op">(</span><span class="va">object</span>, nsim <span class="op">=</span> <span class="fl">1L</span>, seed <span class="op">=</span> <span class="cn">NULL</span>, init <span class="op">=</span> <span class="cn">NULL</span>, burnin <span class="op">=</span> <span class="fl">0L</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -84,11 +92,16 @@ given vlmc object.</p>
 
 
 <dt>seed</dt>
-<dd><p>an optional random seed.</p></dd>
+<dd><p>an optional random seed (see the dedicated section).</p></dd>
 
 
 <dt>init</dt>
-<dd><p>an optional initial sequence for the time series</p></dd>
+<dd><p>an optional initial sequence for the time series.</p></dd>
+
+
+<dt>burnin</dt>
+<dd><p>number of initial observations to discard or <code>"auto"</code> (see the
+dedicated section).</p></dd>
 
 
 <dt>...</dt>
@@ -99,12 +112,77 @@ given vlmc object.</p>
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     
 
-<p>a simulated discrete time series of the same type as the one used to build the vlmc.</p>
+<p>a simulated discrete time series of the same type as the one used to
+build the vlmc with a <code>seed</code> attribute (see the Random seed section). The
+results has also the <code>dts</code> class to hide the <code>seed</code> attribute when using
+<code>print</code> or similar function.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>The time series can be initiated by a fixed sequence specified via the <code>init</code>
 parameter.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="burn-in-warm-up-period">Burn in (Warm up) period<a class="anchor" aria-label="anchor" href="#burn-in-warm-up-period"></a></h2>
+    
+
+
+<p>When using a VLMC for simulation purposes, we are generally interested in
+the stationary distribution of the corresponding Markov chain. To reduce
+the dependence of the samples from the initial values and get closer to
+this stationary distribution (if it exists), it is recommended to discard
+the first samples which are produced in a so-called "burn in" (or "warm
+up") period. The <code>burnin</code> parameter can be used to implement this approach.
+The VLMC is used to produce a sample of size <code>burnin + nsim</code> but the first
+<code>burnin</code> values are discarded. Notice that this burn in values can be
+partially given by the <code>init</code> parameter if it is specified.</p>
+<p>If <code>burnin</code> is set to <code>"auto"</code>, the <code>burnin</code> period is set to <code>64 * context_number(object)</code>, following the heuristic proposed in Mächler and
+Bühlmann (2004).</p>
+    </div>
+    <div class="section level2">
+    <h2 id="random-seed">Random seed<a class="anchor" aria-label="anchor" href="#random-seed"></a></h2>
+    
+
+
+<p>This function reproduce the behaviour of <code><a href="https://rdrr.io/r/stats/simulate.html" class="external-link">stats::simulate()</a></code>. If <code>seed</code> is
+<code>NULL</code> the function does not change the random generator state and returns
+the value of <a href="https://rdrr.io/r/base/Random.html" class="external-link">.Random.seed</a> as a <code>seed</code> attribute in the return value. This
+can be used to reproduce exactly the simulation results by setting
+<a href="https://rdrr.io/r/base/Random.html" class="external-link">.Random.seed</a> to this value. Notice that if the random seed has not be
+initialised by R so far, the function issues a call to <code>runif(1)</code> to
+perform this initialisation (as is done in <code><a href="https://rdrr.io/r/stats/simulate.html" class="external-link">stats::simulate()</a></code>).</p>
+<p>It <code>seed</code> is an integer, it is used in a call to <code><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed()</a></code> before the
+simulation takes place. The integer is saved as a <code>seed</code> attribute in the
+return value. The integer seed is completed by an attribute <code>kind</code> which
+contains the value <code>as.list([RNGkind()])</code> exactly as with
+<code><a href="https://rdrr.io/r/stats/simulate.html" class="external-link">stats::simulate()</a></code>. The random generator state is reset to its original
+value at the end of the call.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="extended-contexts">Extended contexts<a class="anchor" aria-label="anchor" href="#extended-contexts"></a></h2>
+    
+
+
+<p>As explained in details in <code><a href="loglikelihood.html">loglikelihood.vlmc()</a></code> documentation and in the
+dedicated <code><a href="../articles/likelihood.html">vignette("likelihood", package = "mixvlmc")</a></code>, the first initial
+values of a time series do not in general have a proper context for a VLMC
+with a non zero order. In order to simulate something meaningful for those
+values when <code>init</code> is not provided, we rely on the notion of extended
+context defined in the documents mentioned above. This follows the same
+logic as using <code><a href="loglikelihood.html">loglikelihood.vlmc()</a></code> with the parameter
+<code>initial="extended"</code>. All vlmc functions that need to manipulate initial
+values with no proper context use the same approach.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
+    <p>Mächler, M. and Bühlmann, P. (2004) "Variable Length Markov
+Chains: Methodology, Computing, and Software" Journal of Computational and
+Graphical Statistics, 13 (2), 435-455, <a href="https://doi.org/10.1198/1061860043524" class="external-link">doi:10.1198/1061860043524</a></p>
+    </div>
+    <div class="section level2">
+    <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
+    <div class="dont-index"><p><code><a href="https://rdrr.io/r/stats/simulate.html" class="external-link">stats::simulate()</a></code> for details and examples on the random number
+generator setting</p></div>
     </div>
 
     <div class="section level2">
@@ -114,6 +192,7 @@ parameter.</p>
 <span class="r-in"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="vlmc.html">vlmc</a></span><span class="op">(</span><span class="va">dts</span>, min_size <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">new_dts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/simulate.html" class="external-link">simulate</a></span><span class="op">(</span><span class="va">model</span>, <span class="fl">500</span>, seed <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">new_dts_2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/simulate.html" class="external-link">simulate</a></span><span class="op">(</span><span class="va">model</span>, <span class="fl">500</span>, seed <span class="op">=</span> <span class="fl">0</span>, init <span class="op">=</span> <span class="va">dts</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">new_dts_3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/simulate.html" class="external-link">simulate</a></span><span class="op">(</span><span class="va">model</span>, <span class="fl">500</span>, seed <span class="op">=</span> <span class="fl">0</span>, burnin <span class="op">=</span> <span class="fl">500</span><span class="op">)</span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
@@ -121,7 +200,7 @@ parameter.</p>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p><p>Developed by Fabrice Rossi.</p>
+  <p></p><p>Developed by <a href="https://fabrice-rossi.github.io/" class="external-link">Fabrice Rossi</a>.</p>
 </div>
 
 <div class="pkgdown-footer-right">

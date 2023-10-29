@@ -12,7 +12,7 @@ estimated with keep_data=TRUE to enable the pruning."><!-- mathjax --><script sr
     
     <a class="navbar-brand me-2" href="../index.html">mixvlmc</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.2.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -26,16 +26,24 @@ estimated with keep_data=TRUE to enable the pruning."><!-- mathjax --><script sr
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
+    <h6 class="dropdown-header" data-toc-skip>Getting started</h6>
     <a class="dropdown-item" href="../articles/context-trees.html">Context trees</a>
-    <a class="dropdown-item" href="../articles/covlmc.html">Variable Length Markov Chains with Covariates (COVLMC)</a>
-    <a class="dropdown-item" href="../articles/sampling.html">Sampling from (CO)VLMC</a>
     <a class="dropdown-item" href="../articles/variable-length-markov-chains.html">Variable length Markov chains (VLMC)</a>
+    <a class="dropdown-item" href="../articles/covlmc.html">Variable Length Markov Chains with Covariates (COVLMC)</a>
+    <div class="dropdown-divider"></div>
+    <h6 class="dropdown-header" data-toc-skip>Advanced topics</h6>
+    <a class="dropdown-item" href="../articles/likelihood.html">Likelihood calculation</a>
+    <a class="dropdown-item" href="../articles/prediction.html">Predicting with (CO)VLMC</a>
+    <a class="dropdown-item" href="../articles/sampling.html">Sampling from (CO)VLMC</a>
+    <div class="dropdown-divider"></div>
+    <a class="dropdown-item" href="../articles/index.html">More articles...</a>
   </div>
 </li>
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-news">News</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-news">
     <h6 class="dropdown-header" data-toc-skip>Releases</h6>
+    <a class="external-link dropdown-item" href="https://fabrice-rossi.github.io/blog/posts/mixvlmc-0-2.html">mixvlmc 0.2.0</a>
     <a class="external-link dropdown-item" href="https://fabrice-rossi.github.io/blog/posts/mixvlmc-0-1.html">mixvlmc 0.1.1</a>
     <div class="dropdown-divider"></div>
     <a class="dropdown-item" href="../news/index.html">Changelog</a>
@@ -101,7 +109,7 @@ for pruning.</p></dd>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>Post pruning a VLMC with covariates is not as straightforward as the same
-procedure applied to <code><a href="vlmc.html">vlmc()</a></code> (see <code><a href="cutoff.html">cutoff.vlmc()</a></code> and <code><a href="prune.html">prune.vlmc()</a></code>). For
+procedure applied to <code><a href="vlmc.html">vlmc()</a></code> (see <code><a href="cutoff.vlmc.html">cutoff.vlmc()</a></code> and <code><a href="prune.html">prune.vlmc()</a></code>). For
 efficiency reasons, <code><a href="covlmc.html">covlmc()</a></code> estimates only the logistic models that are
 considered useful for a given set construction parameters. With a more
 aggressive pruning threshold, some contexts become leaves of the context tree
@@ -143,7 +151,7 @@ initial model.</p>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p><p>Developed by Fabrice Rossi.</p>
+  <p></p><p>Developed by <a href="https://fabrice-rossi.github.io/" class="external-link">Fabrice Rossi</a>.</p>
 </div>
 
 <div class="pkgdown-footer-right">

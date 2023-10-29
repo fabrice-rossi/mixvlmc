@@ -12,7 +12,7 @@ series by optimizing an information criterion (BIC or AIC)."><!-- mathjax --><sc
     
     <a class="navbar-brand me-2" href="../index.html">mixvlmc</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.2.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -26,16 +26,24 @@ series by optimizing an information criterion (BIC or AIC)."><!-- mathjax --><sc
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
+    <h6 class="dropdown-header" data-toc-skip>Getting started</h6>
     <a class="dropdown-item" href="../articles/context-trees.html">Context trees</a>
-    <a class="dropdown-item" href="../articles/covlmc.html">Variable Length Markov Chains with Covariates (COVLMC)</a>
-    <a class="dropdown-item" href="../articles/sampling.html">Sampling from (CO)VLMC</a>
     <a class="dropdown-item" href="../articles/variable-length-markov-chains.html">Variable length Markov chains (VLMC)</a>
+    <a class="dropdown-item" href="../articles/covlmc.html">Variable Length Markov Chains with Covariates (COVLMC)</a>
+    <div class="dropdown-divider"></div>
+    <h6 class="dropdown-header" data-toc-skip>Advanced topics</h6>
+    <a class="dropdown-item" href="../articles/likelihood.html">Likelihood calculation</a>
+    <a class="dropdown-item" href="../articles/prediction.html">Predicting with (CO)VLMC</a>
+    <a class="dropdown-item" href="../articles/sampling.html">Sampling from (CO)VLMC</a>
+    <div class="dropdown-divider"></div>
+    <a class="dropdown-item" href="../articles/index.html">More articles...</a>
   </div>
 </li>
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-news">News</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-news">
     <h6 class="dropdown-header" data-toc-skip>Releases</h6>
+    <a class="external-link dropdown-item" href="https://fabrice-rossi.github.io/blog/posts/mixvlmc-0-2.html">mixvlmc 0.2.0</a>
     <a class="external-link dropdown-item" href="https://fabrice-rossi.github.io/blog/posts/mixvlmc-0-1.html">mixvlmc 0.1.1</a>
     <div class="dropdown-divider"></div>
     <a class="dropdown-item" href="../news/index.html">Changelog</a>
@@ -72,8 +80,12 @@ series by optimizing an information criterion (BIC or AIC).</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">tune_vlmc</span><span class="op">(</span></span>
 <span>  <span class="va">x</span>,</span>
 <span>  criterion <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"BIC"</span>, <span class="st">"AIC"</span><span class="op">)</span>,</span>
-<span>  min_size <span class="op">=</span> <span class="fl">2</span>,</span>
-<span>  max_depth <span class="op">=</span> <span class="fl">100</span>,</span>
+<span>  initial <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"truncated"</span>, <span class="st">"specific"</span>, <span class="st">"extended"</span><span class="op">)</span>,</span>
+<span>  alpha_init <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  cutoff_init <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  min_size <span class="op">=</span> <span class="fl">2L</span>,</span>
+<span>  max_depth <span class="op">=</span> <span class="fl">100L</span>,</span>
+<span>  backend <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">getOption</a></span><span class="op">(</span><span class="st">"mixvlmc.backend"</span>, <span class="st">"R"</span><span class="op">)</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  save <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"best"</span>, <span class="st">"initial"</span>, <span class="st">"all"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -82,12 +94,30 @@ series by optimizing an information criterion (BIC or AIC).</p>
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>x</dt>
-<dd><p>a discrete time series; can be numeric, character, factor and logical.</p></dd>
+<dd><p>a discrete time series; can be numeric, character, factor and
+logical.</p></dd>
 
 
 <dt>criterion</dt>
-<dd><p>criterion used to select the best model. Either <code>"BIC"</code> (default)
-or <code>"AIC"</code> (see details).</p></dd>
+<dd><p>criterion used to select the best model. Either <code>"BIC"</code>
+(default) or <code>"AIC"</code> (see details).</p></dd>
+
+
+<dt>initial</dt>
+<dd><p>specifies the likelihood function, more precisely the way the
+first few observations for which contexts cannot be calculated are
+integrated in the likelihood. Default to <code>"truncated"</code>. See
+<code><a href="loglikelihood.html">loglikelihood()</a></code> for details.</p></dd>
+
+
+<dt>alpha_init</dt>
+<dd><p>if non <code>NULL</code> used as the initial cut off parameter (in
+quantile scale) to build the initial VLMC</p></dd>
+
+
+<dt>cutoff_init</dt>
+<dd><p>if non <code>NULL</code> used as the initial cut off parameter to
+build the initial VLMC. Takes precedence over <code>alpha_init</code> if specified.</p></dd>
 
 
 <dt>min_size</dt>
@@ -100,17 +130,24 @@ a context in the growing phase of the initial context tree.</p></dd>
 growing phase of the initial context tree (see details).</p></dd>
 
 
+<dt>backend</dt>
+<dd><p>backend "R" or "C++" (default: as specified by the
+"mixvlmc.backend" option). Specifies the implementation used to represent
+the context tree and to built it. See <code><a href="vlmc.html">vlmc()</a></code> for details.</p></dd>
+
+
 <dt>verbose</dt>
-<dd><p>integer &gt;= 0 (default: 0). Verbosity level of the pruning process.</p></dd>
+<dd><p>integer &gt;= 0 (default: 0). Verbosity level of the pruning
+process.</p></dd>
 
 
 <dt>save</dt>
-<dd><p>specify which BIC models are saved during the pruning process. The default
-value <code>"best"</code> asks the function to keep only the best model according to
-the <code>criterion</code>. When <code>save="initial"</code> the function keeps <em>in addition</em> the
-initial (complex) model which is then pruned during the selection process.
-When <code>save="all"</code>, the function returns all the models considered during the
-selection process.</p></dd>
+<dd><p>specify which BIC models are saved during the pruning process.
+The default value <code>"best"</code> asks the function to keep only the best model
+according to the <code>criterion</code>. When <code>save="initial"</code> the function keeps <em>in
+addition</em> the initial (complex) model which is then pruned during the
+selection process. When <code>save="all"</code>, the function returns all the models
+considered during the selection process.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -119,27 +156,30 @@ selection process.</p></dd>
 
 <p>a list with the following components:</p><ul><li><p><code>best_model</code>: the optimal VLMC</p></li>
 <li><p><code>criterion</code>: the criterion used to select the optimal VLMC</p></li>
+<li><p><code>initial</code>: the likelihood function used to select the optimal VLMC</p></li>
 <li><p><code>results</code>: a data frame with details about the pruning process</p></li>
 <li><p><code>saved_models</code>: a list of intermediate VLMCs if <code>save="initial"</code> or
-<code>save="all"</code>. It contains an <code>initial</code> component with the large VLMC obtained
-first and an <code>all</code> component with a list of all the <em>other</em> VLMC obtained
-by pruning the initial one.</p></li>
+<code>save="all"</code>. It contains an <code>initial</code> component with the large VLMC
+obtained first and an <code>all</code> component with a list of all the <em>other</em> VLMC
+obtained by pruning the initial one.</p></li>
 </ul></div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>This function automates the process of fitting a large VLMC to a discrete time
-series with <code><a href="vlmc.html">vlmc()</a></code> and of pruning the tree (with <code><a href="cutoff.html">cutoff()</a></code> and <code><a href="prune.html">prune()</a></code>)
-to get an optimal with respect to an information criterion. To avoid missing
-long term dependencies, the function uses the <code>max_depth</code> parameter as an initial
-guess but then relies on an automatic increase of the value to make sure the
-initial context tree is only limited by the <code>min_size</code> parameter. The initial
-value of the <code>cutoff</code> parameter of <code><a href="vlmc.html">vlmc()</a></code> is also set to conservative values
-(depending on the criterion) to avoid prior simplification of the context tree.</p>
+    <p>This function automates the process of fitting a large VLMC to a discrete
+time series with <code><a href="vlmc.html">vlmc()</a></code> and of pruning the tree (with <code><a href="cutoff.html">cutoff()</a></code> and
+<code><a href="prune.html">prune()</a></code>) to get an optimal with respect to an information criterion. To
+avoid missing long term dependencies, the function uses the <code>max_depth</code>
+parameter as an initial guess but then relies on an automatic increase of the
+value to make sure the initial context tree is only limited by the <code>min_size</code>
+parameter. The initial value of the <code>cutoff</code> parameter of <code><a href="vlmc.html">vlmc()</a></code> is also
+set to conservative values (depending on the criterion) to avoid prior
+simplification of the context tree. This default value can be overridden
+using the <code>cutoff_init</code> or <code>alpha_init</code> parameter.</p>
 <p>Once the initial VLMC is obtained, the <code><a href="cutoff.html">cutoff()</a></code> and <code><a href="prune.html">prune()</a></code> functions are
-used to build all the VLMC models that could be generated using larger values of
-the initial cut off parameter. The best model is selected from this collection,
-including the initial complex tree, as the one that minimizes the chosen
-information criterion.</p>
+used to build all the VLMC models that could be generated using larger values
+of the initial cut off parameter. The best model is selected from this
+collection, including the initial complex tree, as the one that minimizes the
+chosen information criterion.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
@@ -151,7 +191,7 @@ information criterion.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">dts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A"</span>, <span class="st">"B"</span>, <span class="st">"C"</span><span class="op">)</span><span class="op">)</span>, <span class="fl">100</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">tune_result</span> <span class="op">&lt;-</span> <span class="fu">tune_vlmc</span><span class="op">(</span><span class="va">dts</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="draw.html">draw</a></span><span class="op">(</span><span class="va">tune_result</span><span class="op">$</span><span class="va">best_model</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> * (0.24, 0.38, 0.38)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> * (0.31, 0.38, 0.31)</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
@@ -159,7 +199,7 @@ information criterion.</p>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p><p>Developed by Fabrice Rossi.</p>
+  <p></p><p>Developed by <a href="https://fabrice-rossi.github.io/" class="external-link">Fabrice Rossi</a>.</p>
 </div>
 
 <div class="pkgdown-footer-right">

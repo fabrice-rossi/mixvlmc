@@ -12,7 +12,7 @@ contexts."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/m
     
     <a class="navbar-brand me-2" href="../index.html">mixvlmc</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.2.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -26,16 +26,24 @@ contexts."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/m
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
+    <h6 class="dropdown-header" data-toc-skip>Getting started</h6>
     <a class="dropdown-item" href="../articles/context-trees.html">Context trees</a>
-    <a class="dropdown-item" href="../articles/covlmc.html">Variable Length Markov Chains with Covariates (COVLMC)</a>
-    <a class="dropdown-item" href="../articles/sampling.html">Sampling from (CO)VLMC</a>
     <a class="dropdown-item" href="../articles/variable-length-markov-chains.html">Variable length Markov chains (VLMC)</a>
+    <a class="dropdown-item" href="../articles/covlmc.html">Variable Length Markov Chains with Covariates (COVLMC)</a>
+    <div class="dropdown-divider"></div>
+    <h6 class="dropdown-header" data-toc-skip>Advanced topics</h6>
+    <a class="dropdown-item" href="../articles/likelihood.html">Likelihood calculation</a>
+    <a class="dropdown-item" href="../articles/prediction.html">Predicting with (CO)VLMC</a>
+    <a class="dropdown-item" href="../articles/sampling.html">Sampling from (CO)VLMC</a>
+    <div class="dropdown-divider"></div>
+    <a class="dropdown-item" href="../articles/index.html">More articles...</a>
   </div>
 </li>
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-news">News</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-news">
     <h6 class="dropdown-header" data-toc-skip>Releases</h6>
+    <a class="external-link dropdown-item" href="https://fabrice-rossi.github.io/blog/posts/mixvlmc-0-2.html">mixvlmc 0.2.0</a>
     <a class="external-link dropdown-item" href="https://fabrice-rossi.github.io/blog/posts/mixvlmc-0-1.html">mixvlmc 0.1.1</a>
     <div class="dropdown-divider"></div>
     <a class="dropdown-item" href="../news/index.html">Changelog</a>
@@ -58,7 +66,7 @@ contexts."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/m
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="" class="logo" alt=""><h1>Contexts of a context tree</h1>
-      <small class="dont-index">Source: <a href="https://github.com/fabrice-rossi/mixvlmc/blob/HEAD/R/ctx_tree_contexts.R" class="external-link"><code>R/ctx_tree_contexts.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/fabrice-rossi/mixvlmc/blob/HEAD/R/ctx_tree_contexts.R" class="external-link"><code>R/ctx_tree_contexts.R</code></a>, <a href="https://github.com/fabrice-rossi/mixvlmc/blob/HEAD/R/ctx_tree_cpp_contexts.R" class="external-link"><code>R/ctx_tree_cpp_contexts.R</code></a></small>
       <div class="d-none name"><code>contexts.ctx_tree.Rd</code></div>
     </div>
 
@@ -72,9 +80,20 @@ contexts.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S3 method for ctx_tree</span></span>
 <span><span class="fu"><a href="contexts.html">contexts</a></span><span class="op">(</span></span>
 <span>  <span class="va">ct</span>,</span>
-<span>  type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"auto"</span>, <span class="st">"list"</span>, <span class="st">"data.frame"</span><span class="op">)</span>,</span>
-<span>  reverse <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  sequence <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  reverse <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  frequency <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  positions <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for ctx_tree_cpp</span></span>
+<span><span class="fu"><a href="contexts.html">contexts</a></span><span class="op">(</span></span>
+<span>  <span class="va">ct</span>,</span>
+<span>  sequence <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  reverse <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  frequency <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  positions <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -85,12 +104,13 @@ contexts.</p>
 <dd><p>a context tree.</p></dd>
 
 
-<dt>type</dt>
-<dd><p>result type (see details).</p></dd>
+<dt>sequence</dt>
+<dd><p>if <code>TRUE</code> the function returns its results as a <code>data.frame</code>,
+if <code>FALSE</code> (default) as a list of <code>ctx_node</code> objects. (see details)</p></dd>
 
 
 <dt>reverse</dt>
-<dd><p>logical (defaults to FALSE). See details.</p></dd>
+<dd><p>logical (defaults to <code>FALSE</code>). See details.</p></dd>
 
 
 <dt>frequency</dt>
@@ -101,6 +121,14 @@ sequence. <code>"detailed"</code> includes in addition the break down of these
 occurrences into all the possible states.</p></dd>
 
 
+<dt>positions</dt>
+<dd><p>logical (defaults to FALSE). Specify whether the positions
+of each context in the time series used to build the context tree should be
+reported in a <code>positions</code> column of the result data frame. The availability
+of the positions depends on the way the context tree was built. See details
+for the definition of a position.</p></dd>
+
+
 <dt>...</dt>
 <dd><p>additional arguments for the contexts function.</p></dd>
 
@@ -109,134 +137,141 @@ occurrences into all the possible states.</p></dd>
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     
 
-<p>The list of the contexts represented in this tree or a data.frame
-with more content.</p>
+<p>A list of class <code>contexts</code> containing the contexts represented in
+this tree (as <code>ctx_node</code>) or a data.frame.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>The default result for <code>type="auto"</code> (or <code>type="list"</code>) and
-<code>frequency=NULL</code> is the list of all contexts.</p>
-<p>Other results are obtained only with <code>type="data.frame"</code> (or
-<code>type="auto"</code>). In this case the resulting <code>data.frame</code> has a <code>context</code>
-column storing the contexts. If <code>frequency="total"</code>, an additional column
-named <code>freq</code> gives the number of occurrences of each context in the series
-used to build the tree. If <code>frequency="detailed"</code>, one additional column is
-added per state in the context space. Each column records the number of
-times a given context is followed by the corresponding value in the
-original series.</p>
+    <p>The default behaviour of the function is to return a list of all the
+contexts using <code>ctx_node</code> objects (as returned by <code><a href="find_sequence.html">find_sequence()</a></code>). The
+properties of the contexts can then be explored using adapted functions
+such as <code><a href="counts.html">counts()</a></code> and <code><a href="positions.html">positions()</a></code>.</p>
+<p>When <code>sequence=TRUE</code> the method returns a data.frame whose first column,
+named <code>context</code>, contains the contexts as vectors (i.e. the value returned
+by <code><a href="as_sequence.html">as_sequence()</a></code> applied to a <code>ctx_node</code> object). Other columns contain
+context specific values specified by the additional parameters. Setting any
+of those parameters to a value that ask for reporting information will
+toggle the result type of the function to <code>data.frame</code>.</p>
+<p>If <code>frequency="total"</code>, an additional column named <code>freq</code> gives the number
+of occurrences of each context in the series used to build the tree. If
+<code>frequency="detailed"</code>, one additional column is added per state in the
+context space. Each column records the number of times a given context is
+followed by the corresponding value in the original series.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="positions">Positions<a class="anchor" aria-label="anchor" href="#positions"></a></h2>
+    <p>A position of a context <code>ctx</code> in the time series <code>x</code> is
+an index value <code>t</code> such that the context ends with <code>x[t]</code>. Thus <code>x[t+1]</code> is
+after the context. For instance if <code>x=c(0, 0, 1, 1)</code> and <code>ctx=c(0, 1)</code> (in
+standard state order), then the position of <code>ctx</code> in <code>x</code> is 3.</p>
     </div>
     <div class="section level2">
     <h2 id="state-order-in-a-context">State order in a context<a class="anchor" aria-label="anchor" href="#state-order-in-a-context"></a></h2>
     <p>Notice that contexts are given by default
-in the "reverse" order used by the VLMC papers: older values are on the
-right. For instance, the context <code>c(0, 1)</code> is reported if the sequence 1,
-then 0 appeared in the time series used to build the context tree. Set
-reverse to <code>FALSE</code> for the reverse convention.</p>
+in the temporal order and not in the "reverse" order used by many VLMC
+research papers: older values are on the left. For instance, the context
+<code>c(1, 0)</code> is reported if the sequence 0, then 1 appeared in the time series
+used to build the context tree. Set reverse to <code>TRUE</code> for the reverse
+convention which is somewhat easier to relate to the way the context trees
+are represented by <code><a href="draw.html">draw()</a></code> (i.e. recent values at the top the tree).</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code>contexts.ctx_tree()</code>, <code><a href="contexts.vlmc.html">contexts.vlmc()</a></code>, <code><a href="contexts.covlmc.html">contexts.covlmc()</a></code>.</p></div>
+    <div class="dont-index"><p><code><a href="find_sequence.html">find_sequence()</a></code> and <code><a href="find_sequence.covlmc.html">find_sequence.covlmc()</a></code> for direct access to
+a specific context, and <code>contexts.ctx_tree()</code>, <code><a href="contexts.vlmc.html">contexts.vlmc()</a></code> and
+<code><a href="contexts.covlmc.html">contexts.covlmc()</a></code> for concrete implementations of <code><a href="contexts.html">contexts()</a></code>.</p></div>
     </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">dts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A"</span>, <span class="st">"B"</span>, <span class="st">"C"</span><span class="op">)</span><span class="op">)</span>, <span class="fl">100</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">dts_tree</span> <span class="op">&lt;-</span> <span class="fu"><a href="ctx_tree.html">ctx_tree</a></span><span class="op">(</span><span class="va">dts</span>, max_depth <span class="op">=</span> <span class="fl">3</span>, min_size <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co">## direct representation with ctx_node objects</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="contexts.html">contexts</a></span><span class="op">(</span><span class="va">dts_tree</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] A A A</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Levels: A B C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[2]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] A A</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Levels: A B C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[3]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] A B A</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Levels: A B C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[4]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] A B</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Levels: A B C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[5]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] A C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Levels: A B C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[6]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] B A A</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Levels: A B C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[7]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] B A</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Levels: A B C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[8]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] B B B</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Levels: A B C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[9]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] B B</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Levels: A B C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[10]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] B C B</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Levels: A B C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[11]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] B C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Levels: A B C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[12]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] C A</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Levels: A B C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[13]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] C B A</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Levels: A B C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[14]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] C B</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Levels: A B C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[15]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] C C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Levels: A B C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Contexts:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  A, A, A</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  B, A, A</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  A, A</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  A, B, A</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  C, B, A</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  B, A</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  C, A</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  C, A, B</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  A, B</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  C, C, B</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  C, B</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  B</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  A, A, C</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  B, A, C</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  A, C</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  B, C</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  A, C, C</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  C, C, C</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  C, C</span>
+<span class="r-in"><span><span class="co">## data.frame format</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="contexts.html">contexts</a></span><span class="op">(</span><span class="va">dts_tree</span>, sequence <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    context</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  A, A, A</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  B, A, A</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3     A, A</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  A, B, A</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5  C, B, A</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6     B, A</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7     C, A</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8  C, A, B</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9     A, B</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10 C, C, B</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11    C, B</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12       B</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13 A, A, C</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14 B, A, C</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15    A, C</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 16    B, C</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 17 A, C, C</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 18 C, C, C</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 19    C, C</span>
 <span class="r-in"><span><span class="fu"><a href="contexts.html">contexts</a></span><span class="op">(</span><span class="va">dts_tree</span>, frequency <span class="op">=</span> <span class="st">"total"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    context freq</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1  A, A, A    6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2     A, A   15</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3  A, B, A    6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4     A, B   12</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5     A, C    8</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6  B, A, A    7</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7     B, A   13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8  B, B, B   10</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9     B, B   16</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10 B, C, B    6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11    B, C   10</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 12    C, A    7</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 13 C, B, A    5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 14    C, B   11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 15    C, C    6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  A, A, A    8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  B, A, A    7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3     A, A   17</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  A, B, A    8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5  C, B, A    6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6     B, A   14</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7     C, A    9</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8  C, A, B    5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9     A, B   11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10 C, C, B    5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11    C, B   10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12       B   24</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13 A, A, C    5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14 B, A, C    5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15    A, C   13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 16    B, C    6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 17 A, C, C    6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 18 C, C, C    7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 19    C, C   15</span>
 <span class="r-in"><span><span class="fu"><a href="contexts.html">contexts</a></span><span class="op">(</span><span class="va">dts_tree</span>, frequency <span class="op">=</span> <span class="st">"detailed"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    context freq A  B C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1  A, A, A    6 1  4 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2     A, A   15 6  7 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3  A, B, A    6 4  1 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4     A, B   12 5  3 4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5     A, C    8 4  3 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6  B, A, A    7 3  1 3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7     B, A   13 6  2 5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8  B, B, B   10 3  4 3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9     B, B   16 3 10 3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10 B, C, B    6 1  4 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11    B, C   10 3  4 3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 12    C, A    7 2  3 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 13 C, B, A    5 1  3 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 14    C, B   11 4  6 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 15    C, C    6 2  1 3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    context freq  A B C</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  A, A, A    8  3 3 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  B, A, A    7  4 0 3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3     A, A   17  8 4 5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  A, B, A    8  4 1 3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5  C, B, A    6  3 1 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6     B, A   14  7 2 5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7     C, A    9  2 5 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8  C, A, B    5  3 0 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9     A, B   11  8 0 3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10 C, C, B    5  4 0 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11    C, B   10  7 2 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12       B   24 15 3 6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13 A, A, C    5  0 1 4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14 B, A, C    5  3 1 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15    A, C   13  4 3 6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 16    B, C    6  2 2 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 17 A, C, C    6  3 0 3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 18 C, C, C    7  0 4 3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 19    C, C   15  3 5 7</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
@@ -244,7 +279,7 @@ reverse to <code>FALSE</code> for the reverse convention.</p>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p><p>Developed by Fabrice Rossi.</p>
+  <p></p><p>Developed by <a href="https://fabrice-rossi.github.io/" class="external-link">Fabrice Rossi</a>.</p>
 </div>
 
 <div class="pkgdown-footer-right">

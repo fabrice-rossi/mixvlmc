@@ -26,7 +26,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">mixvlmc</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.2.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -41,16 +41,24 @@
 <li class="active nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
+    <h6 class="dropdown-header" data-toc-skip>Getting started</h6>
     <a class="dropdown-item" href="../articles/context-trees.html">Context trees</a>
-    <a class="dropdown-item" href="../articles/covlmc.html">Variable Length Markov Chains with Covariates (COVLMC)</a>
-    <a class="dropdown-item" href="../articles/sampling.html">Sampling from (CO)VLMC</a>
     <a class="dropdown-item" href="../articles/variable-length-markov-chains.html">Variable length Markov chains (VLMC)</a>
+    <a class="dropdown-item" href="../articles/covlmc.html">Variable Length Markov Chains with Covariates (COVLMC)</a>
+    <div class="dropdown-divider"></div>
+    <h6 class="dropdown-header" data-toc-skip>Advanced topics</h6>
+    <a class="dropdown-item" href="../articles/likelihood.html">Likelihood calculation</a>
+    <a class="dropdown-item" href="../articles/prediction.html">Predicting with (CO)VLMC</a>
+    <a class="dropdown-item" href="../articles/sampling.html">Sampling from (CO)VLMC</a>
+    <div class="dropdown-divider"></div>
+    <a class="dropdown-item" href="../articles/index.html">More articles...</a>
   </div>
 </li>
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-news">News</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-news">
     <h6 class="dropdown-header" data-toc-skip>Releases</h6>
+    <a class="external-link dropdown-item" href="https://fabrice-rossi.github.io/blog/posts/mixvlmc-0-2.html">mixvlmc 0.2.0</a>
     <a class="external-link dropdown-item" href="https://fabrice-rossi.github.io/blog/posts/mixvlmc-0-1.html">mixvlmc 0.1.1</a>
     <div class="dropdown-divider"></div>
     <a class="dropdown-item" href="../news/index.html">Changelog</a>
@@ -126,8 +134,8 @@ completely <span class="math display">\[
 \mathbb{P}(X_n=x_n|X_{n-1}=x_{n-1}, X_{n-2}=x_{n-2}, \ldots,
 X_{n-m}=x_{n-m})
 \]</span> for all values of <span class="math inline">\(x_n\)</span> and
-for <em>a single</em> context <span class="math inline">\((x_{n-1},
-x_{n-2}, \ldots, x_{n-m})\)</span>.<br>
+for <em>a single</em> context <span class="math inline">\((x_{n-m},
+\ldots, x_{n-2}, x_{n-1})\)</span>.<br>
 There are <span class="math inline">\(k^{m-1}\)</span> such contexts and
 thus we need a total of <span class="math inline">\((k-1)k^{m-1}\)</span> parameters to specify
 completely a Markov chain of order <span class="math inline">\(m\)</span> on a state space with <span class="math inline">\(k\)</span> states.</p>
@@ -169,15 +177,15 @@ consider that the dependency order can depend on the context itself.</p>
 (<span class="math inline">\(k=2\)</span>) and a Markov chain of order
 3. We need to specify for instance the probability of <span class="math inline">\(X_n=1\)</span> given the eight possible contexts,
 from <span class="math inline">\((0, 0, 0)\)</span> to <span class="math inline">\((1, 1, 1)\)</span>. A possible choice is</p>
-<pre><code><span><span class="co">#&gt;   Probablity n-1 n-2 n-3</span></span>
-<span><span class="co">#&gt; 1        0.1   0   0   0</span></span>
-<span><span class="co">#&gt; 2        0.2   1   0   0</span></span>
-<span><span class="co">#&gt; 3        0.1   0   1   0</span></span>
-<span><span class="co">#&gt; 4        0.3   1   1   0</span></span>
-<span><span class="co">#&gt; 5        0.1   0   0   1</span></span>
-<span><span class="co">#&gt; 6        0.4   1   0   1</span></span>
-<span><span class="co">#&gt; 7        0.1   0   1   1</span></span>
-<span><span class="co">#&gt; 8        0.3   1   1   1</span></span></code></pre>
+<pre><code><span><span class="co">#&gt;   n-3 n-2 n-1 Probablity</span></span>
+<span><span class="co">#&gt; 1   0   0   0        0.1</span></span>
+<span><span class="co">#&gt; 2   1   0   0        0.1</span></span>
+<span><span class="co">#&gt; 3   0   1   0        0.1</span></span>
+<span><span class="co">#&gt; 4   1   1   0        0.1</span></span>
+<span><span class="co">#&gt; 5   0   0   1        0.2</span></span>
+<span><span class="co">#&gt; 6   1   0   1        0.4</span></span>
+<span><span class="co">#&gt; 7   0   1   1        0.3</span></span>
+<span><span class="co">#&gt; 8   1   1   1        0.3</span></span></code></pre>
 <p>In this table, several contexts share the same conditional
 probability distribution. For instance <span class="math display">\[
 \mathbb{P}(X_n=1|X_{n-1}=0,
@@ -203,7 +211,7 @@ the last state is 0</li>
 <span class="math inline">\((1, 1)\)</span> : second order memory
 when the two last states are 1</li>
 <li>
-<span class="math inline">\((1, 0, 0)\)</span> and <span class="math inline">\((1, 0, 1)\)</span> : full third order memory</li>
+<span class="math inline">\((0, 0, 1)\)</span> and <span class="math inline">\((1, 0, 1)\)</span> : full third order memory</li>
 </ul>
 <p>This third order Markov chain is parsimonious in the sense that it
 can be described by the four contexts and their associated probability
@@ -223,25 +231,26 @@ is a VLMC if there is a maximal order <span class="math inline">\(l_{\max}\)</sp
 \mathbb{P}(X_n=x_n|X_{n-1}=x_{n-1}, X_{n-2}=x_{n-2}, \ldots,
 X_{1}=x_{1})=\\
 \mathbb{P}(X_n=x_n|X_{n-1}=x_{n-1}, X_{n-2}=x_{n-2}, \ldots,
-X_{n-l(x_{n-1},\ldots,x_{n-l_{\max}})}=x_{n-l(x_{n-1},\ldots,x_{n-l_{\max}})}).
+X_{n-l(x_{n-l_{\max}}, \ldots, x_{n-1})}=x_{n-l(x_{n-l_{\max}}, \ldots,
+x_{n-1})}).
 \end{multline}
 \]</span> In other words, the memory length (the order) is
-<em>variable</em> and given by <span class="math inline">\(l(x_{n-1},\ldots,x_{n-l_{\max}})\)</span>.</p>
+<em>variable</em> and given by <span class="math inline">\(l(x_{n-l_{\max}}, \dots, x_{n-1})\)</span>.</p>
 <p>The memory length function generates a <em>context</em> function
 <span class="math inline">\(c\)</span> which keeps in the past the part
 needed to obtain the conditional distribution: <span class="math inline">\(c\)</span> is a function from <span class="math inline">\(S^{l_{\max}}\)</span> to <span class="math inline">\(\bigcup_{k=0}^{l_{\max}}S^k\)</span> given by:
 <span class="math display">\[
-c(x_1, x_2, \ldots, x_{l_{\max}})=(x_1,\ldots,x_{l(x_1, x_2, \ldots,
-x_{l_{\max}})})
+c(x_{n-l_{\max}}, \ldots, x_{n-1})=(x_{l(x_{n-l_{\max}}, \ldots,
+x_{n-1})}, \ldots, x_{n-1})
 \]</span> The image by <span class="math inline">\(c\)</span> of <span class="math inline">\(S^{l_{\max}}\)</span> is the set of contexts of
 the VLMC which is entirely specified by <span class="math inline">\(l\)</span> and one conditional distribution by
 unique context.</p>
 <p>In the above example, <span class="math inline">\(l_{\max}=3\)</span>
 and <span class="math inline">\(l\)</span> is defined from <span class="math inline">\(\{0, 1\}^3\)</span> to <span class="math inline">\(\{0, 1, 2, 3\}\)</span> by <span class="math display">\[
 \begin{align*}
-l(0, a, b)&amp;=1&amp;\forall a, \forall b,\\
-l(1, 1, c)&amp;=2&amp;\forall c,\\
-l(1, 0, 0)&amp;=3,&amp;\\
+l(a, b, 0)&amp;=1&amp;\forall a, \forall b,\\
+l(c, 1, 1)&amp;=2&amp;\forall c,\\
+l(0, 0, 1)&amp;=3,&amp;\\
 l(1, 0, 1)&amp;=3.&amp;\\
 \end{align*}
 \]</span></p>
@@ -325,7 +334,7 @@ convergence analysis conducted. For instance a BIC inspired value for
 <span><span class="va">model_theo</span></span>
 <span><span class="co">#&gt; VLMC context tree on 0, 1, 2 </span></span>
 <span><span class="co">#&gt;  cutoff: 5.298 (quantile: 0.005)</span></span>
-<span><span class="co">#&gt;  Number of contexts: 0 </span></span>
+<span><span class="co">#&gt;  Number of contexts: 1 </span></span>
 <span><span class="co">#&gt;  Maximum context length: 0</span></span></code></pre></div>
 <p>The result is a memory less model, as expected based on the way
 <code>x</code> was generated. In this situation, the chosen value of
@@ -338,11 +347,11 @@ the case as this choice is only informed by asymptotic analysis.</p>
 <p>In practice, it is recommended to start with a conservative value of
 <code>cutoff</code> (or <code>alpha</code>) and to use a penalized
 criterion to find the best model in a way that balances likelihood and
-complexity. A conservative value of <code>cutoff</code> is a small one,
-while <code>alpha</code> should be high to be conservative. A possible
-choice is to use the BIC inspired <code>cutoff</code> divided by a fixed
-value, for instance <span class="math inline">\(\frac{1}{4}(|S|-1)\log
-n\)</span>.</p>
+complexity (see <code><a href="../articles/likelihood.html">vignette("likelihood")</a></code> for details on
+likelihood calculation for VLMC). A conservative value of
+<code>cutoff</code> is a small one, while <code>alpha</code> should be
+high to be conservative. A possible choice is to use the BIC inspired
+<code>cutoff</code> divided by a fixed value, for instance <span class="math inline">\(\frac{1}{4}(|S|-1)\log n\)</span>.</p>
 <p>Once a “large” model has been obtained, two functions can be used to
 generate the collection of simpler models that would have been obtained
 by using larger values of <code>cutoff</code>. The function
@@ -354,10 +363,10 @@ following code</p>
 <code class="sourceCode R"><span><span class="va">model_large</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/vlmc.html">vlmc</a></span><span class="op">(</span><span class="va">x</span>, cutoff <span class="op">=</span> <span class="fl">0.5</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">model_large</span></span>
 <span><span class="co">#&gt; VLMC context tree on 0, 1, 2 </span></span>
-<span><span class="co">#&gt;  cutoff: 2.649 (quantile: 0.0707106781186548)</span></span>
+<span><span class="co">#&gt;  cutoff: 2.649 (quantile: 0.07071)</span></span>
 <span><span class="co">#&gt;  Number of contexts: 6 </span></span>
 <span><span class="co">#&gt;  Maximum context length: 3</span></span>
-<span><span class="va">model_cutoff</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cutoff.html">cutoff</a></span><span class="op">(</span><span class="va">model_large</span>, mode <span class="op">=</span> <span class="st">"native"</span><span class="op">)</span></span>
+<span><span class="va">model_cutoff</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cutoff.html">cutoff</a></span><span class="op">(</span><span class="va">model_large</span>, scale <span class="op">=</span> <span class="st">"native"</span><span class="op">)</span></span>
 <span><span class="va">model_cutoff</span></span>
 <span><span class="co">#&gt; [1] 3.177898 3.784875</span></span></code></pre></div>
 <p>we first adjust a “complex” model using `<code>cutoff=`2.65</code>
@@ -367,15 +376,15 @@ using <code><a href="../reference/prune.html">prune()</a></code> as follows:</p>
 <code class="sourceCode R"><span><span class="va">model_medium</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/prune.html">prune</a></span><span class="op">(</span><span class="va">model_large</span>, cutoff <span class="op">=</span> <span class="va">model_cutoff</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="va">model_medium</span></span>
 <span><span class="co">#&gt; VLMC context tree on 0, 1, 2 </span></span>
-<span><span class="co">#&gt;  cutoff: 3.178 (quantile: 0.0416731573600126)</span></span>
+<span><span class="co">#&gt;  cutoff: 3.178 (quantile: 0.04167)</span></span>
 <span><span class="co">#&gt;  Number of contexts: 4 </span></span>
 <span><span class="co">#&gt;  Maximum context length: 3</span></span></code></pre></div>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">model_small</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/prune.html">prune</a></span><span class="op">(</span><span class="va">model_large</span>, cutoff <span class="op">=</span> <span class="va">model_cutoff</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="va">model_small</span></span>
 <span><span class="co">#&gt; VLMC context tree on 0, 1, 2 </span></span>
-<span><span class="co">#&gt;  cutoff: 3.785 (quantile: 0.0227117061190262)</span></span>
-<span><span class="co">#&gt;  Number of contexts: 0 </span></span>
+<span><span class="co">#&gt;  cutoff: 3.785 (quantile: 0.02271)</span></span>
+<span><span class="co">#&gt;  Number of contexts: 1 </span></span>
 <span><span class="co">#&gt;  Maximum context length: 0</span></span></code></pre></div>
 <p>The final model <code>model_small</code> is again the memory less
 model.</p>
@@ -395,8 +404,8 @@ demonstrated below:</p>
 <span><span class="va">model_opt</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/as_vlmc.html">as_vlmc</a></span><span class="op">(</span><span class="va">model_tune</span><span class="op">)</span></span>
 <span><span class="va">model_opt</span></span>
 <span><span class="co">#&gt; VLMC context tree on 0, 1, 2 </span></span>
-<span><span class="co">#&gt;  cutoff: 3.785 (quantile: 0.0227117061190262)</span></span>
-<span><span class="co">#&gt;  Number of contexts: 0 </span></span>
+<span><span class="co">#&gt;  cutoff: 3.785 (quantile: 0.02271)</span></span>
+<span><span class="co">#&gt;  Number of contexts: 1 </span></span>
 <span><span class="co">#&gt;  Maximum context length: 0</span></span></code></pre></div>
 <p>We obtain directly an optimal model according to the BIC
 criterion.</p>
@@ -424,8 +433,10 @@ sequence of weeks with or without earthquake(s).</p>
 <span><span class="va">California_weeks</span><span class="op">[</span><span class="va">California_earth_quakes</span><span class="op">$</span><span class="va">nbweeks</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">1</span></span></code></pre></div>
 <p>And finally we adjust automatically a VLMC.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">California_weeks_earth_quakes_model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tune_vlmc.html">tune_vlmc</a></span><span class="op">(</span><span class="va">California_weeks</span><span class="op">)</span></span></code></pre></div>
-<p>The resulting model remains relatively simple with an interesting
+<code class="sourceCode R"><span><span class="va">California_weeks_earth_quakes_model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tune_vlmc.html">tune_vlmc</a></span><span class="op">(</span><span class="va">California_weeks</span>, initial <span class="op">=</span> <span class="st">"truncated"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">California_weeks_earth_quakes_model</span><span class="op">)</span></span></code></pre></div>
+<p><img src="variable-length-markov-chains_files/figure-html/unnamed-chunk-13-1.png" width="672" style="display: block; margin: auto;">
+The resulting model remains relatively simple with an interesting
 increase of the risk of observing an earth quake after 6 weeks after the
 last one.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
@@ -435,9 +446,6 @@ last one.</p>
 <span><span class="co">#&gt; |   +-- 0 (0.8268, 0.1732)</span></span>
 <span><span class="co">#&gt; |   |   '-- 0 (0.8332, 0.1668)</span></span>
 <span><span class="co">#&gt; |   |       '-- 0 (0.8398, 0.1602)</span></span>
-<span><span class="co">#&gt; |   |           +-- 0 (0.8517, 0.1483)</span></span>
-<span><span class="co">#&gt; |   |           |   '-- 0 (0.8598, 0.1402)</span></span>
-<span><span class="co">#&gt; |   |           |       '-- 1 (0.7847, 0.2153)</span></span>
 <span><span class="co">#&gt; |   |           '-- 1 (0.7766, 0.2234)</span></span>
 <span><span class="co">#&gt; |   '-- 1 (0.771, 0.229)</span></span>
 <span><span class="co">#&gt; '-- 1 (0.7281, 0.2719)</span></span></code></pre></div>
@@ -447,50 +455,52 @@ function as follows.</p>
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">California_weeks_earth_quakes_model</span><span class="op">)</span></span>
 <span><span class="co">#&gt; VLMC tune results</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Best VLMC selected by BIC (6402.617)</span></span>
+<span><span class="co">#&gt; Best VLMC selected by BIC (6408.344) with likelihood function "truncated" (-3182.077)</span></span>
 <span><span class="co">#&gt; VLMC context tree on 0, 1 </span></span>
-<span><span class="co">#&gt;  cutoff: 5.679 (quantile: 0.000751559901684079)</span></span>
-<span><span class="co">#&gt;  Number of contexts: 8 </span></span>
-<span><span class="co">#&gt;  Maximum context length: 7 </span></span>
+<span><span class="co">#&gt;  cutoff: 6.041 (quantile: 0.0005092)</span></span>
+<span><span class="co">#&gt;  Number of contexts: 6 </span></span>
+<span><span class="co">#&gt;  Maximum context length: 5 </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Pruning results</span></span>
 <span><span class="co">#&gt;     cutoff        alpha depth nb_contexts loglikelihood      AIC      BIC</span></span>
-<span><span class="co">#&gt;   2.191676 3.629154e-02    29         152     -2983.990 6271.980 7300.519</span></span>
-<span><span class="co">#&gt;   2.201782 3.586391e-02    29         139     -2997.384 6272.769 7213.341</span></span>
-<span><span class="co">#&gt;   2.228217 3.477002e-02    29         132     -3002.399 6268.798 7162.003</span></span>
-<span><span class="co">#&gt;   2.279152 3.275949e-02    29         132     -3002.399 6268.798 7162.003</span></span>
-<span><span class="co">#&gt;   2.339072 3.054872e-02    29         132     -3002.399 6268.798 7162.003</span></span>
-<span><span class="co">#&gt;   2.372521 2.938285e-02    29         132     -3002.399 6268.798 7162.003</span></span>
-<span><span class="co">#&gt;   2.381973 2.906186e-02    29         131     -3007.144 6276.288 7162.727</span></span>
-<span><span class="co">#&gt;   2.394852 2.863036e-02    29         130     -3010.365 6280.730 7160.402</span></span>
-<span><span class="co">#&gt;   2.404277 2.831881e-02    29         127     -3013.768 6281.535 7140.907</span></span>
-<span><span class="co">#&gt;   2.416055 2.793443e-02    29         116     -3021.089 6274.179 7059.117</span></span>
-<span><span class="co">#&gt;   2.445039 2.701147e-02    29         114     -3026.248 6280.495 7051.900</span></span>
-<span><span class="co">#&gt;   2.506516 2.515721e-02    29         110     -3033.433 6286.866 7031.203</span></span>
-<span><span class="co">#&gt;   2.577905 2.316872e-02    29         110     -3033.433 6286.866 7031.203</span></span>
-<span><span class="co">#&gt;   2.625968 2.192238e-02    29         108     -3036.860 6289.719 7020.523</span></span>
-<span><span class="co">#&gt;   2.751151 1.899146e-02    29         103     -3040.986 6287.972 6984.942</span></span>
-<span><span class="co">#&gt;   2.893754 1.614045e-02    29         103     -3040.986 6287.972 6984.942</span></span>
-<span><span class="co">#&gt;   3.125676 1.240985e-02    29         103     -3041.203 6288.406 6985.377</span></span>
-<span><span class="co">#&gt;   3.344228 9.703925e-03    29          95     -3049.898 6289.795 6932.632</span></span>
-<span><span class="co">#&gt;   3.417970 8.934162e-03    27          90     -3056.377 6292.754 6901.758</span></span>
-<span><span class="co">#&gt;   3.536173 7.828270e-03    27          87     -3061.796 6297.593 6886.296</span></span>
-<span><span class="co">#&gt;   3.737381 6.256985e-03    27          63     -3082.299 6290.599 6716.901</span></span>
-<span><span class="co">#&gt;   4.077262 4.295389e-03    27          45     -3104.913 6299.826 6604.328</span></span>
-<span><span class="co">#&gt;   4.382147 3.071849e-03    27          43     -3110.517 6307.033 6598.002</span></span>
-<span><span class="co">#&gt;   4.507405 2.678006e-03    10          26     -3129.277 6310.554 6486.489</span></span>
-<span><span class="co">#&gt;   4.628051 2.347121e-03    10          21     -3138.370 6318.739 6460.840</span></span>
-<span><span class="co">#&gt;   4.763629 2.024423e-03    10          14     -3149.107 6326.214 6420.948</span></span>
-<span><span class="co">#&gt;   5.090995 1.418191e-03     7          11     -3156.238 6334.476 6408.910</span></span>
-<span><span class="co">#&gt;   5.678601 7.515599e-04     7           8     -3166.241 6348.483 6402.617</span></span>
-<span><span class="co">#&gt;   6.040782 5.092285e-04     5           6     -3176.888 6365.776 6406.377</span></span>
-<span><span class="co">#&gt;   6.183282 4.370913e-04     5           6     -3177.148 6366.296 6406.896</span></span>
-<span><span class="co">#&gt;  10.764714 3.484403e-06     1           2     -3197.821 6399.643 6413.176</span></span>
-<span><span class="co">#&gt;  26.426030 3.596414e-13     0           0     -3221.590 6443.180 6443.180</span></span></code></pre></div>
+<span><span class="co">#&gt;   2.191676 3.629154e-02    29         152     -3040.206 6384.411 7412.262</span></span>
+<span><span class="co">#&gt;   2.201782 3.586391e-02    29         139     -3046.470 6370.940 7310.883</span></span>
+<span><span class="co">#&gt;   2.228217 3.477002e-02    29         132     -3051.316 6366.632 7259.239</span></span>
+<span><span class="co">#&gt;   2.279152 3.275949e-02    29         132     -3053.566 6371.133 7263.740</span></span>
+<span><span class="co">#&gt;   2.339072 3.054872e-02    29         132     -3055.875 6375.750 7268.357</span></span>
+<span><span class="co">#&gt;   2.372521 2.938285e-02    29         132     -3058.245 6380.490 7273.097</span></span>
+<span><span class="co">#&gt;   2.381973 2.906186e-02    29         131     -3062.226 6386.452 7272.297</span></span>
+<span><span class="co">#&gt;   2.394852 2.863036e-02    29         130     -3066.502 6393.004 7272.087</span></span>
+<span><span class="co">#&gt;   2.404277 2.831881e-02    29         127     -3069.036 6392.071 7250.868</span></span>
+<span><span class="co">#&gt;   2.416055 2.793443e-02    29         116     -3072.629 6377.258 7161.671</span></span>
+<span><span class="co">#&gt;   2.445039 2.701147e-02    29         114     -3076.648 6381.296 7152.184</span></span>
+<span><span class="co">#&gt;   2.506516 2.515721e-02    29         110     -3080.985 6381.970 7125.810</span></span>
+<span><span class="co">#&gt;   2.577905 2.316872e-02    29         110     -3083.533 6387.066 7130.905</span></span>
+<span><span class="co">#&gt;   2.625968 2.192238e-02    29         108     -3088.617 6393.233 7123.548</span></span>
+<span><span class="co">#&gt;   2.751151 1.899146e-02    29         103     -3093.269 6392.538 7089.042</span></span>
+<span><span class="co">#&gt;   2.893754 1.614045e-02    29         103     -3096.132 6398.264 7094.769</span></span>
+<span><span class="co">#&gt;   3.125676 1.240985e-02    29         103     -3099.057 6404.114 7100.618</span></span>
+<span><span class="co">#&gt;   3.344228 9.703925e-03    29          95     -3106.293 6402.587 7044.993</span></span>
+<span><span class="co">#&gt;   3.417970 8.934162e-03    27          90     -3111.183 6402.366 7010.962</span></span>
+<span><span class="co">#&gt;   3.536173 7.828270e-03    27          87     -3115.488 6404.977 6993.286</span></span>
+<span><span class="co">#&gt;   3.737381 6.256985e-03    27          63     -3127.105 6380.209 6806.226</span></span>
+<span><span class="co">#&gt;   4.077262 4.295389e-03    27          45     -3134.606 6359.212 6663.510</span></span>
+<span><span class="co">#&gt;   4.382147 3.071849e-03    27          43     -3139.254 6364.508 6655.281</span></span>
+<span><span class="co">#&gt;   4.507405 2.678006e-03    10          26     -3144.971 6341.943 6517.759</span></span>
+<span><span class="co">#&gt;   4.628051 2.347121e-03    10          21     -3151.114 6344.228 6486.234</span></span>
+<span><span class="co">#&gt;   4.763629 2.024423e-03    10          14     -3156.689 6341.378 6436.048</span></span>
+<span><span class="co">#&gt;   5.090995 1.418191e-03     7          11     -3162.313 6346.626 6421.010</span></span>
+<span><span class="co">#&gt;   5.678601 7.515599e-04     7           8     -3170.633 6357.267 6411.364</span></span>
+<span><span class="co">#&gt;   6.040782 5.092285e-04     5           6     -3177.886 6367.771 6408.344</span></span>
+<span><span class="co">#&gt;   6.183282 4.370913e-04     5           6     -3184.021 6380.042 6420.615</span></span>
+<span><span class="co">#&gt;  10.764714 3.484403e-06     1           2     -3196.481 6396.961 6410.486</span></span>
+<span><span class="co">#&gt;  26.426030 3.596414e-13     0           1     -3215.076 6432.152 6438.914</span></span></code></pre></div>
 <p>in addition, a summary data frame is accessible in the
 <code>results</code> component of the object. This can be used to build
-e.g. graphical representation of the model selection process for
-instance as follows</p>
+e.g. custom graphical representation of the model selection process
+(rather than using <code><a href="../reference/plot.tune_vlmc.html">plot.tune_vlmc()</a></code> or
+<code><a href="../reference/autoplot.tune_vlmc.html">autoplot.tune_vlmc()</a></code>). A typical simple ggplot2
+representation can made as follows, for instance:</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">California_weeks_earth_quakes_model</span><span class="op">$</span><span class="va">results</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">alpha</span>, y <span class="op">=</span> <span class="va">BIC</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
@@ -524,11 +534,11 @@ characteristics:</p>
 <p>VLMC objects support classical statistical functions such as:</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/logLik.html" class="external-link">logLik</a></span><span class="op">(</span><span class="va">model_large</span><span class="op">)</span></span>
-<span><span class="co">#&gt; 'log Lik.' -206.1223 (df=12)</span></span>
+<span><span class="co">#&gt; 'log Lik.' -207.4279 (df=12)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/AIC.html" class="external-link">AIC</a></span><span class="op">(</span><span class="va">model_large</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 436.2446</span></span>
+<span><span class="co">#&gt; [1] 438.8558</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/AIC.html" class="external-link">BIC</a></span><span class="op">(</span><span class="va">model_large</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 475.8244</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 478.2542</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="contexts">Contexts<a class="anchor" aria-label="anchor" href="#contexts"></a>
@@ -552,10 +562,10 @@ above):</p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/contexts.html">contexts</a></span><span class="op">(</span><span class="va">model_large</span>, cutoff <span class="op">=</span> <span class="st">"native"</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   context    cutoff</span></span>
-<span><span class="co">#&gt; 1 1, 1, 0 3.4813864</span></span>
+<span><span class="co">#&gt; 1 0, 1, 1 3.4813864</span></span>
 <span><span class="co">#&gt; 2    1, 1 0.7006631</span></span>
-<span><span class="co">#&gt; 3 1, 2, 2 2.9008662</span></span>
-<span><span class="co">#&gt; 4    1, 2 0.8777091</span></span>
+<span><span class="co">#&gt; 3 2, 2, 1 2.9008662</span></span>
+<span><span class="co">#&gt; 4    2, 1 0.8777091</span></span>
 <span><span class="co">#&gt; 5       1 0.9067789</span></span>
 <span><span class="co">#&gt; 6         0.0000000</span></span></code></pre></div>
 <p>Notice that by default <code><a href="../reference/contexts.html">contexts()</a></code> uses the reverse
@@ -570,6 +580,28 @@ sequence using <code>reverse=FALSE</code>, as in</p>
 <span><span class="co">#&gt; 4    2, 1   20  6  6  8 0.41573421</span></span>
 <span><span class="co">#&gt; 5       1   69 21 29 19 0.40382287</span></span>
 <span><span class="co">#&gt; 6          200 65 69 66 1.00000000</span></span></code></pre></div>
+<p>As for context trees, focused analysis of specific contexts can be
+done by requesting a <code>ctx_node</code> representation of the context
+of interest, for instance via the <code><a href="../reference/find_sequence.html">find_sequence()</a></code> function,
+or with the default result type of <code><a href="../reference/contexts.html">contexts()</a></code></p>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">ctxs</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/contexts.html">contexts</a></span><span class="op">(</span><span class="va">model_large</span><span class="op">)</span></span>
+<span><span class="va">ctxs</span></span>
+<span><span class="co">#&gt; Contexts:</span></span>
+<span><span class="co">#&gt;  0, 1, 1</span></span>
+<span><span class="co">#&gt;  1, 1</span></span>
+<span><span class="co">#&gt;  2, 2, 1</span></span>
+<span><span class="co">#&gt;  2, 1</span></span>
+<span><span class="co">#&gt;  1</span></span>
+<span><span class="co">#&gt; </span></span></code></pre></div>
+<p>Individual contexts can be analysed using a collection of dedicated
+functions, for instance</p>
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/counts.html">counts</a></span><span class="op">(</span><span class="va">ctxs</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="co">#&gt;   total 0  1 2</span></span>
+<span><span class="co">#&gt; 1    29 6 14 9</span></span>
+<span><span class="fu"><a href="../reference/cutoff.html">cutoff</a></span><span class="op">(</span><span class="va">ctxs</span><span class="op">[[</span><span class="fl">3</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 0.05497558</span></span></code></pre></div>
 </div>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
@@ -580,7 +612,7 @@ sequence using <code>reverse=FALSE</code>, as in</p>
 
     <footer><div class="pkgdown-footer-left">
   <p></p>
-<p>Developed by Fabrice Rossi.</p>
+<p>Developed by <a href="https://fabrice-rossi.github.io/" class="external-link">Fabrice Rossi</a>.</p>
 </div>
 
 <div class="pkgdown-footer-right">

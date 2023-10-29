@@ -12,7 +12,7 @@ series."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mat
     
     <a class="navbar-brand me-2" href="../index.html">mixvlmc</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.2.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -26,16 +26,24 @@ series."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mat
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
+    <h6 class="dropdown-header" data-toc-skip>Getting started</h6>
     <a class="dropdown-item" href="../articles/context-trees.html">Context trees</a>
-    <a class="dropdown-item" href="../articles/covlmc.html">Variable Length Markov Chains with Covariates (COVLMC)</a>
-    <a class="dropdown-item" href="../articles/sampling.html">Sampling from (CO)VLMC</a>
     <a class="dropdown-item" href="../articles/variable-length-markov-chains.html">Variable length Markov chains (VLMC)</a>
+    <a class="dropdown-item" href="../articles/covlmc.html">Variable Length Markov Chains with Covariates (COVLMC)</a>
+    <div class="dropdown-divider"></div>
+    <h6 class="dropdown-header" data-toc-skip>Advanced topics</h6>
+    <a class="dropdown-item" href="../articles/likelihood.html">Likelihood calculation</a>
+    <a class="dropdown-item" href="../articles/prediction.html">Predicting with (CO)VLMC</a>
+    <a class="dropdown-item" href="../articles/sampling.html">Sampling from (CO)VLMC</a>
+    <div class="dropdown-divider"></div>
+    <a class="dropdown-item" href="../articles/index.html">More articles...</a>
   </div>
 </li>
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-news">News</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-news">
     <h6 class="dropdown-header" data-toc-skip>Releases</h6>
+    <a class="external-link dropdown-item" href="https://fabrice-rossi.github.io/blog/posts/mixvlmc-0-2.html">mixvlmc 0.2.0</a>
     <a class="external-link dropdown-item" href="https://fabrice-rossi.github.io/blog/posts/mixvlmc-0-1.html">mixvlmc 0.1.1</a>
     <div class="dropdown-divider"></div>
     <a class="dropdown-item" href="../news/index.html">Changelog</a>
@@ -73,17 +81,19 @@ series.</p>
 <span>  <span class="va">x</span>,</span>
 <span>  alpha <span class="op">=</span> <span class="fl">0.05</span>,</span>
 <span>  cutoff <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  min_size <span class="op">=</span> <span class="fl">2</span>,</span>
-<span>  max_depth <span class="op">=</span> <span class="fl">100</span>,</span>
+<span>  min_size <span class="op">=</span> <span class="fl">2L</span>,</span>
+<span>  max_depth <span class="op">=</span> <span class="fl">100L</span>,</span>
 <span>  prune <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  keep_match <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  keep_match <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  backend <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">getOption</a></span><span class="op">(</span><span class="st">"mixvlmc.backend"</span>, <span class="st">"R"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>x</dt>
-<dd><p>a discrete time series; can be numeric, character or factor.</p></dd>
+<dd><p>a discrete time series; can be numeric, character, factor or
+logical.</p></dd>
 
 
 <dt>alpha</dt>
@@ -113,7 +123,14 @@ growing phase of the context tree.</p></dd>
 
 
 <dt>keep_match</dt>
-<dd><p>logical: specify whether to keep the context matches (default to FALSE)</p></dd>
+<dd><p>logical: specify whether to keep the context matches
+(default to FALSE)</p></dd>
+
+
+<dt>backend</dt>
+<dd><p>"R" or "C++" (default: as specified by the "mixvlmc.backend"
+option). Specifies the implementation used to represent the context tree
+and to built it. See details.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -140,10 +157,25 @@ convenience parameter to avoid setting <code>alpha=1</code> (which essentially p
 any pruning). Automated model selection is provided by <code><a href="tune_vlmc.html">tune_vlmc()</a></code>.</p>
     </div>
     <div class="section level2">
+    <h2 id="back-ends">Back ends<a class="anchor" aria-label="anchor" href="#back-ends"></a></h2>
+    
+
+
+<p>Two back ends are available to compute context trees:</p><ul><li><p>the "R" back end represents the tree in pure R data structures (nested lists)
+that be easily processed further in pure R (C++ helper functions are used
+to speed up the construction).</p></li>
+<li><p>the "C++" back end represents the tree with C++ classes. This back end is
+considered experimental. The tree is built with an optimised suffix tree
+algorithm which speeds up the construction by at least a factor 10 in
+standard settings. As the tree is kept outside of R direct reach, context
+trees built with the C++ back end must be restored after a
+<code><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS()</a></code>/<code><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS()</a></code> sequence. This is done automatically by recomputing
+completely the context tree.</p></li>
+</ul></div>
+    <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
     <p>Bühlmann, P. and Wyner, A. J. (1999), "Variable length Markov
-chains. Ann. Statist." 27 (2)
-480-513 <a href="https://doi.org/10.1214/aos/1018031204" class="external-link">doi:10.1214/aos/1018031204</a></p>
+chains. Ann. Statist." 27 (2) 480-513 <a href="https://doi.org/10.1214/aos/1018031204" class="external-link">doi:10.1214/aos/1018031204</a></p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
@@ -153,7 +185,9 @@ chains. Ann. Statist." 27 (2)
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">pc</span> <span class="op">&lt;-</span> <span class="va">powerconsumption</span><span class="op">[</span><span class="va">powerconsumption</span><span class="op">$</span><span class="va">week</span> <span class="op">==</span> <span class="fl">5</span>, <span class="op">]</span></span></span>
-<span class="r-in"><span><span class="va">dts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cut.html" class="external-link">cut</a></span><span class="op">(</span><span class="va">pc</span><span class="op">$</span><span class="va">active_power</span>, breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">pc</span><span class="op">$</span><span class="va">active_power</span>, probs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.25</span>, <span class="fl">0.5</span>, <span class="fl">0.75</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">dts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cut.html" class="external-link">cut</a></span><span class="op">(</span><span class="va">pc</span><span class="op">$</span><span class="va">active_power</span>,</span></span>
+<span class="r-in"><span>  breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">pc</span><span class="op">$</span><span class="va">active_power</span>, probs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.25</span>, <span class="fl">0.5</span>, <span class="fl">0.75</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu">vlmc</span><span class="op">(</span><span class="va">dts</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="draw.html">draw</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> * (0.25, 0.25, 0.25, 0.25)</span>
@@ -212,7 +246,7 @@ chains. Ann. Statist." 27 (2)
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p><p>Developed by Fabrice Rossi.</p>
+  <p></p><p>Developed by <a href="https://fabrice-rossi.github.io/" class="external-link">Fabrice Rossi</a>.</p>
 </div>
 
 <div class="pkgdown-footer-right">

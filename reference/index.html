@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">mixvlmc</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.2.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -24,16 +24,24 @@
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
+    <h6 class="dropdown-header" data-toc-skip>Getting started</h6>
     <a class="dropdown-item" href="../articles/context-trees.html">Context trees</a>
-    <a class="dropdown-item" href="../articles/covlmc.html">Variable Length Markov Chains with Covariates (COVLMC)</a>
-    <a class="dropdown-item" href="../articles/sampling.html">Sampling from (CO)VLMC</a>
     <a class="dropdown-item" href="../articles/variable-length-markov-chains.html">Variable length Markov chains (VLMC)</a>
+    <a class="dropdown-item" href="../articles/covlmc.html">Variable Length Markov Chains with Covariates (COVLMC)</a>
+    <div class="dropdown-divider"></div>
+    <h6 class="dropdown-header" data-toc-skip>Advanced topics</h6>
+    <a class="dropdown-item" href="../articles/likelihood.html">Likelihood calculation</a>
+    <a class="dropdown-item" href="../articles/prediction.html">Predicting with (CO)VLMC</a>
+    <a class="dropdown-item" href="../articles/sampling.html">Sampling from (CO)VLMC</a>
+    <div class="dropdown-divider"></div>
+    <a class="dropdown-item" href="../articles/index.html">More articles...</a>
   </div>
 </li>
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-news">News</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-news">
     <h6 class="dropdown-header" data-toc-skip>Releases</h6>
+    <a class="external-link dropdown-item" href="https://fabrice-rossi.github.io/blog/posts/mixvlmc-0-2.html">mixvlmc 0.2.0</a>
     <a class="external-link dropdown-item" href="https://fabrice-rossi.github.io/blog/posts/mixvlmc-0-1.html">mixvlmc 0.1.1</a>
     <div class="dropdown-divider"></div>
     <a class="dropdown-item" href="../news/index.html">Changelog</a>
@@ -59,7 +67,444 @@
     </div>
 
     <div class="section level2">
-      <h2 id="all-functions">All functions<a class="anchor" aria-label="anchor" href="#all-functions"></a></h2>
+      <h2 id="context-trees">Context trees<a class="anchor" aria-label="anchor" href="#context-trees"></a></h2>
+      
+      <p class="section-desc"></p><p>Build context trees and extract information from them.</p>
+
+      
+    </div><div id="" class="section level2">
+      
+      
+      
+
+      <dl><dt>
+          
+          <code><a href="ctx_tree.html">ctx_tree()</a></code> 
+        </dt>
+        <dd>Build a context tree for a discrete time series</dd>
+      </dl><dl><dt>
+          
+          <code><a href="context_number.html">context_number()</a></code> 
+        </dt>
+        <dd>Number of contexts of a context tree</dd>
+      </dl><dl><dt>
+          
+          <code><a href="contexts.html">contexts()</a></code> 
+        </dt>
+        <dd>Contexts of a context tree</dd>
+      </dl><dl><dt>
+          
+          <code><a href="contexts.ctx_tree.html">contexts(<i>&lt;ctx_tree&gt;</i>)</a></code> <code><a href="contexts.ctx_tree.html">contexts(<i>&lt;ctx_tree_cpp&gt;</i>)</a></code> 
+        </dt>
+        <dd>Contexts of a context tree</dd>
+      </dl><dl><dt>
+          
+          <code><a href="depth.html">depth()</a></code> 
+        </dt>
+        <dd>Depth of a context tree</dd>
+      </dl><dl><dt>
+          
+          <code><a href="draw.ctx_tree.html">draw(<i>&lt;ctx_tree_cpp&gt;</i>)</a></code> <code><a href="draw.ctx_tree.html">draw(<i>&lt;ctx_tree&gt;</i>)</a></code> 
+        </dt>
+        <dd>Text based representation of a context tree</dd>
+      </dl><dl><dt>
+          
+          <code><a href="draw_control.html">draw_control()</a></code> 
+        </dt>
+        <dd>Control parameters for <code>draw</code></dd>
+      </dl><dl><dt>
+          
+          <code><a href="print.contexts.html">print(<i>&lt;contexts&gt;</i>)</a></code> 
+        </dt>
+        <dd>Print a context list</dd>
+      </dl><dl><dt>
+          
+          <code><a href="states.html">states()</a></code> 
+        </dt>
+        <dd>State space of a context tree</dd>
+      </dl></div><div class="section level2">
+      <h2 id="context-tree-nodes">Context tree nodes<a class="anchor" aria-label="anchor" href="#context-tree-nodes"></a></h2>
+      
+      <p class="section-desc"></p><p>Extract nodes from context trees and manipulate them.</p>
+
+      
+    </div><div id="" class="section level2">
+      
+      
+      
+
+      <dl><dt>
+          
+          <code><a href="find_sequence.html">find_sequence()</a></code> 
+        </dt>
+        <dd>Find the node of a sequence in a context tree</dd>
+      </dl><dl><dt>
+          
+          <code><a href="find_sequence.covlmc.html">find_sequence(<i>&lt;covlmc&gt;</i>)</a></code> 
+        </dt>
+        <dd>Find the node of a sequence in a COVLMC context tree</dd>
+      </dl><dl><dt>
+          
+          <code><a href="as_sequence.html">as_sequence()</a></code> 
+        </dt>
+        <dd>Extract the sequence encoded by a node</dd>
+      </dl><dl><dt>
+          
+          <code><a href="children.html">children()</a></code> 
+        </dt>
+        <dd>Find the children nodes of a node in a context tree</dd>
+      </dl><dl><dt>
+          
+          <code><a href="covariate_memory.html">covariate_memory()</a></code> 
+        </dt>
+        <dd>Covariate memory length for a COVLMC context</dd>
+      </dl><dl><dt>
+          
+          <code><a href="counts.html">counts()</a></code> 
+        </dt>
+        <dd>Report the distribution of values that follow occurrences of a sequence</dd>
+      </dl><dl><dt>
+          
+          <code><a href="cutoff.ctx_node.html">cutoff(<i>&lt;ctx_node&gt;</i>)</a></code> 
+        </dt>
+        <dd>Cut off value for pruning a node in the context tree of a VLMC</dd>
+      </dl><dl><dt>
+          
+          <code><a href="is_context.html">is_context()</a></code> 
+        </dt>
+        <dd>Report the nature of a node in a context tree</dd>
+      </dl><dl><dt>
+          
+          <code><a href="is_merged.html">is_merged()</a></code> 
+        </dt>
+        <dd>Merging status of a COVLMC context</dd>
+      </dl><dl><dt>
+          
+          <code><a href="is_reversed.html">is_reversed()</a></code> 
+        </dt>
+        <dd>Report the ordering convention of the node</dd>
+      </dl><dl><dt>
+          
+          <code><a href="merged_with.html">merged_with()</a></code> 
+        </dt>
+        <dd>Merged contexts in a COVLMC</dd>
+      </dl><dl><dt>
+          
+          <code><a href="metrics.ctx_node.html">metrics(<i>&lt;ctx_node&gt;</i>)</a></code> 
+        </dt>
+        <dd>Predictive quality metrics for a node of a context tree</dd>
+      </dl><dl><dt>
+          
+          <code><a href="metrics.ctx_node_covlmc.html">metrics(<i>&lt;ctx_node_covlmc&gt;</i>)</a></code> 
+        </dt>
+        <dd>Predictive quality metrics for a node of a COVLMC context tree</dd>
+      </dl><dl><dt>
+          
+          <code><a href="model.html">model()</a></code> 
+        </dt>
+        <dd>Logistic model of a COVLMC context</dd>
+      </dl><dl><dt>
+          
+          <code><a href="parent.html">parent()</a></code> 
+        </dt>
+        <dd>Find the parent of a node in a context tree</dd>
+      </dl><dl><dt>
+          
+          <code><a href="positions.html">positions()</a></code> 
+        </dt>
+        <dd>Report the positions of a sequence associated to a node</dd>
+      </dl><dl><dt>
+          
+          <code><a href="rev.ctx_node.html">rev(<i>&lt;ctx_node&gt;</i>)</a></code> 
+        </dt>
+        <dd>Reverse Sequence</dd>
+      </dl></div><div class="section level2">
+      <h2 id="variable-length-markov-chain-vlmc-">Variable Length Markov Chain (VLMC)<a class="anchor" aria-label="anchor" href="#variable-length-markov-chain-vlmc-"></a></h2>
+      
+      <p class="section-desc"></p><p>Estimate VLMC from a time series and extract information from them.</p>
+
+      
+    </div><div id="" class="section level2">
+      
+      
+      
+
+      <dl><dt>
+          
+          <code><a href="vlmc.html">vlmc()</a></code> 
+        </dt>
+        <dd>Fit a Variable Length Markov Chain (VLMC)</dd>
+      </dl><dl><dt>
+          
+          <code><a href="context_number.html">context_number()</a></code> 
+        </dt>
+        <dd>Number of contexts of a context tree</dd>
+      </dl><dl><dt>
+          
+          <code><a href="contexts.vlmc.html">contexts(<i>&lt;vlmc&gt;</i>)</a></code> <code><a href="contexts.vlmc.html">contexts(<i>&lt;vlmc_cpp&gt;</i>)</a></code> 
+        </dt>
+        <dd>Contexts of a VLMC</dd>
+      </dl><dl><dt>
+          
+          <code><a href="depth.html">depth()</a></code> 
+        </dt>
+        <dd>Depth of a context tree</dd>
+      </dl><dl><dt>
+          
+          <code><a href="draw.vlmc.html">draw(<i>&lt;vlmc&gt;</i>)</a></code> <code><a href="draw.vlmc.html">draw(<i>&lt;vlmc_cpp&gt;</i>)</a></code> 
+        </dt>
+        <dd>Text based representation of a vlmc</dd>
+      </dl><dl><dt>
+          
+          <code><a href="draw_control.html">draw_control()</a></code> 
+        </dt>
+        <dd>Control parameters for <code>draw</code></dd>
+      </dl><dl><dt>
+          
+          <code><a href="logLik.vlmc.html">logLik(<i>&lt;vlmc&gt;</i>)</a></code> <code><a href="logLik.vlmc.html">logLik(<i>&lt;vlmc_cpp&gt;</i>)</a></code> 
+        </dt>
+        <dd>Log-Likelihood of a VLMC</dd>
+      </dl><dl><dt>
+          
+          <code><a href="loglikelihood.html">loglikelihood()</a></code> 
+        </dt>
+        <dd>Log-Likelihood of a VLMC</dd>
+      </dl><dl><dt>
+          
+          <code><a href="metrics.vlmc.html">metrics(<i>&lt;vlmc&gt;</i>)</a></code> <code><a href="metrics.vlmc.html">print(<i>&lt;metrics.vlmc&gt;</i>)</a></code> 
+        </dt>
+        <dd>Predictive quality metrics for VLMC</dd>
+      </dl><dl><dt>
+          
+          <code><a href="predict.vlmc.html">predict(<i>&lt;vlmc&gt;</i>)</a></code> <code><a href="predict.vlmc.html">predict(<i>&lt;vlmc_cpp&gt;</i>)</a></code> 
+        </dt>
+        <dd>Next state prediction in a discrete time series for a VLMC</dd>
+      </dl><dl><dt>
+          
+          <code><a href="states.html">states()</a></code> 
+        </dt>
+        <dd>State space of a context tree</dd>
+      </dl></div><div class="section level2">
+      <h2 id="variable-length-markov-chain-with-covariates-covlmc-">Variable Length Markov Chain with covariates (COVLMC)<a class="anchor" aria-label="anchor" href="#variable-length-markov-chain-with-covariates-covlmc-"></a></h2>
+      
+      <p class="section-desc"></p><p>Estimate COVLMC from a time series and covariates. Extract information from them.</p>
+
+      
+    </div><div id="" class="section level2">
+      
+      
+      
+
+      <dl><dt>
+          
+          <code><a href="covlmc.html">covlmc()</a></code> 
+        </dt>
+        <dd>Fit a Variable Length Markov Chain with Covariates (coVLMC)</dd>
+      </dl><dl><dt>
+          
+          <code><a href="covlmc_control.html">covlmc_control()</a></code> 
+        </dt>
+        <dd>Control for coVLMC fitting</dd>
+      </dl><dl><dt>
+          
+          <code><a href="context_number.covlmc.html">context_number(<i>&lt;covlmc&gt;</i>)</a></code> 
+        </dt>
+        <dd>Contexts number of a VLMC with covariates</dd>
+      </dl><dl><dt>
+          
+          <code><a href="contexts.covlmc.html">contexts(<i>&lt;covlmc&gt;</i>)</a></code> 
+        </dt>
+        <dd>Contexts of a VLMC with covariates</dd>
+      </dl><dl><dt>
+          
+          <code><a href="covariate_depth.html">covariate_depth()</a></code> 
+        </dt>
+        <dd>Maximal covariate memory of a VLMC with covariates</dd>
+      </dl><dl><dt>
+          
+          <code><a href="depth.html">depth()</a></code> 
+        </dt>
+        <dd>Depth of a context tree</dd>
+      </dl><dl><dt>
+          
+          <code><a href="draw.covlmc.html">draw(<i>&lt;covlmc&gt;</i>)</a></code> 
+        </dt>
+        <dd>Text based representation of a covlmc model</dd>
+      </dl><dl><dt>
+          
+          <code><a href="draw_control.html">draw_control()</a></code> 
+        </dt>
+        <dd>Control parameters for <code>draw</code></dd>
+      </dl><dl><dt>
+          
+          <code><a href="logLik.covlmc.html">logLik(<i>&lt;covlmc&gt;</i>)</a></code> 
+        </dt>
+        <dd>Log-Likelihood of a VLMC with covariates</dd>
+      </dl><dl><dt>
+          
+          <code><a href="loglikelihood.covlmc.html">loglikelihood(<i>&lt;covlmc&gt;</i>)</a></code> 
+        </dt>
+        <dd>Log-Likelihood of a VLMC with covariates</dd>
+      </dl><dl><dt>
+          
+          <code><a href="metrics.covlmc.html">metrics(<i>&lt;covlmc&gt;</i>)</a></code> <code><a href="metrics.covlmc.html">print(<i>&lt;metrics.covlmc&gt;</i>)</a></code> 
+        </dt>
+        <dd>Predictive quality metrics for VLMC with covariates</dd>
+      </dl><dl><dt>
+          
+          <code><a href="predict.covlmc.html">predict(<i>&lt;covlmc&gt;</i>)</a></code> 
+        </dt>
+        <dd>Next state prediction in a discrete time series for a VLMC with covariates</dd>
+      </dl><dl><dt>
+          
+          <code><a href="states.html">states()</a></code> 
+        </dt>
+        <dd>State space of a context tree</dd>
+      </dl></div><div class="section level2">
+      <h2 id="model-selection-for-co-vlmc">Model selection for (CO)VLMC<a class="anchor" aria-label="anchor" href="#model-selection-for-co-vlmc"></a></h2>
+      
+      <p class="section-desc"></p><p>Functions to adjust automatically or manually the complexity of a (CO)VLMC to the time series.</p>
+
+      
+    </div><div class="section level2">
+      
+      <h3 id="vlmc">VLMC<a class="anchor" aria-label="anchor" href="#vlmc"></a></h3>
+      
+
+      
+    </div><div id="" class="section level2">
+      
+      
+      
+
+      <dl><dt>
+          
+          <code><a href="tune_vlmc.html">tune_vlmc()</a></code> 
+        </dt>
+        <dd>Fit an optimal Variable Length Markov Chain (VLMC)</dd>
+      </dl><dl><dt>
+          
+          <code><a href="plot.tune_vlmc.html">plot(<i>&lt;tune_vlmc&gt;</i>)</a></code> <code><a href="plot.tune_vlmc.html">plot(<i>&lt;tune_covlmc&gt;</i>)</a></code> 
+        </dt>
+        <dd>Plot the results of automatic (CO)VLMC complexity selection</dd>
+      </dl><dl><dt>
+          
+          <code><a href="autoplot.tune_vlmc.html">autoplot(<i>&lt;tune_vlmc&gt;</i>)</a></code> 
+        </dt>
+        <dd>Create a complete ggplot for the results of automatic VLMC complexity
+selection</dd>
+      </dl><dl><dt>
+          
+          <code><a href="cutoff.vlmc.html">cutoff(<i>&lt;vlmc&gt;</i>)</a></code> <code><a href="cutoff.vlmc.html">cutoff(<i>&lt;vlmc_cpp&gt;</i>)</a></code> 
+        </dt>
+        <dd>Cut off values for pruning the context tree of a VLMC</dd>
+      </dl><dl><dt>
+          
+          <code><a href="prune.html">prune()</a></code> 
+        </dt>
+        <dd>Prune a Variable Length Markov Chain (VLMC)</dd>
+      </dl></div><div class="section level2">
+      
+      <h3 id="covlmc">COVLMC<a class="anchor" aria-label="anchor" href="#covlmc"></a></h3>
+      
+
+      
+    </div><div id="" class="section level2">
+      
+      
+      
+
+      <dl><dt>
+          
+          <code><a href="tune_covlmc.html">tune_covlmc()</a></code> 
+        </dt>
+        <dd>Fit an optimal Variable Length Markov Chain with Covariates (coVLMC)</dd>
+      </dl><dl><dt>
+          
+          <code><a href="plot.tune_vlmc.html">plot(<i>&lt;tune_vlmc&gt;</i>)</a></code> <code><a href="plot.tune_vlmc.html">plot(<i>&lt;tune_covlmc&gt;</i>)</a></code> 
+        </dt>
+        <dd>Plot the results of automatic (CO)VLMC complexity selection</dd>
+      </dl><dl><dt>
+          
+          <code><a href="autoplot.tune_covlmc.html">autoplot(<i>&lt;tune_covlmc&gt;</i>)</a></code> 
+        </dt>
+        <dd>Create a complete ggplot for the results of automatic COVLMC complexity
+selection</dd>
+      </dl><dl><dt>
+          
+          <code><a href="cutoff.covlmc.html">cutoff(<i>&lt;covlmc&gt;</i>)</a></code> 
+        </dt>
+        <dd>Cut off values for pruning the context tree of a VLMC with covariates</dd>
+      </dl><dl><dt>
+          
+          <code><a href="prune.covlmc.html">prune(<i>&lt;covlmc&gt;</i>)</a></code> 
+        </dt>
+        <dd>Prune a Variable Length Markov Chain with covariates</dd>
+      </dl></div><div class="section level2">
+      <h2 id="simulation">Simulation<a class="anchor" aria-label="anchor" href="#simulation"></a></h2>
+      
+      <p class="section-desc"></p><p>Functions to simulate new time series from a (CO)VLMC model</p>
+
+      
+    </div><div id="" class="section level2">
+      
+      
+      
+
+      <dl><dt>
+          
+          <code><a href="simulate.covlmc.html">simulate(<i>&lt;covlmc&gt;</i>)</a></code> 
+        </dt>
+        <dd>Simulate a discrete time series for a covlmc</dd>
+      </dl><dl><dt>
+          
+          <code><a href="simulate.vlmc.html">simulate(<i>&lt;vlmc&gt;</i>)</a></code> 
+        </dt>
+        <dd>Simulate a discrete time series for a vlmc</dd>
+      </dl><dl><dt>
+          
+          <code><a href="simulate.vlmc_cpp.html">simulate(<i>&lt;vlmc_cpp&gt;</i>)</a></code> 
+        </dt>
+        <dd>Simulate a discrete time series for a vlmc</dd>
+      </dl></div><div class="section level2">
+      <h2 id="global-options">Global options<a class="anchor" aria-label="anchor" href="#global-options"></a></h2>
+      
+      
+
+      
+    </div><div id="" class="section level2">
+      
+      
+      
+
+      <dl><dt>
+          
+          <code><a href="mixvlmc-package.html">mixvlmc</a></code> <code><a href="mixvlmc-package.html">mixvlmc-package</a></code> 
+        </dt>
+        <dd>mixvlmc: Variable Length Markov Chains with Covariates</dd>
+      </dl></div><div class="section level2">
+      <h2 id="data-sets">Data sets<a class="anchor" aria-label="anchor" href="#data-sets"></a></h2>
+      
+      
+
+      
+    </div><div id="" class="section level2">
+      
+      
+      
+
+      <dl><dt>
+          
+          <code><a href="globalearthquake.html">globalearthquake</a></code> 
+        </dt>
+        <dd>Significant Earthquake Dataset</dd>
+      </dl><dl><dt>
+          
+          <code><a href="powerconsumption.html">powerconsumption</a></code> 
+        </dt>
+        <dd>Individual household electric power consumption</dd>
+      </dl></div><div class="section level2">
+      <h2 id="conversions-and-other-low-level-manipulation-of-models">Conversions and other low level manipulation of models<a class="anchor" aria-label="anchor" href="#conversions-and-other-low-level-manipulation-of-models"></a></h2>
       
       
 
@@ -76,99 +521,24 @@
         <dd>Convert an object to a Variable Length Markov Chain with covariates (coVLMC)</dd>
       </dl><dl><dt>
           
+          <code><a href="as_sequence.html">as_sequence()</a></code> 
+        </dt>
+        <dd>Extract the sequence encoded by a node</dd>
+      </dl><dl><dt>
+          
           <code><a href="as_vlmc.html">as_vlmc()</a></code> 
         </dt>
         <dd>Convert an object to a Variable Length Markov Chain (VLMC)</dd>
       </dl><dl><dt>
           
-          <code><a href="context_number.html">context_number()</a></code> 
+          <code><a href="as_vlmc.ctx_tree_cpp.html">as_vlmc(<i>&lt;ctx_tree_cpp&gt;</i>)</a></code> 
         </dt>
-        <dd>Number of contexts of a context tree</dd>
+        <dd>Convert an object to a Variable Length Markov Chain (VLMC)</dd>
       </dl><dl><dt>
           
-          <code><a href="context_number.covlmc.html">context_number(<i>&lt;covlmc&gt;</i>)</a></code> 
+          <code><a href="is_context.html">is_context()</a></code> 
         </dt>
-        <dd>Contexts number of a VLMC with covariates</dd>
-      </dl><dl><dt>
-          
-          <code><a href="contexts.html">contexts()</a></code> 
-        </dt>
-        <dd>Contexts of a context tree</dd>
-      </dl><dl><dt>
-          
-          <code><a href="contexts.covlmc.html">contexts(<i>&lt;covlmc&gt;</i>)</a></code> 
-        </dt>
-        <dd>Contexts of a VLMC with covariates</dd>
-      </dl><dl><dt>
-          
-          <code><a href="contexts.ctx_tree.html">contexts(<i>&lt;ctx_tree&gt;</i>)</a></code> 
-        </dt>
-        <dd>Contexts of a context tree</dd>
-      </dl><dl><dt>
-          
-          <code><a href="contexts.vlmc.html">contexts(<i>&lt;vlmc&gt;</i>)</a></code> 
-        </dt>
-        <dd>Contexts of a VLMC</dd>
-      </dl><dl><dt>
-          
-          <code><a href="covlmc.html">covlmc()</a></code> 
-        </dt>
-        <dd>Fit a Variable Length Markov Chain with Covariates (coVLMC)</dd>
-      </dl><dl><dt>
-          
-          <code><a href="covlmc_control.html">covlmc_control()</a></code> 
-        </dt>
-        <dd>Control for coVLMC fitting</dd>
-      </dl><dl><dt>
-          
-          <code><a href="ctx_tree.html">ctx_tree()</a></code> 
-        </dt>
-        <dd>Build a context tree for a discrete time series</dd>
-      </dl><dl><dt>
-          
-          <code><a href="cutoff.html">cutoff()</a></code> 
-        </dt>
-        <dd>Cut off values for pruning the context tree of a VLMC</dd>
-      </dl><dl><dt>
-          
-          <code><a href="cutoff.covlmc.html">cutoff(<i>&lt;covlmc&gt;</i>)</a></code> 
-        </dt>
-        <dd>Cutoff values for pruning the context tree of a VLMC with covariates</dd>
-      </dl><dl><dt>
-          
-          <code><a href="depth.html">depth()</a></code> 
-        </dt>
-        <dd>Depth of a context tree</dd>
-      </dl><dl><dt>
-          
-          <code><a href="draw.html">draw()</a></code> 
-        </dt>
-        <dd>Text based representation of a context tree</dd>
-      </dl><dl><dt>
-          
-          <code><a href="draw.covlmc.html">draw(<i>&lt;covlmc&gt;</i>)</a></code> 
-        </dt>
-        <dd>Text based representation of a covlmc model</dd>
-      </dl><dl><dt>
-          
-          <code><a href="draw.ctx_tree.html">draw(<i>&lt;ctx_tree&gt;</i>)</a></code> 
-        </dt>
-        <dd>Text based representation of a context tree</dd>
-      </dl><dl><dt>
-          
-          <code><a href="draw.vlmc.html">draw(<i>&lt;vlmc&gt;</i>)</a></code> 
-        </dt>
-        <dd>Text based representation of a vlmc</dd>
-      </dl><dl><dt>
-          
-          <code><a href="draw_control.html">draw_control()</a></code> 
-        </dt>
-        <dd>Control parameters for <code>draw</code></dd>
-      </dl><dl><dt>
-          
-          <code><a href="globalearthquake.html">globalearthquake</a></code> 
-        </dt>
-        <dd>Significant Earthquake Dataset</dd>
+        <dd>Report the nature of a node in a context tree</dd>
       </dl><dl><dt>
           
           <code><a href="is_covlmc.html">is_covlmc()</a></code> 
@@ -181,69 +551,19 @@
         <dd>Test if the object is a context tree</dd>
       </dl><dl><dt>
           
+          <code><a href="is_merged.html">is_merged()</a></code> 
+        </dt>
+        <dd>Merging status of a COVLMC context</dd>
+      </dl><dl><dt>
+          
+          <code><a href="is_reversed.html">is_reversed()</a></code> 
+        </dt>
+        <dd>Report the ordering convention of the node</dd>
+      </dl><dl><dt>
+          
           <code><a href="is_vlmc.html">is_vlmc()</a></code> 
         </dt>
         <dd>Test if the object is a vlmc model</dd>
-      </dl><dl><dt>
-          
-          <code><a href="loglikelihood.html">loglikelihood()</a></code> 
-        </dt>
-        <dd>Log-Likelihood of a VLMC</dd>
-      </dl><dl><dt>
-          
-          <code><a href="loglikelihood.covlmc.html">loglikelihood(<i>&lt;covlmc&gt;</i>)</a></code> 
-        </dt>
-        <dd>Log-Likelihood of a VLMC with covariates</dd>
-      </dl><dl><dt>
-          
-          <code><a href="metrics.html">metrics()</a></code> 
-        </dt>
-        <dd>Predictive quality metrics for context based models</dd>
-      </dl><dl><dt>
-          
-          <code><a href="metrics.covlmc.html">metrics(<i>&lt;covlmc&gt;</i>)</a></code> <code><a href="metrics.covlmc.html">print(<i>&lt;metrics.covlmc&gt;</i>)</a></code> 
-        </dt>
-        <dd>Predictive quality metrics for VLMC with covariates</dd>
-      </dl><dl><dt>
-          
-          <code><a href="metrics.vlmc.html">metrics(<i>&lt;vlmc&gt;</i>)</a></code> <code><a href="metrics.vlmc.html">print(<i>&lt;metrics.vlmc&gt;</i>)</a></code> 
-        </dt>
-        <dd>Predictive quality metrics for VLMC</dd>
-      </dl><dl><dt>
-          
-          <code><a href="mixvlmc-package.html">mixvlmc</a></code> <code><a href="mixvlmc-package.html">mixvlmc-package</a></code> 
-        </dt>
-        <dd>mixvlmc: Variable Length Markov Chains with Covariates</dd>
-      </dl><dl><dt>
-          
-          <code><a href="powerconsumption.html">powerconsumption</a></code> 
-        </dt>
-        <dd>Individual household electric power consumption</dd>
-      </dl><dl><dt>
-          
-          <code><a href="prune.html">prune()</a></code> 
-        </dt>
-        <dd>Prune a Variable Length Markov Chain (VLMC)</dd>
-      </dl><dl><dt>
-          
-          <code><a href="prune.covlmc.html">prune(<i>&lt;covlmc&gt;</i>)</a></code> 
-        </dt>
-        <dd>Prune a Variable Length Markov Chain with covariates</dd>
-      </dl><dl><dt>
-          
-          <code><a href="simulate.covlmc.html">simulate(<i>&lt;covlmc&gt;</i>)</a></code> 
-        </dt>
-        <dd>Simulate a discrete time series for a covlmc</dd>
-      </dl><dl><dt>
-          
-          <code><a href="simulate.vlmc.html">simulate(<i>&lt;vlmc&gt;</i>)</a></code> 
-        </dt>
-        <dd>Simulate a discrete time series for a vlmc</dd>
-      </dl><dl><dt>
-          
-          <code><a href="states.html">states()</a></code> 
-        </dt>
-        <dd>State space of a context tree</dd>
       </dl><dl><dt>
           
           <code><a href="trim.html">trim()</a></code> 
@@ -256,25 +576,49 @@
         <dd>Trim a COVLMC</dd>
       </dl><dl><dt>
           
-          <code><a href="tune_covlmc.html">tune_covlmc()</a></code> 
+          <code><a href="trim.vlmc.html">trim(<i>&lt;vlmc&gt;</i>)</a></code> 
         </dt>
-        <dd>Fit an optimal Variable Length Markov Chain with Covariates (coVLMC)</dd>
+        <dd>This function returns a trimmed VLMC from which match positions have been
+removed.</dd>
       </dl><dl><dt>
           
-          <code><a href="tune_vlmc.html">tune_vlmc()</a></code> 
+          <code><a href="trim.vlmc_cpp.html">trim(<i>&lt;vlmc_cpp&gt;</i>)</a></code> 
         </dt>
-        <dd>Fit an optimal Variable Length Markov Chain (VLMC)</dd>
+        <dd>This function returns a trimmed VLMC from which match positions have been
+removed.</dd>
+      </dl></div><div class="section level2">
+      <h2 id="generics">Generics<a class="anchor" aria-label="anchor" href="#generics"></a></h2>
+      
+      <p class="section-desc"></p><p>Generic S3 methods defined by the package</p>
+
+      
+    </div><div id="" class="section level2">
+      
+      
+      
+
+      <dl><dt>
+          
+          <code><a href="cutoff.html">cutoff()</a></code> 
+        </dt>
+        <dd>Cut off values for VLMC like model</dd>
       </dl><dl><dt>
           
-          <code><a href="vlmc.html">vlmc()</a></code> 
+          <code><a href="draw.html">draw()</a></code> 
         </dt>
-        <dd>Fit a Variable Length Markov Chain (VLMC)</dd>
+        <dd>Text based representation of a context tree</dd>
+      </dl><dl><dt>
+          
+          <code><a href="metrics.html">metrics()</a></code> 
+        </dt>
+        <dd>Predictive quality metrics for context based models</dd>
       </dl></div>
-  </main></div>
+  </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
+    </nav></aside></div>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p><p>Developed by Fabrice Rossi.</p>
+  <p></p><p>Developed by <a href="https://fabrice-rossi.github.io/" class="external-link">Fabrice Rossi</a>.</p>
 </div>
 
 <div class="pkgdown-footer-right">

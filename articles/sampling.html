@@ -26,7 +26,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">mixvlmc</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.2.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -41,16 +41,24 @@
 <li class="active nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
+    <h6 class="dropdown-header" data-toc-skip>Getting started</h6>
     <a class="dropdown-item" href="../articles/context-trees.html">Context trees</a>
-    <a class="dropdown-item" href="../articles/covlmc.html">Variable Length Markov Chains with Covariates (COVLMC)</a>
-    <a class="dropdown-item" href="../articles/sampling.html">Sampling from (CO)VLMC</a>
     <a class="dropdown-item" href="../articles/variable-length-markov-chains.html">Variable length Markov chains (VLMC)</a>
+    <a class="dropdown-item" href="../articles/covlmc.html">Variable Length Markov Chains with Covariates (COVLMC)</a>
+    <div class="dropdown-divider"></div>
+    <h6 class="dropdown-header" data-toc-skip>Advanced topics</h6>
+    <a class="dropdown-item" href="../articles/likelihood.html">Likelihood calculation</a>
+    <a class="dropdown-item" href="../articles/prediction.html">Predicting with (CO)VLMC</a>
+    <a class="dropdown-item" href="../articles/sampling.html">Sampling from (CO)VLMC</a>
+    <div class="dropdown-divider"></div>
+    <a class="dropdown-item" href="../articles/index.html">More articles...</a>
   </div>
 </li>
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-news">News</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-news">
     <h6 class="dropdown-header" data-toc-skip>Releases</h6>
+    <a class="external-link dropdown-item" href="https://fabrice-rossi.github.io/blog/posts/mixvlmc-0-2.html">mixvlmc 0.2.0</a>
     <a class="external-link dropdown-item" href="https://fabrice-rossi.github.io/blog/posts/mixvlmc-0-1.html">mixvlmc 0.1.1</a>
     <div class="dropdown-divider"></div>
     <a class="dropdown-item" href="../news/index.html">Changelog</a>
@@ -119,24 +127,33 @@ includes smooth transformations of the empirical distribution of
 patterns up to a fixed length.</p>
 <p>In practice, it is recommended to sample a longer sequence than the
 one needed and to keep only the last <span class="math inline">\(n\)</span> values, in order to minimise the
-influence of the starting values.</p>
+influence of the starting values. The first values are considered as a
+<em>burn in</em> or <em>warm up</em> phase.</p>
 </div>
 <div class="section level2">
 <h2 id="sampling-from-a-vlmc">Sampling from a VLMC<a class="anchor" aria-label="anchor" href="#sampling-from-a-vlmc"></a>
 </h2>
+<p>As explained in <code><a href="../articles/likelihood.html">vignette("likelihood")</a></code>, a VLMC does not
+specify distributions for the initial values of time series as no
+context can be computed from them. In <code><a href="../reference/simulate.vlmc.html">simulate.vlmc()</a></code>, we
+use the notion of <em>extended context</em> described in the vignette to
+extend any VLMC into a full model, that specifies both the conditional
+distributions given its contexts and also the distributions of the
+initial values.</p>
 <div class="section level3">
 <h3 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h3>
 <p>Let us consider a simple example with an independent sample:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="fl">1</span>, <span class="fl">500</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<p>The optimal VLMC according to the BIC has non memory:</p>
+<p>The optimal VLMC according to the BIC has no memory:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">best_vlmc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tune_vlmc.html">tune_vlmc</a></span><span class="op">(</span><span class="va">dts</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/draw.html">draw</a></span><span class="op">(</span><span class="fu"><a href="../reference/as_vlmc.html">as_vlmc</a></span><span class="op">(</span><span class="va">best_vlmc</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; * (0.494, 0.506)</span></span></code></pre></div>
-<p>Simulating a sequence using the model is done via the standard
-<code><a href="https://rdrr.io/r/stats/simulate.html" class="external-link">stats::simulate()</a></code> function as follows:</p>
+<span><span class="co">#&gt; * (0.49, 0.51)</span></span></code></pre></div>
+<p>Simulating a sequence using the model is done via
+<code><a href="../reference/simulate.vlmc.html">simulate.vlmc()</a></code> which overrides the standard
+<code><a href="https://rdrr.io/r/stats/simulate.html" class="external-link">stats::simulate()</a></code>. For instance:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dts_sample</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/simulate.html" class="external-link">simulate</a></span><span class="op">(</span><span class="fu"><a href="../reference/as_vlmc.html">as_vlmc</a></span><span class="op">(</span><span class="va">best_vlmc</span><span class="op">)</span>, <span class="fl">600</span><span class="op">)</span><span class="op">[</span><span class="op">-</span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">100</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
 <p>Even if this is useless here because of the independence, we drop the
@@ -151,6 +168,9 @@ length of the new time series</li>
 simulation (the initial state of the random number generator is restored
 to its previous after simulating the values)</li>
 </ul>
+<p>As for <code><a href="https://rdrr.io/r/stats/simulate.html" class="external-link">stats::simulate()</a></code>, the state of the random number
+generator is never modified by a call to
+<code><a href="../reference/simulate.vlmc.html">simulate.vlmc()</a></code>.</p>
 <p>In addition, one can specify the initial values of the sequence via
 the <code>init</code> parameter, for instance:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
@@ -159,18 +179,25 @@ the <code>init</code> parameter, for instance:</p>
 0\)</span>:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dts_sample_2</span></span>
-<span><span class="co">#&gt;  [1] 0 0 0 1 1 0 1 1 0 0</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1] 0 0 0 1 0 1 0 0 0 1</span></span>
+<span><span class="co">#&gt; attr(,"class")</span></span>
+<span><span class="co">#&gt; [1] "dts"     "integer"</span></span></code></pre></div>
 <p>This provides an alternative to dropping the initial values of the
 simulated time series by setting those values to the one observed in the
 data set. Notice that this practice has no theoretical
 justification.</p>
+<p>To implement a <em>burn in</em> period, just use the
+<code>burnin</code> parameter. For instance:</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">dts_sample_3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/simulate.html" class="external-link">simulate</a></span><span class="op">(</span><span class="fu"><a href="../reference/as_vlmc.html">as_vlmc</a></span><span class="op">(</span><span class="va">best_vlmc</span><span class="op">)</span>, <span class="fl">10</span>, burnin <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span></code></pre></div>
+<p>will simulated 30 values and drop the first 20.</p>
 </div>
 <div class="section level3">
 <h3 id="cac-time-series">CAC time series<a class="anchor" aria-label="anchor" href="#cac-time-series"></a>
 </h3>
 <p>Let us consider the French CAC index provided in
 <code>EuStockMarkets</code>:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">CAC_raw</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">EuStockMarkets</span><span class="op">)</span><span class="op">$</span><span class="va">CAC</span></span></code></pre></div>
 <p>We turn it into a discrete time series with three values:</p>
 <ul>
@@ -179,7 +206,7 @@ justification.</p>
 <li>Up if the value increased by at least 0.5%</li>
 <li>Down if the value decreased by at least 0.5%</li>
 </ul>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">CAC_rel_evol</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/diff.html" class="external-link">diff</a></span><span class="op">(</span><span class="va">CAC_raw</span><span class="op">)</span> <span class="op">/</span> <span class="va">CAC_raw</span><span class="op">[</span><span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">CAC_raw</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="va">CAC_dts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">CAC_rel_evol</span> <span class="op">&gt;=</span> <span class="fl">0.005</span>, <span class="st">"Up"</span>,</span>
@@ -188,15 +215,15 @@ justification.</p>
 <span>  levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Down"</span>, <span class="st">"Stay"</span>, <span class="st">"Up"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>Then we adjust a VLMC to the time series using the AIC criterion:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">CAC_vlmc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tune_vlmc.html">tune_vlmc</a></span><span class="op">(</span><span class="va">CAC_dts</span>, criterion <span class="op">=</span> <span class="st">"AIC"</span><span class="op">)</span></span>
 <span><span class="va">CAC_model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/as_vlmc.html">as_vlmc</a></span><span class="op">(</span><span class="va">CAC_vlmc</span><span class="op">)</span></span></code></pre></div>
 <p>We use here the AIC to favour predictive performances and as a
-consequence the obtained model is quite complex with 30 contexts.</p>
+consequence the obtained model is quite complex with 1 contexts.</p>
 <p>The original discrete time series does not exhibit long subsequences
 of constant values as shown in the following graphical
 representation.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">CAC_rle</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rle.html" class="external-link">rle</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">CAC_dts</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">CAC_rle_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>value <span class="op">=</span> <span class="va">CAC_rle</span><span class="op">$</span><span class="va">values</span>, length <span class="op">=</span> <span class="va">CAC_rle</span><span class="op">$</span><span class="va">lengths</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">CAC_rle_df</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">length</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
@@ -206,14 +233,14 @@ representation.</p>
 <span>    x <span class="op">=</span> <span class="st">"Length"</span>,</span>
 <span>    y <span class="op">=</span> <span class="st">"Count"</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
-<p><img src="sampling_files/figure-html/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;"></p>
+<p><img src="sampling_files/figure-html/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto;"></p>
 <p>To study this aspect of the time series, a natural statistics is the
 probability of observing a constant subsequence of a length between 5
 and 10 among all subsequences of length 10 that can be generated by the
 model. Notice that the patterns used in the statistics must be of fixed
 lengths to be covered by the consistency theorems mentioned above. We
 implement the statistics as follows:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">long_sequence</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">dts</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">dts_int</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">dts</span><span class="op">)</span></span>
 <span>  <span class="co">## RLE cannot be used directly as we need to account for overlapping</span></span>
@@ -221,26 +248,30 @@ implement the statistics as follows:</p>
 <span>  <span class="va">dts_freq</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/froll.html" class="external-link">frollapply</a></span><span class="op">(</span><span class="va">dts_int</span>, <span class="fl">10</span>, \<span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rle.html" class="external-link">rle</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">$</span><span class="va">length</span><span class="op">)</span> <span class="op">&gt;=</span> <span class="fl">5</span><span class="op">)</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">dts_freq</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
-<p>We generate 100 bootstrap samples, using a burning time proportional
-to the depth of the model, in order to allow for a proper mixing to take
-place. We use the <code>seed</code> parameter of
-<code><a href="https://rdrr.io/r/stats/simulate.html" class="external-link">stats::simulate()</a></code> to ensure reproducibility.</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<p>We generate 100 bootstrap samples, using a <em>burn in</em> time
+proportional to the depth of the model, in order to allow for a proper
+mixing to take place. Notice that we could use also
+<code>burnin="auto"</code> to use the another heuristics which uses the
+number of contexts to compute the length of the <em>burn in</em> period.
+We use the <code>seed</code> parameter of <code><a href="https://rdrr.io/r/stats/simulate.html" class="external-link">stats::simulate()</a></code>
+to ensure reproducibility.</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">bootstrap_samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/vector.html" class="external-link">vector</a></span><span class="op">(</span><span class="fl">100</span>, mode <span class="op">=</span> <span class="st">"list"</span><span class="op">)</span></span>
-<span><span class="va">burning_time</span> <span class="op">&lt;-</span> <span class="fl">50</span> <span class="op">*</span> <span class="fu"><a href="../reference/depth.html">depth</a></span><span class="op">(</span><span class="va">CAC_model</span><span class="op">)</span></span>
+<span><span class="va">burn_in_time</span> <span class="op">&lt;-</span> <span class="fl">50</span> <span class="op">*</span> <span class="fu"><a href="../reference/depth.html">depth</a></span><span class="op">(</span><span class="va">CAC_model</span><span class="op">)</span></span>
 <span><span class="kw">for</span> <span class="op">(</span><span class="va">b</span> <span class="kw">in</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_along</a></span><span class="op">(</span><span class="va">bootstrap_samples</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">bootstrap_samples</span><span class="op">[[</span><span class="va">b</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/simulate.html" class="external-link">simulate</a></span><span class="op">(</span><span class="va">CAC_model</span>,</span>
-<span>    <span class="va">burning_time</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">CAC_dts</span><span class="op">)</span>,</span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">CAC_dts</span><span class="op">)</span>,</span>
+<span>    burin <span class="op">=</span> <span class="va">burn_in_time</span>,</span>
 <span>    seed <span class="op">=</span> <span class="va">b</span></span>
-<span>  <span class="op">)</span><span class="op">[</span><span class="op">-</span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="va">burning_time</span><span class="op">)</span><span class="op">]</span></span>
+<span>  <span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
 <p>Then we compute the statistics on the bootstrap samples.</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">bootstrap_ls</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="va">bootstrap_samples</span>, <span class="va">long_sequence</span><span class="op">)</span></span></code></pre></div>
 <p>The bootstrap distribution of this statistics is illustrated on the
 following figure in which the red vertical line represents the value of
 the statistics on the original sequence.</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span>mapping <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">bootstrap_ls</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_density.html" class="external-link">geom_density</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_rug.html" class="external-link">geom_rug</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
@@ -249,7 +280,7 @@ the statistics on the original sequence.</p>
 <span>    x <span class="op">=</span> <span class="st">"Probability"</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_vline</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="fu">long_sequence</span><span class="op">(</span><span class="va">CAC_dts</span><span class="op">)</span>, color <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="sampling_files/figure-html/unnamed-chunk-14-1.png" width="672" style="display: block; margin: auto;"></p>
+<p><img src="sampling_files/figure-html/unnamed-chunk-15-1.png" width="672" style="display: block; margin: auto;"></p>
 </div>
 </div>
 <div class="section level2">
@@ -269,47 +300,36 @@ covariates.</p>
 <p>Let us study the CAC discrete time series using the three other
 indexes from <code>EuStockMarkets</code> as covariates. As previously,
 we select a model with the AIC criterion:</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">CAC_covariates</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">EuStockMarkets</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"DAX"</span>, <span class="st">"SMI"</span>, <span class="st">"FTSE"</span><span class="op">)</span><span class="op">]</span><span class="op">[</span><span class="op">-</span><span class="fl">1</span>, <span class="op">]</span></span>
 <span><span class="va">CAC_covlmc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tune_covlmc.html">tune_covlmc</a></span><span class="op">(</span><span class="va">CAC_dts</span>, <span class="va">CAC_covariates</span>, criterion <span class="op">=</span> <span class="st">"AIC"</span><span class="op">)</span></span>
 <span><span class="va">CAC_comodel</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/as_covlmc.html">as_covlmc</a></span><span class="op">(</span><span class="va">CAC_covlmc</span><span class="op">)</span></span></code></pre></div>
 <p>The obtained model is relatively complex as shown below:</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/draw.html">draw</a></span><span class="op">(</span><span class="va">CAC_comodel</span>, model <span class="op">=</span> <span class="st">"full"</span>, with_state <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; *</span></span>
-<span><span class="co">#&gt; +-- Down</span></span>
-<span><span class="co">#&gt; |   +-- Down (0.04097 [ (Down) | (I)    DAX_1   SMI_1    FTSE_1    DAX_2    SMI_2   FTSE_2  </span></span>
-<span><span class="co">#&gt; |   |                   Stay   | -2.383 0.01467 -0.01714 -0.003948 -0.01314 0.01539 0.005337</span></span>
-<span><span class="co">#&gt; |   |                   Up     | -1.939 0.02377 -0.02597 -0.0104   -0.02428 0.02526 0.01193  ])</span></span>
-<span><span class="co">#&gt; |   '-- Stay, Up (0.07236 [ (Down) | (I)    DAX_1     SMI_1     FTSE_1    </span></span>
-<span><span class="co">#&gt; |                           Stay   | -1.412 0.0004292 -0.001297 0.001371  </span></span>
-<span><span class="co">#&gt; |                           Up     | 1.59   -0.000136 0.0004101 -0.0007633 ])</span></span>
-<span><span class="co">#&gt; '-- Stay</span></span>
+<span><span class="co">#&gt; +-- Stay</span></span>
 <span><span class="co">#&gt; |   +-- Stay (0.0065 [ (Down) | (I)   DAX_1     SMI_1     FTSE_1  DAX_2     SMI_2    FTSE_2  </span></span>
 <span><span class="co">#&gt; |   |                  Stay   | 0.871 0.007903  -0.009399 0.01673 -0.007771 0.009261 -0.01684</span></span>
 <span><span class="co">#&gt; |   |                  Up     | 2.838 -0.005994 -0.01448  0.0299  0.003666  0.0169   -0.03126 ])</span></span>
 <span><span class="co">#&gt; |   '-- Down, Up (0.002452 [ (Down) | (I)    DAX_1     SMI_1     FTSE_1   </span></span>
 <span><span class="co">#&gt; |                            Stay   | -1.707 -0.001755 0.0004276 0.001412 </span></span>
 <span><span class="co">#&gt; |                            Up     | -1.397 -0.001357 0.0006376 0.0008178 ])</span></span>
-<span><span class="co">#&gt; '-- Up</span></span>
-<span><span class="co">#&gt;     +-- Up (0.01046 [ (Down) | (I)     DAX_1    SMI_1    FTSE_1    DAX_2     SMI_2   FTSE_2  </span></span>
-<span><span class="co">#&gt;     |                 Stay   | -0.4838 0.02407  -0.02501 -0.008507 -0.02374  0.02474 0.0089  </span></span>
-<span><span class="co">#&gt;     |                 Up     | 2.484   0.005797 -0.01774 -0.009711 -0.006469 0.01917 0.008314 ])</span></span>
-<span><span class="co">#&gt;     '-- Down, Stay (0.7881 [ (Down) | (I)   </span></span>
-<span><span class="co">#&gt;                              Stay   | 0.3225</span></span>
-<span><span class="co">#&gt;                              Up     | 0.1779 ])</span></span></code></pre></div>
+<span><span class="co">#&gt; '-- Down, Up (NA [ (Down) | (I)    </span></span>
+<span><span class="co">#&gt;                    Stay   | 0.347  </span></span>
+<span><span class="co">#&gt;                    Up     | 0.05716 ])</span></span></code></pre></div>
 <p>The variability of the discrete time series for fixed values of the
 covariates can be investigated using simulated sequences. The only
 difference between <code><a href="../reference/simulate.vlmc.html">simulate.vlmc()</a></code> and
 <code><a href="../reference/simulate.covlmc.html">simulate.covlmc()</a></code> is the need for the covariates in the
-latter. A burning time is also problematic here as we do not have
-additional throw away values for the covariates. A possibility used here
-consists in starting the discrete time series as the observed one
+latter. A <em>burn in</em> time is also problematic here as we do not
+have additional throw away values for the covariates. A possibility used
+here consists in starting the discrete time series as the observed one
 started, using as many values as the size of the largest context. Notice
 that in the current implementation, simulating from a COVLMC is
 relatively slow compared to simulation from a VLMC. Here we perform a
 single simulation to illustrate the feature.</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">co_sample</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/simulate.html" class="external-link">simulate</a></span><span class="op">(</span><span class="va">CAC_comodel</span>,</span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">CAC_dts</span><span class="op">)</span>,</span>
 <span>  seed <span class="op">=</span> <span class="fl">0</span>,</span>
@@ -324,23 +344,23 @@ single simulation to illustrate the feature.</p>
 consequences of the external influence on the discrete time series under
 study. Let us consider for instance a week of electrical
 consumption:</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pc_week</span> <span class="op">&lt;-</span> <span class="va">powerconsumption</span><span class="op">[</span><span class="va">powerconsumption</span><span class="op">$</span><span class="va">week</span> <span class="op">==</span> <span class="fl">12</span>, <span class="op">]</span></span>
 <span><span class="va">elec</span> <span class="op">&lt;-</span> <span class="va">pc_week</span><span class="op">$</span><span class="va">active_power</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">pc_week</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">date_time</span>, y <span class="op">=</span> <span class="va">active_power</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">xlab</a></span><span class="op">(</span><span class="st">"Date"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ylab</a></span><span class="op">(</span><span class="st">"Activer power (kW)"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="sampling_files/figure-html/unnamed-chunk-18-1.png" width="672" style="display: block; margin: auto;">
+<p><img src="sampling_files/figure-html/unnamed-chunk-19-1.png" width="672" style="display: block; margin: auto;">
 We build a discrete version by considering two states: the background
 base active power below 0.4 kW and the active use of electric appliance
 above this limit.</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">elec_dts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cut.html" class="external-link">cut</a></span><span class="op">(</span><span class="va">elec</span>, breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1.2</span>, <span class="fl">8</span><span class="op">)</span>, labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"background"</span>, <span class="st">"active"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">elec_cov</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>day <span class="op">=</span> <span class="op">(</span><span class="va">pc_week</span><span class="op">$</span><span class="va">hour</span> <span class="op">&gt;=</span> <span class="fl">7</span> <span class="op">&amp;</span> <span class="va">pc_week</span><span class="op">$</span><span class="va">hour</span> <span class="op">&lt;=</span> <span class="fl">17</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>Then we adjust a COVLMC with a binary covariate day/night, using the
 AIC.</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">elec_covlmc_tune</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tune_covlmc.html">tune_covlmc</a></span><span class="op">(</span><span class="va">elec_dts</span>, <span class="va">elec_cov</span>, criterion <span class="op">=</span> <span class="st">"AIC"</span><span class="op">)</span></span>
 <span><span class="va">best_elec_covlmc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/as_covlmc.html">as_covlmc</a></span><span class="op">(</span><span class="va">elec_covlmc_tune</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/draw.html">draw</a></span><span class="op">(</span><span class="va">best_elec_covlmc</span>, model <span class="op">=</span> <span class="st">"full"</span>, time_sep <span class="op">=</span> <span class="st">" | "</span>, p_value <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
@@ -361,14 +381,14 @@ AIC.</p>
 <p>Then we can simulate longer or shorter days by manipulating the
 covariates. For instance a “day only” full week could be obtained as
 follows</p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">day_only</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/simulate.html" class="external-link">simulate</a></span><span class="op">(</span><span class="va">best_elec_covlmc</span>,</span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">elec_dts</span><span class="op">)</span>,</span>
 <span>  seed <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  covariate <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>day <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="cn">TRUE</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">elec_dts</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>while a “night only” full week is given by</p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">night_only</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/simulate.html" class="external-link">simulate</a></span><span class="op">(</span><span class="va">best_elec_covlmc</span>,</span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">elec_dts</span><span class="op">)</span>,</span>
 <span>  seed <span class="op">=</span> <span class="fl">0</span>,</span>
@@ -389,7 +409,7 @@ covariates.</p>
 
     <footer><div class="pkgdown-footer-left">
   <p></p>
-<p>Developed by Fabrice Rossi.</p>
+<p>Developed by <a href="https://fabrice-rossi.github.io/" class="external-link">Fabrice Rossi</a>.</p>
 </div>
 
 <div class="pkgdown-footer-right">

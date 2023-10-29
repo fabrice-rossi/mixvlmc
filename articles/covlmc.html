@@ -26,7 +26,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">mixvlmc</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.2.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -41,16 +41,24 @@
 <li class="active nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
+    <h6 class="dropdown-header" data-toc-skip>Getting started</h6>
     <a class="dropdown-item" href="../articles/context-trees.html">Context trees</a>
-    <a class="dropdown-item" href="../articles/covlmc.html">Variable Length Markov Chains with Covariates (COVLMC)</a>
-    <a class="dropdown-item" href="../articles/sampling.html">Sampling from (CO)VLMC</a>
     <a class="dropdown-item" href="../articles/variable-length-markov-chains.html">Variable length Markov chains (VLMC)</a>
+    <a class="dropdown-item" href="../articles/covlmc.html">Variable Length Markov Chains with Covariates (COVLMC)</a>
+    <div class="dropdown-divider"></div>
+    <h6 class="dropdown-header" data-toc-skip>Advanced topics</h6>
+    <a class="dropdown-item" href="../articles/likelihood.html">Likelihood calculation</a>
+    <a class="dropdown-item" href="../articles/prediction.html">Predicting with (CO)VLMC</a>
+    <a class="dropdown-item" href="../articles/sampling.html">Sampling from (CO)VLMC</a>
+    <div class="dropdown-divider"></div>
+    <a class="dropdown-item" href="../articles/index.html">More articles...</a>
   </div>
 </li>
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-news">News</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-news">
     <h6 class="dropdown-header" data-toc-skip>Releases</h6>
+    <a class="external-link dropdown-item" href="https://fabrice-rossi.github.io/blog/posts/mixvlmc-0-2.html">mixvlmc 0.2.0</a>
     <a class="external-link dropdown-item" href="https://fabrice-rossi.github.io/blog/posts/mixvlmc-0-1.html">mixvlmc 0.1.1</a>
     <div class="dropdown-divider"></div>
     <a class="dropdown-item" href="../news/index.html">Changelog</a>
@@ -164,15 +172,14 @@ VLMC. We have <em>in addition</em> another sequence of random variables
 <span class="math inline">\(Y_l\in \mathbb{R}^p\)</span> is can be
 relaxed to more general spaces.</p>
 <p>A COVLMC puts restriction on the conditional probabilities of <span class="math inline">\(X_n\)</span> given the past of <em>both</em>
-sequences. To simplify the presentation, we denote <span class="math inline">\(X^k_l\)</span> the sequence of random variables
+sequences. To simplify the presentation, we denote <span class="math inline">\(X^k_m\)</span> the sequence of random variables
 <span class="math display">\[
-X^k_m=(X_k, X_{k-1}, \ldots, X_m),
+X_k^m=(X_k, X_{k-1}, \ldots, X_m),
 \]</span> and we use similar notations for the values taken by the
 variables <span class="math inline">\(x^k_m\)</span>, as well as for
-<span class="math inline">\(Y^k_m\)</span> and <span class="math inline">\(y^k_m\)</span>. We use here the traditional
-reverser ordering in which <span class="math inline">\(X_k\)</span> is
-the more recent variable and <span class="math inline">\(X_m\)</span>
-the oldest.</p>
+<span class="math inline">\(Y^k_m\)</span> and <span class="math inline">\(y^k_m\)</span>. The notation accommodates both
+temporal order if <span class="math inline">\(k&lt;m\)</span> and
+reverse temporal if <span class="math inline">\(k&gt;m\)</span>.</p>
 <p>A pair of sequences <span class="math inline">\(\mathbf{X}\)</span>
 and <span class="math inline">\(\mathbf{Y}\)</span> is a COVLMC if there
 is a maximal order <span class="math inline">\(l_{\max}\)</span> and a
@@ -207,9 +214,9 @@ example in <code><a href="../articles/variable-length-markov-chains.html">vignet
 assume that <span class="math inline">\(l_{\max}=3\)</span> and that
 <span class="math inline">\(l\)</span> is given by <span class="math display">\[
 \begin{align*}
-l(0, a, b)&amp;=1&amp;\forall a, \forall b,\\
-l(1, 1, c)&amp;=2&amp;\forall c,\\
-l(1, 0, 0)&amp;=3,&amp;\\
+l(a, b, 0)&amp;=1&amp;\forall a, \forall b,\\
+l(c, 1, 1)&amp;=2&amp;\forall c,\\
+l(0, 0, 1)&amp;=3,&amp;\\
 l(1, 0, 1)&amp;=3.&amp;\\
 \end{align*}
 \]</span> In practice the COVLMC is therefore fully described by
@@ -425,7 +432,7 @@ the full “pruning space” associated to a given data set.</p>
 <span><span class="co">#&gt;  cutoff in quantile scale: 0.1236</span></span>
 <span><span class="co">#&gt;  Number of contexts: 2 </span></span>
 <span><span class="co">#&gt;  Maximum context length: 1 </span></span>
-<span><span class="co">#&gt;  Selected by BIC (245.8001)</span></span></code></pre></div>
+<span><span class="co">#&gt;  Selected by BIC (245.1046) with likelihood function "truncated" (-112.3135)</span></span></code></pre></div>
 <p>and</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/draw.html">draw</a></span><span class="op">(</span><span class="fu"><a href="../reference/as_covlmc.html">as_covlmc</a></span><span class="op">(</span><span class="va">model_tune</span><span class="op">)</span>, model <span class="op">=</span> <span class="st">"full"</span>, p_value <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
@@ -452,7 +459,7 @@ instance <code>min_size=2</code> as follows:</p>
 <span><span class="co">#&gt;  cutoff in quantile scale: 0.01195</span></span>
 <span><span class="co">#&gt;  Number of contexts: 2 </span></span>
 <span><span class="co">#&gt;  Maximum context length: 1 </span></span>
-<span><span class="co">#&gt;  Selected by BIC (245.8001)</span></span></code></pre></div>
+<span><span class="co">#&gt;  Selected by BIC (242.3184) with likelihood function "truncated" (-112.3135)</span></span></code></pre></div>
 <p>and <code>min_size=10</code> as follows:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">model_tune_10</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tune_covlmc.html">tune_covlmc</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">covariates</span>, min_size <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
@@ -461,7 +468,7 @@ instance <code>min_size=2</code> as follows:</p>
 <span><span class="co">#&gt;  cutoff in quantile scale: 0.1236</span></span>
 <span><span class="co">#&gt;  Number of contexts: 2 </span></span>
 <span><span class="co">#&gt;  Maximum context length: 1 </span></span>
-<span><span class="co">#&gt;  Selected by BIC (245.8001)</span></span></code></pre></div>
+<span><span class="co">#&gt;  Selected by BIC (245.6423) with likelihood function "truncated" (-112.3135)</span></span></code></pre></div>
 <p>Here we see no particular effect of the parameter because of the
 simplicity of the problem.</p>
 <p>Let us now come back to the electricity consumption example described
@@ -476,16 +483,20 @@ above. We introduce a very basic day/night covariate as follows:</p>
 <span><span class="co">#&gt;  cutoff in quantile scale: 0.007218</span></span>
 <span><span class="co">#&gt;  Number of contexts: 7 </span></span>
 <span><span class="co">#&gt;  Maximum context length: 3 </span></span>
-<span><span class="co">#&gt;  Selected by BIC (2243.59)</span></span></code></pre></div>
+<span><span class="co">#&gt;  Selected by BIC (2243.59) with likelihood function "truncated" (-1064.74)</span></span></code></pre></div>
 <p>The model selection process can be represented graphically as
 follows:</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">elec_tune</span><span class="op">$</span><span class="va">results</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">alpha</span>, y <span class="op">=</span> <span class="va">BIC</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p><img src="covlmc_files/figure-html/unnamed-chunk-13-1.png" width="672" style="display: block; margin: auto;"></p>
-<p>The final model is:</p>
+<p><img src="covlmc_files/figure-html/unnamed-chunk-13-1.png" width="672" style="display: block; margin: auto;">
+or automatically using e.g. <code><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot()</a></code> as follows:</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot</a></span><span class="op">(</span><span class="va">elec_tune</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p><img src="covlmc_files/figure-html/unnamed-chunk-14-1.png" width="672" style="display: block; margin: auto;"></p>
+<p>The final model is:</p>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/draw.html">draw</a></span><span class="op">(</span><span class="fu"><a href="../reference/as_covlmc.html">as_covlmc</a></span><span class="op">(</span><span class="va">elec_tune</span><span class="op">)</span>, model <span class="op">=</span> <span class="st">"full"</span>, p_value <span class="op">=</span> <span class="cn">FALSE</span>, with_state <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; *</span></span>
 <span><span class="co">#&gt; +-- low ([ (low)   | (I)   </span></span>
@@ -526,24 +537,24 @@ during the day than at night.</li>
 <code>min_size</code> parameter has some influence on the results.
 Setting it to a smaller value does not change the final model, as shown
 below:</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">elec_tune_3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tune_covlmc.html">tune_covlmc</a></span><span class="op">(</span><span class="va">elec_dts</span>, <span class="va">elec_cov</span>, min_size <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
 <span><span class="va">elec_tune_3</span></span>
 <span><span class="co">#&gt; VLMC with covariate context tree on low, typical, high </span></span>
 <span><span class="co">#&gt;  cutoff in quantile scale: 0.007218</span></span>
 <span><span class="co">#&gt;  Number of contexts: 7 </span></span>
 <span><span class="co">#&gt;  Maximum context length: 3 </span></span>
-<span><span class="co">#&gt;  Selected by BIC (2243.59)</span></span></code></pre></div>
+<span><span class="co">#&gt;  Selected by BIC (2239.393) with likelihood function "truncated" (-1064.74)</span></span></code></pre></div>
 <p>However, increasing the parameter to, e.g., 10 generates a simpler
 but weaker model as show here:</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">elec_tune_10</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tune_covlmc.html">tune_covlmc</a></span><span class="op">(</span><span class="va">elec_dts</span>, <span class="va">elec_cov</span>, min_size <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
 <span><span class="va">elec_tune_10</span></span>
 <span><span class="co">#&gt; VLMC with covariate context tree on low, typical, high </span></span>
 <span><span class="co">#&gt;  cutoff in quantile scale: 0.03454</span></span>
 <span><span class="co">#&gt;  Number of contexts: 5 </span></span>
 <span><span class="co">#&gt;  Maximum context length: 2 </span></span>
-<span><span class="co">#&gt;  Selected by BIC (2260.505)</span></span></code></pre></div>
+<span><span class="co">#&gt;  Selected by BIC (2260.505) with likelihood function "truncated" (-1088.409)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="diagnostics">Diagnostics<a class="anchor" aria-label="anchor" href="#diagnostics"></a>
@@ -557,22 +568,27 @@ functions include</p>
 <code><a href="../reference/depth.html">depth()</a></code> returns the length of the longest context in
 the model;</li>
 <li>
+<code><a href="../reference/covariate_depth.html">covariate_depth()</a></code> returns the longest memory used by
+the model with respect to covariates;</li>
+<li>
 <code><a href="../reference/context_number.html">context_number()</a></code> returns the number of contexts in the
 model.</li>
 </ul>
 <p>For instance, the large model obtained above has the following
 characteristics:</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">elec_model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/as_covlmc.html">as_covlmc</a></span><span class="op">(</span><span class="va">elec_tune</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/states.html">states</a></span><span class="op">(</span><span class="va">elec_model</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] low     typical high   </span></span>
 <span><span class="co">#&gt; Levels: low typical high</span></span>
 <span><span class="fu"><a href="../reference/depth.html">depth</a></span><span class="op">(</span><span class="va">elec_model</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 3</span></span>
+<span><span class="fu"><a href="../reference/covariate_depth.html">covariate_depth</a></span><span class="op">(</span><span class="va">elec_model</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 1</span></span>
 <span><span class="fu"><a href="../reference/context_number.html">context_number</a></span><span class="op">(</span><span class="va">elec_model</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 7</span></span></code></pre></div>
 <p>VLMC objects support classical statistical functions such as:</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/logLik.html" class="external-link">logLik</a></span><span class="op">(</span><span class="va">elec_model</span><span class="op">)</span></span>
 <span><span class="co">#&gt; 'log Lik.' -1064.74 (df=15)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/AIC.html" class="external-link">AIC</a></span><span class="op">(</span><span class="va">elec_model</span><span class="op">)</span></span>
@@ -585,7 +601,7 @@ characteristics:</p>
 </h3>
 <p>The model can be explored in details by drawing its context tree (see
 <code><a href="../articles/context-trees.html">vignette("context-trees")</a></code> for details) as follows:</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/draw.html">draw</a></span><span class="op">(</span><span class="va">elec_model</span><span class="op">)</span></span>
 <span><span class="co">#&gt; * (merging (low and high): 8.121e-230)</span></span>
 <span><span class="co">#&gt; +-- low (0.03454 [ -1.491</span></span>
@@ -612,32 +628,71 @@ the sub-contexts of a context. P-values associated to specific models
 correspond to reducing the memory of the corresponding model, that is
 discarding the dependency of the conditional probability towards the
 oldest covariates.</p>
-<p>To explore the contexts in a programmatically way, one should rely on
-the <code><a href="../reference/contexts.html">contexts()</a></code> function. COVLMC contexts have additional
+<p>To explore the contexts in a programmatic way, one should rely on the
+<code><a href="../reference/contexts.html">contexts()</a></code> function. COVLMC contexts have additional
 characteristics compared to VLMC and context trees. In particular, the
 <code><a href="../reference/contexts.html">contexts()</a></code> function can report the model associated to each
 context, either by its parameters only:</p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/contexts.html">contexts</a></span><span class="op">(</span><span class="va">elec_model</span>, model <span class="op">=</span> <span class="st">"coef"</span><span class="op">)</span></span>
 <span><span class="co">#&gt;        context         coef</span></span>
 <span><span class="co">#&gt; 1          low -1.49102....</span></span>
-<span><span class="co">#&gt; 2 typical, low 0.464305....</span></span>
-<span><span class="co">#&gt; 3 typical,.... 0.305381....</span></span>
+<span><span class="co">#&gt; 2 low, typical 0.464305....</span></span>
+<span><span class="co">#&gt; 3 low, typ.... 0.305381....</span></span>
 <span><span class="co">#&gt; 4 typical,.... 1.839226....</span></span>
-<span><span class="co">#&gt; 5 typical,.... 2.772588....</span></span>
-<span><span class="co">#&gt; 6 typical,.... 3.367295....</span></span>
+<span><span class="co">#&gt; 5 high, ty.... 2.772588....</span></span>
+<span><span class="co">#&gt; 6 high, ty.... 3.367295....</span></span>
 <span><span class="co">#&gt; 7         high 1.473892....</span></span></code></pre></div>
 <p>or using the models themselves:</p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/contexts.html">contexts</a></span><span class="op">(</span><span class="va">elec_model</span>, model <span class="op">=</span> <span class="st">"full"</span><span class="op">)</span></span>
 <span><span class="co">#&gt;        context                                            model</span></span>
 <span><span class="co">#&gt; 1          low &lt;S4 class 'vglm' [package "VGAM"] with 37 slots&gt;</span></span>
-<span><span class="co">#&gt; 2 typical, low &lt;S4 class 'vglm' [package "VGAM"] with 37 slots&gt;</span></span>
-<span><span class="co">#&gt; 3 typical,.... &lt;S4 class 'vglm' [package "VGAM"] with 37 slots&gt;</span></span>
+<span><span class="co">#&gt; 2 low, typical &lt;S4 class 'vglm' [package "VGAM"] with 37 slots&gt;</span></span>
+<span><span class="co">#&gt; 3 low, typ.... &lt;S4 class 'vglm' [package "VGAM"] with 37 slots&gt;</span></span>
 <span><span class="co">#&gt; 4 typical,.... &lt;S4 class 'vglm' [package "VGAM"] with 37 slots&gt;</span></span>
-<span><span class="co">#&gt; 5 typical,.... &lt;S4 class 'vglm' [package "VGAM"] with 37 slots&gt;</span></span>
-<span><span class="co">#&gt; 6 typical,.... &lt;S4 class 'vglm' [package "VGAM"] with 37 slots&gt;</span></span>
+<span><span class="co">#&gt; 5 high, ty.... &lt;S4 class 'vglm' [package "VGAM"] with 37 slots&gt;</span></span>
+<span><span class="co">#&gt; 6 high, ty.... &lt;S4 class 'vglm' [package "VGAM"] with 37 slots&gt;</span></span>
 <span><span class="co">#&gt; 7         high &lt;S4 class 'vglm' [package "VGAM"] with 37 slots&gt;</span></span></code></pre></div>
+<p>As for context trees, focused analysis of specific contexts can be
+done by requesting a <code>ctx_node_covlmc</code> representation of the
+context of interest, for instance via the
+<code><a href="../reference/find_sequence.covlmc.html">find_sequence.covlmc()</a></code> function, or with the default result
+type of <code><a href="../reference/contexts.html">contexts()</a></code></p>
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">ctxs</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/contexts.html">contexts</a></span><span class="op">(</span><span class="va">elec_model</span><span class="op">)</span></span>
+<span><span class="va">ctxs</span></span>
+<span><span class="co">#&gt; Contexts:</span></span>
+<span><span class="co">#&gt;  low</span></span>
+<span><span class="co">#&gt;  low, typical</span></span>
+<span><span class="co">#&gt;  low, typical, typical</span></span>
+<span><span class="co">#&gt;  typical, typical, typical</span></span>
+<span><span class="co">#&gt;  high, typical, typical</span></span>
+<span><span class="co">#&gt;  high, typical</span></span>
+<span><span class="co">#&gt;  high</span></span></code></pre></div>
+<p>Individual contexts can be analysed using a collection of dedicated
+functions, for instance</p>
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/model.html">model</a></span><span class="op">(</span><span class="va">ctxs</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="co">#&gt;            [,1]</span></span>
+<span><span class="co">#&gt; [1,]  0.4643056</span></span>
+<span><span class="co">#&gt; [2,] -1.9924301</span></span>
+<span><span class="fu"><a href="../reference/model.html">model</a></span><span class="op">(</span><span class="va">ctxs</span><span class="op">[[</span><span class="fl">3</span><span class="op">]</span><span class="op">]</span>, type <span class="op">=</span> <span class="st">"full"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Call:</span></span>
+<span><span class="co">#&gt; VGAM::vglm(formula = target ~ 1, family = VGAM::multinomial(refLevel = 1), </span></span>
+<span><span class="co">#&gt;     data = mm, model = FALSE, x.arg = FALSE, y.arg = FALSE)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Coefficients:</span></span>
+<span><span class="co">#&gt; (Intercept):1 (Intercept):2 </span></span>
+<span><span class="co">#&gt;     0.3053816    -2.2335922 </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Degrees of Freedom: 138 Total; 136 Residual</span></span>
+<span><span class="co">#&gt; Residual deviance: 114.655 </span></span>
+<span><span class="co">#&gt; Log-likelihood: -57.32751 </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; This is a multinomial logit model with 3 levels</span></span></code></pre></div>
 <p>See <code><a href="../reference/contexts.covlmc.html">contexts.covlmc()</a></code> for details.</p>
 </div>
 </div>
@@ -649,7 +704,7 @@ context, either by its parameters only:</p>
 
     <footer><div class="pkgdown-footer-left">
   <p></p>
-<p>Developed by Fabrice Rossi.</p>
+<p>Developed by <a href="https://fabrice-rossi.github.io/" class="external-link">Fabrice Rossi</a>.</p>
 </div>
 
 <div class="pkgdown-footer-right">

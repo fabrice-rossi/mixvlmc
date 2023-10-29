@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">mixvlmc</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.2.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -24,16 +24,24 @@
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
+    <h6 class="dropdown-header" data-toc-skip>Getting started</h6>
     <a class="dropdown-item" href="../articles/context-trees.html">Context trees</a>
-    <a class="dropdown-item" href="../articles/covlmc.html">Variable Length Markov Chains with Covariates (COVLMC)</a>
-    <a class="dropdown-item" href="../articles/sampling.html">Sampling from (CO)VLMC</a>
     <a class="dropdown-item" href="../articles/variable-length-markov-chains.html">Variable length Markov chains (VLMC)</a>
+    <a class="dropdown-item" href="../articles/covlmc.html">Variable Length Markov Chains with Covariates (COVLMC)</a>
+    <div class="dropdown-divider"></div>
+    <h6 class="dropdown-header" data-toc-skip>Advanced topics</h6>
+    <a class="dropdown-item" href="../articles/likelihood.html">Likelihood calculation</a>
+    <a class="dropdown-item" href="../articles/prediction.html">Predicting with (CO)VLMC</a>
+    <a class="dropdown-item" href="../articles/sampling.html">Sampling from (CO)VLMC</a>
+    <div class="dropdown-divider"></div>
+    <a class="dropdown-item" href="../articles/index.html">More articles...</a>
   </div>
 </li>
 <li class="active nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-news">News</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-news">
     <h6 class="dropdown-header" data-toc-skip>Releases</h6>
+    <a class="external-link dropdown-item" href="https://fabrice-rossi.github.io/blog/posts/mixvlmc-0-2.html">mixvlmc 0.2.0</a>
     <a class="external-link dropdown-item" href="https://fabrice-rossi.github.io/blog/posts/mixvlmc-0-1.html">mixvlmc 0.1.1</a>
     <div class="dropdown-divider"></div>
     <a class="dropdown-item" href="../news/index.html">Changelog</a>
@@ -60,8 +68,67 @@
     </div>
 
     <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.2.0" id="mixvlmc-020">mixvlmc 0.2.0<a class="anchor" aria-label="anchor" href="#mixvlmc-020"></a></h2><p class="text-muted">CRAN release: 2023-10-28</p>
+<div class="section level3">
+<h3 id="breaking-changes-0-2-0">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-0-2-0"></a></h3>
+<ul><li>the <code>mode</code> parameter of <code><a href="../reference/cutoff.vlmc.html">cutoff.vlmc()</a></code> has been renamed to <code>scale</code>
+</li>
+<li>the <code>type</code> parameter has been removed from <code><a href="../reference/contexts.html">contexts()</a></code> variants and the default result format has been modified significantly</li>
+<li>the <code>counts</code> parameter from <code><a href="../reference/contexts.vlmc.html">contexts.vlmc()</a></code> and <code><a href="../reference/contexts.covlmc.html">contexts.covlmc()</a></code> has been replaced by a logical parameter named <code>local</code>
+</li>
+<li>
+<code><a href="../reference/contexts.html">contexts()</a></code> sequences are now reported by default in temporal order</li>
+</ul></div>
+<div class="section level3">
+<h3 id="new-features-0-2-0">New features<a class="anchor" aria-label="anchor" href="#new-features-0-2-0"></a></h3>
+<div class="section level4">
+<h4 id="c-backend-0-2-0">C++ backend<a class="anchor" aria-label="anchor" href="#c-backend-0-2-0"></a></h4>
+<p>The main major new feature of this version is the inclusion of a C++ implementation of context tree and VLMC construction. A new option <code>mixvlmc.backend</code> can be used to switch globally from the original <code>"R"</code> implementation to the new <code>"C++"</code> back end. A new <code>backend</code> parameter has been added to <code><a href="../reference/ctx_tree.html">ctx_tree()</a></code>, <code><a href="../reference/vlmc.html">vlmc()</a></code> and <code><a href="../reference/tune_vlmc.html">tune_vlmc()</a></code> to enable local back end selection.</p>
+<p>The C++ implementation is significantly faster than the R implementation, at least by a factor 10. While it has been thoroughly tested, it is still considered experimental notably because it does not apply to COVLMC (setting the global option to <code>"C++"</code> has not effect on COVLMC model construction). For context trees and VLMC, results should not depend on the back end, at least within numerical precision. The only notable difference is the ordering of the contexts which differs between back ends: in a call to <code><a href="../reference/contexts.html">contexts()</a></code>, the first context for the R back end will generally not be the first context for the C++ back end.</p>
+</div>
+<div class="section level4">
+<h4 id="other-new-features-0-2-0">Other new features<a class="anchor" aria-label="anchor" href="#other-new-features-0-2-0"></a></h4>
+<ul><li>
+<code><a href="../reference/contexts.html">contexts()</a></code> can now report the positions of each context in the original time series</li>
+<li>nodes of context trees can be extracted individually as <code>ctx_node</code> objects using the <code><a href="../reference/find_sequence.html">find_sequence()</a></code> function. A collection of new functions can be used to manipulate the nodes and gain fine grain information on the corresponding sequences (issue <a href="https://github.com/fabrice-rossi/mixvlmc/issues/50" class="external-link">#50</a>).</li>
+<li>by default, <code><a href="../reference/contexts.html">contexts()</a></code> reports now contexts as a list of <code>ctx_node</code> objects</li>
+<li>new functions <code><a href="../reference/predict.vlmc.html">predict.vlmc()</a></code> and <code><a href="../reference/predict.covlmc.html">predict.covlmc()</a></code> can be used to make one step ahead predictions of a time series based on a (CO)VLMC model (issue <a href="https://github.com/fabrice-rossi/mixvlmc/issues/46" class="external-link">#46</a>). Those function are documented in a new vignette (<code><a href="../articles/prediction.html">vignette("prediction")</a></code>)</li>
+<li>the log likelihood calculations performed by <code><a href="../reference/logLik.vlmc.html">logLik.vlmc()</a></code>, <code><a href="../reference/logLik.covlmc.html">logLik.covlmc()</a></code> <code><a href="../reference/loglikelihood.html">loglikelihood()</a></code> and <code><a href="../reference/loglikelihood.covlmc.html">loglikelihood.covlmc()</a></code> have been revised, expanded to include three possible definitions of the likelihood function, and documented in a new vignette (<code><a href="../articles/likelihood.html">vignette("likelihood")</a></code>)</li>
+<li>
+<code><a href="../reference/tune_vlmc.html">tune_vlmc()</a></code> and <code><a href="../reference/tune_covlmc.html">tune_covlmc()</a></code> can be used with the different likelihood function definitions</li>
+<li>results of <code><a href="../reference/tune_vlmc.html">tune_vlmc()</a></code> and <code><a href="../reference/tune_covlmc.html">tune_covlmc()</a></code> can be plotted using base R graphics or ggplot2 (issue <a href="https://github.com/fabrice-rossi/mixvlmc/issues/36" class="external-link">#36</a>)</li>
+<li>
+<code><a href="../reference/tune_covlmc.html">tune_covlmc()</a></code> can trim the best model (and the initial one) if asked to<br></li>
+<li>
+<code><a href="../reference/trim.covlmc.html">trim.covlmc()</a></code> implements simple trimming for VGAM based objects (issue <a href="https://github.com/fabrice-rossi/mixvlmc/issues/48" class="external-link">#48</a>)</li>
+<li>
+<code><a href="../reference/cutoff.html">cutoff()</a></code> uses a new <code>tolerance</code> parameter to avoid reporting cut off values that are almost identical due to numerical imprecision</li>
+<li>
+<code><a href="../reference/simulate.vlmc.html">simulate.vlmc()</a></code> implements a user specified burn in period (issue <a href="https://github.com/fabrice-rossi/mixvlmc/issues/40" class="external-link">#40</a>)</li>
+<li>
+<code><a href="../reference/simulate.vlmc.html">simulate.vlmc()</a></code> and <code><a href="../reference/simulate.covlmc.html">simulate.covlmc()</a></code> now handle the random generator state as does <code><a href="https://rdrr.io/r/stats/simulate.html" class="external-link">stats::simulate()</a></code> (issue <a href="https://github.com/fabrice-rossi/mixvlmc/issues/56" class="external-link">#56</a>)</li>
+</ul></div>
+</div>
+<div class="section level3">
+<h3 id="minor-improvements-and-bug-fixes-0-2-0">Minor improvements and bug fixes<a class="anchor" aria-label="anchor" href="#minor-improvements-and-bug-fixes-0-2-0"></a></h3>
+<ul><li>Improved the test coverage (issue <a href="https://github.com/fabrice-rossi/mixvlmc/issues/54" class="external-link">#54</a>)</li>
+<li>Fixed several bugs in internal sampling methods that made <code><a href="../reference/simulate.covlmc.html">simulate.covlmc()</a></code> unreliable for state spaces with three or more states</li>
+<li>Fixed a bug in <code><a href="../reference/simulate.covlmc.html">simulate.covlmc()</a></code> that occurred in contexts with a longer self memory compared to their covariate memory</li>
+<li>Fixed several bugs in <code><a href="../reference/metrics.vlmc.html">metrics.vlmc()</a></code> and align the results with the ones obtained by using direct calculation on the results of <code><a href="../reference/predict.vlmc.html">predict.vlmc()</a></code>
+</li>
+<li>Fixed several bugs related to degenerate VLMC (issue <a href="https://github.com/fabrice-rossi/mixvlmc/issues/55" class="external-link">#55</a>)</li>
+<li>Fixed a bug in the likelihood calculation for internal context nodes</li>
+<li>Improved type consistency by reporting counts as integers in <code><a href="../reference/contexts.html">contexts()</a></code> results</li>
+<li>Fixed documentation: all models can be adjusted on time series of logical values</li>
+<li>Synchronized <code><a href="../reference/ctx_tree.html">ctx_tree()</a></code> documentation and its default value</li>
+<li>Synchronized <code><a href="../reference/contexts.html">contexts()</a></code> documentation and its default value</li>
+<li>Added more trimming for COVLMC models in <code><a href="../reference/trim.covlmc.html">trim.covlmc()</a></code>
+</li>
+</ul></div>
+</div>
+    <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.1.1" id="mixvlmc-011">mixvlmc 0.1.1<a class="anchor" aria-label="anchor" href="#mixvlmc-011"></a></h2><p class="text-muted">CRAN release: 2023-07-10</p>
-<ul><li>Added missing documentation about the return values of <code>simulate.vlmc</code> and <code>simulate.covlmc</code>
+<ul><li>Added missing documentation about the return values of <code><a href="../reference/simulate.vlmc.html">simulate.vlmc()</a></code> and <code><a href="../reference/simulate.covlmc.html">simulate.covlmc()</a></code>
 </li>
 </ul></div>
     <div class="section level2">
@@ -73,7 +140,7 @@
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p><p>Developed by Fabrice Rossi.</p>
+  <p></p><p>Developed by <a href="https://fabrice-rossi.github.io/" class="external-link">Fabrice Rossi</a>.</p>
 </div>
 
 <div class="pkgdown-footer-right">

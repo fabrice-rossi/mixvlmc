@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">mixvlmc</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.2.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -24,16 +24,24 @@
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
+    <h6 class="dropdown-header" data-toc-skip>Getting started</h6>
     <a class="dropdown-item" href="../articles/context-trees.html">Context trees</a>
-    <a class="dropdown-item" href="../articles/covlmc.html">Variable Length Markov Chains with Covariates (COVLMC)</a>
-    <a class="dropdown-item" href="../articles/sampling.html">Sampling from (CO)VLMC</a>
     <a class="dropdown-item" href="../articles/variable-length-markov-chains.html">Variable length Markov chains (VLMC)</a>
+    <a class="dropdown-item" href="../articles/covlmc.html">Variable Length Markov Chains with Covariates (COVLMC)</a>
+    <div class="dropdown-divider"></div>
+    <h6 class="dropdown-header" data-toc-skip>Advanced topics</h6>
+    <a class="dropdown-item" href="../articles/likelihood.html">Likelihood calculation</a>
+    <a class="dropdown-item" href="../articles/prediction.html">Predicting with (CO)VLMC</a>
+    <a class="dropdown-item" href="../articles/sampling.html">Sampling from (CO)VLMC</a>
+    <div class="dropdown-divider"></div>
+    <a class="dropdown-item" href="../articles/index.html">More articles...</a>
   </div>
 </li>
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-news">News</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-news">
     <h6 class="dropdown-header" data-toc-skip>Releases</h6>
+    <a class="external-link dropdown-item" href="https://fabrice-rossi.github.io/blog/posts/mixvlmc-0-2.html">mixvlmc 0.2.0</a>
     <a class="external-link dropdown-item" href="https://fabrice-rossi.github.io/blog/posts/mixvlmc-0-1.html">mixvlmc 0.1.1</a>
     <div class="dropdown-divider"></div>
     <a class="dropdown-item" href="../news/index.html">Changelog</a>
@@ -69,7 +77,7 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">as_vlmc</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for ctx_tree</span></span>
-<span><span class="fu">as_vlmc</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu">as_vlmc</span><span class="op">(</span><span class="va">x</span>, <span class="va">alpha</span>, <span class="va">cutoff</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for tune_vlmc</span></span>
 <span><span class="fu">as_vlmc</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
@@ -84,12 +92,28 @@
 <dt>...</dt>
 <dd><p>additional arguments for conversion functions.</p></dd>
 
+
+<dt>alpha</dt>
+<dd><p>cut off parameter applied during the conversion, quantile scale
+(if specified)</p></dd>
+
+
+<dt>cutoff</dt>
+<dd><p>cut off parameter applied during the conversion, native scale
+(if specified)</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     
 
 <p>a vlmc</p>
+    </div>
+    <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p>This function converts a context tree into a VLMC. If <code>alpha</code> or
+<code>cutoff</code> is specified, it is used to reduce the complexity of the tree as in
+a direct call to <code><a href="vlmc.html">vlmc()</a></code> (<code><a href="prune.html">prune()</a></code>).</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
@@ -140,13 +164,13 @@
 <span class="r-in"><span><span class="va">tune_result</span> <span class="op">&lt;-</span> <span class="fu"><a href="tune_vlmc.html">tune_vlmc</a></span><span class="op">(</span><span class="va">dts</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">tune_result</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> VLMC context tree on A, B, C </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  cutoff: 2.059 (quantile: 0.127549312516095)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Number of contexts: 0 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  cutoff: 3.907 (quantile: 0.0201)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Number of contexts: 1 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Maximum context length: 0 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Selected by BIC (219.2135)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Selected by BIC (218.268) with likelihood function "truncated" (-108.864)</span>
 <span class="r-in"><span><span class="va">dts_best_vlmc</span> <span class="op">&lt;-</span> <span class="fu">as_vlmc</span><span class="op">(</span><span class="va">tune_result</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="draw.html">draw</a></span><span class="op">(</span><span class="va">dts_best_vlmc</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> * (0.3, 0.35, 0.35)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> * (0.35, 0.27, 0.38)</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
@@ -154,7 +178,7 @@
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p><p>Developed by Fabrice Rossi.</p>
+  <p></p><p>Developed by <a href="https://fabrice-rossi.github.io/" class="external-link">Fabrice Rossi</a>.</p>
 </div>
 
 <div class="pkgdown-footer-right">
