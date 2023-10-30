@@ -1,4 +1,8 @@
 # mixvlmc (development version)
+This release has no visible changes and fixes internal issues:
+
+* missing package in Suggests
+* double definition of a C++ internal function
 
 # mixvlmc 0.2.0
 
