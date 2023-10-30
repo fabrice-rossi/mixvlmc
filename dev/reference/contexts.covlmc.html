@@ -12,7 +12,7 @@ covariates, possibly with some associated data."><meta name="robots" content="no
     
     <a class="navbar-brand me-2" href="../index.html">mixvlmc</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.1.1.9000</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.0.9000</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -35,12 +35,15 @@ covariates, possibly with some associated data."><meta name="robots" content="no
     <a class="dropdown-item" href="../articles/likelihood.html">Likelihood calculation</a>
     <a class="dropdown-item" href="../articles/prediction.html">Predicting with (CO)VLMC</a>
     <a class="dropdown-item" href="../articles/sampling.html">Sampling from (CO)VLMC</a>
+    <div class="dropdown-divider"></div>
+    <a class="dropdown-item" href="../articles/index.html">More articles...</a>
   </div>
 </li>
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-news">News</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-news">
     <h6 class="dropdown-header" data-toc-skip>Releases</h6>
+    <a class="external-link dropdown-item" href="https://fabrice-rossi.github.io/blog/posts/mixvlmc-0-2.html">mixvlmc 0.2.0</a>
     <a class="external-link dropdown-item" href="https://fabrice-rossi.github.io/blog/posts/mixvlmc-0-1.html">mixvlmc 0.1.1</a>
     <div class="dropdown-divider"></div>
     <a class="dropdown-item" href="../news/index.html">Changelog</a>
@@ -81,7 +84,7 @@ covariates, possibly with some associated data.</p>
 <span>  reverse <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  frequency <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  positions <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  counts <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"desc"</span>, <span class="st">"local"</span><span class="op">)</span>,</span>
+<span>  local <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  metrics <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  model <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  hsize <span class="op">=</span> <span class="cn">FALSE</span>,</span>
@@ -121,12 +124,13 @@ of the positions depends on the way the context tree was built. See details
 for the definition of a position.</p></dd>
 
 
-<dt>counts</dt>
+<dt>local</dt>
 <dd><p>specifies how the counts reported by <code>frequency</code> are computed.
-The default value <code>"desc"</code> includes both counts that are specific to the
-context (if any) and counts from the descendants of the context in the
-tree. When <code>counts = "local"</code> the counts include only the number of times
-the context appears without being the last part of a longer context.</p></dd>
+When <code>local</code> is <code>FALSE</code> (default value) the counts include both counts that
+are specific to the context (if any) and counts from the descendants of the
+context in the tree. When <code>local</code> is <code>TRUE</code> the counts include only the
+number of times the context appears without being the last part of a longer
+context.</p></dd>
 
 
 <dt>metrics</dt>

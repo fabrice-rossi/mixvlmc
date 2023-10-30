@@ -16,7 +16,7 @@ the function return NULL."><meta name="robots" content="noindex"><!-- mathjax --
     
     <a class="navbar-brand me-2" href="../index.html">mixvlmc</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.1.1.9000</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.0.9000</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -39,12 +39,15 @@ the function return NULL."><meta name="robots" content="noindex"><!-- mathjax --
     <a class="dropdown-item" href="../articles/likelihood.html">Likelihood calculation</a>
     <a class="dropdown-item" href="../articles/prediction.html">Predicting with (CO)VLMC</a>
     <a class="dropdown-item" href="../articles/sampling.html">Sampling from (CO)VLMC</a>
+    <div class="dropdown-divider"></div>
+    <a class="dropdown-item" href="../articles/index.html">More articles...</a>
   </div>
 </li>
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-news">News</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-news">
     <h6 class="dropdown-header" data-toc-skip>Releases</h6>
+    <a class="external-link dropdown-item" href="https://fabrice-rossi.github.io/blog/posts/mixvlmc-0-2.html">mixvlmc 0.2.0</a>
     <a class="external-link dropdown-item" href="https://fabrice-rossi.github.io/blog/posts/mixvlmc-0-1.html">mixvlmc 0.1.1</a>
     <div class="dropdown-divider"></div>
     <a class="dropdown-item" href="../news/index.html">Changelog</a>
@@ -67,7 +70,7 @@ the function return NULL."><meta name="robots" content="noindex"><!-- mathjax --
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="" class="logo" alt=""><h1>Find the node of a sequence in a context tree</h1>
-      <small class="dont-index">Source: <a href="https://github.com/fabrice-rossi/mixvlmc/blob/HEAD/R/ctx_node.R" class="external-link"><code>R/ctx_node.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/fabrice-rossi/mixvlmc/blob/HEAD/R/ctx_node.R" class="external-link"><code>R/ctx_node.R</code></a>, <a href="https://github.com/fabrice-rossi/mixvlmc/blob/HEAD/R/ctx_node_cpp.R" class="external-link"><code>R/ctx_node_cpp.R</code></a></small>
       <div class="d-none name"><code>find_sequence.Rd</code></div>
     </div>
 
@@ -83,6 +86,9 @@ the function return <code>NULL</code>.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">find_sequence</span><span class="op">(</span><span class="va">ct</span>, <span class="va">ctx</span>, reverse <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for ctx_tree</span></span>
+<span><span class="fu">find_sequence</span><span class="op">(</span><span class="va">ct</span>, <span class="va">ctx</span>, reverse <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for ctx_tree_cpp</span></span>
 <span><span class="fu">find_sequence</span><span class="op">(</span><span class="va">ct</span>, <span class="va">ctx</span>, reverse <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 

@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">mixvlmc</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.1.1.9000</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.0.9000</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -33,12 +33,15 @@
     <a class="dropdown-item" href="../articles/likelihood.html">Likelihood calculation</a>
     <a class="dropdown-item" href="../articles/prediction.html">Predicting with (CO)VLMC</a>
     <a class="dropdown-item" href="../articles/sampling.html">Sampling from (CO)VLMC</a>
+    <div class="dropdown-divider"></div>
+    <a class="dropdown-item" href="../articles/index.html">More articles...</a>
   </div>
 </li>
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-news">News</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-news">
     <h6 class="dropdown-header" data-toc-skip>Releases</h6>
+    <a class="external-link dropdown-item" href="https://fabrice-rossi.github.io/blog/posts/mixvlmc-0-2.html">mixvlmc 0.2.0</a>
     <a class="external-link dropdown-item" href="https://fabrice-rossi.github.io/blog/posts/mixvlmc-0-1.html">mixvlmc 0.1.1</a>
     <div class="dropdown-divider"></div>
     <a class="dropdown-item" href="../news/index.html">Changelog</a>
@@ -71,13 +74,20 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">ctx_tree</span><span class="op">(</span><span class="va">x</span>, min_size <span class="op">=</span> <span class="fl">2L</span>, max_depth <span class="op">=</span> <span class="fl">100L</span>, keep_position <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">ctx_tree</span><span class="op">(</span></span>
+<span>  <span class="va">x</span>,</span>
+<span>  min_size <span class="op">=</span> <span class="fl">2L</span>,</span>
+<span>  max_depth <span class="op">=</span> <span class="fl">100L</span>,</span>
+<span>  keep_position <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  backend <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">getOption</a></span><span class="op">(</span><span class="st">"mixvlmc.backend"</span>, <span class="st">"R"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>x</dt>
-<dd><p>a discrete time series; can be numeric, character, factor or logical.</p></dd>
+<dd><p>a discrete time series; can be numeric, character, factor or
+logical.</p></dd>
 
 
 <dt>min_size</dt>
@@ -94,12 +104,18 @@ be included in the tree.</p></dd>
 <dd><p>logical (default: TRUE). Should the context tree keep
 the position of the contexts.</p></dd>
 
+
+<dt>backend</dt>
+<dd><p>"R" or "C++" (default: as specified by the "mixvlmc.backend"
+option). Specifies the implementation used to represent the context tree
+and to built it. See details.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     
 
-<p>a context tree (of class <code>ctx_tree</code>).</p>
+<p>a context tree (of class that inherits from <code>ctx_tree</code>).</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
@@ -108,6 +124,22 @@ than <code>max_depth</code> that appear at least <code>min_size</code> times in 
 stores the frequencies of the states that follow each context. Optionally,
 the positions of the contexts in the time series can be stored in the tree.</p>
     </div>
+    <div class="section level2">
+    <h2 id="back-ends">Back ends<a class="anchor" aria-label="anchor" href="#back-ends"></a></h2>
+    
+
+
+<p>Two back ends are available to compute context trees:</p><ul><li><p>the "R" back end represents the tree in pure R data structures (nested lists)
+that be easily processed further in pure R (C++ helper functions are used
+to speed up the construction).</p></li>
+<li><p>the "C++" back end represents the tree with C++ classes. This back end is
+considered experimental. The tree is built with an optimised suffix tree
+algorithm which speeds up the construction by at least a factor 10 in
+standard settings. As the tree is kept outside of R direct reach, context
+trees built with the C++ back end must be restored after a
+<code><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS()</a></code>/<code><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS()</a></code> sequence. This is done automatically by recomputing
+completely the context tree.</p></li>
+</ul></div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>

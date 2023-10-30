@@ -20,7 +20,7 @@ time series when they appear just after the sequence.'><meta name="robots" conte
     
     <a class="navbar-brand me-2" href="../index.html">mixvlmc</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.1.1.9000</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.0.9000</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -43,12 +43,15 @@ time series when they appear just after the sequence.'><meta name="robots" conte
     <a class="dropdown-item" href="../articles/likelihood.html">Likelihood calculation</a>
     <a class="dropdown-item" href="../articles/prediction.html">Predicting with (CO)VLMC</a>
     <a class="dropdown-item" href="../articles/sampling.html">Sampling from (CO)VLMC</a>
+    <div class="dropdown-divider"></div>
+    <a class="dropdown-item" href="../articles/index.html">More articles...</a>
   </div>
 </li>
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-news">News</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-news">
     <h6 class="dropdown-header" data-toc-skip>Releases</h6>
+    <a class="external-link dropdown-item" href="https://fabrice-rossi.github.io/blog/posts/mixvlmc-0-2.html">mixvlmc 0.2.0</a>
     <a class="external-link dropdown-item" href="https://fabrice-rossi.github.io/blog/posts/mixvlmc-0-1.html">mixvlmc 0.1.1</a>
     <div class="dropdown-divider"></div>
     <a class="dropdown-item" href="../news/index.html">Changelog</a>
@@ -71,7 +74,7 @@ time series when they appear just after the sequence.'><meta name="robots" conte
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="" class="logo" alt=""><h1>Report the distribution of values that follow occurrences of a sequence</h1>
-      <small class="dont-index">Source: <a href="https://github.com/fabrice-rossi/mixvlmc/blob/HEAD/R/ctx_node.R" class="external-link"><code>R/ctx_node.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/fabrice-rossi/mixvlmc/blob/HEAD/R/ctx_node.R" class="external-link"><code>R/ctx_node.R</code></a>, <a href="https://github.com/fabrice-rossi/mixvlmc/blob/HEAD/R/ctx_node_cpp.R" class="external-link"><code>R/ctx_node_cpp.R</code></a></small>
       <div class="d-none name"><code>counts.Rd</code></div>
     </div>
 
@@ -86,7 +89,13 @@ time series when they appear just after the sequence.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">counts</span><span class="op">(</span><span class="va">node</span>, frequency <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"detailed"</span>, <span class="st">"total"</span><span class="op">)</span>, counts <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"desc"</span>, <span class="st">"local"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">counts</span><span class="op">(</span><span class="va">node</span>, frequency <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"detailed"</span>, <span class="st">"total"</span><span class="op">)</span>, local <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for ctx_node</span></span>
+<span><span class="fu">counts</span><span class="op">(</span><span class="va">node</span>, frequency <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"detailed"</span>, <span class="st">"total"</span><span class="op">)</span>, local <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for ctx_node_cpp</span></span>
+<span><span class="fu">counts</span><span class="op">(</span><span class="va">node</span>, frequency <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"detailed"</span>, <span class="st">"total"</span><span class="op">)</span>, local <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -102,11 +111,12 @@ gives the number of occurrences of the sequence in the original sequence.
 all the possible states.</p></dd>
 
 
-<dt>counts</dt>
-<dd><p>specifies how the counts are computed. The default value
-<code>"desc"</code> includes both counts that are specific to the context (if any) and
-counts from the descendants of the context in the tree. When <code>counts = "local"</code> the counts include only the number of times the context appears
-without being the last part of a longer context.</p></dd>
+<dt>local</dt>
+<dd><p>specifies how the counts are computed. When <code>local</code> is <code>FALSE</code>
+(default value) the counts include both counts that are specific to the
+context (if any) and counts from the descendants of the context in the
+tree. When <code>local</code> is <code>TRUE</code> the counts include only the number of times
+the context appears without being the last part of a longer context.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -133,7 +143,7 @@ each column (see the description above).</p>
 <span class="r-in"><span>  <span class="fu">counts</span><span class="op">(</span><span class="va">subseq</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   total A B C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1    15 7 2 6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1     9 3 1 5</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

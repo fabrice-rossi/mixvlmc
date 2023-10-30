@@ -12,7 +12,7 @@ contexts."><meta name="robots" content="noindex"><!-- mathjax --><script src="ht
     
     <a class="navbar-brand me-2" href="../index.html">mixvlmc</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.1.1.9000</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.0.9000</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -35,12 +35,15 @@ contexts."><meta name="robots" content="noindex"><!-- mathjax --><script src="ht
     <a class="dropdown-item" href="../articles/likelihood.html">Likelihood calculation</a>
     <a class="dropdown-item" href="../articles/prediction.html">Predicting with (CO)VLMC</a>
     <a class="dropdown-item" href="../articles/sampling.html">Sampling from (CO)VLMC</a>
+    <div class="dropdown-divider"></div>
+    <a class="dropdown-item" href="../articles/index.html">More articles...</a>
   </div>
 </li>
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-news">News</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-news">
     <h6 class="dropdown-header" data-toc-skip>Releases</h6>
+    <a class="external-link dropdown-item" href="https://fabrice-rossi.github.io/blog/posts/mixvlmc-0-2.html">mixvlmc 0.2.0</a>
     <a class="external-link dropdown-item" href="https://fabrice-rossi.github.io/blog/posts/mixvlmc-0-1.html">mixvlmc 0.1.1</a>
     <div class="dropdown-divider"></div>
     <a class="dropdown-item" href="../news/index.html">Changelog</a>
@@ -140,37 +143,37 @@ a specific context, and <code><a href="contexts.ctx_tree.html">contexts.ctx_tree
 <span class="r-in"><span><span class="va">dts_tree</span> <span class="op">&lt;-</span> <span class="fu"><a href="ctx_tree.html">ctx_tree</a></span><span class="op">(</span><span class="va">dts</span>, max_depth <span class="op">=</span> <span class="fl">3</span>, min_size <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">contexts</span><span class="op">(</span><span class="va">dts_tree</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Contexts:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  B, A, A</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  A, A</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  B, B, A</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  C, B, A</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  B, A</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  B, C, A</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  C, A</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  C, A, B</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  A, B</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  B, B</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  A, C, B</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  A, B, B</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  B, B, B</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  C, B, B</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  B, C, B</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  C, B</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  A, A, C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  B, A, C</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  A, C</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  B, B, C</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  C, B, C</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  B, C</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  C, C</span>
 <span class="r-in"><span><span class="fu">contexts</span><span class="op">(</span><span class="va">dts_tree</span>, <span class="cn">TRUE</span>, <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    context</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1  A, A, B</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2     A, A</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3  A, B, B</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4  A, B, C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5     A, B</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6     A, C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7     B, A</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8     B, B</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9  B, C, A</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10    B, C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11 C, A, A</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 12 C, A, B</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 13    C, A</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1     A, A</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2     A, B</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3  A, C, B</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4     A, C</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5  B, A, C</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6     B, A</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7  B, B, A</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8  B, B, B</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9  B, B, C</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10 B, C, B</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11    B, C</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12    C, A</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13 C, B, B</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 14 C, B, C</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 15    C, B</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 16    C, C</span>

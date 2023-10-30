@@ -12,7 +12,7 @@ based on a VLMC."><meta name="robots" content="noindex"><!-- mathjax --><script 
     
     <a class="navbar-brand me-2" href="../index.html">mixvlmc</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.1.1.9000</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.0.9000</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -35,12 +35,15 @@ based on a VLMC."><meta name="robots" content="noindex"><!-- mathjax --><script 
     <a class="dropdown-item" href="../articles/likelihood.html">Likelihood calculation</a>
     <a class="dropdown-item" href="../articles/prediction.html">Predicting with (CO)VLMC</a>
     <a class="dropdown-item" href="../articles/sampling.html">Sampling from (CO)VLMC</a>
+    <div class="dropdown-divider"></div>
+    <a class="dropdown-item" href="../articles/index.html">More articles...</a>
   </div>
 </li>
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-news">News</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-news">
     <h6 class="dropdown-header" data-toc-skip>Releases</h6>
+    <a class="external-link dropdown-item" href="https://fabrice-rossi.github.io/blog/posts/mixvlmc-0-2.html">mixvlmc 0.2.0</a>
     <a class="external-link dropdown-item" href="https://fabrice-rossi.github.io/blog/posts/mixvlmc-0-1.html">mixvlmc 0.1.1</a>
     <div class="dropdown-divider"></div>
     <a class="dropdown-item" href="../news/index.html">Changelog</a>
@@ -63,7 +66,7 @@ based on a VLMC."><meta name="robots" content="noindex"><!-- mathjax --><script 
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="" class="logo" alt=""><h1>Next state prediction in a discrete time series for a VLMC</h1>
-      <small class="dont-index">Source: <a href="https://github.com/fabrice-rossi/mixvlmc/blob/HEAD/R/vlmc_predict.R" class="external-link"><code>R/vlmc_predict.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/fabrice-rossi/mixvlmc/blob/HEAD/R/vlmc_predict.R" class="external-link"><code>R/vlmc_predict.R</code></a>, <a href="https://github.com/fabrice-rossi/mixvlmc/blob/HEAD/R/vlmc_predict_cpp.R" class="external-link"><code>R/vlmc_predict_cpp.R</code></a></small>
       <div class="d-none name"><code>predict.vlmc.Rd</code></div>
     </div>
 
@@ -75,6 +78,9 @@ based on a VLMC.</p>
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S3 method for vlmc</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">object</span>, <span class="va">newdata</span>, type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"raw"</span>, <span class="st">"probs"</span><span class="op">)</span>, final_pred <span class="op">=</span> <span class="cn">TRUE</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for vlmc_cpp</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">object</span>, <span class="va">newdata</span>, type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"raw"</span>, <span class="st">"probs"</span><span class="op">)</span>, final_pred <span class="op">=</span> <span class="cn">TRUE</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -146,6 +152,22 @@ the same approach.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">pc</span> <span class="op">&lt;-</span> <span class="va">powerconsumption</span><span class="op">[</span><span class="va">powerconsumption</span><span class="op">$</span><span class="va">week</span> <span class="op">==</span> <span class="fl">5</span>, <span class="op">]</span></span></span>
 <span class="r-in"><span><span class="va">dts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cut.html" class="external-link">cut</a></span><span class="op">(</span><span class="va">pc</span><span class="op">$</span><span class="va">active_power</span>, breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">pc</span><span class="op">$</span><span class="va">active_power</span>, probs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.25</span>, <span class="fl">0.5</span>, <span class="fl">0.75</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="vlmc.html">vlmc</a></span><span class="op">(</span><span class="va">dts</span>, min_size <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">model</span>, <span class="va">dts</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] (0,0.458]    (0.458,1.34] (0.458,1.34] (0.458,1.34] (0.458,1.34]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [6] (0.458,1.34]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Levels: (0,0.458] (0.458,1.34] (1.34,2.13] (2.13,7.54]</span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">model</span>, <span class="va">dts</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span>, <span class="st">"probs"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      (0,0.458] (0.458,1.34] (1.34,2.13] (2.13,7.54]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 0.2500000    0.2500000   0.2500000  0.25000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 0.1984127    0.6666667   0.1071429  0.02777778</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] 0.1369048    0.7500000   0.0952381  0.01785714</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [4,] 0.1369048    0.7500000   0.0952381  0.01785714</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [5,] 0.1369048    0.7500000   0.0952381  0.01785714</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [6,] 0.1369048    0.7500000   0.0952381  0.01785714</span>
+<span class="r-in"><span><span class="co">## C++ backend</span></span></span>
+<span class="r-in"><span><span class="va">pc</span> <span class="op">&lt;-</span> <span class="va">powerconsumption</span><span class="op">[</span><span class="va">powerconsumption</span><span class="op">$</span><span class="va">week</span> <span class="op">==</span> <span class="fl">5</span>, <span class="op">]</span></span></span>
+<span class="r-in"><span><span class="va">dts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cut.html" class="external-link">cut</a></span><span class="op">(</span><span class="va">pc</span><span class="op">$</span><span class="va">active_power</span>, breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">pc</span><span class="op">$</span><span class="va">active_power</span>, probs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.25</span>, <span class="fl">0.5</span>, <span class="fl">0.75</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="vlmc.html">vlmc</a></span><span class="op">(</span><span class="va">dts</span>, min_size <span class="op">=</span> <span class="fl">5</span>, backend <span class="op">=</span> <span class="st">"C++"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">model</span>, <span class="va">dts</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] (0,0.458]    (0.458,1.34] (0.458,1.34] (0.458,1.34] (0.458,1.34]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [6] (0.458,1.34]</span>

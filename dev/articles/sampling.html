@@ -27,7 +27,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">mixvlmc</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.1.1.9000</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.0.9000</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -51,12 +51,15 @@
     <a class="dropdown-item" href="../articles/likelihood.html">Likelihood calculation</a>
     <a class="dropdown-item" href="../articles/prediction.html">Predicting with (CO)VLMC</a>
     <a class="dropdown-item" href="../articles/sampling.html">Sampling from (CO)VLMC</a>
+    <div class="dropdown-divider"></div>
+    <a class="dropdown-item" href="../articles/index.html">More articles...</a>
   </div>
 </li>
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-news">News</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-news">
     <h6 class="dropdown-header" data-toc-skip>Releases</h6>
+    <a class="external-link dropdown-item" href="https://fabrice-rossi.github.io/blog/posts/mixvlmc-0-2.html">mixvlmc 0.2.0</a>
     <a class="external-link dropdown-item" href="https://fabrice-rossi.github.io/blog/posts/mixvlmc-0-1.html">mixvlmc 0.1.1</a>
     <div class="dropdown-divider"></div>
     <a class="dropdown-item" href="../news/index.html">Changelog</a>
@@ -148,7 +151,7 @@ initial values.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">best_vlmc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tune_vlmc.html">tune_vlmc</a></span><span class="op">(</span><span class="va">dts</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/draw.html">draw</a></span><span class="op">(</span><span class="fu"><a href="../reference/as_vlmc.html">as_vlmc</a></span><span class="op">(</span><span class="va">best_vlmc</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; * (0.488, 0.512)</span></span></code></pre></div>
+<span><span class="co">#&gt; * (0.536, 0.464)</span></span></code></pre></div>
 <p>Simulating a sequence using the model is done via
 <code><a href="../reference/simulate.vlmc.html">simulate.vlmc()</a></code> which overrides the standard
 <code><a href="https://rdrr.io/r/stats/simulate.html" class="external-link">stats::simulate()</a></code>. For instance:</p>
@@ -177,7 +180,7 @@ the <code>init</code> parameter, for instance:</p>
 0\)</span>:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dts_sample_2</span></span>
-<span><span class="co">#&gt;  [1] 0 0 0 0 0 0 1 0 1 0</span></span>
+<span><span class="co">#&gt;  [1] 0 0 1 1 1 0 1 0 1 0</span></span>
 <span><span class="co">#&gt; attr(,"class")</span></span>
 <span><span class="co">#&gt; [1] "dts"     "integer"</span></span></code></pre></div>
 <p>This provides an alternative to dropping the initial values of the

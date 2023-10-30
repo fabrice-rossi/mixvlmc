@@ -12,7 +12,7 @@ some associated data."><meta name="robots" content="noindex"><!-- mathjax --><sc
     
     <a class="navbar-brand me-2" href="../index.html">mixvlmc</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.1.1.9000</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.0.9000</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -35,12 +35,15 @@ some associated data."><meta name="robots" content="noindex"><!-- mathjax --><sc
     <a class="dropdown-item" href="../articles/likelihood.html">Likelihood calculation</a>
     <a class="dropdown-item" href="../articles/prediction.html">Predicting with (CO)VLMC</a>
     <a class="dropdown-item" href="../articles/sampling.html">Sampling from (CO)VLMC</a>
+    <div class="dropdown-divider"></div>
+    <a class="dropdown-item" href="../articles/index.html">More articles...</a>
   </div>
 </li>
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-news">News</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-news">
     <h6 class="dropdown-header" data-toc-skip>Releases</h6>
+    <a class="external-link dropdown-item" href="https://fabrice-rossi.github.io/blog/posts/mixvlmc-0-2.html">mixvlmc 0.2.0</a>
     <a class="external-link dropdown-item" href="https://fabrice-rossi.github.io/blog/posts/mixvlmc-0-1.html">mixvlmc 0.1.1</a>
     <div class="dropdown-divider"></div>
     <a class="dropdown-item" href="../news/index.html">Changelog</a>
@@ -63,7 +66,7 @@ some associated data."><meta name="robots" content="noindex"><!-- mathjax --><sc
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="" class="logo" alt=""><h1>Contexts of a VLMC</h1>
-      <small class="dont-index">Source: <a href="https://github.com/fabrice-rossi/mixvlmc/blob/HEAD/R/vlmc_contexts.R" class="external-link"><code>R/vlmc_contexts.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/fabrice-rossi/mixvlmc/blob/HEAD/R/vlmc_contexts.R" class="external-link"><code>R/vlmc_contexts.R</code></a>, <a href="https://github.com/fabrice-rossi/mixvlmc/blob/HEAD/R/vlmc_contexts_cpp.R" class="external-link"><code>R/vlmc_contexts_cpp.R</code></a></small>
       <div class="d-none name"><code>contexts.vlmc.Rd</code></div>
     </div>
 
@@ -81,7 +84,20 @@ some associated data.</p>
 <span>  reverse <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  frequency <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  positions <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  counts <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"desc"</span>, <span class="st">"local"</span><span class="op">)</span>,</span>
+<span>  local <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  cutoff <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  metrics <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for vlmc_cpp</span></span>
+<span><span class="fu"><a href="contexts.html">contexts</a></span><span class="op">(</span></span>
+<span>  <span class="va">ct</span>,</span>
+<span>  sequence <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  reverse <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  frequency <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  positions <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  local <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  cutoff <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  metrics <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  <span class="va">...</span></span>
@@ -119,12 +135,13 @@ of the positions depends on the way the context tree was built. See details
 for the definition of a position.</p></dd>
 
 
-<dt>counts</dt>
+<dt>local</dt>
 <dd><p>specifies how the counts reported by <code>frequency</code> are computed.
-The default value <code>"desc"</code> includes both counts that are specific to the
-context (if any) and counts from the descendants of the context in the
-tree. When <code>counts = "local"</code> the counts include only the number of times
-the context appears without being the last part of a longer context.</p></dd>
+When <code>local</code> is <code>FALSE</code> (default value) the counts include both counts that
+are specific to the context (if any) and counts from the descendants of the
+context in the tree. When <code>local</code> is <code>TRUE</code> the counts include only the
+number of times the context appears without being the last part of a longer
+context.</p></dd>
 
 
 <dt>cutoff</dt>
@@ -217,210 +234,206 @@ a specific context, and <code><a href="contexts.ctx_tree.html">contexts.ctx_tree
 <span class="r-in"><span><span class="va">model_ctxs</span> <span class="op">&lt;-</span> <span class="fu"><a href="contexts.html">contexts</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">model_ctxs</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Contexts:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  A, A, A, A</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  C, A, A, A</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  A, A, A</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  B, C, B, A, A</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  C, B, A, A</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  B, A, A</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  A, C, A, A</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  C, A, A</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  B, B, B, A</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  C, B, B, A</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  A, A</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  B, B, A</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  C, B, A</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  B, A</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  A, B, C, A</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  A, C, B, C, A</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  C, B, C, A</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  B, C, A</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  A, C, C, A</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  C, C, C, A</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  C, C, A</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  C, A</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  A, A, B</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  B, C, A, B</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  C, A, B</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  A, B</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  C, A, B, B</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  A, B, B</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  A, B, B, B</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  B, B, B, B</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  B, B, B</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  C, B, B</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  B, C, A, C, B</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  C, A, C, B</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  A, C, B</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  B, B, B, C, B</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  B, B, C, B</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  B, C, B</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  C, A, C, C, B</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  A, C, C, B</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  C, C, B</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  C, B</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  A, A, C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  B, B, A, C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  B, A, C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  C, A, C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  B, A, A, B, C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  A, A, B, C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  A, B, C</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  A, C</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  B, B, B, C</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  B, B, C</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  C, C, B, C</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  C, B, C</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  B, C</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  A, C, A, C, C</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  C, C, A, C, C</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  C, A, C, C</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  A, C, C</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  B, B, C, C</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  B, C, C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  C, C</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  B, C, C, C</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  C, C, C, C</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  C, C, C</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="va">model_ctxs</span>, <span class="va">cutoff</span>, scale <span class="op">=</span> <span class="st">"quantile"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] 0.2500000 0.2500000 0.8192000 0.1213630 0.1600000 0.1600000 0.1600000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [8] 0.5000000 0.4320000 0.6002282 0.2500000 0.4218750 0.5925926 0.9042245</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [15] 0.4444444 0.7812500 0.5135019 0.3237990 0.3200000 0.3880758 0.5796346</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [22] 0.4232804 0.3148688 0.2527342 0.9159088 0.1229956 0.4444444 0.7500000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [29] 0.6510417 0.2500000 0.7407407 0.6268471 0.3966942 0.2500000 0.9441978</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [36] 0.3492682 0.4444444 0.8640000 0.4521123 0.1111111 0.2543132 0.3333333</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [43] 0.8847360</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] 0.44444444 1.00000000 1.00000000 0.44444444 1.00000000 0.80395992</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [7] 0.22222222 0.39506173 0.38427348 0.37869822 0.44444444 0.44444444</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [13] 0.92793728 0.39485632 0.03361034 0.44444444 0.31640625 0.11111111</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [19] 0.11111111 0.44444444 0.84375000 0.81920000 0.44444444 0.75000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [25] 0.88473600 0.24775266 0.09391435 0.04764948 0.25000000 0.28901065</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [31] 0.42187500 0.34970289 0.52009428 0.16000000 0.32000000 0.90422454</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [37] 0.49982323 0.43200000 0.83485656 0.32653061 0.42648896 0.46661321</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="va">model_ctxs</span>, <span class="va">cutoff</span>, scale <span class="op">=</span> <span class="st">"native"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] 1.38629436 1.38629436 0.19942702 2.10896953 1.83258146 1.83258146</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [7] 1.83258146 0.69314718 0.83932969 0.51044534 1.38629436 0.86304622</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [13] 0.52324814 0.10067757 0.81093022 0.24686008 0.66650161 1.12763241</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [19] 1.13943428 0.94655453 0.54535729 0.85972038 1.15559922 1.37541693</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [25] 0.08783847 2.09560648 0.81093022 0.28768207 0.42918163 1.38629436</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [31] 0.30010459 0.46705270 0.92458953 1.38629436 0.05741960 1.05191504</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [37] 0.81093022 0.14618251 0.79382475 2.19722458 1.36918889 1.09861229</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [43] 0.12246598</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1]  8.109302e-01 4.940656e-324 4.940656e-324  8.109302e-01 4.940656e-324</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [6]  2.182059e-01  1.504077e+00  9.287133e-01  9.564008e-01  9.710156e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [11]  8.109302e-01  8.109302e-01  7.479114e-02  9.292333e-01  3.392921e+00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [16]  8.109302e-01  1.150728e+00  2.197225e+00  2.197225e+00  8.109302e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [21]  1.698990e-01  1.994270e-01  8.109302e-01  2.876821e-01  1.224660e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [26]  1.395324e+00  2.365372e+00  3.043884e+00  1.386294e+00  1.241292e+00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [31]  8.630462e-01  1.050671e+00  6.537452e-01  1.832581e+00  1.139434e+00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [36]  1.006776e-01  6.935008e-01  8.393297e-01  1.804954e-01  1.119232e+00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [41]  8.521688e-01  7.622546e-01</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="va">model_ctxs</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="metrics.html">metrics</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">$</span><span class="va">accuracy</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] 0.5000000 1.0000000       NaN 0.7500000 1.0000000 1.0000000 1.0000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [8] 0.0000000 0.6666667 0.5000000 1.0000000 0.6666667 0.0000000       NaN</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [15] 0.5000000 1.0000000 0.6666667 0.7500000 0.5000000 0.6666667 0.5000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [22] 0.7500000 0.6666667 0.7500000       NaN 0.6666667 0.5000000 0.0000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [29] 0.6666667 1.0000000 0.0000000 0.5000000 0.5000000 1.0000000 0.0000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [36] 0.6000000 0.5000000 0.0000000 0.5000000 1.0000000 0.8000000 0.5000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [43] 0.5000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] 0.5000000 0.0000000       NaN 0.5000000 1.0000000 0.3333333 0.5000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [8] 0.7500000       NaN 1.0000000 0.5000000 1.0000000 0.5000000 0.4000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [15] 0.8571429 1.0000000 0.5000000 0.5000000 1.0000000 0.5000000 0.0000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [22] 1.0000000 0.5000000 1.0000000 0.6666667       NaN 1.0000000 0.7500000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [29] 1.0000000 0.2500000 0.6666667 0.0000000 1.0000000 1.0000000 0.5000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [36] 1.0000000 1.0000000 0.6666667 0.0000000 0.5000000 0.5000000 1.0000000</span>
 <span class="r-in"><span><span class="co">## data.frame format</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="contexts.html">contexts</a></span><span class="op">(</span><span class="va">model</span>, frequency <span class="op">=</span> <span class="st">"total"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         context freq</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1    A, A, A, A    2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2    C, A, A, A    2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3       A, A, A    4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4       B, A, A    4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5       C, A, A    2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6    B, B, B, A    2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7    C, B, B, A    2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8       B, B, A    5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9       C, B, A    3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10         B, A   10</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11   A, B, C, A    2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 12 A, C, B,....    3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 13   C, B, C, A    4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 14      B, C, A    6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 15   A, C, C, A    2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 16      C, C, A    3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 17         C, A   12</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 18      A, A, B    4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 19   B, C, A, B    2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 20      C, A, B    5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 21         A, B   11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 22      A, B, B    4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 23   A, B, B, B    3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 24   B, B, B, B    4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 25      B, B, B    7</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 26      C, B, B    3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 27 B, C, A,....    2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 28   C, A, C, B    3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 29      A, C, B    6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 30   B, B, C, B    2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 31      B, C, B    4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 32         C, B   12</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 33      A, A, C    2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 34   B, B, A, C    2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 35      B, A, C    4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 36      C, A, C    5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 37 B, A, A,....    2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 38   A, A, B, C    3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 39      A, B, C    5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 40      B, B, C    2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 41      C, B, C    5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 42      B, C, C    2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 43         C, C    6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  B, C, B,....    2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2    C, B, A, A    3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3       B, A, A    3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4    A, C, A, A    2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5       C, A, A    3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6          A, A    9</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7       B, B, A    2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8       C, B, A    4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9          B, A    6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10      B, C, A    2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11   A, C, C, A    2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12   C, C, C, A    2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13      C, C, A    6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14         C, A   13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15         A, B    7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 16   C, A, B, B    2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 17      A, B, B    6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 18      B, B, B    4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 19      C, B, B    2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 20 B, B, B,....    2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 21   B, B, C, B    3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 22      B, C, B    4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 23 C, A, C,....    2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 24   A, C, C, B    3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 25      C, C, B    6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 26         C, B   10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 27      A, A, C    3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 28         A, C   11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 29   B, B, B, C    2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 30      B, B, C    6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 31   C, C, B, C    3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 32      C, B, C    4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 33         B, C   11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 34 A, C, A,....    2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 35 C, C, A,....    2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 36   C, A, C, C    5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 37      A, C, C    6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 38   B, B, C, C    3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 39      B, C, C    5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 40   B, C, C, C    2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 41   C, C, C, C    4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 42      C, C, C    7</span>
 <span class="r-in"><span><span class="fu"><a href="contexts.html">contexts</a></span><span class="op">(</span><span class="va">model</span>, cutoff <span class="op">=</span> <span class="st">"quantile"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         context    cutoff</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1    A, A, A, A 0.2500000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2    C, A, A, A 0.2500000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3       A, A, A 0.8192000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4       B, A, A 0.1213630</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5       C, A, A 0.1600000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6    B, B, B, A 0.1600000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7    C, B, B, A 0.1600000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8       B, B, A 0.5000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9       C, B, A 0.4320000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10         B, A 0.6002282</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11   A, B, C, A 0.2500000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 12 A, C, B,.... 0.4218750</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 13   C, B, C, A 0.5925926</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 14      B, C, A 0.9042245</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 15   A, C, C, A 0.4444444</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 16      C, C, A 0.7812500</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 17         C, A 0.5135019</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 18      A, A, B 0.3237990</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 19   B, C, A, B 0.3200000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 20      C, A, B 0.3880758</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 21         A, B 0.5796346</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 22      A, B, B 0.4232804</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 23   A, B, B, B 0.3148688</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 24   B, B, B, B 0.2527342</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 25      B, B, B 0.9159088</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 26      C, B, B 0.1229956</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 27 B, C, A,.... 0.4444444</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 28   C, A, C, B 0.7500000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 29      A, C, B 0.6510417</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 30   B, B, C, B 0.2500000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 31      B, C, B 0.7407407</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 32         C, B 0.6268471</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 33      A, A, C 0.3966942</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 34   B, B, A, C 0.2500000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 35      B, A, C 0.9441978</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 36      C, A, C 0.3492682</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 37 B, A, A,.... 0.4444444</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 38   A, A, B, C 0.8640000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 39      A, B, C 0.4521123</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 40      B, B, C 0.1111111</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 41      C, B, C 0.2543132</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 42      B, C, C 0.3333333</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 43         C, C 0.8847360</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         context     cutoff</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  B, C, B,.... 0.44444444</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2    C, B, A, A 1.00000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3       B, A, A 1.00000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4    A, C, A, A 0.44444444</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5       C, A, A 1.00000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6          A, A 0.80395992</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7       B, B, A 0.22222222</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8       C, B, A 0.39506173</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9          B, A 0.38427348</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10      B, C, A 0.37869822</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11   A, C, C, A 0.44444444</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12   C, C, C, A 0.44444444</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13      C, C, A 0.92793728</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14         C, A 0.39485632</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15         A, B 0.03361034</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 16   C, A, B, B 0.44444444</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 17      A, B, B 0.31640625</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 18      B, B, B 0.11111111</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 19      C, B, B 0.11111111</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 20 B, B, B,.... 0.44444444</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 21   B, B, C, B 0.84375000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 22      B, C, B 0.81920000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 23 C, A, C,.... 0.44444444</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 24   A, C, C, B 0.75000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 25      C, C, B 0.88473600</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 26         C, B 0.24775266</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 27      A, A, C 0.09391435</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 28         A, C 0.04764948</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 29   B, B, B, C 0.25000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 30      B, B, C 0.28901065</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 31   C, C, B, C 0.42187500</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 32      C, B, C 0.34970289</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 33         B, C 0.52009428</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 34 A, C, A,.... 0.16000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 35 C, C, A,.... 0.32000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 36   C, A, C, C 0.90422454</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 37      A, C, C 0.49982323</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 38   B, B, C, C 0.43200000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 39      B, C, C 0.83485656</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 40   B, C, C, C 0.32653061</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 41   C, C, C, C 0.42648896</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 42      C, C, C 0.46661321</span>
 <span class="r-in"><span><span class="fu"><a href="contexts.html">contexts</a></span><span class="op">(</span><span class="va">model</span>, cutoff <span class="op">=</span> <span class="st">"native"</span>, metrics <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         context     cutoff  accuracy auc</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1    A, A, A, A 1.38629436 0.5000000  NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2    C, A, A, A 1.38629436 1.0000000  NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3       A, A, A 0.19942702       NaN  NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4       B, A, A 2.10896953 0.7500000  NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5       C, A, A 1.83258146 1.0000000  NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6    B, B, B, A 1.83258146 1.0000000  NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7    C, B, B, A 1.83258146 1.0000000  NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8       B, B, A 0.69314718 0.0000000  NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9       C, B, A 0.83932969 0.6666667  NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10         B, A 0.51044534 0.5000000  NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11   A, B, C, A 1.38629436 1.0000000  NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 12 A, C, B,.... 0.86304622 0.6666667  NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 13   C, B, C, A 0.52324814 0.0000000  NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 14      B, C, A 0.10067757       NaN  NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 15   A, C, C, A 0.81093022 0.5000000  NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 16      C, C, A 0.24686008 1.0000000  NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 17         C, A 0.66650161 0.6666667  NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 18      A, A, B 1.12763241 0.7500000  NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 19   B, C, A, B 1.13943428 0.5000000  NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 20      C, A, B 0.94655453 0.6666667  NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 21         A, B 0.54535729 0.5000000  NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 22      A, B, B 0.85972038 0.7500000  NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 23   A, B, B, B 1.15559922 0.6666667  NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 24   B, B, B, B 1.37541693 0.7500000  NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 25      B, B, B 0.08783847       NaN  NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 26      C, B, B 2.09560648 0.6666667  NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 27 B, C, A,.... 0.81093022 0.5000000  NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 28   C, A, C, B 0.28768207 0.0000000  NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 29      A, C, B 0.42918163 0.6666667  NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 30   B, B, C, B 1.38629436 1.0000000  NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 31      B, C, B 0.30010459 0.0000000  NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 32         C, B 0.46705270 0.5000000  NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 33      A, A, C 0.92458953 0.5000000  NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 34   B, B, A, C 1.38629436 1.0000000  NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 35      B, A, C 0.05741960 0.0000000  NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 36      C, A, C 1.05191504 0.6000000  NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 37 B, A, A,.... 0.81093022 0.5000000  NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 38   A, A, B, C 0.14618251 0.0000000  NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 39      A, B, C 0.79382475 0.5000000  NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 40      B, B, C 2.19722458 1.0000000  NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 41      C, B, C 1.36918889 0.8000000  NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 42      B, C, C 1.09861229 0.5000000  NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 43         C, C 0.12246598 0.5000000  NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  B, C, B,.... 0.81093022 0.5000000  NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2    C, B, A, A 0.00000000 0.0000000  NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3       B, A, A 0.00000000       NaN  NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4    A, C, A, A 0.81093022 0.5000000  NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5       C, A, A 0.00000000 1.0000000  NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6          A, A 0.21820587 0.3333333 0.5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7       B, B, A 1.50407740 0.5000000  NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8       C, B, A 0.92871325 0.7500000  NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9          B, A 0.95640079       NaN  NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10      B, C, A 0.97101563 1.0000000  NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11   A, C, C, A 0.81093022 0.5000000  NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12   C, C, C, A 0.81093022 1.0000000  NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13      C, C, A 0.07479114 0.5000000  NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14         C, A 0.92923332 0.4000000 0.5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15         A, B 3.39292141 0.8571429  NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 16   C, A, B, B 0.81093022 1.0000000  NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 17      A, B, B 1.15072829 0.5000000  NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 18      B, B, B 2.19722458 0.5000000  NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 19      C, B, B 2.19722458 1.0000000  NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 20 B, B, B,.... 0.81093022 0.5000000  NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 21   B, B, C, B 0.16989904 0.0000000  NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 22      B, C, B 0.19942702 1.0000000  NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 23 C, A, C,.... 0.81093022 0.5000000  NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 24   A, C, C, B 0.28768207 1.0000000  NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 25      C, C, B 0.12246598 0.6666667  NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 26         C, B 1.39532435       NaN  NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 27      A, A, C 2.36537208 1.0000000  NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 28         A, C 3.04388352 0.7500000  NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 29   B, B, B, C 1.38629436 1.0000000  NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 30      B, B, C 1.24129173 0.2500000  NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 31   C, C, B, C 0.86304622 0.6666667  NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 32      C, B, C 1.05067137 0.0000000  NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 33         B, C 0.65374519 1.0000000  NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 34 A, C, A,.... 1.83258146 1.0000000  NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 35 C, C, A,.... 1.13943428 0.5000000  NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 36   C, A, C, C 0.10067757 1.0000000  NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 37      A, C, C 0.69350079 1.0000000  NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 38   B, B, C, C 0.83932969 0.6666667  NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 39      B, C, C 0.18049535 0.0000000  NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 40   B, C, C, C 1.11923158 0.5000000  NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 41   C, C, C, C 0.85216879 0.5000000  NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 42      C, C, C 0.76225461 1.0000000  NA</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

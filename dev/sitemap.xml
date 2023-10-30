@@ -10,6 +10,9 @@
     <loc>https://fabrice-rossi.github.io/mixvlmc/dev/articles/covlmc.html</loc>
   </url>
   <url>
+    <loc>https://fabrice-rossi.github.io/mixvlmc/dev/articles/implementation.html</loc>
+  </url>
+  <url>
     <loc>https://fabrice-rossi.github.io/mixvlmc/dev/articles/index.html</loc>
   </url>
   <url>
@@ -38,6 +41,9 @@
   </url>
   <url>
     <loc>https://fabrice-rossi.github.io/mixvlmc/dev/reference/as_sequence.html</loc>
+  </url>
+  <url>
+    <loc>https://fabrice-rossi.github.io/mixvlmc/dev/reference/as_vlmc.ctx_tree_cpp.html</loc>
   </url>
   <url>
     <loc>https://fabrice-rossi.github.io/mixvlmc/dev/reference/as_vlmc.html</loc>
@@ -220,6 +226,9 @@
     <loc>https://fabrice-rossi.github.io/mixvlmc/dev/reference/simulate.vlmc.html</loc>
   </url>
   <url>
+    <loc>https://fabrice-rossi.github.io/mixvlmc/dev/reference/simulate.vlmc_cpp.html</loc>
+  </url>
+  <url>
     <loc>https://fabrice-rossi.github.io/mixvlmc/dev/reference/states.html</loc>
   </url>
   <url>
@@ -230,6 +239,9 @@
   </url>
   <url>
     <loc>https://fabrice-rossi.github.io/mixvlmc/dev/reference/trim.vlmc.html</loc>
+  </url>
+  <url>
+    <loc>https://fabrice-rossi.github.io/mixvlmc/dev/reference/trim.vlmc_cpp.html</loc>
   </url>
   <url>
     <loc>https://fabrice-rossi.github.io/mixvlmc/dev/reference/tune_covlmc.html</loc>

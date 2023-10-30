@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">mixvlmc</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.1.1.9000</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.0.9000</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -33,12 +33,15 @@
     <a class="dropdown-item" href="../articles/likelihood.html">Likelihood calculation</a>
     <a class="dropdown-item" href="../articles/prediction.html">Predicting with (CO)VLMC</a>
     <a class="dropdown-item" href="../articles/sampling.html">Sampling from (CO)VLMC</a>
+    <div class="dropdown-divider"></div>
+    <a class="dropdown-item" href="../articles/index.html">More articles...</a>
   </div>
 </li>
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-news">News</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-news">
     <h6 class="dropdown-header" data-toc-skip>Releases</h6>
+    <a class="external-link dropdown-item" href="https://fabrice-rossi.github.io/blog/posts/mixvlmc-0-2.html">mixvlmc 0.2.0</a>
     <a class="external-link dropdown-item" href="https://fabrice-rossi.github.io/blog/posts/mixvlmc-0-1.html">mixvlmc 0.1.1</a>
     <div class="dropdown-divider"></div>
     <a class="dropdown-item" href="../news/index.html">Changelog</a>
@@ -91,7 +94,7 @@
         <dd>Contexts of a context tree</dd>
       </dl><dl><dt>
           
-          <code><a href="contexts.ctx_tree.html">contexts(<i>&lt;ctx_tree&gt;</i>)</a></code> 
+          <code><a href="contexts.ctx_tree.html">contexts(<i>&lt;ctx_tree&gt;</i>)</a></code> <code><a href="contexts.ctx_tree.html">contexts(<i>&lt;ctx_tree_cpp&gt;</i>)</a></code> 
         </dt>
         <dd>Contexts of a context tree</dd>
       </dl><dl><dt>
@@ -101,7 +104,7 @@
         <dd>Depth of a context tree</dd>
       </dl><dl><dt>
           
-          <code><a href="draw.ctx_tree.html">draw(<i>&lt;ctx_tree&gt;</i>)</a></code> 
+          <code><a href="draw.ctx_tree.html">draw(<i>&lt;ctx_tree_cpp&gt;</i>)</a></code> <code><a href="draw.ctx_tree.html">draw(<i>&lt;ctx_tree&gt;</i>)</a></code> 
         </dt>
         <dd>Text based representation of a context tree</dd>
       </dl><dl><dt>
@@ -238,7 +241,7 @@
         <dd>Number of contexts of a context tree</dd>
       </dl><dl><dt>
           
-          <code><a href="contexts.vlmc.html">contexts(<i>&lt;vlmc&gt;</i>)</a></code> 
+          <code><a href="contexts.vlmc.html">contexts(<i>&lt;vlmc&gt;</i>)</a></code> <code><a href="contexts.vlmc.html">contexts(<i>&lt;vlmc_cpp&gt;</i>)</a></code> 
         </dt>
         <dd>Contexts of a VLMC</dd>
       </dl><dl><dt>
@@ -248,7 +251,7 @@
         <dd>Depth of a context tree</dd>
       </dl><dl><dt>
           
-          <code><a href="draw.vlmc.html">draw(<i>&lt;vlmc&gt;</i>)</a></code> 
+          <code><a href="draw.vlmc.html">draw(<i>&lt;vlmc&gt;</i>)</a></code> <code><a href="draw.vlmc.html">draw(<i>&lt;vlmc_cpp&gt;</i>)</a></code> 
         </dt>
         <dd>Text based representation of a vlmc</dd>
       </dl><dl><dt>
@@ -258,7 +261,7 @@
         <dd>Control parameters for <code>draw</code></dd>
       </dl><dl><dt>
           
-          <code><a href="logLik.vlmc.html">logLik(<i>&lt;vlmc&gt;</i>)</a></code> 
+          <code><a href="logLik.vlmc.html">logLik(<i>&lt;vlmc&gt;</i>)</a></code> <code><a href="logLik.vlmc.html">logLik(<i>&lt;vlmc_cpp&gt;</i>)</a></code> 
         </dt>
         <dd>Log-Likelihood of a VLMC</dd>
       </dl><dl><dt>
@@ -273,7 +276,7 @@
         <dd>Predictive quality metrics for VLMC</dd>
       </dl><dl><dt>
           
-          <code><a href="predict.vlmc.html">predict(<i>&lt;vlmc&gt;</i>)</a></code> 
+          <code><a href="predict.vlmc.html">predict(<i>&lt;vlmc&gt;</i>)</a></code> <code><a href="predict.vlmc.html">predict(<i>&lt;vlmc_cpp&gt;</i>)</a></code> 
         </dt>
         <dd>Next state prediction in a discrete time series for a VLMC</dd>
       </dl><dl><dt>
@@ -392,7 +395,7 @@
 selection</dd>
       </dl><dl><dt>
           
-          <code><a href="cutoff.vlmc.html">cutoff(<i>&lt;vlmc&gt;</i>)</a></code> 
+          <code><a href="cutoff.vlmc.html">cutoff(<i>&lt;vlmc&gt;</i>)</a></code> <code><a href="cutoff.vlmc.html">cutoff(<i>&lt;vlmc_cpp&gt;</i>)</a></code> 
         </dt>
         <dd>Cut off values for pruning the context tree of a VLMC</dd>
       </dl><dl><dt>
@@ -456,6 +459,11 @@ selection</dd>
       </dl><dl><dt>
           
           <code><a href="simulate.vlmc.html">simulate(<i>&lt;vlmc&gt;</i>)</a></code> 
+        </dt>
+        <dd>Simulate a discrete time series for a vlmc</dd>
+      </dl><dl><dt>
+          
+          <code><a href="simulate.vlmc_cpp.html">simulate(<i>&lt;vlmc_cpp&gt;</i>)</a></code> 
         </dt>
         <dd>Simulate a discrete time series for a vlmc</dd>
       </dl></div><div class="section level2">
@@ -523,6 +531,11 @@ selection</dd>
         <dd>Convert an object to a Variable Length Markov Chain (VLMC)</dd>
       </dl><dl><dt>
           
+          <code><a href="as_vlmc.ctx_tree_cpp.html">as_vlmc(<i>&lt;ctx_tree_cpp&gt;</i>)</a></code> 
+        </dt>
+        <dd>Convert an object to a Variable Length Markov Chain (VLMC)</dd>
+      </dl><dl><dt>
+          
           <code><a href="is_context.html">is_context()</a></code> 
         </dt>
         <dd>Report the nature of a node in a context tree</dd>
@@ -564,6 +577,12 @@ selection</dd>
       </dl><dl><dt>
           
           <code><a href="trim.vlmc.html">trim(<i>&lt;vlmc&gt;</i>)</a></code> 
+        </dt>
+        <dd>This function returns a trimmed VLMC from which match positions have been
+removed.</dd>
+      </dl><dl><dt>
+          
+          <code><a href="trim.vlmc_cpp.html">trim(<i>&lt;vlmc_cpp&gt;</i>)</a></code> 
         </dt>
         <dd>This function returns a trimmed VLMC from which match positions have been
 removed.</dd>
