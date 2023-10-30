@@ -82,8 +82,18 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// extptr_is_null
+SEXP extptr_is_null(SEXP ptr);
+RcppExport SEXP _mixvlmc_extptr_is_null(SEXP ptrSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type ptr(ptrSEXP);
+    rcpp_result_gen = Rcpp::wrap(extptr_is_null(ptr));
+    return rcpp_result_gen;
+END_RCPP
+}
 
-RcppExport SEXP extptr_is_null_(void *);
 RcppExport SEXP _rcpp_module_boot_suffixtree();
 
 static const R_CallMethodDef CallEntries[] = {
@@ -93,8 +103,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_mixvlmc_kl_crit", (DL_FUNC) &_mixvlmc_kl_crit, 2},
     {"_mixvlmc_mixvlmc_sample", (DL_FUNC) &_mixvlmc_mixvlmc_sample, 2},
     {"_mixvlmc_mixvlmc_sample2", (DL_FUNC) &_mixvlmc_mixvlmc_sample2, 2},
+    {"_mixvlmc_extptr_is_null", (DL_FUNC) &_mixvlmc_extptr_is_null, 1},
     {"_rcpp_module_boot_suffixtree", (DL_FUNC) &_rcpp_module_boot_suffixtree, 0},
-    {"extptr_is_null_", (DL_FUNC) &extptr_is_null_, 1},
     {NULL, NULL, 0}
 };
 

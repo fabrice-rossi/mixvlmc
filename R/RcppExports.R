@@ -76,3 +76,7 @@ mixvlmc_sample2 <- function(p, n) {
     .Call('_mixvlmc_mixvlmc_sample2', PACKAGE = 'mixvlmc', p, n)
 }
 
+extptr_is_null <- function(ptr) {
+    .Call('_mixvlmc_extptr_is_null', PACKAGE = 'mixvlmc', ptr)
+}
+
