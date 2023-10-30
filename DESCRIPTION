@@ -46,6 +46,7 @@ LinkingTo: Rcpp
 RoxygenNote: 7.2.3
 Suggests: 
     data.table,
+    foreach,
     geodist,
     knitr,
     rmarkdown,
