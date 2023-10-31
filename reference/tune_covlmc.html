@@ -14,7 +14,7 @@ an information criterion (BIC or AIC)."><!-- mathjax --><script src="https://cdn
     
     <a class="navbar-brand me-2" href="../index.html">mixvlmc</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.2.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.2.1</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -202,7 +202,7 @@ best one are saved untrimmed. This default behaviour corresponds to
 <code>keep_model=TRUE</code> in <code><a href="trim.covlmc.html">trim.covlmc()</a></code> for intermediate models. Finally,
 <code>trimming="none"</code> turns off trimming, which is discouraged expected for
 small data sets.</p>
-<p>In parallel processing contexts (e.g. using foreach::%dopar%), the memory
+<p>In parallel processing contexts (e.g. using <a href="https://rdrr.io/pkg/foreach/man/foreach.html" class="external-link">foreach::%dopar%</a>), the memory
 occupation of the results can become very large as models tend to keep
 environments attached to the formulas. In this situation, it is highly
 recommended to trim all saved models, including the best one and the
