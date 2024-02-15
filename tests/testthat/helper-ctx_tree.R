@@ -24,24 +24,25 @@ build_demo_tree <- function(vals, depth) {
 
 ## works only for integers (1:v)
 count_f_by <- function(where, what, vals) {
-  if (length(what) > length(where)) {
+  if (length(what) >= length(where)) {
     rep(0L, length(vals))
-  }
-  res <- rep(0L, length(vals))
-  for (k in length(what):(length(where) - 1)) {
-    found <- TRUE
-    for (j in 1:length(what)) {
-      if (where[k - length(what) + j] != what[j]) {
-        found <- FALSE
-        break
+  } else {
+    res <- rep(0L, length(vals))
+    for (k in length(what):(length(where) - 1)) {
+      found <- TRUE
+      for (j in 1:length(what)) {
+        if (where[k - length(what) + j] != what[j]) {
+          found <- FALSE
+          break
+        }
+      }
+      if (found) {
+        idx <- where[k + 1]
+        res[idx] <- res[idx] + 1L
       }
     }
-    if (found) {
-      idx <- where[k + 1]
-      res[idx] <- res[idx] + 1L
-    }
+    res
   }
-  res
 }
 
 find_occurrences <- function(where, what) {
