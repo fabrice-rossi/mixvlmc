@@ -53,31 +53,50 @@ insert_dts <- function(tree, x, vals, max_depth) {
 }
 
 ## min_size based pruning
-prune_multi_ctx_tree <- function(tree, min_size) {
-  if (!is.null(tree[["children"]])) {
-    nb_pruned <- 0L
-    subtrees <- vector(mode = "list", length(tree$children))
-    for (v in seq_along(tree$children)) {
-      subtrees[[v]] <- prune_multi_ctx_tree(tree$children[[v]], min_size)
-      if (length(subtrees[[v]]) == 0) {
-        nb_pruned <- nb_pruned + 1L
+## depth cannot be larger than max_depth if this is used consistently
+prune_multi_ctx_tree <- function(tree, min_size, max_depth) {
+  rec_prune_mctx <- function(tree, d) {
+    if (!is.null(tree[["children"]])) {
+      nb_pruned <- 0L
+      d_max <- FALSE
+      subtrees <- vector(mode = "list", length(tree$children))
+      for (v in seq_along(tree$children)) {
+        subtrees[[v]] <- rec_prune_mctx(tree$children[[v]], d + 1L)
+        if (length(subtrees[[v]]) == 0) {
+          nb_pruned <- nb_pruned + 1L
+        } else {
+          if (isTRUE(subtrees[[v]]$max_depth)) {
+            d_max <- TRUE
+            subtrees[[v]]$max_depth <- NULL
+          }
+        }
       }
-    }
-    if (nb_pruned < length(tree$children)) {
-      tree$children <- subtrees
+      if (nb_pruned < length(tree$children)) {
+        tree$children <- subtrees
+      } else {
+        tree$children <- NULL
+      }
+      if (d_max) {
+        tree$max_depth <- TRUE
+      } else {
+        tree$max_depth <- NULL
+      }
     } else {
-      tree$children <- NULL
+      ## leaf
+      tree$max_depth <- d == max_depth
     }
-  }
-  if (!is.null(tree[["f_by"]])) {
-    if (sum(tree[["f_by"]]) < min_size) {
-      list()
+    if (!is.null(tree[["f_by"]])) {
+      if (sum(tree[["f_by"]]) < min_size) {
+        ## size based pruning, max_depth is removed
+        list()
+      } else {
+        tree
+      }
     } else {
       tree
     }
-  } else {
-    tree
   }
+  rec_prune_mctx(tree, 0L)
 }
 
 #' Build a context tree for a collection of discrete time series
@@ -128,13 +147,20 @@ multi_ctx_tree <- function(xs, min_size = 2L, max_depth = 25L, keep_position = F
     min_size = 1L, max_depth = max_depth, keep_match = keep_position,
     compute_stats = FALSE
   )
+  d_max <- pre_result$max_depth
   for (k in 2:length(xs)) {
     nx <- to_dts(xs[[k]], vals = vals)
     pre_result <- insert_dts(pre_result, nx$ix, vals, max_depth = max_depth)
+    d_max <- d_max | pre_result$max_depth
   }
-  ## let use post process the tree to remove rare contexts
+  ## let us post process the tree to remove rare contexts
   if (min_size > 1L) {
-    pre_result <- prune_multi_ctx_tree(pre_result, min_size)
+    pre_result <- prune_multi_ctx_tree(pre_result, min_size, max_depth)
+  } else {
+    pre_result$max_depth <- d_max
+  }
+  if (is.null(pre_result$max_depth)) {
+    pre_result$max_depth <- FALSE
   }
   new_ctx_tree(vals, pre_result, compute_stats = TRUE, class = "multi_ctx_tree")
 }
