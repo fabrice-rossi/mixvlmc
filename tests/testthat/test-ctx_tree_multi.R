@@ -1,3 +1,20 @@
+test_that("multi_ctx_free implements the ctx_tree interface", {
+  withr::local_seed(21)
+  nb_dts <- 20L
+  dts_bsize <- 15L
+  mdts <- vector(mode = "list", length = nb_dts)
+  for (k in seq_along(mdts)) {
+    mdts[[k]] <- sample(c(1L, 2L), dts_bsize + sample(1:5, 1), replace = TRUE)
+  }
+  mctx <- multi_ctx_tree(mdts, min_size = 2, max_depth = 20)
+  expect_snapshot(print(mctx))
+  expect_snapshot(draw(mctx, frequency = "detailed"))
+  expect_no_error(summary(mctx))
+  expect_no_error(context_number(mctx))
+  expect_no_error(depth(mctx))
+  expect_no_error(states(mctx))
+})
+
 test_that("multi_ctx_free finds correct contexts in basic cases", {
   dts <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 0)
   ## use twice the same dts, so that contexts are identical
@@ -21,6 +38,7 @@ test_that("multi_ctx_free obeys its basic contract", {
   for (d in 2:6) {
     mctx <- multi_ctx_tree(mdts, min_size = 2, max_depth = d)
     expect_equal(depth(mctx), d)
+    expect_equal(states(mctx), c(1L, 2L))
   }
 })
 
