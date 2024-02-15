@@ -1,4 +1,4 @@
-# multi_ctx_free implements the ctx_tree interface
+# multi_ctx_tree implements the ctx_tree interface
 
     Code
       print(mctx)
