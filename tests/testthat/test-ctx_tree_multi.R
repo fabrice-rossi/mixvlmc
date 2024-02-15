@@ -50,7 +50,7 @@ test_that("multi_ctx_free finds correct contexts in more complex cases", {
   for (k in seq_along(mdts)) {
     mdts[[k]] <- sample(c(1L, 2L), dts_bsize + sample(1:5, 1), replace = TRUE)
   }
-  mctx <- multi_ctx_tree(mdts, min_size = 2, max_depth = 4)
+  mctx <- multi_ctx_tree(mdts, min_size = 2, max_depth = 6)
   ## check that each context is indeed present with the correct f_by
   mctx_ctx <- contexts(mctx, frequency = "detailed")
   for (k in seq_along(mctx_ctx$context)) {
@@ -69,12 +69,12 @@ test_that("multi_ctx_free finds all contexts", {
   for (k in seq_along(mdts)) {
     mdts[[k]] <- sample(c(1L, 2L), dts_bsize + sample(1:5, 1), replace = TRUE)
   }
-  mctx <- multi_ctx_tree(mdts, min_size = 2, max_depth = 10)
+  mctx <- multi_ctx_tree(mdts, min_size = 2, max_depth = 12)
   m_ctxs <- contexts(mctx, sequence = TRUE)$context
   ## any context found in individual sequences must appear at least as the
   ## suffix of a context in the tree
   for (k in seq_along(mdts)) {
-    base_ctx_tree <- ctx_tree(mdts[[k]], min_size = 1, max_depth = 10)
+    base_ctx_tree <- ctx_tree(mdts[[k]], min_size = 1, max_depth = 12)
     base_ctxs <- contexts(base_ctx_tree, sequence = TRUE)$context
     all_true <- TRUE
     for (l in seq_along(base_ctxs)) {
