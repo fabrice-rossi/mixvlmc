@@ -56,43 +56,44 @@ insert_dts <- function(tree, x, vals, max_depth) {
 ## depth cannot be larger than max_depth if this is used consistently
 prune_multi_ctx_tree <- function(tree, min_size, max_depth) {
   rec_prune_mctx <- function(tree, d) {
-    if (!is.null(tree[["children"]])) {
-      nb_pruned <- 0L
+    ## do we keep this node?
+    if (is.null(tree[["f_by"]])) {
+      ## empty node
+      list()
+    } else if (sum(tree[["f_by"]]) < min_size) {
+      ## size based pruning
+      list()
+    } else {
+      ## we keep this node for sure, do recursive processing if needed
       d_max <- FALSE
-      subtrees <- vector(mode = "list", length(tree$children))
-      for (v in seq_along(tree$children)) {
-        subtrees[[v]] <- rec_prune_mctx(tree$children[[v]], d + 1L)
-        if (length(subtrees[[v]]) == 0) {
-          nb_pruned <- nb_pruned + 1L
-        } else {
-          if (isTRUE(subtrees[[v]]$max_depth)) {
-            d_max <- TRUE
-            subtrees[[v]]$max_depth <- NULL
+      if (!is.null(tree[["children"]])) {
+        subtrees <- vector(mode = "list", length(tree$children))
+        nb_children <- 0L
+        for (v in seq_along(tree$children)) {
+          subtrees[[v]] <- rec_prune_mctx(tree$children[[v]], d + 1L)
+          if (length(subtrees[[v]]) > 0) {
+            ## this sub tree was kept
+            nb_children <- 1L + nb_children
+            if (isTRUE(subtrees[[v]]$max_depth)) {
+              ## propagate max_depth
+              d_max <- TRUE
+              subtrees[[v]]$max_depth <- NULL
+            }
           }
         }
+        if (nb_children > 0) {
+          tree$children <- subtrees
+        } else {
+          ## remove all children
+          tree$children <- NULL
+        }
       }
-      if (nb_pruned < length(tree$children)) {
-        tree$children <- subtrees
-      } else {
-        tree$children <- NULL
-      }
-      if (d_max) {
+      if (d_max || d == max_depth) {
+        ## propagate max_depth
         tree$max_depth <- TRUE
       } else {
         tree$max_depth <- NULL
       }
-    } else {
-      ## leaf
-      tree$max_depth <- d == max_depth
-    }
-    if (!is.null(tree[["f_by"]])) {
-      if (sum(tree[["f_by"]]) < min_size) {
-        ## size based pruning, max_depth is removed
-        list()
-      } else {
-        tree
-      }
-    } else {
       tree
     }
   }
@@ -148,10 +149,12 @@ multi_ctx_tree <- function(xs, min_size = 2L, max_depth = 25L, keep_position = F
     compute_stats = FALSE
   )
   d_max <- pre_result$max_depth
-  for (k in 2:length(xs)) {
-    nx <- to_dts(xs[[k]], vals = vals)
-    pre_result <- insert_dts(pre_result, nx$ix, vals, max_depth = max_depth)
-    d_max <- d_max | pre_result$max_depth
+  if (length(xs) > 1) {
+    for (k in 2:length(xs)) {
+      nx <- to_dts(xs[[k]], vals = vals)
+      pre_result <- insert_dts(pre_result, nx$ix, vals, max_depth = max_depth)
+      d_max <- d_max | pre_result$max_depth
+    }
   }
   ## let us post process the tree to remove rare contexts
   if (min_size > 1L) {
