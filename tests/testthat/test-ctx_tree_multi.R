@@ -1,4 +1,4 @@
-test_that("multi_ctx_free implements the ctx_tree interface", {
+test_that("multi_ctx_tree implements the ctx_tree interface", {
   withr::local_seed(21)
   nb_dts <- 20L
   dts_bsize <- 15L
@@ -15,7 +15,7 @@ test_that("multi_ctx_free implements the ctx_tree interface", {
   expect_no_error(states(mctx))
 })
 
-test_that("multi_ctx_free finds correct contexts in basic cases", {
+test_that("multi_ctx_tree finds correct contexts in basic cases", {
   dts <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 0)
   ## use twice the same dts, so that contexts are identical
   mdts <- list(dts, dts)
@@ -27,7 +27,7 @@ test_that("multi_ctx_free finds correct contexts in basic cases", {
   expect_true(compare_ctx(contexts(ctx), contexts(mctx)))
 })
 
-test_that("multi_ctx_free obeys its basic contract", {
+test_that("multi_ctx_tree obeys its basic contract", {
   withr::local_seed(5)
   nb_dts <- 10L
   dts_bsize <- 20L
@@ -42,7 +42,7 @@ test_that("multi_ctx_free obeys its basic contract", {
   }
 })
 
-test_that("multi_ctx_free finds correct contexts in more complex cases", {
+test_that("multi_ctx_tree finds correct contexts in more complex cases", {
   withr::local_seed(0)
   nb_dts <- 10L
   dts_bsize <- 20L
@@ -61,7 +61,7 @@ test_that("multi_ctx_free finds correct contexts in more complex cases", {
   }
 })
 
-test_that("multi_ctx_free finds all contexts", {
+test_that("multi_ctx_tree finds all contexts", {
   withr::local_seed(42)
   nb_dts <- 10L
   dts_bsize <- 10L
