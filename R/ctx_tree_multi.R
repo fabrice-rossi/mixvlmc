@@ -91,26 +91,28 @@ prune_multi_ctx_tree <- function(tree, min_size) {
 #'
 #' Owing to the iterative nature of construction, this function may use a large
 #' quantity of memory as pruning infrequent contexts is only done after
-#' computing all of them. It is therefore recommend to avoid large depths.
+#' computing all of them. It is therefore recommend to avoid large depths and
+#' the default value of `max_depth` is smaller that in the single time series
+#' function [ctx_tree()].
 #'
 #' @param xs a list of discrete times series
 #' @param min_size integer >= 1 (default: 2). Minimum number of observations for
 #'   a context to be included in the tree (counted over the full collection of
 #'   time series, see details)
-#' @param max_depth integer >= 1 (default: 100). Maximum length of a context to
+#' @param max_depth integer >= 1 (default: 25). Maximum length of a context to
 #'   be included in the tree.
 #' @param keep_position  logical (default: FALSE). Should the context tree keep
 #'   the position of the contexts.
 #'
 #' @return a context tree (of class that inherits from `multi_ctx_tree`).
 #' @export
-#'
+#' @seealso [ctx_tree()]
 #' @examples
 #' dts <- c(0, 1, 0, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 0)
 #' dts2 <- c(0, 1, 1, 0, 0, 0, 1, 0, 0, 1, 0, 1, 1, 0)
 #' mdts <- list(dts, dts2)
 #' mctx <- multi_ctx_tree(mdts, max_depth = 4)
-multi_ctx_tree <- function(xs, min_size = 2L, max_depth = 100L, keep_position = FALSE) {
+multi_ctx_tree <- function(xs, min_size = 2L, max_depth = 25L, keep_position = FALSE) {
   ## keep_position = TRUE is not supported currently
   assertthat::assert_that(!keep_position)
   assertthat::assert_that(is.list(xs))
