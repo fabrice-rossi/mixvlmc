@@ -1,3 +1,13 @@
+test_that("multi_ctx_tree results are identical to ctx_tree ones for a single dts", {
+  withr::local_seed(28)
+  for (k in 1:10) {
+    dts <- sample(sample(letters, k + 1), 300, replace = TRUE)
+    ctx <- ctx_tree(dts, min_size = 2, max_depth = 10)
+    mctx <- multi_ctx_tree(list(dts), min_size = 2, max_depth = 10)
+    expect_true(compare_ctx(contexts(ctx), contexts(mctx)))
+  }
+})
+
 test_that("multi_ctx_tree implements the ctx_tree interface", {
   withr::local_seed(21)
   nb_dts <- 20L
