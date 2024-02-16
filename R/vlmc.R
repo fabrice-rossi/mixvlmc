@@ -109,7 +109,8 @@ cutoff.vlmc <- function(model, scale = c("quantile", "native"), raw = FALSE,
   guaranteed_pruning(pre_result, length(model$vals), scale, raw)
 }
 
-prune_ctx_tree <- function(tree, alpha = 0.05, cutoff = NULL, verbose = FALSE) {
+prune_ctx_tree <- function(tree, alpha = 0.05, cutoff = NULL, verbose = FALSE,
+                           class = "vlmc") {
   recurse_prune_kl_ctx_tree <- function(tree, p_probs, ctx, K) {
     c_probs <- tree$f_by / sum(tree$f_by)
     if (!is.null(tree$children)) {
@@ -151,10 +152,10 @@ prune_ctx_tree <- function(tree, alpha = 0.05, cutoff = NULL, verbose = FALSE) {
   pre_res <- recurse_prune_kl_ctx_tree(tree, tree$f_by / sum(tree$f_by), c(), K)
   if (!is.null(pre_res$kl)) {
     # empty result
-    pre_res <- new_ctx_tree(tree$vals, list(f_by = tree$f_by), class = "vlmc")
+    pre_res <- new_ctx_tree(tree$vals, list(f_by = tree$f_by), class = class)
   } else {
     ## compute stats
-    pre_res <- new_ctx_tree(pre_res$vals, pre_res, class = "vlmc")
+    pre_res <- new_ctx_tree(pre_res$vals, pre_res, class = class)
   }
   ## preserve construction information
   pre_res$max_depth <- tree$max_depth
@@ -214,7 +215,7 @@ prune.vlmc <- function(vlmc, alpha = 0.05, cutoff = NULL, ...) {
       stop("the alpha parameter must be in (0, 1]")
     }
   }
-  result <- prune_ctx_tree(vlmc, alpha = alpha, cutoff = cutoff)
+  result <- prune_ctx_tree(vlmc, alpha = alpha, cutoff = cutoff, class = "vlmc")
   if (is.null(cutoff)) {
     cutoff <- to_native(alpha, length(vlmc$vals))
   } else {
