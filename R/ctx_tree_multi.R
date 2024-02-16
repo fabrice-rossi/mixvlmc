@@ -112,7 +112,7 @@ prune_multi_ctx_tree <- function(tree, min_size, max_depth) {
 #' Owing to the iterative nature of construction, this function may use a large
 #' quantity of memory as pruning infrequent contexts is only done after
 #' computing all of them. It is therefore recommend to avoid large depths and
-#' the default value of `max_depth` is smaller that in the single time series
+#' the default value of `max_depth` is smaller than in the single time series
 #' function [ctx_tree()].
 #'
 #' @param xs a list of discrete times series
