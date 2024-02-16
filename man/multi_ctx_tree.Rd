@@ -34,7 +34,7 @@ context.
 Owing to the iterative nature of construction, this function may use a large
 quantity of memory as pruning infrequent contexts is only done after
 computing all of them. It is therefore recommend to avoid large depths and
-the default value of \code{max_depth} is smaller that in the single time series
+the default value of \code{max_depth} is smaller than in the single time series
 function \code{\link[=ctx_tree]{ctx_tree()}}.
 }
 \examples{
