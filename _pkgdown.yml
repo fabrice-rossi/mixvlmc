@@ -122,6 +122,8 @@ reference:
   desc: Functions used to estimate a (CO)VLMC model on a collection of time series rather than on a single one
 - contents:
   - multi_ctx_tree
+  - multi_vlmc
+  - loglikelihood.multi_vlmc
 - title: Global options
 - contents:
   - mixvlmc-package
