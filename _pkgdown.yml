@@ -107,6 +107,10 @@ reference:
   desc: Functions to simulate new time series from a (CO)VLMC model
 - contents:
   - starts_with("simulate")
+- title: Model estimation on a collection of time series
+  desc: Functions used to estimate a (CO)VLMC model on a collection of time series rather than on a single one
+- contents:
+  - multi_ctx_tree
 - title: Global options
 - contents:
   - mixvlmc-package
