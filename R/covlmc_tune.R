@@ -209,6 +209,7 @@ tune_covlmc <- function(x, covariate, criterion = c("BIC", "AIC"),
   }
   pre_result <- list(
     best_model = best_model,
+    best_ll = loglikelihood(best_model),
     criterion = criterion,
     initial = initial,
     results = results
@@ -243,7 +244,7 @@ print.tune_covlmc <- function(x, ...) {
     cat(min(x$results$AIC))
   }
   cat(") with likelihood function \"", x$initial, "\" (", sep = "")
-  cat(loglikelihood(x$best_model))
+  cat(x$best_ll)
   cat(")\n")
   invisible(x)
 }
