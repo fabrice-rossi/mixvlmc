@@ -100,3 +100,19 @@ test_that("multi_ctx_tree finds all contexts", {
     expect_true(all_true)
   }
 })
+
+test_that("multi_ctx_tree finds correct weighted contexts in basic cases", {
+  withr::local_seed(123)
+  dts <- sample(c(1L, 2L), 20, replace = TRUE)
+  ## use twice the same dts, so that contexts are identical
+  mdts <- list(dts, dts)
+  ctx <- ctx_tree(dts, min_size = 1, max_depth = 4)
+  the_weights <- c(0.75, 0.45)
+  mctx <- multi_ctx_tree(mdts, min_size = 1, max_depth = 4, weights = the_weights)
+  expect_true(compare_ctx(contexts(ctx), contexts(mctx)))
+  all_mctx <- contexts(mctx, sequence = TRUE, frequency = "detailed")
+  for (k in 1:nrow(all_mctx)) {
+    the_f_by <- count_f_by(dts, all_mctx$context[[k]], 1:2)
+    expect_equal(the_f_by * sum(the_weights), as.numeric(all_mctx[k, 3:4]))
+  }
+})

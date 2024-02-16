@@ -56,7 +56,7 @@ new_ctx_tree <- function(vals, root = NULL, compute_stats = TRUE,
 }
 
 grow_ctx_tree <- function(x, vals, min_size, max_depth, covsize = 0L, keep_match = FALSE, all_children = FALSE,
-                          compute_stats = FALSE) {
+                          compute_stats = FALSE, weight = NULL) {
   recurse_ctx_tree <- function(x, nb_vals, d, from, f_by) {
     if (d < max_depth) {
       fmatch <- forward_match_all_ctx_counts(x, nb_vals, d, from)
@@ -77,10 +77,16 @@ grow_ctx_tree <- function(x, vals, min_size, max_depth, covsize = 0L, keep_match
         }
       }
       result <- list()
+      ## FIXME
+      ## the rationale of this test is unclear...
       if (nb_children == nb_vals || (!all_children && nb_children > 0)) {
         result$children <- children
       }
-      result$f_by <- f_by
+      if (is.null(weight)) {
+        result$f_by <- f_by
+      } else {
+        result$f_by <- f_by * weight
+      }
       if (keep_match) {
         result$match <- from
       }
@@ -89,7 +95,11 @@ grow_ctx_tree <- function(x, vals, min_size, max_depth, covsize = 0L, keep_match
       }
       result
     } else {
-      result <- list(f_by = f_by, max_depth = TRUE)
+      if (is.null(weight)) {
+        result <- list(f_by = f_by, max_depth = TRUE)
+      } else {
+        result <- list(f_by = f_by * weight, max_depth = TRUE)
+      }
       if (keep_match) {
         result$match <- from
       }
