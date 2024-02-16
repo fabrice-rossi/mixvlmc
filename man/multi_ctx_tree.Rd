@@ -4,20 +4,28 @@
 \alias{multi_ctx_tree}
 \title{Build a context tree for a collection of discrete time series}
 \usage{
-multi_ctx_tree(xs, min_size = 2L, max_depth = 25L, keep_position = FALSE)
+multi_ctx_tree(
+  xs,
+  min_size = 2L,
+  max_depth = 25L,
+  keep_position = FALSE,
+  weights = NULL
+)
 }
 \arguments{
 \item{xs}{a list of discrete times series}
 
-\item{min_size}{integer >= 1 (default: 2). Minimum number of observations for
+\item{min_size}{positive numerical value (default: 2). Minimum number of observations for
 a context to be included in the tree (counted over the full collection of
-time series, see details)}
+time series, see details for the case with \code{weights})}
 
 \item{max_depth}{integer >= 1 (default: 25). Maximum length of a context to
 be included in the tree.}
 
 \item{keep_position}{logical (default: FALSE). Should the context tree keep
 the position of the contexts.}
+
+\item{weights}{optional weights for the time series, see details.}
 }
 \value{
 a context tree (of class that inherits from \code{multi_ctx_tree}).
@@ -37,6 +45,17 @@ computing all of them. It is therefore recommend to avoid large depths and
 the default value of \code{max_depth} is smaller than in the single time series
 function \code{\link[=ctx_tree]{ctx_tree()}}.
 }
+\section{Weights}{
+
+
+If given, the \code{weights} parameter must be a vector of non negative values of the
+same length as \code{xs}. Each time series is then weighted using the corresponding
+weight. Weights are interpreted as fractional number of occurrences when
+\code{min_size} is checked. A context is kept in the context tree if the sum of
+the weights of the series in which it appears is larger than the \code{min_size}
+threshold.
+}
+
 \examples{
 dts <- c(0, 1, 0, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 0)
 dts2 <- c(0, 1, 1, 0, 0, 0, 1, 0, 0, 1, 0, 1, 1, 0)

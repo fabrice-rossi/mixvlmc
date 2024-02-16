@@ -1,7 +1,7 @@
 ## Context tree for multiple series
 
 ## insert a new dts into an existing context tree
-insert_dts <- function(tree, x, vals, max_depth) {
+insert_dts <- function(tree, x, vals, max_depth, weight) {
   recurse_insert_dts <- function(tree, x, nb_vals, d, from, f_by) {
     if (d < max_depth) {
       fmatch <- forward_match_all_ctx_counts(x, nb_vals, d, from)
@@ -34,18 +34,33 @@ insert_dts <- function(tree, x, vals, max_depth) {
           children[[v]]$max_depth <- NULL
         }
       }
-      result <- list(
-        children = children,
-        f_by = f_by
-      )
+      if (is.null(weight)) {
+        result <- list(
+          children = children,
+          f_by = f_by
+        )
+      } else {
+        result <- list(
+          children = children,
+          f_by = f_by * weight
+        )
+      }
       if (d_max) {
         result$max_depth <- TRUE
       }
     } else {
-      result <- list(f_by = f_by, max_depth = TRUE)
+      if (is.null(weight)) {
+        result <- list(f_by = f_by, max_depth = TRUE)
+      } else {
+        result <- list(f_by = f_by, max_depth = TRUE)
+      }
     }
     if (!is.null(tree[["f_by"]])) {
-      result$f_by <- f_by + tree[["f_by"]]
+      if (is.null(weight)) {
+        result$f_by <- f_by + tree[["f_by"]]
+      } else {
+        result$f_by <- f_by * weight + tree[["f_by"]]
+      }
     }
     result
   }
@@ -115,14 +130,24 @@ prune_multi_ctx_tree <- function(tree, min_size, max_depth) {
 #' the default value of `max_depth` is smaller than in the single time series
 #' function [ctx_tree()].
 #'
+#' @section Weights:
+#'
+#' If given, the `weights` parameter must be a vector of non negative values of the
+#' same length as `xs`. Each time series is then weighted using the corresponding
+#' weight. Weights are interpreted as fractional number of occurrences when
+#' `min_size` is checked. A context is kept in the context tree if the sum of
+#' the weights of the series in which it appears is larger than the `min_size`
+#' threshold.
+#'
 #' @param xs a list of discrete times series
-#' @param min_size integer >= 1 (default: 2). Minimum number of observations for
+#' @param min_size positive numerical value (default: 2). Minimum number of observations for
 #'   a context to be included in the tree (counted over the full collection of
-#'   time series, see details)
+#'   time series, see details for the case with `weights`)
 #' @param max_depth integer >= 1 (default: 25). Maximum length of a context to
 #'   be included in the tree.
 #' @param keep_position  logical (default: FALSE). Should the context tree keep
 #'   the position of the contexts.
+#' @param weights optional weights for the time series, see details.
 #'
 #' @return a context tree (of class that inherits from `multi_ctx_tree`).
 #' @export
@@ -132,11 +157,18 @@ prune_multi_ctx_tree <- function(tree, min_size, max_depth) {
 #' dts2 <- c(0, 1, 1, 0, 0, 0, 1, 0, 0, 1, 0, 1, 1, 0)
 #' mdts <- list(dts, dts2)
 #' mctx <- multi_ctx_tree(mdts, max_depth = 4)
-multi_ctx_tree <- function(xs, min_size = 2L, max_depth = 25L, keep_position = FALSE) {
+multi_ctx_tree <- function(xs, min_size = 2L, max_depth = 25L,
+                           keep_position = FALSE, weights = NULL) {
   ## keep_position = TRUE is not supported currently
   assertthat::assert_that(!keep_position)
   assertthat::assert_that(is.list(xs))
   assertthat::assert_that(length(xs) >= 1)
+  assertthat::assert_that(min_size > 0)
+  if (!is.null(weights)) {
+    assertthat::assert_that(is.numeric(weights))
+    assertthat::assert_that(assertthat::are_equal(length(xs), length(weights)))
+    assertthat::assert_that(all(weights >= 0))
+  }
   nx_1 <- to_dts(xs[[1]])
   ix_1 <- nx_1$ix
   vals <- nx_1$vals
@@ -144,15 +176,25 @@ multi_ctx_tree <- function(xs, min_size = 2L, max_depth = 25L, keep_position = F
     warning(paste0("x[[1]] as numerous unique values (", length(vals), ")"))
   }
   ## we cannot use the original min_size for individual time series
+  if (is.null(weights)) {
+    weight <- NULL
+  } else {
+    weight <- weights[1]
+  }
   pre_result <- grow_ctx_tree(ix_1, vals,
     min_size = 1L, max_depth = max_depth, keep_match = keep_position,
-    compute_stats = FALSE
+    compute_stats = FALSE, weight = weight
   )
   d_max <- pre_result$max_depth
   if (length(xs) > 1) {
     for (k in 2:length(xs)) {
       nx <- to_dts(xs[[k]], vals = vals)
-      pre_result <- insert_dts(pre_result, nx$ix, vals, max_depth = max_depth)
+      if (is.null(weights)) {
+        weight <- NULL
+      } else {
+        weight <- weights[k]
+      }
+      pre_result <- insert_dts(pre_result, nx$ix, vals, max_depth = max_depth, weight = weight)
       d_max <- d_max | pre_result$max_depth
     }
   }
