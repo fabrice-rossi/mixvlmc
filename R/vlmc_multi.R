@@ -25,6 +25,18 @@
 #'   (default behaviour).
 #' @param keep_match logical: specify whether to keep the context matches
 #'   (default to FALSE)
+#' @param weights optional weights for the time series, see details.
+#'
+#' @section Weights:
+#'
+#' If given, the `weights` parameter must be a vector of non negative values of the
+#' same length as `xs`. Each time series is then weighted using the corresponding
+#' weight. Weights are interpreted as fractional number of occurrences when
+#' `min_size` is checked. A context is kept in the context tree if the sum of
+#' the weights of the series in which it appears is larger than the `min_size`
+#' threshold. Conditional probabilities associated to contexts are computed
+#' from the weighted occurrences.
+#'
 #' @returns a fitted vlmc model (of class `multi_vlmc`)
 #' @examples
 #' pc <- powerconsumption[powerconsumption$week %in% 5:8, ]
@@ -43,13 +55,14 @@
 #' @export
 #' @seealso [multi_ctx_tree()], [vlmc()]
 multi_vlmc <- function(xs, alpha = 0.05, cutoff = NULL, min_size = 2L, max_depth = 25L,
-                       prune = TRUE, keep_match = FALSE) {
+                       prune = TRUE, keep_match = FALSE, weights = NULL) {
   ## keep_match=TRUE is currently not supported
   assertthat::assert_that(!keep_match)
   assertthat::assert_that(is.list(xs))
   ctx_tree <- multi_ctx_tree(xs,
     min_size = min_size, max_depth = max_depth,
-    keep_position = keep_match
+    keep_position = keep_match,
+    weights = weights
   )
   if (is.null(cutoff)) {
     if (is.null(alpha) || !is.numeric(alpha) || alpha <= 0 || alpha > 1) {

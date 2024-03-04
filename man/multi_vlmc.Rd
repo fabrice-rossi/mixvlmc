@@ -11,7 +11,8 @@ multi_vlmc(
   min_size = 2L,
   max_depth = 25L,
   prune = TRUE,
-  keep_match = FALSE
+  keep_match = FALSE,
+  weights = NULL
 )
 }
 \arguments{
@@ -35,6 +36,8 @@ growing phase of the context tree.}
 
 \item{keep_match}{logical: specify whether to keep the context matches
 (default to FALSE)}
+
+\item{weights}{optional weights for the time series, see details.}
 }
 \value{
 a fitted vlmc model (of class \code{multi_vlmc})
@@ -50,6 +53,18 @@ computing all of them. It is therefore recommend to avoid large depths and
 the default value of \code{max_depth} is smaller than in the single time series
 function \code{\link[=vlmc]{vlmc()}}.
 }
+\section{Weights}{
+
+
+If given, the \code{weights} parameter must be a vector of non negative values of the
+same length as \code{xs}. Each time series is then weighted using the corresponding
+weight. Weights are interpreted as fractional number of occurrences when
+\code{min_size} is checked. A context is kept in the context tree if the sum of
+the weights of the series in which it appears is larger than the \code{min_size}
+threshold. Conditional probabilities associated to contexts are computed
+from the weighted occurrences.
+}
+
 \examples{
 pc <- powerconsumption[powerconsumption$week \%in\% 5:8, ]
 powerlevels <- quantile(pc$active_power, probs = c(0.25, 0.5, 0.75, 1))

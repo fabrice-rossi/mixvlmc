@@ -9,6 +9,7 @@
   newdata,
   initial = c("truncated", "specific", "extended"),
   ignore,
+  weights = NULL,
   ...
 )
 }
@@ -25,6 +26,8 @@ in the likelihood. Defaults to \code{"truncated"}. See below for details.}
 \item{ignore}{specifies the number of initial values for which the loglikelihood
 will not be computed. The minimal number depends on the likelihood function as
 detailed below.}
+
+\item{weights}{optional weights for the time series, see details.}
 
 \item{...}{additional parameters for loglikelihood.}
 }
@@ -54,6 +57,14 @@ will instead be called. For more informations on \code{loglikelihood} methods, u
 
 VLMC fitted via \code{\link[=multi_vlmc]{multi_vlmc()}} on a collection discrete time series do not
 support likelihood calculation with \code{newdata}.
+}
+
+\section{Weights}{
+
+
+When specified, the weights are used to compute a weighted sum of the log
+likelihood of the time series. The weights are interpreted as fractional
+instances and the number of observations is therefore updated accordingly.
 }
 
 \section{likelihood calculation}{
