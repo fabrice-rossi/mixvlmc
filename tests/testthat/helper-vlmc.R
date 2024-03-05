@@ -1,4 +1,15 @@
-build_markov_chain <- function(n, nb_vals, seed = 0) {
+simulate_markov_chain <- function(n, TM, seed = 0) {
+  withr::local_seed(seed)
+  x <- rep(0L, n)
+  nb_vals <- nrow(TM)
+  x[1] <- sample(0L:(nb_vals - 1L), 1)
+  for (k in 2:n) {
+    x[k] <- sample(0L:(nb_vals - 1L), 1, prob = TM[x[k - 1] + 1, ])
+  }
+  x
+}
+
+build_transition_matrix <- function(nb_vals, seed = 0) {
   nb_vals <- as.integer(nb_vals)
   withr::local_seed(seed)
   TM <- matrix(NA, ncol = nb_vals, nrow = nb_vals)
@@ -6,12 +17,15 @@ build_markov_chain <- function(n, nb_vals, seed = 0) {
     TM[k, ] <- runif(nb_vals)
     TM[k, ] <- TM[k, ] / sum(TM[k, ])
   }
-  x <- rep(0L, n)
-  x[1] <- sample(0L:(nb_vals - 1L), 1)
-  for (k in 2:n) {
-    x[k] <- sample(0L:(nb_vals - 1L), 1, prob = TM[x[k - 1] + 1, ])
-  }
-  list(x = x, TM = TM)
+  TM
+}
+
+build_markov_chain <- function(n, nb_vals, seed = 0) {
+  TM <- build_transition_matrix(nb_vals, seed)
+  list(
+    x = simulate_markov_chain(n, TM, seed),
+    TM = TM
+  )
 }
 
 ## computes the loglikelihood of a time series x for a model handling initial
