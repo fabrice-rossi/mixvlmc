@@ -56,7 +56,7 @@ will instead be called. For more informations on \code{loglikelihood} methods, u
 
 
 VLMC fitted via \code{\link[=multi_vlmc]{multi_vlmc()}} on a collection discrete time series do not
-support likelihood calculation with \code{newdata}.
+support likelihood calculation without \code{newdata}.
 }
 
 \section{Weights}{
@@ -64,7 +64,7 @@ support likelihood calculation with \code{newdata}.
 
 When specified, the weights are used to compute a weighted sum of the log
 likelihood of the time series. The weights are interpreted as fractional
-instances and the number of observations is therefore updated accordingly.
+instances and the number of observations is therefore computed accordingly.
 }
 
 \section{likelihood calculation}{

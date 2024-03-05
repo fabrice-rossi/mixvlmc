@@ -124,6 +124,7 @@ reference:
   - multi_ctx_tree
   - multi_vlmc
   - loglikelihood.multi_vlmc
+  - tune_multi_vlmc
 - title: Global options
 - contents:
   - mixvlmc-package
