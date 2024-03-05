@@ -1,9 +1,41 @@
+#' Fit an optimal Variable Length Markov Chain (VLMC) on a collection of discrete time series
+#'
+#' This function fits a Variable Length Markov Chain (VLMC) to a collection of
+#' discrete time series by optimizing an information criterion (BIC or AIC).
+#'
+#' This function is very similar to [tune_vlmc()] as it automates the process of
+#' selecting the complexity of a VLMC with an information criterion. The only
+#' difference with [tune_vlmc()] is that the VLMC is estimated on a collection of
+#' discrete time series rather than on a single one. The internal estimation is
+#' therefore based on [multi_vlmc()] rather than [vlmc()]: in particular
+#' the time series can be weighted using the `weights` parameter.
+#'
+#' @inheritParams tune_vlmc
+#' @param xs a list of discrete times series
+#' @param weights optional weights for the time series, see details
+#' @inheritSection multi_vlmc Weights
+#' @inherit tune_vlmc return
+#' @seealso [multi_vlmc()]
+#' @export
+#' @examples
+#' pc <- powerconsumption[powerconsumption$week %in% 5:7, ]
+#' powerlevels <- quantile(pc$active_power, probs = c(0.25, 0.5, 0.75, 1))
+#' dts <- lapply(
+#'   5:7,
+#'   function(x) {
+#'     cut(pc$active_power[pc$week == x],
+#'       breaks = c(0, powerlevels)
+#'     )
+#'   }
+#' )
+#' best_vlmc <- tune_multi_vlmc(dts, alpha_init = 0.001)
 tune_multi_vlmc <- function(xs, criterion = c("BIC", "AIC"),
                             initial = c("truncated", "specific", "extended"),
                             alpha_init = NULL, cutoff_init = NULL,
                             min_size = 2L, max_depth = 10L,
                             verbose = 0,
-                            save = c("best", "initial", "all")) {
+                            save = c("best", "initial", "all"),
+                            weights = NULL) {
   criterion <- match.arg(criterion)
   initial <- match.arg(initial)
   save <- match.arg(save)
@@ -43,7 +75,8 @@ tune_multi_vlmc <- function(xs, criterion = c("BIC", "AIC"),
   saved_models <- list()
   base_model <- multi_vlmc(xs,
     cutoff = cutoff, min_size = min_size,
-    max_depth = max_depth
+    max_depth = max_depth,
+    weights = weights
   )
   while (base_model$max_depth) {
     n_max_depth <- min(2 * max_depth, min(data_sizes) - 1)
@@ -52,7 +85,11 @@ tune_multi_vlmc <- function(xs, criterion = c("BIC", "AIC"),
         cat("Max depth reached, increasing it to", n_max_depth, "\n")
       }
       max_depth <- n_max_depth
-      base_model <- multi_vlmc(xs, cutoff = cutoff, min_size = min_size, max_depth = max_depth)
+      base_model <- multi_vlmc(xs,
+        cutoff = cutoff, min_size = min_size,
+        max_depth = max_depth,
+        weights = weights
+      )
     } else {
       warning("cannot find a suitable value for max_depth")
       break
@@ -86,9 +123,9 @@ tune_multi_vlmc <- function(xs, criterion = c("BIC", "AIC"),
       cat("Computing loglikelihood\n")
     }
     if (initial == "truncated") {
-      ll <- loglikelihood(model, initial = "truncated", newdata = xs, ignore = max_order)
+      ll <- loglikelihood(model, initial = "truncated", newdata = xs, ignore = max_order, weights = weights)
     } else {
-      ll <- loglikelihood(model, initial = initial, newdata = xs)
+      ll <- loglikelihood(model, initial = initial, newdata = xs, weights = weights)
     }
     crit <- f_criterion(ll)
     if (crit <= best_crit) {
@@ -122,7 +159,7 @@ tune_multi_vlmc <- function(xs, criterion = c("BIC", "AIC"),
   }
   pre_result <- list(
     best_model = best_model,
-    best_ll = loglikelihood(best_model, newdata = xs),
+    best_ll = loglikelihood(best_model, newdata = xs, weights = weights),
     criterion = criterion,
     initial = initial,
     results = results,

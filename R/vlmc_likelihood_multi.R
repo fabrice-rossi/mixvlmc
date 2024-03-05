@@ -8,17 +8,18 @@
 #' @section Limitation:
 #'
 #'   VLMC fitted via [multi_vlmc()] on a collection discrete time series do not
-#'   support likelihood calculation with `newdata`.
+#'   support likelihood calculation without `newdata`.
 #'
 #' @section Weights:
 #'
 #'   When specified, the weights are used to compute a weighted sum of the log
 #'   likelihood of the time series. The weights are interpreted as fractional
-#'   instances and the number of observations is therefore updated accordingly.
+#'   instances and the number of observations is therefore computed accordingly.
 #'
 #' @seealso [multi_vlmc()]
 #' @export
-loglikelihood.multi_vlmc <- function(vlmc, newdata, initial = c("truncated", "specific", "extended"),
+loglikelihood.multi_vlmc <- function(vlmc, newdata,
+                                     initial = c("truncated", "specific", "extended"),
                                      ignore, weights = NULL, ...) {
   assertthat::assert_that(!missing(newdata))
   if (!is.list(newdata)) {
