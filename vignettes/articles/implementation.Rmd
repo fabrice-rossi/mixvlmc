@@ -15,6 +15,43 @@ knitr::opts_chunk$set(
 This document contains some implementation notes for the `mixvlmc`
 package.
 
+## R backend
+
+### Representation
+#### Context trees
+
+The R backend uses a pure R representation of context trees based on nested lists.
+A context tree is essentially a root list of class `ctx_tree` with at least a 
+`vals` component that contains the values allowed in the state space of the 
+context tree (accessed via the `states()` function). In general, the list 
+contains also two additional components used to speed up basic operations:
+
+- `depth`: the depth of the context tree, i.e. its longest context (accessed via
+  the `depth()` function);
+- `nb_ctx`: the number of proper contexts represented in the context tree (accessed
+  via the `contexts_numbers()` function).
+
+When the context tree is not empty, its list contains a `children` component
+that contains the first level nodes of the tree. Each node (including the root) 
+is a list with the following components:
+
+- `f_by` is an integer vector which counts how many time the context represented
+  by the node if followed by each of the possible state in the time series 
+  (see `counts()` for a context node based access to this);
+- `match` records the position of the contexts in the time series: this is 
+  optional and depends on parameters used during the construction of the tree. 
+  The positions are recorded as returned from an internal C++ search function 
+  and must be modified to be interpreted as actual positions in the time series:
+  if the context is of length `d` then `match + d` is the positions at which the
+  context ends in the time series (as in the `positions()` function);
+- `children` lists the children of the node if it is not a leaf.
+  
+The root not does not have a `match` attributes has it corresponds to the empty
+context which matches every position in the time series. Notice that while a
+node does not always represent a proper context, it is still a subsequence that
+appears in the time series. Thus `f_by` is always present, as well as is `match` 
+when positions are kept. 
+
 ## C++ backend
 
 ### Suffix tree
