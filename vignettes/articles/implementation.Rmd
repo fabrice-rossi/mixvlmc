@@ -15,7 +15,9 @@ knitr::opts_chunk$set(
 This document contains some implementation notes for the `mixvlmc`
 package.
 
-## Suffix tree
+## C++ backend
+
+### Suffix tree
 
 The package uses suffix trees to build efficiently context trees. Suffix
 trees are constructed from the integer representation of the discrete
@@ -26,7 +28,7 @@ Following [Garivier's paper](https://dx.doi.org/10.1109/TIT.2006.881742)
 we build the suffix tree of the reverse sequence (in other words the
 prefix tree).
 
-### Representation
+#### Representation
 
 The suffix tree is represented by a main C++ class `SuffixTree` which
 uses `EdgeNode` objects internally. As indicated by the name, an
@@ -59,7 +61,7 @@ An `EdgeNode` contains:
 Notice that only the `start`, `end`, `suffix` and `parent` are set
 during the suffix tree construction.
 
-### Construction
+#### Construction
 
 The suffix tree is constructed using [Ukkonen's
 algorithm](https://doi.org/10.1007%2FBF01206331). More precisely, for a
@@ -71,7 +73,7 @@ link in the suffix tree corresponds to extending a context into the past
 which is exactly what is needed for the practical use of the suffix tree
 as a context tree.
 
-### Counts
+#### Counts
 
 After the construction of the suffix tree, the `compute_counts` method
 is used to compute the number of occurrences of each subsequence
