@@ -62,6 +62,7 @@ The root node contains additional components that are useful for the VLMC
 implementation and thus described below.
 
 #### VLMC
+
 VLMC are represented with context trees. The represented is only enriched with
 some additional components for the root node, most notably:
 
@@ -79,6 +80,24 @@ of tree. It is saved in the `ix` component. Additionally, a VLMC contains a
 component `extended_ll` which records the log likelihood of the model for the
 first `depth` observations computed using the extended likelihood function (see 
 `vignette("likelihood")`).
+
+### Likelihood calculation
+
+Likelihood functions for VLMC are not implemented in the most natural way. A 
+natural approach would be to iterate through a time series, find the context
+applicable at each time point, compute the probability of observing the actual 
+value in this context and aggregate the probabilities. 
+
+In practice, it is frequently faster to use the same C++ matching function used
+during the construction of the context tree to build a sort of instance tree. 
+This is done via the internal function `match_ctx`. This function adds to each node
+of a context tree a new component `data_f_by` which counts how many times the
+sub-sequence represented by a node is followed by each element of the state space
+in an arbitrary time series (while `f_by` does that for the original time series).
+
+The log likelihood functions are then implemented by the internal 
+`rec_loglikelihood_vlmc` function. It descends recursively in the modified 
+VLMC tree and used both `f_by` and `data_f_by` to compute likelihoods. 
 
 ## C++ backend
 
