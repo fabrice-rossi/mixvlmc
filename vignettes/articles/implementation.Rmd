@@ -15,7 +15,93 @@ knitr::opts_chunk$set(
 This document contains some implementation notes for the `mixvlmc`
 package.
 
-## Suffix tree
+## R backend
+
+### Representation
+#### Context trees
+
+The R backend uses a pure R representation of context trees based on nested lists.
+A context tree is essentially a root node represented by a list of class `ctx_tree` 
+with at least a `vals` component that contains the values allowed in the state 
+space of the context tree (accessed via the `states()` function). It contains the 
+following additional components:
+
+- `keep_match`: equals to the value of `keep_position` in the call to `ctx_tree()`;
+- `data_size`: the length of the time series used to build the context tree.
+
+In general, the list contains also two additional components used to speed up 
+basic operations:
+
+- `depth`: the depth of the context tree, i.e. its longest context (accessed via
+  the `depth()` function);
+- `nb_ctx`: the number of proper contexts represented in the context tree (accessed
+  via the `contexts_numbers()` function).
+
+When the context tree is not empty, its list contains a `children` component
+that contains the first level nodes of the tree. Each node (including the root) 
+is a list with the following components:
+
+- `f_by` is an integer vector which counts how many time the context represented
+  by the node if followed by each of the possible state in the time series 
+  (see `counts()` for a context node based access to this);
+- `match` records the position of the contexts in the time series: this is 
+  optional and depends on parameters used during the construction of the tree. 
+  The positions are recorded as returned from an internal C++ search function 
+  and must be modified to be interpreted as actual positions in the time series:
+  if the context is of length `d` then `match + d` is the positions at which the
+  context ends in the time series (as in the `positions()` function);
+- `children` lists the children of the node if it is not a leaf.
+  
+The root not does not have a `match` attributes as it corresponds to the empty
+context which matches every position in the time series. Notice that while a
+node does not always represent a proper context, it is still a subsequence that
+appears in the time series. Thus `f_by` is always present, as well as is `match` 
+when positions are kept. 
+
+The root node contains additional components that are useful for the VLMC 
+implementation and thus described below.
+
+#### VLMC
+
+VLMC are represented with context trees. The represented is only enriched with
+some additional components for the root node, most notably:
+
+- `alpha`: the cut off parameter in quantile scale;
+- `cutoff`: the cut off parameter in native scale;
+- `pruned`: whether the VLMC was actually pruned based on the cut off parameter.
+
+The first two components are always present whether or not the VLMC was pruned.
+In addition, while only one scale is used in the call to `vlmc()` both scales are
+present (and consistent). 
+
+To speed up the likelihood calculation, a context tree contains in its root a
+copy of the first few observations in the original time series, up to the depth
+of tree. It is saved in the `ix` component. Additionally, a VLMC contains a 
+component `extended_ll` which records the log likelihood of the model for the
+first `depth` observations computed using the extended likelihood function (see 
+`vignette("likelihood")`).
+
+### Likelihood calculation
+
+Likelihood functions for VLMC are not implemented in the most natural way. A 
+natural approach would be to iterate through a time series, find the context
+applicable at each time point, compute the probability of observing the actual 
+value in this context and aggregate the probabilities. 
+
+In practice, it is frequently faster to use the same C++ matching function used
+during the construction of the context tree to build a sort of instance tree. 
+This is done via the internal function `match_ctx`. This function adds to each node
+of a context tree a new component `data_f_by` which counts how many times the
+sub-sequence represented by a node is followed by each element of the state space
+in an arbitrary time series (while `f_by` does that for the original time series).
+
+The log likelihood functions are then implemented by the internal 
+`rec_loglikelihood_vlmc` function. It descends recursively in the modified 
+VLMC tree and used both `f_by` and `data_f_by` to compute likelihoods. 
+
+## C++ backend
+
+### Suffix tree
 
 The package uses suffix trees to build efficiently context trees. Suffix
 trees are constructed from the integer representation of the discrete
@@ -26,7 +112,7 @@ Following [Garivier's paper](https://dx.doi.org/10.1109/TIT.2006.881742)
 we build the suffix tree of the reverse sequence (in other words the
 prefix tree).
 
-### Representation
+#### Representation
 
 The suffix tree is represented by a main C++ class `SuffixTree` which
 uses `EdgeNode` objects internally. As indicated by the name, an
@@ -59,7 +145,7 @@ An `EdgeNode` contains:
 Notice that only the `start`, `end`, `suffix` and `parent` are set
 during the suffix tree construction.
 
-### Construction
+#### Construction
 
 The suffix tree is constructed using [Ukkonen's
 algorithm](https://doi.org/10.1007%2FBF01206331). More precisely, for a
@@ -71,7 +157,7 @@ link in the suffix tree corresponds to extending a context into the past
 which is exactly what is needed for the practical use of the suffix tree
 as a context tree.
 
-### Counts
+#### Counts
 
 After the construction of the suffix tree, the `compute_counts` method
 is used to compute the number of occurrences of each subsequence
