@@ -21,10 +21,16 @@ package.
 #### Context trees
 
 The R backend uses a pure R representation of context trees based on nested lists.
-A context tree is essentially a root list of class `ctx_tree` with at least a 
-`vals` component that contains the values allowed in the state space of the 
-context tree (accessed via the `states()` function). In general, the list 
-contains also two additional components used to speed up basic operations:
+A context tree is essentially a root node represented by a list of class `ctx_tree` 
+with at least a `vals` component that contains the values allowed in the state 
+space of the context tree (accessed via the `states()` function). It contains the 
+following additional components:
+
+- `keep_match`: equals to the value of `keep_position` in the call to `ctx_tree()`;
+- `data_size`: the length of the time series used to build the context tree.
+
+In general, the list contains also two additional components used to speed up 
+basic operations:
 
 - `depth`: the depth of the context tree, i.e. its longest context (accessed via
   the `depth()` function);
@@ -46,11 +52,33 @@ is a list with the following components:
   context ends in the time series (as in the `positions()` function);
 - `children` lists the children of the node if it is not a leaf.
   
-The root not does not have a `match` attributes has it corresponds to the empty
+The root not does not have a `match` attributes as it corresponds to the empty
 context which matches every position in the time series. Notice that while a
 node does not always represent a proper context, it is still a subsequence that
 appears in the time series. Thus `f_by` is always present, as well as is `match` 
 when positions are kept. 
+
+The root node contains additional components that are useful for the VLMC 
+implementation and thus described below.
+
+#### VLMC
+VLMC are represented with context trees. The represented is only enriched with
+some additional components for the root node, most notably:
+
+- `alpha`: the cut off parameter in quantile scale;
+- `cutoff`: the cut off parameter in native scale;
+- `pruned`: whether the VLMC was actually pruned based on the cut off parameter.
+
+The first two components are always present whether or not the VLMC was pruned.
+In addition, while only one scale is used in the call to `vlmc()` both scales are
+present (and consistent). 
+
+To speed up the likelihood calculation, a context tree contains in its root a
+copy of the first few observations in the original time series, up to the depth
+of tree. It is saved in the `ix` component. Additionally, a VLMC contains a 
+component `extended_ll` which records the log likelihood of the model for the
+first `depth` observations computed using the extended likelihood function (see 
+`vignette("likelihood")`).
 
 ## C++ backend
 
