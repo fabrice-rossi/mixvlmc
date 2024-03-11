@@ -46,6 +46,21 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// forward_match_all_ctx_counts_multi
+List forward_match_all_ctx_counts_multi(List xs, int nb_vals, int depth, Nullable<List> nvs_from, Nullable<NumericVector> weights);
+RcppExport SEXP _mixvlmc_forward_match_all_ctx_counts_multi(SEXP xsSEXP, SEXP nb_valsSEXP, SEXP depthSEXP, SEXP nvs_fromSEXP, SEXP weightsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< List >::type xs(xsSEXP);
+    Rcpp::traits::input_parameter< int >::type nb_vals(nb_valsSEXP);
+    Rcpp::traits::input_parameter< int >::type depth(depthSEXP);
+    Rcpp::traits::input_parameter< Nullable<List> >::type nvs_from(nvs_fromSEXP);
+    Rcpp::traits::input_parameter< Nullable<NumericVector> >::type weights(weightsSEXP);
+    rcpp_result_gen = Rcpp::wrap(forward_match_all_ctx_counts_multi(xs, nb_vals, depth, nvs_from, weights));
+    return rcpp_result_gen;
+END_RCPP
+}
 // kl_crit
 double kl_crit(IntegerVector p, IntegerVector q);
 RcppExport SEXP _mixvlmc_kl_crit(SEXP pSEXP, SEXP qSEXP) {
@@ -100,6 +115,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_mixvlmc_after", (DL_FUNC) &_mixvlmc_after, 1},
     {"_mixvlmc_before", (DL_FUNC) &_mixvlmc_before, 1},
     {"_mixvlmc_forward_match_all_ctx_counts", (DL_FUNC) &_mixvlmc_forward_match_all_ctx_counts, 4},
+    {"_mixvlmc_forward_match_all_ctx_counts_multi", (DL_FUNC) &_mixvlmc_forward_match_all_ctx_counts_multi, 5},
     {"_mixvlmc_kl_crit", (DL_FUNC) &_mixvlmc_kl_crit, 2},
     {"_mixvlmc_mixvlmc_sample", (DL_FUNC) &_mixvlmc_mixvlmc_sample, 2},
     {"_mixvlmc_mixvlmc_sample2", (DL_FUNC) &_mixvlmc_mixvlmc_sample2, 2},
