@@ -1,3 +1,11 @@
+shift_positions <- function(positions, shift) {
+  if (is.numeric(positions)) {
+    positions + shift
+  } else {
+    lapply(positions, \(x) x + shift)
+  }
+}
+
 frequency_context_extractor <-
   function(tree, path, ct, vals, control, is_leaf, p_summary) {
     if ((is_leaf && !is.null(ct[["f_by"]])) ||
@@ -11,7 +19,7 @@ frequency_context_extractor <-
           } else {
             data.frame(
               context = I(list(path)),
-              positions = I(list(ct[["match"]] + length(path)))
+              positions = I(list(shift_positions(ct[["match"]], length(path))))
             )
           }
         }
@@ -30,7 +38,7 @@ frequency_context_extractor <-
           if (is.null(ct[["match"]])) {
             stop("Cannot report positions if they were not saved")
           } else {
-            res[["positions"]] <- list(ct[["match"]] + length(path))
+            res[["positions"]] <- list(shift_positions(ct[["match"]], length(path)))
           }
         }
         if (!is_leaf && isTRUE(control[["local"]])) {
@@ -85,6 +93,11 @@ frequency_context_extractor <-
 #'   an index value `t` such that the context ends with `x[t]`. Thus `x[t+1]` is
 #'   after the context. For instance if `x=c(0, 0, 1, 1)` and `ctx=c(0, 1)` (in
 #'   standard state order), then the position of `ctx` in `x` is 3.
+#'
+#'   If the context tree was built using a collection of time series (see
+#'   [multi_ctx_tree()] and [multi_vlmc()]), the `positions` column contains lists rather than
+#'   vectors. Each list contains the positions of the context in the original
+#'   time series, given by a vector per time series.
 #'
 #' @examples
 #' dts <- sample(as.factor(c("A", "B", "C")), 100, replace = TRUE)

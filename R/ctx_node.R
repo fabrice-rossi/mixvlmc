@@ -217,7 +217,7 @@ is_context <- function(node) {
 #' This function returns the positions of the sequence represented by `node`
 #' in the time series used to build the context tree in which the sequence is
 #' represented. This is only possible is those positions were saved during the
-#' construction of the context tree. In positions were not saved, a call to this
+#' construction of the context tree. If positions were not saved, a call to this
 #' function produces an error.
 #'
 #' A position of a sequence `ctx` in the time series `x` is an index value `t`
@@ -225,10 +225,15 @@ is_context <- function(node) {
 #' For instance if `x=c(0, 0, 1, 1)` and `ctx=c(0, 1)` (in standard state
 #' order), then the position of `ctx` in `x` is 3.
 #'
+#' If the context tree was built using a collection of time series (see
+#' [multi_ctx_tree()] and [multi_vlmc()]), the `positions` column contains lists rather than
+#' vectors. Each list contains the positions of the context in the original
+#' time series, given by a vector per time series.
+
 #' @param node a `ctx_node` object as returned by [find_sequence()]
 #'
 #' @returns positions of the sequence represented by `node` is the original
-#'   time series as a integer vector
+#'   time series as a integer vector or a list of integer vectors
 #' @export
 #'
 #' @examples
@@ -248,7 +253,7 @@ positions.ctx_node <- function(node) {
   if (is.null(node$node[["match"]])) {
     stop("Cannot report positions if they were not saved")
   }
-  node$node[["match"]] + length(node$sequence)
+  shift_positions(node$node[["match"]], length(node$sequence))
 }
 
 #' Report the distribution of values that follow occurrences of a sequence
