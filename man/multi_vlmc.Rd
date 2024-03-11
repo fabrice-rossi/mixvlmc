@@ -9,7 +9,7 @@ multi_vlmc(
   alpha = 0.05,
   cutoff = NULL,
   min_size = 2L,
-  max_depth = 25L,
+  max_depth = 100L,
   prune = TRUE,
   keep_match = FALSE,
   weights = NULL
@@ -28,7 +28,7 @@ Takes precedence over \code{alpha} is specified.}
 \item{min_size}{integer >= 1 (default: 2). Minimum number of observations for
 a context in the growing phase of the context tree.}
 
-\item{max_depth}{integer >= 1 (default: 25). Longest context considered in
+\item{max_depth}{integer >= 1 (default: 100). Longest context considered in
 growing phase of the context tree.}
 
 \item{prune}{logical: specify whether the context tree should be pruned
@@ -45,13 +45,6 @@ a fitted vlmc model (of class \code{multi_vlmc})
 \description{
 This function fits a  Variable Length Markov Chain (VLMC) to a collection of
 discrete time series.
-}
-\details{
-Owing to the iterative nature of the construction, this function may use a large
-quantity of memory as pruning infrequent contexts is only done after
-computing all of them. It is therefore recommend to avoid large depths and
-the default value of \code{max_depth} is smaller than in the single time series
-function \code{\link[=vlmc]{vlmc()}}.
 }
 \section{Weights}{
 

@@ -5,12 +5,6 @@
 #' This function fits a  Variable Length Markov Chain (VLMC) to a collection of
 #' discrete time series.
 #'
-#' Owing to the iterative nature of the construction, this function may use a large
-#' quantity of memory as pruning infrequent contexts is only done after
-#' computing all of them. It is therefore recommend to avoid large depths and
-#' the default value of `max_depth` is smaller than in the single time series
-#' function [vlmc()].
-#'
 #' @param xs list of discrete times series
 #' @param alpha number in (0,1] (default: 0.05) cut off value in quantile scale
 #'   in the pruning phase.
@@ -19,7 +13,7 @@
 #'   Takes precedence over `alpha` is specified.
 #' @param min_size integer >= 1 (default: 2). Minimum number of observations for
 #'   a context in the growing phase of the context tree.
-#' @param max_depth integer >= 1 (default: 25). Longest context considered in
+#' @param max_depth integer >= 1 (default: 100). Longest context considered in
 #'   growing phase of the context tree.
 #' @param prune logical: specify whether the context tree should be pruned
 #'   (default behaviour).
@@ -54,7 +48,7 @@
 #' depth(model)
 #' @export
 #' @seealso [multi_ctx_tree()], [vlmc()]
-multi_vlmc <- function(xs, alpha = 0.05, cutoff = NULL, min_size = 2L, max_depth = 25L,
+multi_vlmc <- function(xs, alpha = 0.05, cutoff = NULL, min_size = 2L, max_depth = 100L,
                        prune = TRUE, keep_match = FALSE, weights = NULL) {
   ## keep_match=TRUE is currently not supported
   assertthat::assert_that(!keep_match)

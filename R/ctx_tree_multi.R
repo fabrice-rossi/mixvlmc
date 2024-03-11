@@ -1,118 +1,69 @@
 ## Context tree for multiple series
 
-## insert a new dts into an existing context tree
-insert_dts <- function(tree, x, vals, max_depth, weight) {
-  recurse_insert_dts <- function(tree, x, nb_vals, d, from, f_by) {
+weighted_table <- function(xs, weights = NULL) {
+  counts <- sapply(xs, table)
+  if (is.null(weights)) {
+    res <- as.integer(rowSums(counts))
+  } else {
+    res <- rowSums(sweep(counts, 2, weights, "*"))
+  }
+  res
+}
+
+grow_multi_ctx_tree <- function(xs, vals, min_size, max_depth, covsize = 0L,
+                                keep_match = FALSE, all_children = FALSE,
+                                compute_stats = FALSE, weights = NULL) {
+  recurse_multi_ctx_tree <- function(xs, nb_vals, d, from, f_by) {
     if (d < max_depth) {
-      fmatch <- forward_match_all_ctx_counts(x, nb_vals, d, from)
+      fmatch <- forward_match_all_ctx_counts_multi(xs, nb_vals, d, from, weights)
+      children <- vector(mode = "list", nb_vals)
       nb_children <- 0L
-      if (is.null(tree) || is.null(tree[["children"]])) {
-        ## we are in a leaf of the current context tree
-        children <- vector(mode = "list", nb_vals)
-      } else {
-        children <- tree$children
-      }
       d_max <- FALSE
       for (v in 1:nb_vals) {
-        if (sum(fmatch$counts[v, ]) > 0) {
-          children[[v]] <- recurse_insert_dts(
-            tree$children[[v]], x, nb_vals, d + 1L,
-            fmatch$positions[[v]], fmatch$counts[v, ]
+        ## we look at the descendants hence the target depth is d + 1
+        if (sum(fmatch$agg_counts[v, ]) >= min_size * (1L + covsize * (d + 1L))) {
+          children[[v]] <- recurse_multi_ctx_tree(
+            xs, nb_vals, d + 1L,
+            fmatch$positions[[v]],
+            fmatch$agg_counts[v, ]
           )
           nb_children <- nb_children + 1
-        } else {
-          ## nothing to do we keep the current children[[v]]
-          if (!is.null(children[[v]])) {
-            nb_children <- nb_children + 1
-          } else {
-            ## make sure to avoid null content
-            children[[v]] <- list()
+          if (isTRUE(children[[v]]$max_depth)) {
+            d_max <- TRUE
+            children[[v]]$max_depth <- NULL
           }
-        }
-        if (isTRUE(children[[v]]$max_depth)) {
-          d_max <- TRUE
-          children[[v]]$max_depth <- NULL
+        } else {
+          children[[v]] <- list()
         }
       }
-      if (is.null(weight)) {
-        result <- list(
-          children = children,
-          f_by = f_by
-        )
-      } else {
-        result <- list(
-          children = children,
-          f_by = f_by * weight
-        )
+      result <- list()
+      ## FIXME
+      ## the rationale of this test is unclear...
+      if (nb_children == nb_vals || (!all_children && nb_children > 0)) {
+        result$children <- children
+      }
+      result$f_by <- f_by
+      if (keep_match) {
+        result$match <- from
       }
       if (d_max) {
         result$max_depth <- TRUE
       }
+      result
     } else {
-      if (is.null(weight)) {
-        result <- list(f_by = f_by, max_depth = TRUE)
-      } else {
-        result <- list(f_by = f_by, max_depth = TRUE)
+      result <- list(f_by = f_by, max_depth = TRUE)
+      if (keep_match) {
+        result$match <- from
       }
-    }
-    if (!is.null(tree[["f_by"]])) {
-      if (is.null(weight)) {
-        result$f_by <- f_by + tree[["f_by"]]
-      } else {
-        result$f_by <- f_by * weight + tree[["f_by"]]
-      }
-    }
-    result
-  }
-  recurse_insert_dts(tree, x, length(vals), 0L, NULL, table(x))
-}
-
-## min_size based pruning
-## depth cannot be larger than max_depth if this is used consistently
-prune_multi_ctx_tree <- function(tree, min_size, max_depth) {
-  rec_prune_mctx <- function(tree, d) {
-    ## do we keep this node?
-    if (is.null(tree[["f_by"]])) {
-      ## empty node
-      list()
-    } else if (sum(tree[["f_by"]]) < min_size) {
-      ## size based pruning
-      list()
-    } else {
-      ## we keep this node for sure, do recursive processing if needed
-      d_max <- FALSE
-      if (!is.null(tree[["children"]])) {
-        subtrees <- vector(mode = "list", length(tree$children))
-        nb_children <- 0L
-        for (v in seq_along(tree$children)) {
-          subtrees[[v]] <- rec_prune_mctx(tree$children[[v]], d + 1L)
-          if (length(subtrees[[v]]) > 0) {
-            ## this sub tree was kept
-            nb_children <- 1L + nb_children
-            if (isTRUE(subtrees[[v]]$max_depth)) {
-              ## propagate max_depth
-              d_max <- TRUE
-              subtrees[[v]]$max_depth <- NULL
-            }
-          }
-        }
-        if (nb_children > 0) {
-          tree$children <- subtrees
-        } else {
-          ## remove all children
-          tree$children <- NULL
-        }
-      }
-      if (d_max || d == max_depth) {
-        ## propagate max_depth
-        tree$max_depth <- TRUE
-      } else {
-        tree$max_depth <- NULL
-      }
-      tree
+      result
     }
   }
-  rec_prune_mctx(tree, 0L)
+  init_f_by <- weighted_table(xs, weights)
+  pre_res <- recurse_multi_ctx_tree(xs, length(vals), 0L, NULL, init_f_by)
+  if (is.null(pre_res$max_depth)) {
+    pre_res$max_depth <- FALSE
+  }
+  new_ctx_tree(vals, pre_res, compute_stats = compute_stats)
 }
 
 #' Build a context tree for a collection of discrete time series
@@ -123,12 +74,6 @@ prune_multi_ctx_tree <- function(tree, min_size, max_depth) {
 #' than `max_depth` that appear at least `min_size` times in collection of the
 #' time series and stores the frequencies of the states that follow each
 #' context.
-#'
-#' Owing to the iterative nature of construction, this function may use a large
-#' quantity of memory as pruning infrequent contexts is only done after
-#' computing all of them. It is therefore recommend to avoid large depths and
-#' the default value of `max_depth` is smaller than in the single time series
-#' function [ctx_tree()].
 #'
 #' @section Weights:
 #'
@@ -143,7 +88,7 @@ prune_multi_ctx_tree <- function(tree, min_size, max_depth) {
 #' @param min_size positive numerical value (default: 2). Minimum number of observations for
 #'   a context to be included in the tree (counted over the full collection of
 #'   time series, see details for the case with `weights`)
-#' @param max_depth integer >= 1 (default: 25). Maximum length of a context to
+#' @param max_depth integer >= 1 (default: 100). Maximum length of a context to
 #'   be included in the tree.
 #' @param keep_position  logical (default: FALSE). Should the context tree keep
 #'   the position of the contexts.
@@ -157,10 +102,8 @@ prune_multi_ctx_tree <- function(tree, min_size, max_depth) {
 #' dts2 <- c(0, 1, 1, 0, 0, 0, 1, 0, 0, 1, 0, 1, 1, 0)
 #' mdts <- list(dts, dts2)
 #' mctx <- multi_ctx_tree(mdts, max_depth = 4)
-multi_ctx_tree <- function(xs, min_size = 2L, max_depth = 25L,
+multi_ctx_tree <- function(xs, min_size = 2L, max_depth = 100L,
                            keep_position = FALSE, weights = NULL) {
-  ## keep_position = TRUE is not supported currently
-  assertthat::assert_that(!keep_position)
   assertthat::assert_that(is.list(xs))
   assertthat::assert_that(length(xs) >= 1)
   assertthat::assert_that(min_size > 0)
@@ -175,37 +118,14 @@ multi_ctx_tree <- function(xs, min_size = 2L, max_depth = 25L,
   if (length(vals) > max(10, 0.05 * length(xs[[1]]))) {
     warning(paste0("x[[1]] as numerous unique values (", length(vals), ")"))
   }
-  ## we cannot use the original min_size for individual time series
-  if (is.null(weights)) {
-    weight <- NULL
-  } else {
-    weight <- weights[1]
-  }
-  pre_result <- grow_ctx_tree(ix_1, vals,
-    min_size = 1L, max_depth = max_depth, keep_match = keep_position,
-    compute_stats = FALSE, weight = weight
-  )
-  d_max <- pre_result$max_depth
+  ixs <- list(ix_1)
   if (length(xs) > 1) {
-    for (k in 2:length(xs)) {
-      nx <- to_dts(xs[[k]], vals = vals)
-      if (is.null(weights)) {
-        weight <- NULL
-      } else {
-        weight <- weights[k]
-      }
-      pre_result <- insert_dts(pre_result, nx$ix, vals, max_depth = max_depth, weight = weight)
-      d_max <- d_max | pre_result$max_depth
-    }
+    ixs <- c(ixs, lapply(xs[-1], \(x) to_dts(x, vals = vals)$ix))
   }
-  ## let us post process the tree to remove rare contexts
-  if (min_size > 1L) {
-    pre_result <- prune_multi_ctx_tree(pre_result, min_size, max_depth)
-  } else {
-    pre_result$max_depth <- d_max
-  }
-  if (is.null(pre_result$max_depth)) {
-    pre_result$max_depth <- FALSE
-  }
+  pre_result <- grow_multi_ctx_tree(ixs, vals,
+    min_size = min_size, max_depth = max_depth,
+    keep_match = keep_position,
+    compute_stats = FALSE, weights = weights
+  )
   new_ctx_tree(vals, pre_result, compute_stats = TRUE, class = "multi_ctx_tree")
 }
