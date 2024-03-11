@@ -7,7 +7,7 @@
 multi_ctx_tree(
   xs,
   min_size = 2L,
-  max_depth = 25L,
+  max_depth = 100L,
   keep_position = FALSE,
   weights = NULL
 )
@@ -19,7 +19,7 @@ multi_ctx_tree(
 a context to be included in the tree (counted over the full collection of
 time series, see details for the case with \code{weights})}
 
-\item{max_depth}{integer >= 1 (default: 25). Maximum length of a context to
+\item{max_depth}{integer >= 1 (default: 100). Maximum length of a context to
 be included in the tree.}
 
 \item{keep_position}{logical (default: FALSE). Should the context tree keep
@@ -38,12 +38,6 @@ The tree represents all the sequences of symbols/states of length smaller
 than \code{max_depth} that appear at least \code{min_size} times in collection of the
 time series and stores the frequencies of the states that follow each
 context.
-
-Owing to the iterative nature of construction, this function may use a large
-quantity of memory as pruning infrequent contexts is only done after
-computing all of them. It is therefore recommend to avoid large depths and
-the default value of \code{max_depth} is smaller than in the single time series
-function \code{\link[=ctx_tree]{ctx_tree()}}.
 }
 \section{Weights}{
 
