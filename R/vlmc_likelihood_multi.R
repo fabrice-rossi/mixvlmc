@@ -26,24 +26,40 @@ loglikelihood.multi_vlmc <- function(vlmc, newdata,
     NextMethod()
   } else {
     initial <- match.arg(initial)
-    ll <- 0
-    nb_obs <- 0L
-    if (is.null(weights)) {
-      weights <- rep(1, length(newdata))
-    }
-    for (k in seq_along(newdata)) {
-      if (rlang::is_missing(ignore)) {
-        the_ll <- loglikelihood(vlmc, newdata[[k]], initial, ...)
+    if (missing(ignore)) {
+      if (initial == "truncated") {
+        ignore <- depth(vlmc)
       } else {
-        the_ll <- loglikelihood(vlmc, newdata[[k]], initial, ignore, ...)
+        ignore <- 0
       }
-      ll <- ll + weights[k] * as.numeric(the_ll)
-      nb_obs <- nb_obs + weights[k] * attr(the_ll, "nobs")
+    } else if (ignore < depth(vlmc) && initial == "truncated") {
+      stop("Cannot ignore less than ", depth(vlmc), " initial observations with `truncated` likelihood")
     }
-    df <- attr(the_ll, "df")
-    attr(ll, "df") <- df
-    attr(ll, "nobs") <- nb_obs
-    attr(ll, "initial") <- initial
-    structure(ll, class = c("logLikMixVLMC", "logLik"))
+    if (any(ignore >= lengths(newdata))) {
+      stop("Cannot ignore more data than the available ones")
+    }
+    ixs <- to_multi_dts(newdata, vlmc$vals)
+    nvlmc <- match_multi_ctx(vlmc, ixs$ix, FALSE, weights)
+    pre_res <- rec_loglikelihood_vlmc(nvlmc, TRUE)
+    ignore_counts <- ignore
+    if (initial == "specific" && ignore < depth(vlmc)) {
+      ignore <- depth(vlmc)
+    }
+    if (ignore > 0) {
+      ivlmc <- match_multi_ctx(vlmc, lapply(ixs$ix, \(x) x[1:ignore]))
+      delta_res <- rec_loglikelihood_vlmc(ivlmc, TRUE)
+      pre_res <- pre_res - delta_res
+    }
+    attr(pre_res, "nobs") <- max(0, sum(lengths(newdata) - ignore_counts))
+    ctx_nb <- context_number(vlmc)
+    if (initial == "extended") {
+      ctx_nb <- ctx_nb + count_full_nodes(vlmc)
+    }
+    attr(pre_res, "df") <- ctx_nb * (length(vlmc$vals) - 1L)
+    if (initial == "specific") {
+      attr(pre_res, "df") <- attr(pre_res, "df") + depth(vlmc)
+    }
+    attr(pre_res, "initial") <- initial
+    structure(pre_res, class = c("logLikMixVLMC", "logLik"))
   }
 }
