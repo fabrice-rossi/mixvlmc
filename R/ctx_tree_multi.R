@@ -1,15 +1,4 @@
 ## Context tree for multiple series
-
-weighted_table <- function(xs, weights = NULL) {
-  counts <- sapply(xs, table)
-  if (is.null(weights)) {
-    res <- as.integer(rowSums(counts))
-  } else {
-    res <- rowSums(sweep(counts, 2, weights, "*"))
-  }
-  res
-}
-
 grow_multi_ctx_tree <- function(xs, vals, min_size, max_depth, covsize = 0L,
                                 keep_match = FALSE, all_children = FALSE,
                                 compute_stats = FALSE, weights = NULL) {
@@ -112,17 +101,12 @@ multi_ctx_tree <- function(xs, min_size = 2L, max_depth = 100L,
     assertthat::assert_that(assertthat::are_equal(length(xs), length(weights)))
     assertthat::assert_that(all(weights >= 0))
   }
-  nx_1 <- to_dts(xs[[1]])
-  ix_1 <- nx_1$ix
-  vals <- nx_1$vals
+  ixs <- to_multi_dts(xs)
+  vals <- ixs$vals
   if (length(vals) > max(10, 0.05 * length(xs[[1]]))) {
-    warning(paste0("x[[1]] as numerous unique values (", length(vals), ")"))
+    warning(paste0("xs[[1]] as numerous unique values (", length(vals), ")"))
   }
-  ixs <- list(ix_1)
-  if (length(xs) > 1) {
-    ixs <- c(ixs, lapply(xs[-1], \(x) to_dts(x, vals = vals)$ix))
-  }
-  pre_result <- grow_multi_ctx_tree(ixs, vals,
+  pre_result <- grow_multi_ctx_tree(ixs$ixs, vals,
     min_size = min_size, max_depth = max_depth,
     keep_match = keep_position,
     compute_stats = FALSE, weights = weights
