@@ -17,13 +17,13 @@ positions(node)
 }
 \value{
 positions of the sequence represented by \code{node} is the original
-time series as a integer vector
+time series as a integer vector or a list of integer vectors
 }
 \description{
 This function returns the positions of the sequence represented by \code{node}
 in the time series used to build the context tree in which the sequence is
 represented. This is only possible is those positions were saved during the
-construction of the context tree. In positions were not saved, a call to this
+construction of the context tree. If positions were not saved, a call to this
 function produces an error.
 }
 \details{
@@ -31,6 +31,11 @@ A position of a sequence \code{ctx} in the time series \code{x} is an index valu
 such that the sequence ends with \code{x[t]}. Thus \code{x[t+1]} is after the context.
 For instance if \code{x=c(0, 0, 1, 1)} and \code{ctx=c(0, 1)} (in standard state
 order), then the position of \code{ctx} in \code{x} is 3.
+
+If the context tree was built using a collection of time series (see
+\code{\link[=multi_ctx_tree]{multi_ctx_tree()}} and \code{\link[=multi_vlmc]{multi_vlmc()}}), the \code{positions} column contains lists rather than
+vectors. Each list contains the positions of the context in the original
+time series, given by a vector per time series.
 }
 \examples{
 rdts <- sample(as.factor(c("A", "B", "C")), 100, replace = TRUE)

@@ -77,6 +77,11 @@ followed by the corresponding value in the original series.
 an index value \code{t} such that the context ends with \code{x[t]}. Thus \code{x[t+1]} is
 after the context. For instance if \code{x=c(0, 0, 1, 1)} and \code{ctx=c(0, 1)} (in
 standard state order), then the position of \code{ctx} in \code{x} is 3.
+
+If the context tree was built using a collection of time series (see
+\code{\link[=multi_ctx_tree]{multi_ctx_tree()}} and \code{\link[=multi_vlmc]{multi_vlmc()}}), the \code{positions} column contains lists rather than
+vectors. Each list contains the positions of the context in the original
+time series, given by a vector per time series.
 }
 
 \section{State order in a context}{

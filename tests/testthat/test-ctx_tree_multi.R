@@ -116,3 +116,28 @@ test_that("multi_ctx_tree finds correct weighted contexts in basic cases", {
     expect_equal(the_f_by * sum(the_weights), as.numeric(all_mctx[k, 3:4]))
   }
 })
+
+
+test_that("multi_ctx_tree finds correct positions", {
+  withr::local_seed(42)
+  nb_dts <- 15L
+  dts_bsize <- 20L
+  mdts <- vector(mode = "list", length = nb_dts)
+  for (k in seq_along(mdts)) {
+    mdts[[k]] <- sample(c(1L, 2L), dts_bsize + sample(1:5, 1), replace = TRUE)
+  }
+  mctx <- multi_ctx_tree(mdts, min_size = 2, max_depth = 25, keep_position = TRUE)
+  all_mctx <- contexts(mctx, positions = TRUE)
+  for (k in 1:nrow(all_mctx)) {
+    the_ctx <- all_mctx$context[[k]]
+    all_ok <- TRUE
+    for (j in seq_along(mdts)) {
+      the_pos <- find_occurrences(mdts[[j]], the_ctx)
+      all_ok <- all.equal(
+        the_pos + length(the_ctx) - 1L,
+        all_mctx$positions[[k]][[j]]
+      )
+    }
+    expect_true(all_ok)
+  }
+})
