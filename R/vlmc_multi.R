@@ -35,14 +35,7 @@
 #' @examples
 #' pc <- powerconsumption[powerconsumption$week %in% 5:8, ]
 #' powerlevels <- quantile(pc$active_power, probs = c(0.25, 0.5, 0.75, 1))
-#' dts <- lapply(
-#'   5:8,
-#'   function(x) {
-#'     cut(pc$active_power[pc$week == x],
-#'       breaks = c(0, powerlevels)
-#'     )
-#'   }
-#' )
+#' dts <- tapply(pc$active_power, pc$week, \(x) cut(x, breaks = c(0, powerlevels)))
 #' model <- multi_vlmc(dts, max_depth = 3)
 #' draw(model)
 #' depth(model)
