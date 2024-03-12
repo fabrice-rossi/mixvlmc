@@ -19,6 +19,7 @@ articles:
   - likelihood
   - prediction
   - sampling
+  - multiple
 - title: Implementation
   desc: This article documents implementation details.
   contents:
