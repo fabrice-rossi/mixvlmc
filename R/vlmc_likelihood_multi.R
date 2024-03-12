@@ -17,6 +17,13 @@
 #'   instances and the number of observations is therefore computed accordingly.
 #'
 #' @seealso [multi_vlmc()]
+#' @examples
+#' pc <- powerconsumption[powerconsumption$week %in% 5:9, ]
+#' powerlevels <- quantile(pc$active_power, probs = c(0.25, 0.5, 0.75, 1))
+#' dts <- tapply(pc$active_power, pc$week, \(x) cut(x, breaks = c(0, powerlevels)))
+#' model <- multi_vlmc(dts[-5], max_depth = 3)
+#' loglikelihood(model, newdata = dts[[5]])
+#' loglikelihood(model, newdata = dts[1:4])
 #' @export
 loglikelihood.multi_vlmc <- function(vlmc, newdata,
                                      initial = c("truncated", "specific", "extended"),

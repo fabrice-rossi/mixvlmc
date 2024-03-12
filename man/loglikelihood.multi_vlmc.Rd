@@ -104,34 +104,12 @@ See the dedicated vignette for a more mathematically oriented discussion:
 }
 
 \examples{
-## Likelihood for a fitted VLMC.
-pc <- powerconsumption[powerconsumption$week == 5, ]
-breaks <- c(
-  0,
-  median(powerconsumption$active_power, na.rm = TRUE),
-  max(powerconsumption$active_power, na.rm = TRUE)
-)
-labels <- c(0, 1)
-dts <- cut(pc$active_power, breaks = breaks, labels = labels)
-m_nocovariate <- vlmc(dts)
-ll <- loglikelihood(m_nocovariate)
-ll
-attr(ll, "nobs")
-attr(ll, "df")
-
-## Likelihood for a new time series with previously fitted VLMC.
-pc_new <- powerconsumption[powerconsumption$week == 11, ]
-dts_new <- cut(pc_new$active_power, breaks = breaks, labels = labels)
-ll_new <- loglikelihood(m_nocovariate, newdata = dts_new)
-ll_new
-attributes(ll_new)
-ll_new_specific <- loglikelihood(m_nocovariate, initial = "specific", newdata = dts_new)
-ll_new_specific
-attributes(ll_new_specific)
-ll_new_extended <- loglikelihood(m_nocovariate, initial = "extended", newdata = dts_new)
-ll_new_extended
-attributes(ll_new_extended)
-
+pc <- powerconsumption[powerconsumption$week \%in\% 5:9, ]
+powerlevels <- quantile(pc$active_power, probs = c(0.25, 0.5, 0.75, 1))
+dts <- tapply(pc$active_power, pc$week, \(x) cut(x, breaks = c(0, powerlevels)))
+model <- multi_vlmc(dts[-5], max_depth = 3)
+loglikelihood(model, newdata = dts[[5]])
+loglikelihood(model, newdata = dts[1:4])
 }
 \seealso{
 \code{\link[=multi_vlmc]{multi_vlmc()}}
