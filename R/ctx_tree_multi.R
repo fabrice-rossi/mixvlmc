@@ -111,5 +111,12 @@ multi_ctx_tree <- function(xs, min_size = 2L, max_depth = 100L,
     keep_match = keep_position,
     compute_stats = FALSE, weights = weights
   )
-  new_ctx_tree(vals, pre_result, compute_stats = TRUE, class = "multi_ctx_tree")
+  result <- new_ctx_tree(vals, pre_result, compute_stats = TRUE, class = "multi_ctx_tree")
+  result$keep_match <- keep_position
+  result$data_size <- sum(lengths(xs))
+  if (depth(result) > 0) {
+    d <- depth(result)
+    result$ix <- lapply(ixs$ixs, \(x) x[1:min(d, length(x))])
+  }
+  result
 }

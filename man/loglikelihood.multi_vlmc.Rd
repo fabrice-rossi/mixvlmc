@@ -52,13 +52,6 @@ vignette: \code{vignette("likelihood", package = "mixvlmc")}.
 For VLMC objects, the method \code{loglikelihood.vlmc} will be used. For VLMC with covariables, \code{loglikelihood.covlmc}
 will instead be called. For more informations on \code{loglikelihood} methods, use \code{methods(loglikelihood)} and their associated documentation.
 }
-\section{Limitation}{
-
-
-VLMC fitted via \code{\link[=multi_vlmc]{multi_vlmc()}} on a collection discrete time series do not
-support likelihood calculation without \code{newdata}.
-}
-
 \section{Weights}{
 
 

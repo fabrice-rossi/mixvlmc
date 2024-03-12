@@ -12,9 +12,9 @@ loglikelihood_multi <- function(model, xs,
   }
   for (k in seq_along(xs)) {
     if (rlang::is_missing(ignore)) {
-      the_ll <- loglikelihood(model, xs[[k]], initial)
+      the_ll <- loglikelihood.vlmc(model, xs[[k]], initial)
     } else {
-      the_ll <- loglikelihood(model, xs[[k]], initial, ignore)
+      the_ll <- loglikelihood.vlmc(model, xs[[k]], initial, ignore)
     }
     ll <- ll + weights[k] * as.numeric(the_ll)
     nb_obs <- nb_obs + weights[k] * attr(the_ll, "nobs")
