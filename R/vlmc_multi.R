@@ -71,6 +71,17 @@ multi_vlmc <- function(xs, alpha = 0.05, cutoff = NULL, min_size = 2L, max_depth
   }
   result$alpha <- alpha
   result$cutoff <- cutoff
+  ## prepare for loglikelihood calculation
+  if (depth(result) > 0) {
+    d <- depth(result)
+    if (prune) {
+      result$ix <- lapply(result$ix, \(x) x[1:min(d, length(x))])
+    }
+    ivlmc <- match_multi_ctx(result, result$ix)
+    result$extended_ll <- rec_loglikelihood_vlmc(ivlmc, TRUE)
+  } else {
+    result$extended_ll <- 0
+  }
   result$keep_match <- keep_match
   result$data_size <- sum(lengths(xs, use.names = FALSE))
   result$pruned <- prune
@@ -97,6 +108,17 @@ prune.multi_vlmc <- function(vlmc, alpha = 0.05, cutoff = NULL, ...) {
   }
   result$alpha <- alpha
   result$cutoff <- cutoff
+  ## recompute the extended_ll
+  if (depth(result) > 0) {
+    d <- depth(result)
+    result$ix <- lapply(result$ix, \(x) x[1:min(d, length(x))])
+    result$ix <- result$ix[1:min(depth(result), length(result$ix))]
+    ivlmc <- match_multi_ctx(result, result$ix)
+    result$extended_ll <- rec_loglikelihood_vlmc(ivlmc, TRUE)
+  } else {
+    result$extended_ll <- 0
+    result$ix <- NULL
+  }
   result$data_size <- vlmc$data_size
   result$keep_match <- vlmc$keep_match
   ## preserve the construction information
