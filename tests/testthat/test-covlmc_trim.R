@@ -75,11 +75,11 @@ test_that("trimmed model can be drawn", {
       m_cov <- covlmc(dts, dts_cov, min_size = 10, keep_data = TRUE)
       t_m_cov_model <- trim(m_cov, keep_model = TRUE)
       t_m_cov <- trim(m_cov)
-      expect_snapshot(draw(t_m_cov_model, model = "coef", time_sep = " | ", with_state = TRUE, digits = 2, p_value = TRUE))
-      expect_snapshot(draw(t_m_cov_model, model = "coef", time_sep = " | ", with_state = TRUE, digits = 2))
-      expect_snapshot(draw(t_m_cov, model = "coef", time_sep = " | ", with_state = TRUE, digits = 2, p_value = TRUE))
-      expect_snapshot(draw(t_m_cov_model, model = "full", time_sep = " | ", with_state = TRUE, digits = 2))
-      expect_snapshot(draw(t_m_cov, model = "full", time_sep = " | ", with_state = TRUE, digits = 2))
+      expect_snapshot(draw(t_m_cov_model, model = "coef", with_state = TRUE, digits = 2, p_value = TRUE))
+      expect_snapshot(draw(t_m_cov_model, model = "coef", with_state = TRUE, digits = 2))
+      expect_snapshot(draw(t_m_cov, model = "coef", with_state = TRUE, digits = 2, p_value = TRUE))
+      expect_snapshot(draw(t_m_cov_model, model = "full", control = draw_control(time_sep = " % "), with_state = TRUE, digits = 2))
+      expect_snapshot(draw(t_m_cov, model = "full", control = draw_control(time_sep = " % "), with_state = TRUE, digits = 2))
     }
   }
 })

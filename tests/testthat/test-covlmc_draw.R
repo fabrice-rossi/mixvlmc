@@ -7,18 +7,18 @@ test_that("draw obeys its contract (with vgam)", {
   model <- covlmc(dts, df_y, alpha = 0.01, min_size = 1.5)
   expect_snapshot_output(draw(model, model = NULL, p_value = TRUE))
   expect_snapshot_output(draw(prune(model, 0.0001)))
-  expect_snapshot_output(draw(prune(model, 0.0001), time_sep = " | "))
-  expect_snapshot_output(draw(prune(model, 0.0001), model = "full", time_sep = " | "))
-  expect_snapshot_output(draw(prune(model, 0.0001), model = "full", time_sep = " | ", with_state = TRUE))
-  expect_snapshot_output(draw(prune(model, 0.0001), model = "coef", time_sep = " | ", with_state = TRUE))
+  expect_snapshot_output(draw(prune(model, 0.0001), control = draw_control(time_sep = " % ")))
+  expect_snapshot_output(draw(prune(model, 0.0001), model = "full", control = draw_control(time_sep = " % ")))
+  expect_snapshot_output(draw(prune(model, 0.0001), model = "full", control = draw_control(time_sep = " % "), with_state = TRUE))
+  expect_snapshot_output(draw(prune(model, 0.0001), model = "coef", control = draw_control(time_sep = " % "), with_state = TRUE))
   expect_snapshot_output(draw(prune(model, 0.0001),
-    model = "coef", time_sep = " | ",
-    with_state = TRUE, control = draw_control(level_sep = " @ ")
+    model = "coef", control = draw_control(time_sep = " % ", level_sep = " @ "),
+    with_state = TRUE,
   ))
   ## the following snapshots depend on blas version
   ## skip_on_ci()
   ##  expect_snapshot_output(draw(model))
-  ##  expect_snapshot_output(draw(model, time_sep = " | "))
+  ##  expect_snapshot_output(draw(model, control = draw_control(time_sep = " % ")))
   ##  expect_snapshot_output(draw(model, digits = 3))
   ##  expect_snapshot_output(draw(model, model = NULL, digits = 2))
   ##  expect_snapshot_output(draw(model, p_value = FALSE, digits = 1))
@@ -36,7 +36,7 @@ test_that("draw obeys its contract (with nnet)", {
   df_y <- data.frame(y = y)
   model <- covlmc(dts, df_y, alpha = 0.01, min_size = 1.5)
   expect_snapshot_output(draw(model))
-  expect_snapshot_output(draw(model, time_sep = " | "))
+  expect_snapshot_output(draw(model, control = draw_control(time_sep = " % ")))
   expect_snapshot_output(draw(model, digits = 3))
   expect_snapshot_output(draw(model, model = NULL, digits = 2))
   expect_snapshot_output(draw(model, p_value = FALSE, digits = 1))
@@ -64,8 +64,8 @@ test_that("draw handles cases when levels have been dropped", {
   z <- runif(length(x)) + c(x[-1], 0) / 4
   dts_cov <- data.frame(y = y, z = z)
   m_cov <- covlmc(x = x, covariate = dts_cov, min_size = 3, alpha = 0.5)
-  expect_snapshot_output(draw(m_cov, model = "full", time_sep = " | ", digits = 1))
-  expect_snapshot_output(draw(m_cov, model = "full", time_sep = " | ", digits = 2, with_state = TRUE))
+  expect_snapshot_output(draw(m_cov, model = "full", control = draw_control(time_sep = " % "), digits = 1))
+  expect_snapshot_output(draw(m_cov, model = "full", control = draw_control(time_sep = " % "), digits = 2, with_state = TRUE))
 })
 
 test_that("draw handles cases when multinom is used for two states time series", {
@@ -84,8 +84,8 @@ test_that("draw handles cases when multinom is used for two states time series",
   z <- runif(length(x)) + c(x[-1], 0) / 4
   dts_cov <- data.frame(y = y, z = z)
   m_cov <- covlmc(x = x, covariate = dts_cov, min_size = 3, alpha = 0.5)
-  expect_snapshot_output(draw(m_cov, model = "full", time_sep = " | ", digits = 1))
-  expect_snapshot_output(draw(m_cov, model = "full", time_sep = " | ", digits = 1, with_state = TRUE))
+  expect_snapshot_output(draw(m_cov, model = "full", control = draw_control(time_sep = " % "), digits = 1))
+  expect_snapshot_output(draw(m_cov, model = "full", control = draw_control(time_sep = " % "), digits = 1, with_state = TRUE))
 })
 
 test_that("draw handles degenerate cases", {
@@ -95,7 +95,7 @@ test_that("draw handles degenerate cases", {
     dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1))))
     dts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
     m_cov <- covlmc(dts, dts_cov, min_size = 10, keep_data = TRUE)
-    expect_snapshot_output(draw(m_cov, model = "coef", time_sep = " | ", with_state = TRUE, digits = 2))
-    expect_snapshot_output(draw(m_cov, model = "full", time_sep = " | ", with_state = TRUE, digits = 2))
+    expect_snapshot_output(draw(m_cov, model = "coef", control = draw_control(time_sep = " % "), with_state = TRUE, digits = 2))
+    expect_snapshot_output(draw(m_cov, model = "full", control = draw_control(time_sep = " % "), with_state = TRUE, digits = 2))
   }
 })

@@ -56,15 +56,17 @@ information attached to the node (contexts and partial contexts). This is
 controlled by additional parameters depending on the type of the context
 tree (as well as by the \code{control} parameter).
 }
-\section{Tweaking model representation}{
+\section{Specific parameters in \code{control}}{
 
 
-Model representations are affected by the following additional parameter:
+Model representations are affected by the following additional
+fields of \code{control} that are specific to \code{\link[=covlmc]{covlmc()}}:
 \itemize{
 \item \code{time_sep}: character(s) used to split the coefficients list by blocks
 associated to time delays in the covariate inclusion into the logistic
 model. The first block contains the intercept(s), the second block the
 covariate values a time t-1, the third block at time t-2, etc.
+\item \code{level_sep}: character(s) used separate levels from model, see below.
 }
 }
 
@@ -105,6 +107,6 @@ m_cov <- covlmc(dts, dts_cov, min_size = 5)
 draw(m_cov, digits = 3)
 draw(m_cov, model = NULL)
 draw(m_cov, p_value = TRUE)
-draw(m_cov, p_value = FALSE, time_sep = " | ")
-draw(m_cov, model = "full", time_sep = " | ")
+draw(m_cov, p_value = FALSE, control = draw_control(time_sep = " ^ "))
+draw(m_cov, model = "full", control = draw_control(time_sep = " ^ "))
 }

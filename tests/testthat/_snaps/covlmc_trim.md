@@ -1,8 +1,7 @@
 # trimmed model can be drawn
 
     Code
-      draw(t_m_cov_model, model = "coef", time_sep = " | ", with_state = TRUE,
-        digits = 2, p_value = TRUE)
+      draw(t_m_cov_model, model = "coef", with_state = TRUE, digits = 2, p_value = TRUE)
     Output
       *
       +-- (0,1.28]
@@ -25,8 +24,7 @@
 ---
 
     Code
-      draw(t_m_cov_model, model = "coef", time_sep = " | ", with_state = TRUE,
-        digits = 2)
+      draw(t_m_cov_model, model = "coef", with_state = TRUE, digits = 2)
     Output
       *
       +-- (0,1.28]
@@ -49,8 +47,7 @@
 ---
 
     Code
-      draw(t_m_cov, model = "coef", time_sep = " | ", with_state = TRUE, digits = 2,
-        p_value = TRUE)
+      draw(t_m_cov, model = "coef", with_state = TRUE, digits = 2, p_value = TRUE)
     Output
       *
       +-- (0,1.28]
@@ -73,22 +70,22 @@
 ---
 
     Code
-      draw(t_m_cov_model, model = "full", time_sep = " | ", with_state = TRUE,
-        digits = 2)
+      draw(t_m_cov_model, model = "full", control = draw_control(time_sep = " % "),
+      with_state = TRUE, digits = 2)
     Output
       *
       +-- (0,1.28]
       |   +-- (0,1.28]
       |   |   +-- (0,1.28]
       |   |   |   +-- (0,1.28]
-      |   |   |   |   +-- (0,1.28] ([ ((0,1.28])  ~ (I) | day_night_1TRUE | day_night_2TRUE | day_night_3TRUE | day_night_4TRUE | day_night_5TRUE
-      |   |   |   |   |               (1.28,7.54] ~ -3  | -0.43           | -0.64           | 1.5             | -2.3            | 2.6             ])
+      |   |   |   |   +-- (0,1.28] ([ ((0,1.28])  ~ (I) % day_night_1TRUE % day_night_2TRUE % day_night_3TRUE % day_night_4TRUE % day_night_5TRUE
+      |   |   |   |   |               (1.28,7.54] ~ -3  % -0.43           % -0.64           % 1.5             % -2.3            % 2.6             ])
       |   |   |   |   '-- (1.28,7.54] ([ ((0,1.28])  ~ (I) 
       |   |   |   |                      (1.28,7.54] ~ -2.3 ])
       |   |   |   '-- (1.28,7.54] ([ ((0,1.28])  ~ (I) 
       |   |   |                      (1.28,7.54] ~ -2.1 ])
-      |   |   '-- (1.28,7.54] ([ ((0,1.28])  ~ (I)  | day_night_1TRUE
-      |   |                      (1.28,7.54] ~ -2.7 | 1.3             ])
+      |   |   '-- (1.28,7.54] ([ ((0,1.28])  ~ (I)  % day_night_1TRUE
+      |   |                      (1.28,7.54] ~ -2.7 % 1.3             ])
       |   '-- (1.28,7.54] ([ ((0,1.28])  ~ (I) 
       |                      (1.28,7.54] ~ -1.6 ])
       '-- (1.28,7.54]
@@ -98,29 +95,30 @@
               +-- (0,1.28] ([ ((0,1.28])  ~ (I)
               |               (1.28,7.54] ~ 1.8 ])
               '-- (1.28,7.54]
-                  +-- (0,1.28] ([ ((0,1.28])  ~ (I)  | day_night_1TRUE
-                  |               (1.28,7.54] ~ 0.99 | 1.3             ])
+                  +-- (0,1.28] ([ ((0,1.28])  ~ (I)  % day_night_1TRUE
+                  |               (1.28,7.54] ~ 0.99 % 1.3             ])
                   '-- (1.28,7.54] ([ ((0,1.28])  ~ (I)
                                      (1.28,7.54] ~ 2.8 ])
 
 ---
 
     Code
-      draw(t_m_cov, model = "full", time_sep = " | ", with_state = TRUE, digits = 2)
+      draw(t_m_cov, model = "full", control = draw_control(time_sep = " % "),
+      with_state = TRUE, digits = 2)
     Output
       *
       +-- (0,1.28]
       |   +-- (0,1.28]
       |   |   +-- (0,1.28]
       |   |   |   +-- (0,1.28]
-      |   |   |   |   +-- (0,1.28] ([ ((0,1.28])  ~ (I) | day_night_1TRUE | day_night_2TRUE | day_night_3TRUE | day_night_4TRUE | day_night_5TRUE
-      |   |   |   |   |               (1.28,7.54] ~ -3  | -0.43           | -0.64           | 1.5             | -2.3            | 2.6             ])
+      |   |   |   |   +-- (0,1.28] ([ ((0,1.28])  ~ (I) % day_night_1TRUE % day_night_2TRUE % day_night_3TRUE % day_night_4TRUE % day_night_5TRUE
+      |   |   |   |   |               (1.28,7.54] ~ -3  % -0.43           % -0.64           % 1.5             % -2.3            % 2.6             ])
       |   |   |   |   '-- (1.28,7.54] ([ ((0,1.28])  ~ (I) 
       |   |   |   |                      (1.28,7.54] ~ -2.3 ])
       |   |   |   '-- (1.28,7.54] ([ ((0,1.28])  ~ (I) 
       |   |   |                      (1.28,7.54] ~ -2.1 ])
-      |   |   '-- (1.28,7.54] ([ ((0,1.28])  ~ (I)  | day_night_1TRUE
-      |   |                      (1.28,7.54] ~ -2.7 | 1.3             ])
+      |   |   '-- (1.28,7.54] ([ ((0,1.28])  ~ (I)  % day_night_1TRUE
+      |   |                      (1.28,7.54] ~ -2.7 % 1.3             ])
       |   '-- (1.28,7.54] ([ ((0,1.28])  ~ (I) 
       |                      (1.28,7.54] ~ -1.6 ])
       '-- (1.28,7.54]
@@ -130,16 +128,15 @@
               +-- (0,1.28] ([ ((0,1.28])  ~ (I)
               |               (1.28,7.54] ~ 1.8 ])
               '-- (1.28,7.54]
-                  +-- (0,1.28] ([ ((0,1.28])  ~ (I)  | day_night_1TRUE
-                  |               (1.28,7.54] ~ 0.99 | 1.3             ])
+                  +-- (0,1.28] ([ ((0,1.28])  ~ (I)  % day_night_1TRUE
+                  |               (1.28,7.54] ~ 0.99 % 1.3             ])
                   '-- (1.28,7.54] ([ ((0,1.28])  ~ (I)
                                      (1.28,7.54] ~ 2.8 ])
 
 ---
 
     Code
-      draw(t_m_cov_model, model = "coef", time_sep = " | ", with_state = TRUE,
-        digits = 2, p_value = TRUE)
+      draw(t_m_cov_model, model = "coef", with_state = TRUE, digits = 2, p_value = TRUE)
     Output
       *
       +-- (0,0.48] (8.7e-07 [ (0.48,1.63]/(0,0.48] ~ -2.7 | 1.1 
@@ -155,8 +152,7 @@
 ---
 
     Code
-      draw(t_m_cov_model, model = "coef", time_sep = " | ", with_state = TRUE,
-        digits = 2)
+      draw(t_m_cov_model, model = "coef", with_state = TRUE, digits = 2)
     Output
       *
       +-- (0,0.48] ([ (0.48,1.63]/(0,0.48] ~ -2.7 | 1.1 
@@ -172,8 +168,7 @@
 ---
 
     Code
-      draw(t_m_cov, model = "coef", time_sep = " | ", with_state = TRUE, digits = 2,
-        p_value = TRUE)
+      draw(t_m_cov, model = "coef", with_state = TRUE, digits = 2, p_value = TRUE)
     Output
       *
       +-- (0,0.48] (8.7e-07 [ (0.48,1.63]/(0,0.48] ~ -2.7 | 1.1 
@@ -189,49 +184,49 @@
 ---
 
     Code
-      draw(t_m_cov_model, model = "full", time_sep = " | ", with_state = TRUE,
-        digits = 2)
+      draw(t_m_cov_model, model = "full", control = draw_control(time_sep = " % "),
+      with_state = TRUE, digits = 2)
     Output
       *
-      +-- (0,0.48] ([ ((0,0.48])  ~ (I)  | day_night_1TRUE
-      |               (0.48,1.63] ~ -2.7 | 1.1            
-      |               (1.63,7.54] ~ -4.5 | 0.84            ])
+      +-- (0,0.48] ([ ((0,0.48])  ~ (I)  % day_night_1TRUE
+      |               (0.48,1.63] ~ -2.7 % 1.1            
+      |               (1.63,7.54] ~ -4.5 % 0.84            ])
       '-- (0.48,1.63]
-      |   +-- (0,0.48] ([ ((0,0.48])  ~ (I)   | day_night_1TRUE | day_night_2TRUE
-      |   |               (0.48,1.63] ~ 0.12  | -16             | 17             
-      |   |               (1.63,7.54] ~ -0.37 | -16             | 15              ])
-      |   '-- (0.48,1.63], (1.63,7.54] ([ ((0,0.48])  ~ (I)   | day_night_1TRUE
-      |                                   (0.48,1.63] ~ 2     | 0.58           
-      |                                   (1.63,7.54] ~ -0.31 | 1               ])
-      '-- (1.63,7.54] ([ ((0,0.48])  ~ (I) | day_night_1TRUE
-                         (0.48,1.63] ~ 18  | -15            
-                         (1.63,7.54] ~ 20  | -16             ])
+      |   +-- (0,0.48] ([ ((0,0.48])  ~ (I)   % day_night_1TRUE % day_night_2TRUE
+      |   |               (0.48,1.63] ~ 0.12  % -16             % 17             
+      |   |               (1.63,7.54] ~ -0.37 % -16             % 15              ])
+      |   '-- (0.48,1.63], (1.63,7.54] ([ ((0,0.48])  ~ (I)   % day_night_1TRUE
+      |                                   (0.48,1.63] ~ 2     % 0.58           
+      |                                   (1.63,7.54] ~ -0.31 % 1               ])
+      '-- (1.63,7.54] ([ ((0,0.48])  ~ (I) % day_night_1TRUE
+                         (0.48,1.63] ~ 18  % -15            
+                         (1.63,7.54] ~ 20  % -16             ])
 
 ---
 
     Code
-      draw(t_m_cov, model = "full", time_sep = " | ", with_state = TRUE, digits = 2)
+      draw(t_m_cov, model = "full", control = draw_control(time_sep = " % "),
+      with_state = TRUE, digits = 2)
     Output
       *
-      +-- (0,0.48] ([ ((0,0.48])  ~ (I)  | day_night_1TRUE
-      |               (0.48,1.63] ~ -2.7 | 1.1            
-      |               (1.63,7.54] ~ -4.5 | 0.84            ])
+      +-- (0,0.48] ([ ((0,0.48])  ~ (I)  % day_night_1TRUE
+      |               (0.48,1.63] ~ -2.7 % 1.1            
+      |               (1.63,7.54] ~ -4.5 % 0.84            ])
       '-- (0.48,1.63]
-      |   +-- (0,0.48] ([ ((0,0.48])  ~ (I)   | day_night_1TRUE | day_night_2TRUE
-      |   |               (0.48,1.63] ~ 0.12  | -16             | 17             
-      |   |               (1.63,7.54] ~ -0.37 | -16             | 15              ])
-      |   '-- (0.48,1.63], (1.63,7.54] ([ ((0,0.48])  ~ (I)   | day_night_1TRUE
-      |                                   (0.48,1.63] ~ 2     | 0.58           
-      |                                   (1.63,7.54] ~ -0.31 | 1               ])
-      '-- (1.63,7.54] ([ ((0,0.48])  ~ (I) | day_night_1TRUE
-                         (0.48,1.63] ~ 18  | -15            
-                         (1.63,7.54] ~ 20  | -16             ])
+      |   +-- (0,0.48] ([ ((0,0.48])  ~ (I)   % day_night_1TRUE % day_night_2TRUE
+      |   |               (0.48,1.63] ~ 0.12  % -16             % 17             
+      |   |               (1.63,7.54] ~ -0.37 % -16             % 15              ])
+      |   '-- (0.48,1.63], (1.63,7.54] ([ ((0,0.48])  ~ (I)   % day_night_1TRUE
+      |                                   (0.48,1.63] ~ 2     % 0.58           
+      |                                   (1.63,7.54] ~ -0.31 % 1               ])
+      '-- (1.63,7.54] ([ ((0,0.48])  ~ (I) % day_night_1TRUE
+                         (0.48,1.63] ~ 18  % -15            
+                         (1.63,7.54] ~ 20  % -16             ])
 
 ---
 
     Code
-      draw(t_m_cov_model, model = "coef", time_sep = " | ", with_state = TRUE,
-        digits = 2, p_value = TRUE)
+      draw(t_m_cov_model, model = "coef", with_state = TRUE, digits = 2, p_value = TRUE)
     Output
       *
       +-- (0,1.28]
@@ -254,8 +249,7 @@
 ---
 
     Code
-      draw(t_m_cov_model, model = "coef", time_sep = " | ", with_state = TRUE,
-        digits = 2)
+      draw(t_m_cov_model, model = "coef", with_state = TRUE, digits = 2)
     Output
       *
       +-- (0,1.28]
@@ -278,8 +272,7 @@
 ---
 
     Code
-      draw(t_m_cov, model = "coef", time_sep = " | ", with_state = TRUE, digits = 2,
-        p_value = TRUE)
+      draw(t_m_cov, model = "coef", with_state = TRUE, digits = 2, p_value = TRUE)
     Output
       *
       +-- (0,1.28]
@@ -302,22 +295,22 @@
 ---
 
     Code
-      draw(t_m_cov_model, model = "full", time_sep = " | ", with_state = TRUE,
-        digits = 2)
+      draw(t_m_cov_model, model = "full", control = draw_control(time_sep = " % "),
+      with_state = TRUE, digits = 2)
     Output
       *
       +-- (0,1.28]
       |   +-- (0,1.28]
       |   |   +-- (0,1.28]
       |   |   |   +-- (0,1.28]
-      |   |   |   |   +-- (0,1.28] ([ (0) ~ (I) | day_night_1TRUE | day_night_2TRUE | day_night_3TRUE | day_night_4TRUE | day_night_5TRUE
-      |   |   |   |   |               1   ~ -3  | -0.43           | -0.64           | 1.5             | -2.3            | 2.6             ])
+      |   |   |   |   +-- (0,1.28] ([ (0) ~ (I) % day_night_1TRUE % day_night_2TRUE % day_night_3TRUE % day_night_4TRUE % day_night_5TRUE
+      |   |   |   |   |               1   ~ -3  % -0.43           % -0.64           % 1.5             % -2.3            % 2.6             ])
       |   |   |   |   '-- (1.28,7.54] ([ (0) ~ (I) 
       |   |   |   |                      1   ~ -2.3 ])
       |   |   |   '-- (1.28,7.54] ([ (0) ~ (I) 
       |   |   |                      1   ~ -2.1 ])
-      |   |   '-- (1.28,7.54] ([ (0) ~ (I)  | day_night_1TRUE
-      |   |                      1   ~ -2.7 | 1.3             ])
+      |   |   '-- (1.28,7.54] ([ (0) ~ (I)  % day_night_1TRUE
+      |   |                      1   ~ -2.7 % 1.3             ])
       |   '-- (1.28,7.54] ([ (0) ~ (I) 
       |                      1   ~ -1.6 ])
       '-- (1.28,7.54]
@@ -327,29 +320,30 @@
               +-- (0,1.28] ([ (0) ~ (I)
               |               1   ~ 1.8 ])
               '-- (1.28,7.54]
-                  +-- (0,1.28] ([ (0) ~ (I)  | day_night_1TRUE
-                  |               1   ~ 0.99 | 1.3             ])
+                  +-- (0,1.28] ([ (0) ~ (I)  % day_night_1TRUE
+                  |               1   ~ 0.99 % 1.3             ])
                   '-- (1.28,7.54] ([ (0) ~ (I)
                                      1   ~ 2.8 ])
 
 ---
 
     Code
-      draw(t_m_cov, model = "full", time_sep = " | ", with_state = TRUE, digits = 2)
+      draw(t_m_cov, model = "full", control = draw_control(time_sep = " % "),
+      with_state = TRUE, digits = 2)
     Output
       *
       +-- (0,1.28]
       |   +-- (0,1.28]
       |   |   +-- (0,1.28]
       |   |   |   +-- (0,1.28]
-      |   |   |   |   +-- (0,1.28] ([ (0) ~ (I) | day_night_1TRUE | day_night_2TRUE | day_night_3TRUE | day_night_4TRUE | day_night_5TRUE
-      |   |   |   |   |               1   ~ -3  | -0.43           | -0.64           | 1.5             | -2.3            | 2.6             ])
+      |   |   |   |   +-- (0,1.28] ([ (0) ~ (I) % day_night_1TRUE % day_night_2TRUE % day_night_3TRUE % day_night_4TRUE % day_night_5TRUE
+      |   |   |   |   |               1   ~ -3  % -0.43           % -0.64           % 1.5             % -2.3            % 2.6             ])
       |   |   |   |   '-- (1.28,7.54] ([ (0) ~ (I) 
       |   |   |   |                      1   ~ -2.3 ])
       |   |   |   '-- (1.28,7.54] ([ (0) ~ (I) 
       |   |   |                      1   ~ -2.1 ])
-      |   |   '-- (1.28,7.54] ([ (0) ~ (I)  | day_night_1TRUE
-      |   |                      1   ~ -2.7 | 1.3             ])
+      |   |   '-- (1.28,7.54] ([ (0) ~ (I)  % day_night_1TRUE
+      |   |                      1   ~ -2.7 % 1.3             ])
       |   '-- (1.28,7.54] ([ (0) ~ (I) 
       |                      1   ~ -1.6 ])
       '-- (1.28,7.54]
@@ -359,16 +353,15 @@
               +-- (0,1.28] ([ (0) ~ (I)
               |               1   ~ 1.8 ])
               '-- (1.28,7.54]
-                  +-- (0,1.28] ([ (0) ~ (I)  | day_night_1TRUE
-                  |               1   ~ 0.99 | 1.3             ])
+                  +-- (0,1.28] ([ (0) ~ (I)  % day_night_1TRUE
+                  |               1   ~ 0.99 % 1.3             ])
                   '-- (1.28,7.54] ([ (0) ~ (I)
                                      1   ~ 2.8 ])
 
 ---
 
     Code
-      draw(t_m_cov_model, model = "coef", time_sep = " | ", with_state = TRUE,
-        digits = 2, p_value = TRUE)
+      draw(t_m_cov_model, model = "coef", with_state = TRUE, digits = 2, p_value = TRUE)
     Output
       *
       +-- (0,0.48] (8.7e-07 [ (0.48,1.63]/(0,0.48] ~ -2.7 | 1.1 
@@ -384,8 +377,7 @@
 ---
 
     Code
-      draw(t_m_cov_model, model = "coef", time_sep = " | ", with_state = TRUE,
-        digits = 2)
+      draw(t_m_cov_model, model = "coef", with_state = TRUE, digits = 2)
     Output
       *
       +-- (0,0.48] ([ (0.48,1.63]/(0,0.48] ~ -2.7 | 1.1 
@@ -401,8 +393,7 @@
 ---
 
     Code
-      draw(t_m_cov, model = "coef", time_sep = " | ", with_state = TRUE, digits = 2,
-        p_value = TRUE)
+      draw(t_m_cov, model = "coef", with_state = TRUE, digits = 2, p_value = TRUE)
     Output
       *
       +-- (0,0.48] (8.7e-07 [ (0.48,1.63]/(0,0.48] ~ -2.7 | 1.1 
@@ -418,41 +409,42 @@
 ---
 
     Code
-      draw(t_m_cov_model, model = "full", time_sep = " | ", with_state = TRUE,
-        digits = 2)
+      draw(t_m_cov_model, model = "full", control = draw_control(time_sep = " % "),
+      with_state = TRUE, digits = 2)
     Output
       *
-      +-- (0,0.48] ([ ((0,0.48])  ~ (I)  | day_night_1TRUE
-      |               (0.48,1.63] ~ -2.7 | 1.1            
-      |               (1.63,7.54] ~ -4.5 | 0.84            ])
+      +-- (0,0.48] ([ ((0,0.48])  ~ (I)  % day_night_1TRUE
+      |               (0.48,1.63] ~ -2.7 % 1.1            
+      |               (1.63,7.54] ~ -4.5 % 0.84            ])
       '-- (0.48,1.63]
-      |   +-- (0,0.48] ([ ((0,0.48])  ~ (I)   | day_night_1TRUE | day_night_2TRUE
-      |   |               (0.48,1.63] ~ 0.12  | -9.1            | 9.6            
-      |   |               (1.63,7.54] ~ -0.37 | -9.4            | 8.5             ])
-      |   '-- (0.48,1.63], (1.63,7.54] ([ ((0,0.48])  ~ (I)   | day_night_1TRUE
-      |                                   (0.48,1.63] ~ 2     | 0.58           
-      |                                   (1.63,7.54] ~ -0.31 | 1               ])
-      '-- (1.63,7.54] ([ ((0,0.48])  ~ (I) | day_night_1TRUE
-                         (0.48,1.63] ~ 10  | -7.5           
-                         (1.63,7.54] ~ 13  | -8.4            ])
+      |   +-- (0,0.48] ([ ((0,0.48])  ~ (I)   % day_night_1TRUE % day_night_2TRUE
+      |   |               (0.48,1.63] ~ 0.12  % -9.1            % 9.6            
+      |   |               (1.63,7.54] ~ -0.37 % -9.4            % 8.5             ])
+      |   '-- (0.48,1.63], (1.63,7.54] ([ ((0,0.48])  ~ (I)   % day_night_1TRUE
+      |                                   (0.48,1.63] ~ 2     % 0.58           
+      |                                   (1.63,7.54] ~ -0.31 % 1               ])
+      '-- (1.63,7.54] ([ ((0,0.48])  ~ (I) % day_night_1TRUE
+                         (0.48,1.63] ~ 10  % -7.5           
+                         (1.63,7.54] ~ 13  % -8.4            ])
 
 ---
 
     Code
-      draw(t_m_cov, model = "full", time_sep = " | ", with_state = TRUE, digits = 2)
+      draw(t_m_cov, model = "full", control = draw_control(time_sep = " % "),
+      with_state = TRUE, digits = 2)
     Output
       *
-      +-- (0,0.48] ([ ((0,0.48])  ~ (I)  | day_night_1TRUE
-      |               (0.48,1.63] ~ -2.7 | 1.1            
-      |               (1.63,7.54] ~ -4.5 | 0.84            ])
+      +-- (0,0.48] ([ ((0,0.48])  ~ (I)  % day_night_1TRUE
+      |               (0.48,1.63] ~ -2.7 % 1.1            
+      |               (1.63,7.54] ~ -4.5 % 0.84            ])
       '-- (0.48,1.63]
-      |   +-- (0,0.48] ([ ((0,0.48])  ~ (I)   | day_night_1TRUE | day_night_2TRUE
-      |   |               (0.48,1.63] ~ 0.12  | -9.1            | 9.6            
-      |   |               (1.63,7.54] ~ -0.37 | -9.4            | 8.5             ])
-      |   '-- (0.48,1.63], (1.63,7.54] ([ ((0,0.48])  ~ (I)   | day_night_1TRUE
-      |                                   (0.48,1.63] ~ 2     | 0.58           
-      |                                   (1.63,7.54] ~ -0.31 | 1               ])
-      '-- (1.63,7.54] ([ ((0,0.48])  ~ (I) | day_night_1TRUE
-                         (0.48,1.63] ~ 10  | -7.5           
-                         (1.63,7.54] ~ 13  | -8.4            ])
+      |   +-- (0,0.48] ([ ((0,0.48])  ~ (I)   % day_night_1TRUE % day_night_2TRUE
+      |   |               (0.48,1.63] ~ 0.12  % -9.1            % 9.6            
+      |   |               (1.63,7.54] ~ -0.37 % -9.4            % 8.5             ])
+      |   '-- (0.48,1.63], (1.63,7.54] ([ ((0,0.48])  ~ (I)   % day_night_1TRUE
+      |                                   (0.48,1.63] ~ 2     % 0.58           
+      |                                   (1.63,7.54] ~ -0.31 % 1               ])
+      '-- (1.63,7.54] ([ ((0,0.48])  ~ (I) % day_night_1TRUE
+                         (0.48,1.63] ~ 10  % -7.5           
+                         (1.63,7.54] ~ 13  % -8.4            ])
 

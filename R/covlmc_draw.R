@@ -5,12 +5,12 @@ draw_covlmc_model <- function(coefficients, p_value, hsize, names, lev, params,
       if (isTRUE(params$with_state)) {
         lev <- stringr::str_c(lev[-1], lev[1], sep = "/")
         coeffs <- pp_mat(coefficients, params$digits,
-          sep = params$time_sep,
+          sep = control$time_sep,
           groups = hsize, rownames = lev, rn_sep = control$level_sep
         )
       } else {
         coeffs <- pp_mat(coefficients, params$digits,
-          sep = params$time_sep,
+          sep = control$time_sep,
           groups = hsize
         )
       }
@@ -19,13 +19,13 @@ draw_covlmc_model <- function(coefficients, p_value, hsize, names, lev, params,
         lev <- as.character(lev)
         lev[1] <- stringr::str_c("(", lev[1], ")")
         coeffs <- pp_mat(coefficients, params$digits,
-          sep = params$time_sep,
+          sep = control$time_sep,
           groups = hsize, colnames = names, rownames = lev,
           rn_sep = control$level_sep
         )
       } else {
         coeffs <- pp_mat(coefficients, params$digits,
-          sep = params$time_sep,
+          sep = control$time_sep,
           groups = hsize, colnames = names
         )
       }
@@ -166,14 +166,17 @@ covlmc_node2txt <- function(node, vals, params, control) {
 #'   with this parameter.
 #' @param with_state specifies whether to display the state associated to each
 #'   dimension of the logistic model (see details).
-#' @section Tweaking model representation:
+#' @section Specific parameters in `control`:
 #'
-#'   Model representations are affected by the following additional parameter:
+#'   Model representations are affected by the following additional
+#'   fields of `control` that are specific to [covlmc()]:
 #'
 #'   - `time_sep`: character(s) used to split the coefficients list by blocks
 #'   associated to time delays in the covariate inclusion into the logistic
 #'   model. The first block contains the intercept(s), the second block the
 #'   covariate values a time t-1, the third block at time t-2, etc.
+#'
+#'   - `level_sep`: character(s) used separate levels from model, see below.
 #'
 #' @section Variable representation:
 #'
@@ -208,8 +211,8 @@ covlmc_node2txt <- function(node, vals, params, control) {
 #' draw(m_cov, digits = 3)
 #' draw(m_cov, model = NULL)
 #' draw(m_cov, p_value = TRUE)
-#' draw(m_cov, p_value = FALSE, time_sep = " | ")
-#' draw(m_cov, model = "full", time_sep = " | ")
+#' draw(m_cov, p_value = FALSE, control = draw_control(time_sep = " ^ "))
+#' draw(m_cov, model = "full", control = draw_control(time_sep = " ^ "))
 #' @export
 draw.covlmc <- function(ct, control = draw_control(), model = c("coef", "full"),
                         p_value = FALSE, digits = 4, with_state = FALSE,
@@ -220,9 +223,6 @@ draw.covlmc <- function(ct, control = draw_control(), model = c("coef", "full"),
     model <- match.arg(model)
   }
   dot_params <- list(...)
-  if (is.null(dot_params[["time_sep"]])) {
-    dot_params[["time_sep"]] <- " "
-  }
   dot_params$with_state <- with_state
   rec_draw_covlmc(control$root, "", ct, ct$vals, control, covlmc_node2txt, c(list(model = model, p_value = p_value, digits = digits), dot_params))
   invisible(ct)

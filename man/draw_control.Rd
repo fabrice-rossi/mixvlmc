@@ -12,7 +12,8 @@ draw_control(
   hbranch = "--",
   open_ct = "(",
   close_ct = ")",
-  level_sep = " ~ "
+  level_sep = " ~ ",
+  time_sep = " | "
 )
 }
 \arguments{
@@ -31,6 +32,8 @@ draw_control(
 \item{close_ct}{characters used to end each node specific text representation.}
 
 \item{level_sep}{characters used to separate levels from models in \code{\link[=draw.covlmc]{draw.covlmc()}}.}
+
+\item{time_sep}{characters used to separate temporal blocks in \code{\link[=draw.covlmc]{draw.covlmc()}}.}
 }
 \value{
 a list
