@@ -8,8 +8,8 @@
 <meta name="description" content="mixvlmc">
 <title>Implementation Notes • mixvlmc</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.2.2/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.2.2/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
+<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Implementation Notes">
 <meta property="og:description" content="mixvlmc">
@@ -27,7 +27,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">mixvlmc</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.0.9000</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.1.9000</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -101,8 +101,127 @@
 <p>This document contains some implementation notes for the
 <code>mixvlmc</code> package.</p>
 <div class="section level2">
-<h2 id="suffix-tree">Suffix tree<a class="anchor" aria-label="anchor" href="#suffix-tree"></a>
+<h2 id="r-backend">R backend<a class="anchor" aria-label="anchor" href="#r-backend"></a>
 </h2>
+<div class="section level3">
+<h3 id="representation">Representation<a class="anchor" aria-label="anchor" href="#representation"></a>
+</h3>
+<div class="section level4">
+<h4 id="context-trees">Context trees<a class="anchor" aria-label="anchor" href="#context-trees"></a>
+</h4>
+<p>The R backend uses a pure R representation of context trees based on
+nested lists. A context tree is essentially a root node represented by a
+list of class <code>ctx_tree</code> with at least a <code>vals</code>
+component that contains the values allowed in the state space of the
+context tree (accessed via the <code><a href="../reference/states.html">states()</a></code> function). It
+contains the following additional components:</p>
+<ul>
+<li>
+<code>keep_match</code>: equals to the value of
+<code>keep_position</code> in the call to <code><a href="../reference/ctx_tree.html">ctx_tree()</a></code>;</li>
+<li>
+<code>data_size</code>: the length of the time series used to build
+the context tree.</li>
+</ul>
+<p>In general, the list contains also two additional components used to
+speed up basic operations:</p>
+<ul>
+<li>
+<code>depth</code>: the depth of the context tree, i.e. its longest
+context (accessed via the <code><a href="../reference/depth.html">depth()</a></code> function);</li>
+<li>
+<code>nb_ctx</code>: the number of proper contexts represented in
+the context tree (accessed via the <code>contexts_numbers()</code>
+function).</li>
+</ul>
+<p>When the context tree is not empty, its list contains a
+<code>children</code> component that contains the first level nodes of
+the tree. Each node (including the root) is a list with the following
+components:</p>
+<ul>
+<li>
+<code>f_by</code> is an integer vector which counts how many time
+the context represented by the node if followed by each of the possible
+state in the time series (see <code><a href="../reference/counts.html">counts()</a></code> for a context node
+based access to this);</li>
+<li>
+<code>match</code> records the position of the contexts in the time
+series: this is optional and depends on parameters used during the
+construction of the tree. The positions are recorded as returned from an
+internal C++ search function and must be modified to be interpreted as
+actual positions in the time series: if the context is of length
+<code>d</code> then <code>match + d</code> is the positions at which the
+context ends in the time series (as in the <code><a href="../reference/positions.html">positions()</a></code>
+function);</li>
+<li>
+<code>children</code> lists the children of the node if it is not a
+leaf.</li>
+</ul>
+<p>The root not does not have a <code>match</code> attributes as it
+corresponds to the empty context which matches every position in the
+time series. Notice that while a node does not always represent a proper
+context, it is still a subsequence that appears in the time series. Thus
+<code>f_by</code> is always present, as well as is <code>match</code>
+when positions are kept.</p>
+<p>The root node contains additional components that are useful for the
+VLMC implementation and thus described below.</p>
+</div>
+<div class="section level4">
+<h4 id="vlmc">VLMC<a class="anchor" aria-label="anchor" href="#vlmc"></a>
+</h4>
+<p>VLMC are represented with context trees. The represented is only
+enriched with some additional components for the root node, most
+notably:</p>
+<ul>
+<li>
+<code>alpha</code>: the cut off parameter in quantile scale;</li>
+<li>
+<code>cutoff</code>: the cut off parameter in native scale;</li>
+<li>
+<code>pruned</code>: whether the VLMC was actually pruned based on
+the cut off parameter.</li>
+</ul>
+<p>The first two components are always present whether or not the VLMC
+was pruned. In addition, while only one scale is used in the call to
+<code><a href="../reference/vlmc.html">vlmc()</a></code> both scales are present (and consistent).</p>
+<p>To speed up the likelihood calculation, a context tree contains in
+its root a copy of the first few observations in the original time
+series, up to the depth of tree. It is saved in the <code>ix</code>
+component. Additionally, a VLMC contains a component
+<code>extended_ll</code> which records the log likelihood of the model
+for the first <code>depth</code> observations computed using the
+extended likelihood function (see
+<code><a href="../articles/likelihood.html">vignette("likelihood")</a></code>).</p>
+</div>
+</div>
+<div class="section level3">
+<h3 id="likelihood-calculation">Likelihood calculation<a class="anchor" aria-label="anchor" href="#likelihood-calculation"></a>
+</h3>
+<p>Likelihood functions for VLMC are not implemented in the most natural
+way. A natural approach would be to iterate through a time series, find
+the context applicable at each time point, compute the probability of
+observing the actual value in this context and aggregate the
+probabilities.</p>
+<p>In practice, it is frequently faster to use the same C++ matching
+function used during the construction of the context tree to build a
+sort of instance tree. This is done via the internal function
+<code>match_ctx</code>. This function adds to each node of a context
+tree a new component <code>data_f_by</code> which counts how many times
+the sub-sequence represented by a node is followed by each element of
+the state space in an arbitrary time series (while <code>f_by</code>
+does that for the original time series).</p>
+<p>The log likelihood functions are then implemented by the internal
+<code>rec_loglikelihood_vlmc</code> function. It descends recursively in
+the modified VLMC tree and used both <code>f_by</code> and
+<code>data_f_by</code> to compute likelihoods.</p>
+</div>
+</div>
+<div class="section level2">
+<h2 id="c-backend">C++ backend<a class="anchor" aria-label="anchor" href="#c-backend"></a>
+</h2>
+<div class="section level3">
+<h3 id="suffix-tree">Suffix tree<a class="anchor" aria-label="anchor" href="#suffix-tree"></a>
+</h3>
 <p>The package uses suffix trees to build efficiently context trees.
 Suffix trees are constructed from the integer representation of the
 discrete time series, assuming that they contain only non negative
@@ -111,9 +230,9 @@ sentinels.</p>
 <p>Following <a href="https://dx.doi.org/10.1109/TIT.2006.881742" class="external-link">Garivier’s paper</a>
 we build the suffix tree of the reverse sequence (in other words the
 prefix tree).</p>
-<div class="section level3">
-<h3 id="representation">Representation<a class="anchor" aria-label="anchor" href="#representation"></a>
-</h3>
+<div class="section level4">
+<h4 id="representation-1">Representation<a class="anchor" aria-label="anchor" href="#representation-1"></a>
+</h4>
 <p>The suffix tree is represented by a main C++ class
 <code>SuffixTree</code> which uses <code>EdgeNode</code> objects
 internally. As indicated by the name, an <code>EdgeNode</code>
@@ -148,9 +267,9 @@ positions of the subsequence in the original sequence.</li>
 <code>suffix</code> and <code>parent</code> are set during the suffix
 tree construction.</p>
 </div>
-<div class="section level3">
-<h3 id="construction">Construction<a class="anchor" aria-label="anchor" href="#construction"></a>
-</h3>
+<div class="section level4">
+<h4 id="construction">Construction<a class="anchor" aria-label="anchor" href="#construction"></a>
+</h4>
 <p>The suffix tree is constructed using <a href="https://doi.org/10.1007%2FBF01206331" class="external-link">Ukkonen’s algorithm</a>.
 More precisely, for a sequence <code>x</code>, we build the suffix tree
 of <code>rev(x)[-1]</code>: the tree contains all the prefixes of
@@ -161,9 +280,9 @@ in the suffix tree corresponds to extending a context into the past
 which is exactly what is needed for the practical use of the suffix tree
 as a context tree.</p>
 </div>
-<div class="section level3">
-<h3 id="counts">Counts<a class="anchor" aria-label="anchor" href="#counts"></a>
-</h3>
+<div class="section level4">
+<h4 id="counts">Counts<a class="anchor" aria-label="anchor" href="#counts"></a>
+</h4>
 <p>After the construction of the suffix tree, the
 <code>compute_counts</code> method is used to compute the number of
 occurrences of each subsequence represented by the suffix tree as well
@@ -171,6 +290,7 @@ as the distribution of the values that follow them in the original
 sequence, as proposed in <a href="https://dx.doi.org/10.1109/TIT.2006.881742" class="external-link">Garivier’s paper</a>.
 The method uses <code>rev(x)[1]</code>, that is the last value of
 <code>x</code> to include this final value in the counts.</p>
+</div>
 </div>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
