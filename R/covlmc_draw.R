@@ -36,13 +36,22 @@ draw_covlmc_model <- function(coefficients, p_value, hsize, names, lev, params,
     }
     if (length(coeffs) == 1) {
       if (isTRUE(params$p_value)) {
-        stringr::str_c(signif_null(p_value, params$digits), "[", coeffs, "]", sep = " ")
+        p_value_str <- stringr::str_c(control$open_p_value,
+          signif_null(p_value, params$digits),
+          control$close_p_value,
+          sep = ""
+        )
+        stringr::str_c(p_value_str, "[", coeffs, "]", sep = " ")
       } else {
         stringr::str_c("[", coeffs, "]", sep = " ")
       }
     } else {
       if (isTRUE(params$p_value)) {
-        p_value_str <- as.character(signif_null(p_value, params$digits))
+        p_value_str <- stringr::str_c(control$open_p_value,
+          as.character(signif_null(p_value, params$digits)),
+          control$close_p_value,
+          sep = ""
+        )
         pad <- stringr::str_pad("", stringr::str_length(p_value_str) + 2)
         coeffs[1] <- stringr::str_c(p_value_str, "[", coeffs[1], sep = " ")
       } else {
@@ -184,6 +193,9 @@ covlmc_node2txt <- function(node, vals, params, control) {
 #'   covariate values a time t-1, the third block at time t-2, etc.
 #'
 #'   - `level_sep`: character(s) used separate levels from model, see below.
+#'
+#'   - `open_p_value` and `close_p_value`: delimiters used around the p-values
+#'   when `p_value=TRUE`
 #'
 #' @section Variable representation:
 #'

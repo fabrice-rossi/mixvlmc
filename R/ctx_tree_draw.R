@@ -13,6 +13,10 @@
 #' @param time_sep characters used to separate temporal blocks in [draw.covlmc()].
 #' @param intercept_sep characters used to the intercept from the other parameters
 #'   in [draw.covlmc()]
+#' @param open_p_value characters used as opening delimiters for the p value of
+#'   a node in [draw.covlmc()]
+#' @param close_p_value characters used as closing delimiters for the p value of
+#'   a node in [draw.covlmc()]
 #'
 #' @returns a list
 #' @export
@@ -28,7 +32,9 @@ draw_control <- function(root = "*",
                          close_ct = ")",
                          level_sep = " ~ ",
                          time_sep = " | ",
-                         intercept_sep = " & ") {
+                         intercept_sep = " & ",
+                         open_p_value = "<",
+                         close_p_value = ">") {
   list(
     root = root,
     first_node = first_node,
@@ -39,7 +45,9 @@ draw_control <- function(root = "*",
     close_ct = close_ct,
     level_sep = level_sep,
     time_sep = time_sep,
-    intercept_sep = intercept_sep
+    intercept_sep = intercept_sep,
+    open_p_value = open_p_value,
+    close_p_value = close_p_value
   )
 }
 

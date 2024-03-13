@@ -14,7 +14,9 @@ draw_control(
   close_ct = ")",
   level_sep = " ~ ",
   time_sep = " | ",
-  intercept_sep = " & "
+  intercept_sep = " & ",
+  open_p_value = "<",
+  close_p_value = ">"
 )
 }
 \arguments{
@@ -38,6 +40,12 @@ draw_control(
 
 \item{intercept_sep}{characters used to the intercept from the other parameters
 in \code{\link[=draw.covlmc]{draw.covlmc()}}}
+
+\item{open_p_value}{characters used as opening delimiters for the p value of
+a node in \code{\link[=draw.covlmc]{draw.covlmc()}}}
+
+\item{close_p_value}{characters used as closing delimiters for the p value of
+a node in \code{\link[=draw.covlmc]{draw.covlmc()}}}
 }
 \value{
 a list

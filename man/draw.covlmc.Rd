@@ -69,6 +69,8 @@ associated to time delays in the covariate inclusion into the logistic
 model. The first block contains the intercept(s), the second block the
 covariate values a time t-1, the third block at time t-2, etc.
 \item \code{level_sep}: character(s) used separate levels from model, see below.
+\item \code{open_p_value} and \code{close_p_value}: delimiters used around the p-values
+when \code{p_value=TRUE}
 }
 }
 

@@ -2,6 +2,9 @@
 ## Breaking changes
 * defaults for `draw.covlmc()` have changed (issue #66):
   * `p_value` is now `FALSE` by default
+  * when `p_value` is `TRUE` the p-values are represented between separators 
+    given by the `open_p_value` and `close_p_value` members of the `control`
+    list. Defaults are `<` and `>`
   * the intercept is separated from other coefficients by the characters
     specified in the `intercept_sep` member of the `control` list. Defaults
     to `" & "`
