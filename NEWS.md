@@ -12,6 +12,18 @@
   * temporal blocks are now separated by default by the `time_sep` member
     of the `control` list. The default value is set to `" | "` and the
     `time_sep` parameter has been removed from `draw.covlmc()`
+  * the new parameter `constant_as_prob` is set to `TRUE` which modifies also
+    the default display
+    
+## New features
+### Model representation (with `draw()`)
+Text based model representation has been improved (as per issue #66) as follows:
+
+* the `draw.covlmc()` function uses arguably better default parameters 
+  (described above)
+* when a logistic model does not use the covariates, it is now represented 
+  by `draw.covlmc()` as a VLMC node, that is with the probability distribution
+  on the state space that it represents
 
 # mixvlmc 0.2.1
 This release has no visible changes and fixes internal issues:

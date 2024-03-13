@@ -11,6 +11,7 @@
   p_value = FALSE,
   digits = 4,
   with_state = FALSE,
+  constant_as_prob = TRUE,
   ...
 )
 }
@@ -37,6 +38,12 @@ with this parameter.}
 
 \item{with_state}{specifies whether to display the state associated to each
 dimension of the logistic model (see details).}
+
+\item{constant_as_prob}{specifies whether to represent logistic models that
+do not use covariates (a.k.a. constant models) using the probability
+distributions they induced on the state space (default behaviour with
+\code{constant_as_prob=TRUE}) or as normal models (when set to \code{FALSE}). This
+is not taken into account when \code{model} is not set to \code{"coef"}.}
 
 \item{...}{additional arguments for draw.}
 }

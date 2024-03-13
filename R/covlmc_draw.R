@@ -1,8 +1,14 @@
 draw_covlmc_model <- function(coefficients, p_value, hsize, names, lev, params,
-                              control) {
+                              control, model) {
+  collapsed <- FALSE
   if (params[["model"]] == "coef" || params[["model"]] == "full") {
     if (params[["model"]] == "coef") {
-      if (isTRUE(params$with_state)) {
+      if (!is.null(model) && isTRUE(params$collapse_constant) && glm_is_constant(model)) {
+        coeffs <- stringr::str_c(signif(glm_to_probs(model, lev), params$digit),
+          collapse = ", "
+        )
+        collapsed <- TRUE
+      } else if (isTRUE(params$with_state)) {
         lev <- stringr::str_c(lev[-1], lev[1], sep = "/")
         coeffs <- pp_mat(coefficients, params$digits,
           sep = control$time_sep,
@@ -41,9 +47,17 @@ draw_covlmc_model <- function(coefficients, p_value, hsize, names, lev, params,
           control$close_p_value,
           sep = ""
         )
-        stringr::str_c(p_value_str, "[", coeffs, "]", sep = " ")
+        if (collapsed) {
+          stringr::str_c(p_value_str, coeffs, sep = " ")
+        } else {
+          stringr::str_c(p_value_str, "[", coeffs, "]", sep = " ")
+        }
       } else {
-        stringr::str_c("[", coeffs, "]", sep = " ")
+        if (collapsed) {
+          coeffs
+        } else {
+          stringr::str_c("[", coeffs, "]", sep = " ")
+        }
       }
     } else {
       if (isTRUE(params$p_value)) {
@@ -147,7 +161,8 @@ covlmc_node2txt <- function(node, vals, params, control) {
     }
     draw_covlmc_model(
       node$model$coefficients, node$model$p_value, node$model$hsize,
-      node$model$var_names, model_levels, params, control
+      node$model$var_names, model_levels, params, control,
+      node$model$model
     )
   } else if (!is.null(node$p_value) && isTRUE(params$p_value)) {
     stringr::str_c("collapsing:", signif(node$p_value, params$digits), sep = " ")
@@ -179,6 +194,11 @@ covlmc_node2txt <- function(node, vals, params, control) {
 #'   with this parameter.
 #' @param with_state specifies whether to display the state associated to each
 #'   dimension of the logistic model (see details).
+#' @param constant_as_prob specifies whether to represent logistic models that
+#'   do not use covariates (a.k.a. constant models) using the probability
+#'   distributions they induced on the state space (default behaviour with
+#'   `constant_as_prob=TRUE`) or as normal models (when set to `FALSE`). This
+#'   is not taken into account when `model` is not set to `"coef"`.
 #' @section Specific parameters in `control`:
 #'
 #'   Model representations are affected by the following additional
@@ -235,6 +255,7 @@ covlmc_node2txt <- function(node, vals, params, control) {
 #' @export
 draw.covlmc <- function(ct, control = draw_control(), model = c("coef", "full"),
                         p_value = FALSE, digits = 4, with_state = FALSE,
+                        constant_as_prob = TRUE,
                         ...) {
   if (is.null(model)) {
     model <- "none"
@@ -243,6 +264,12 @@ draw.covlmc <- function(ct, control = draw_control(), model = c("coef", "full"),
   }
   dot_params <- list(...)
   dot_params$with_state <- with_state
-  rec_draw_covlmc(control$root, "", ct, ct$vals, control, covlmc_node2txt, c(list(model = model, p_value = p_value, digits = digits), dot_params))
+  rec_draw_covlmc(
+    control$root, "", ct, ct$vals, control, covlmc_node2txt,
+    c(list(
+      model = model, p_value = p_value, digits = digits,
+      collapse_constant = constant_as_prob
+    ), dot_params)
+  )
   invisible(ct)
 }
