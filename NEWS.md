@@ -1,4 +1,7 @@
 # mixvlmc (development version)
+## Breaking changes
+* defaults for `draw.covlmc()` have changed:
+  * `p_value` is now `FALSE` by default
 
 # mixvlmc 0.2.1
 This release has no visible changes and fixes internal issues:

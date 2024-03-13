@@ -143,7 +143,7 @@ covlmc_node2txt <- function(node, vals, params) {
 #'   be used to tweak model representations (see details).
 #' @param p_value specifies whether the p-values of the likelihood ratio tests
 #'   conducted during the covlmc construction must be included in the
-#'   representation.
+#'   representation (defaults to `FALSE`).
 #' @param digits numerical parameters and p-values are represented using the
 #'   [base::signif] function, using the number of significant digits specified
 #'   with this parameter.
@@ -193,7 +193,7 @@ covlmc_node2txt <- function(node, vals, params) {
 #' draw(m_cov, model = "full", time_sep = " | ")
 #' @export
 draw.covlmc <- function(ct, control = draw_control(), model = c("coef", "full"),
-                        p_value = TRUE, digits = 4, with_state = FALSE, ...) {
+                        p_value = FALSE, digits = 4, with_state = FALSE, ...) {
   if (is.null(model)) {
     model <- "none"
   } else {

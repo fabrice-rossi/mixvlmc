@@ -8,7 +8,7 @@
   ct,
   control = draw_control(),
   model = c("coef", "full"),
-  p_value = TRUE,
+  p_value = FALSE,
   digits = 4,
   with_state = FALSE,
   ...
@@ -29,7 +29,7 @@ be used to tweak model representations (see details).}
 
 \item{p_value}{specifies whether the p-values of the likelihood ratio tests
 conducted during the covlmc construction must be included in the
-representation.}
+representation (defaults to \code{FALSE}).}
 
 \item{digits}{numerical parameters and p-values are represented using the
 \link[base:Round]{base::signif} function, using the number of significant digits specified
