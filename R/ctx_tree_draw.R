@@ -9,6 +9,7 @@
 #' @param hbranch characters used to represent a branch in a horizontal was.
 #' @param open_ct characters used to start each node specific text representation.
 #' @param close_ct characters used to end each node specific text representation.
+#' @param level_sep characters used to separate levels from models in [draw.covlmc()].
 #'
 #' @returns a list
 #' @export
@@ -21,7 +22,8 @@ draw_control <- function(root = "*",
                          vbranch = "|",
                          hbranch = "--",
                          open_ct = "(",
-                         close_ct = ")") {
+                         close_ct = ")",
+                         level_sep = " ~ ") {
   list(
     root = root,
     first_node = first_node,
@@ -29,7 +31,8 @@ draw_control <- function(root = "*",
     vbranch = vbranch,
     hbranch = hbranch,
     open_ct = open_ct,
-    close_ct = close_ct
+    close_ct = close_ct,
+    level_sep = level_sep
   )
 }
 
@@ -96,7 +99,7 @@ rec_draw <- function(label, prefix, ct, vals, control, node2txt, params) {
 #' In addition to the structure of the context tree, `draw` can represent
 #' information attached to the node (contexts and partial contexts). This is
 #' controlled by additional parameters depending on the type of the context
-#' tree.
+#' tree (as well as by the `control` parameter).
 #'
 #' @param ct a context tree.
 #' @param control a list of low level control parameters of the text

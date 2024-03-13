@@ -37,7 +37,7 @@ using \code{\link[=draw_control]{draw_control()}}.
 In addition to the structure of the context tree, \code{draw} can represent
 information attached to the node (contexts and partial contexts). This is
 controlled by additional parameters depending on the type of the context
-tree.
+tree (as well as by the \code{control} parameter).
 }
 \examples{
 dts_c <- sample(c("A", "B", "CD"), 100, replace = TRUE)

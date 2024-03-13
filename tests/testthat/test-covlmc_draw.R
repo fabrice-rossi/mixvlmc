@@ -11,6 +11,10 @@ test_that("draw obeys its contract (with vgam)", {
   expect_snapshot_output(draw(prune(model, 0.0001), model = "full", time_sep = " | "))
   expect_snapshot_output(draw(prune(model, 0.0001), model = "full", time_sep = " | ", with_state = TRUE))
   expect_snapshot_output(draw(prune(model, 0.0001), model = "coef", time_sep = " | ", with_state = TRUE))
+  expect_snapshot_output(draw(prune(model, 0.0001),
+    model = "coef", time_sep = " | ",
+    with_state = TRUE, control = draw_control(level_sep = " @ ")
+  ))
   ## the following snapshots depend on blas version
   ## skip_on_ci()
   ##  expect_snapshot_output(draw(model))
@@ -39,6 +43,10 @@ test_that("draw obeys its contract (with nnet)", {
   expect_snapshot_output(draw(model, model = "full", time_sep = " ^ ", digits = 1))
   expect_snapshot_output(draw(model, model = "full", time_sep = " ^ ", digits = 3, with_state = TRUE))
   expect_snapshot_output(draw(model, model = "coef", time_sep = " ^ ", digits = 3, with_state = TRUE))
+  expect_snapshot_output(draw(model,
+    model = "coef", time_sep = " ^ ", digits = 3,
+    with_state = TRUE, control = draw_control(level_sep = " @ ")
+  ))
 })
 
 test_that("draw handles cases when levels have been dropped", {

@@ -54,7 +54,7 @@ using \code{\link[=draw_control]{draw_control()}}.
 In addition to the structure of the context tree, \code{draw} can represent
 information attached to the node (contexts and partial contexts). This is
 controlled by additional parameters depending on the type of the context
-tree.
+tree (as well as by the \code{control} parameter).
 }
 \section{Tweaking model representation}{
 
@@ -92,7 +92,9 @@ coefficients the target state. This is useful when using e.g. \code{VGAM::vglm}
 as unused levels of the target variable will be automatically dropped from
 the model, leading to a reduce number of rows. The reference state is
 either shown on the first row if \code{model} is \code{"full"} or after the state on
-each row if \code{model} is \code{"coef"}.
+each row if \code{model} is \code{"coef"}. States are separated from the model
+representation by the character(s) specified in \code{level_sep} in the \code{control}
+list (see \code{\link[=draw_control]{draw_control()}}).
 }
 
 \examples{
@@ -102,7 +104,7 @@ dts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
 m_cov <- covlmc(dts, dts_cov, min_size = 5)
 draw(m_cov, digits = 3)
 draw(m_cov, model = NULL)
-draw(m_cov, p_value = FALSE)
+draw(m_cov, p_value = TRUE)
 draw(m_cov, p_value = FALSE, time_sep = " | ")
 draw(m_cov, model = "full", time_sep = " | ")
 }

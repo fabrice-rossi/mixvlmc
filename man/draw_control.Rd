@@ -11,7 +11,8 @@ draw_control(
   vbranch = "|",
   hbranch = "--",
   open_ct = "(",
-  close_ct = ")"
+  close_ct = ")",
+  level_sep = " ~ "
 )
 }
 \arguments{
@@ -28,6 +29,8 @@ draw_control(
 \item{open_ct}{characters used to start each node specific text representation.}
 
 \item{close_ct}{characters used to end each node specific text representation.}
+
+\item{level_sep}{characters used to separate levels from models in \code{\link[=draw.covlmc]{draw.covlmc()}}.}
 }
 \value{
 a list

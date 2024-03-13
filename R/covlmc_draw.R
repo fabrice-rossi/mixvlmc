@@ -1,19 +1,33 @@
-draw_covlmc_model <- function(coefficients, p_value, hsize, names, lev, params) {
+draw_covlmc_model <- function(coefficients, p_value, hsize, names, lev, params,
+                              control) {
   if (params[["model"]] == "coef" || params[["model"]] == "full") {
     if (params[["model"]] == "coef") {
       if (isTRUE(params$with_state)) {
         lev <- stringr::str_c(lev[-1], lev[1], sep = "/")
-        coeffs <- pp_mat(coefficients, params$digits, sep = params$time_sep, groups = hsize, rownames = lev, rn_sep = params$level_sep)
+        coeffs <- pp_mat(coefficients, params$digits,
+          sep = params$time_sep,
+          groups = hsize, rownames = lev, rn_sep = control$level_sep
+        )
       } else {
-        coeffs <- pp_mat(coefficients, params$digits, sep = params$time_sep, groups = hsize)
+        coeffs <- pp_mat(coefficients, params$digits,
+          sep = params$time_sep,
+          groups = hsize
+        )
       }
     } else {
       if (isTRUE(params$with_state)) {
         lev <- as.character(lev)
         lev[1] <- stringr::str_c("(", lev[1], ")")
-        coeffs <- pp_mat(coefficients, params$digits, sep = params$time_sep, groups = hsize, colnames = names, rownames = lev, rn_sep = params$level_sep)
+        coeffs <- pp_mat(coefficients, params$digits,
+          sep = params$time_sep,
+          groups = hsize, colnames = names, rownames = lev,
+          rn_sep = control$level_sep
+        )
       } else {
-        coeffs <- pp_mat(coefficients, params$digits, sep = params$time_sep, groups = hsize, colnames = names)
+        coeffs <- pp_mat(coefficients, params$digits,
+          sep = params$time_sep,
+          groups = hsize, colnames = names
+        )
       }
     }
     if (length(coeffs) == 1) {
@@ -49,7 +63,7 @@ draw_covlmc_model <- function(coefficients, p_value, hsize, names, lev, params) 
 rec_draw_covlmc <- function(label, prefix, ct, vals, control, node2txt, params) {
   cat(label)
   if (!is.null(node2txt)) {
-    node_txt <- node2txt(ct, vals, params)
+    node_txt <- node2txt(ct, vals, params, control)
     if (!is.null(node_txt)) {
       cat_with_prefix(label, prefix, node_txt, control)
     }
@@ -93,7 +107,7 @@ rec_draw_covlmc <- function(label, prefix, ct, vals, control, node2txt, params) 
       c_prefix <- stringr::str_c(prefix, c_prefix)
       cat(c_label)
       if (!is.null(node2txt)) {
-        node_txt <- node2txt(list(model = ct[["merged_model"]]), vals, params)
+        node_txt <- node2txt(list(model = ct[["merged_model"]]), vals, params, control)
         if (!is.null(node_txt)) {
           cat_with_prefix(c_label, c_prefix, node_txt, control)
         }
@@ -103,7 +117,7 @@ rec_draw_covlmc <- function(label, prefix, ct, vals, control, node2txt, params) 
   }
 }
 
-covlmc_node2txt <- function(node, vals, params) {
+covlmc_node2txt <- function(node, vals, params, control) {
   digits <- params$digits
   if (is.null(digits)) {
     digits <- 2
@@ -118,7 +132,10 @@ covlmc_node2txt <- function(node, vals, params) {
         model_levels <- vals
       }
     }
-    draw_covlmc_model(node$model$coefficients, node$model$p_value, node$model$hsize, node$model$var_names, model_levels, params)
+    draw_covlmc_model(
+      node$model$coefficients, node$model$p_value, node$model$hsize,
+      node$model$var_names, model_levels, params, control
+    )
   } else if (!is.null(node$p_value) && isTRUE(params$p_value)) {
     stringr::str_c("collapsing:", signif(node$p_value, params$digits), sep = " ")
   } else if (!is.null(node$merged_p_value) && isTRUE(params$p_value)) {
@@ -179,7 +196,9 @@ covlmc_node2txt <- function(node, vals, params) {
 #'   as unused levels of the target variable will be automatically dropped from
 #'   the model, leading to a reduce number of rows. The reference state is
 #'   either shown on the first row if `model` is `"full"` or after the state on
-#'   each row if `model` is `"coef"`.
+#'   each row if `model` is `"coef"`. States are separated from the model
+#'   representation by the character(s) specified in `level_sep` in the `control`
+#'   list (see [draw_control()]).
 #'
 #' @examples
 #' pc <- powerconsumption[powerconsumption$week == 5, ]
@@ -188,12 +207,13 @@ covlmc_node2txt <- function(node, vals, params) {
 #' m_cov <- covlmc(dts, dts_cov, min_size = 5)
 #' draw(m_cov, digits = 3)
 #' draw(m_cov, model = NULL)
-#' draw(m_cov, p_value = FALSE)
+#' draw(m_cov, p_value = TRUE)
 #' draw(m_cov, p_value = FALSE, time_sep = " | ")
 #' draw(m_cov, model = "full", time_sep = " | ")
 #' @export
 draw.covlmc <- function(ct, control = draw_control(), model = c("coef", "full"),
-                        p_value = FALSE, digits = 4, with_state = FALSE, ...) {
+                        p_value = FALSE, digits = 4, with_state = FALSE,
+                        ...) {
   if (is.null(model)) {
     model <- "none"
   } else {
@@ -204,7 +224,6 @@ draw.covlmc <- function(ct, control = draw_control(), model = c("coef", "full"),
     dot_params[["time_sep"]] <- " "
   }
   dot_params$with_state <- with_state
-  dot_params$level_sep <- " | "
   rec_draw_covlmc(control$root, "", ct, ct$vals, control, covlmc_node2txt, c(list(model = model, p_value = p_value, digits = digits), dot_params))
   invisible(ct)
 }

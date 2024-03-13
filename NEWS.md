@@ -2,6 +2,7 @@
 ## Breaking changes
 * defaults for `draw.covlmc()` have changed:
   * `p_value` is now `FALSE` by default
+  * the characters used to separate levels from models is now `" ~ "`
 
 # mixvlmc 0.2.1
 This release has no visible changes and fixes internal issues:
