@@ -99,3 +99,22 @@ draw(as_vlmc(optimal_weekly_model))
 This is somewhat expected as the optimal model estimated on the full time series
 as a small order. As a consequence, most of the observations are considered in 
 the same way in both approaches. 
+
+## Theoretical aspects
+### Hypotheses
+
+The estimation strategy of `multi_vlmc()` uses a simple independent and identically
+distributed hypothesis: we assume there is fixed VLMC model $\mathcal{M}$ that
+generates $P$ independent times series $(x^{(p)}_i)_{1\leq i\leq n_p}$, for 
+$1\leq p\leq P$, on the same state space $S$. The length of each time series 
+$(n_p)_{1\leq p\leq P}$ is not modelled.  
+
+The context tree of the collection of time series is computed at once, which occurrence
+counts aggregated of the collection. This means that asking for a `min_size` of
+4 in `multi_vlmc()`, for instance, corresponds to keeping only contexts that 
+appear at least 4 times overall: such a context could appear 4 times in a single 
+time series, one time in four series, or any other combination. 
+
+The context tree is then processed as if it were the context tree of a single
+time series. In particular, conditional probabilities are computed using frequencies 
+(maximum likelihood estimation), etc. 
