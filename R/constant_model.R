@@ -106,3 +106,18 @@ glm_metrics.constant_model <- function(model, mm, target) {
   probs <- predict(model, mm, target)
   main_metrics(target, probs)
 }
+
+#' @exportS3Method
+glm_is_constant.constant_model <- function(model) {
+  TRUE
+}
+
+#' @exportS3Method
+glm_to_probs.constant_model <- function(model, lev) {
+  if (model$rank == 1) {
+    probs <- stats::binomial()$linkinv(model$coefficients[1])
+    c(probs, 1 - probs)
+  } else {
+    VGAM::multilogitlink(matrix(model$coefficients[1:model$rank], ncol = model$rank), inverse = TRUE)[1, ]
+  }
+}

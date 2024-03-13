@@ -127,3 +127,69 @@ glm_levels.vglm <- function(model, vals) {
 glm_levels.multinom <- function(model, vals) {
   model$lev
 }
+
+
+## check whether a model is constant
+glm_is_constant <- function(model) {
+  UseMethod("glm_is_constant")
+}
+
+#' @exportS3Method
+glm_is_constant.default <- function(model) {
+  length(attr(stats::terms(model), "term.labels")) == 0
+}
+
+## extract probability distributions from constant models
+glm_to_probs <- function(model, lev) {
+  UseMethod("glm_to_probs")
+}
+
+#' @exportS3Method
+glm_to_probs.glm <- function(model, lev) {
+  coefs <- stats::coef(model)
+  if (length(coefs) > 1) {
+    NULL
+  } else {
+    probs <- model$family$linkinv(as.numeric(coefs))
+    c(probs, 1 - probs)
+  }
+}
+
+#' @exportS3Method
+glm_to_probs.vglm <- function(model, lev) {
+  if (glm_is_constant(model)) {
+    pre <- VGAM::predictvglm(model, type = "response")[1, ]
+    if (length(pre) < length(lev)) {
+      model_lev <- model@extra$colnames.y
+      res <- rep(0, length(lev))
+      res[match(model_lev, lev)] <- pre
+      res
+    } else {
+      pre
+    }
+  } else {
+    NULL
+  }
+}
+
+#' @exportS3Method
+glm_to_probs.multinom <- function(model, lev) {
+  if (glm_is_constant(model)) {
+    newdata <- data.frame(tmp = 0L)[-1]
+    probs <- stats::predict(model, newdata, type = "probs")
+    if (length(lev) == 2) {
+      c(probs, 1 - probs)
+    } else {
+      if (length(probs) == 1) {
+        ## fully degenerate case
+        probs <- c(probs, 1 - probs)
+      }
+      res <- rep(0, length(lev))
+      model_lev <- model$lev
+      res[match(model_lev, lev)] <- probs
+      res
+    }
+  } else {
+    NULL
+  }
+}
