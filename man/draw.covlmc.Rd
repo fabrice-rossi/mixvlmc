@@ -62,6 +62,8 @@ tree (as well as by the \code{control} parameter).
 Model representations are affected by the following additional
 fields of \code{control} that are specific to \code{\link[=covlmc]{covlmc()}}:
 \itemize{
+\item \code{intercept_sep}: character(s) used to separate the intercept from
+the other coefficients in model representation.
 \item \code{time_sep}: character(s) used to split the coefficients list by blocks
 associated to time delays in the covariate inclusion into the logistic
 model. The first block contains the intercept(s), the second block the
@@ -79,7 +81,7 @@ logistic model, e.g. \code{\link[stats:glm]{stats::glm()}}. Numerical variable n
 is, while factors have levels appended. The intercept is denoted \code{(I)} to
 save space. The time delays are represented by an underscore followed by
 the time delay. For instance if the model uses the numerical covariate \code{y}
-with two delays, it will appear as to variables \code{y_1} and \code{y_2}.
+with two delays, it will appear with two variables \code{y_1} and \code{y_2}.
 }
 
 \section{State representation}{

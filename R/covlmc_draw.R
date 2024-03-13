@@ -6,12 +6,14 @@ draw_covlmc_model <- function(coefficients, p_value, hsize, names, lev, params,
         lev <- stringr::str_c(lev[-1], lev[1], sep = "/")
         coeffs <- pp_mat(coefficients, params$digits,
           sep = control$time_sep,
-          groups = hsize, rownames = lev, rn_sep = control$level_sep
+          groups = hsize, rownames = lev, rn_sep = control$level_sep,
+          first_grp_sep = control$intercept_sep
         )
       } else {
         coeffs <- pp_mat(coefficients, params$digits,
           sep = control$time_sep,
-          groups = hsize
+          groups = hsize,
+          first_grp_sep = control$intercept_sep
         )
       }
     } else {
@@ -21,12 +23,14 @@ draw_covlmc_model <- function(coefficients, p_value, hsize, names, lev, params,
         coeffs <- pp_mat(coefficients, params$digits,
           sep = control$time_sep,
           groups = hsize, colnames = names, rownames = lev,
-          rn_sep = control$level_sep
+          rn_sep = control$level_sep,
+          first_grp_sep = control$intercept_sep
         )
       } else {
         coeffs <- pp_mat(coefficients, params$digits,
           sep = control$time_sep,
-          groups = hsize, colnames = names
+          groups = hsize, colnames = names,
+          first_grp_sep = control$intercept_sep
         )
       }
     }
@@ -171,6 +175,9 @@ covlmc_node2txt <- function(node, vals, params, control) {
 #'   Model representations are affected by the following additional
 #'   fields of `control` that are specific to [covlmc()]:
 #'
+#'   - `intercept_sep`: character(s) used to separate the intercept from
+#'   the other coefficients in model representation.
+#'
 #'   - `time_sep`: character(s) used to split the coefficients list by blocks
 #'   associated to time delays in the covariate inclusion into the logistic
 #'   model. The first block contains the intercept(s), the second block the
@@ -186,7 +193,7 @@ covlmc_node2txt <- function(node, vals, params, control) {
 #'   is, while factors have levels appended. The intercept is denoted `(I)` to
 #'   save space. The time delays are represented by an underscore followed by
 #'   the time delay. For instance if the model uses the numerical covariate `y`
-#'   with two delays, it will appear as to variables `y_1` and `y_2`.
+#'   with two delays, it will appear with two variables `y_1` and `y_2`.
 #'
 #' @section State representation:
 #'

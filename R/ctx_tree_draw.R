@@ -11,6 +11,8 @@
 #' @param close_ct characters used to end each node specific text representation.
 #' @param level_sep characters used to separate levels from models in [draw.covlmc()].
 #' @param time_sep characters used to separate temporal blocks in [draw.covlmc()].
+#' @param intercept_sep characters used to the intercept from the other parameters
+#'   in [draw.covlmc()]
 #'
 #' @returns a list
 #' @export
@@ -25,7 +27,8 @@ draw_control <- function(root = "*",
                          open_ct = "(",
                          close_ct = ")",
                          level_sep = " ~ ",
-                         time_sep = " | ") {
+                         time_sep = " | ",
+                         intercept_sep = " & ") {
   list(
     root = root,
     first_node = first_node,
@@ -35,7 +38,8 @@ draw_control <- function(root = "*",
     open_ct = open_ct,
     close_ct = close_ct,
     level_sep = level_sep,
-    time_sep = time_sep
+    time_sep = time_sep,
+    intercept_sep = intercept_sep
   )
 }
 

@@ -79,7 +79,11 @@ test_that("trimmed model can be drawn", {
       expect_snapshot(draw(t_m_cov_model, model = "coef", with_state = TRUE, digits = 2))
       expect_snapshot(draw(t_m_cov, model = "coef", with_state = TRUE, digits = 2, p_value = TRUE))
       expect_snapshot(draw(t_m_cov_model, model = "full", control = draw_control(time_sep = " % "), with_state = TRUE, digits = 2))
-      expect_snapshot(draw(t_m_cov, model = "full", control = draw_control(time_sep = " % "), with_state = TRUE, digits = 2))
+      expect_snapshot(draw(t_m_cov,
+        model = "full",
+        control = draw_control(time_sep = " % ", intercept_sep = " + "),
+        with_state = TRUE, digits = 2
+      ))
     }
   }
 })

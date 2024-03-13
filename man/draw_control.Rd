@@ -13,7 +13,8 @@ draw_control(
   open_ct = "(",
   close_ct = ")",
   level_sep = " ~ ",
-  time_sep = " | "
+  time_sep = " | ",
+  intercept_sep = " & "
 )
 }
 \arguments{
@@ -34,6 +35,9 @@ draw_control(
 \item{level_sep}{characters used to separate levels from models in \code{\link[=draw.covlmc]{draw.covlmc()}}.}
 
 \item{time_sep}{characters used to separate temporal blocks in \code{\link[=draw.covlmc]{draw.covlmc()}}.}
+
+\item{intercept_sep}{characters used to the intercept from the other parameters
+in \code{\link[=draw.covlmc]{draw.covlmc()}}}
 }
 \value{
 a list

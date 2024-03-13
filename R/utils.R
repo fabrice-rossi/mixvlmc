@@ -28,7 +28,7 @@ signif_null <- function(x, digits) {
   }
 }
 
-str_c_group <- function(txt, sep, groups, with_rn, rn_sep = sep) {
+str_c_group <- function(txt, sep, groups, with_rn, rn_sep = sep, fsep = sep) {
   if (length(txt) == 1) {
     txt
   } else {
@@ -50,7 +50,17 @@ str_c_group <- function(txt, sep, groups, with_rn, rn_sep = sep) {
         pos <- 2
       }
       for (k in 1:groups) {
-        pre_res <- stringr::str_c(pre_res, stringr::str_c(txt[pos:(pos + grp_size - 1)], collapse = " "), sep = sep)
+        if (k == 1) {
+          the_sep <- fsep
+        } else {
+          the_sep <- sep
+        }
+        pre_res <- stringr::str_c(pre_res,
+          stringr::str_c(txt[pos:(pos + grp_size - 1)],
+            collapse = " "
+          ),
+          sep = the_sep
+        )
         pos <- pos + grp_size
       }
       pre_res
@@ -58,7 +68,9 @@ str_c_group <- function(txt, sep, groups, with_rn, rn_sep = sep) {
   }
 }
 
-pp_mat <- function(x, digits, width = NULL, sep = NULL, groups = NULL, colnames = NULL, rownames = NULL, rn_sep = sep) {
+pp_mat <- function(x, digits, width = NULL, sep = NULL, groups = NULL,
+                   colnames = NULL, rownames = NULL, rn_sep = sep,
+                   first_grp_sep = sep) {
   x_s <- signif(x, digits)
   if (is.matrix(x_s)) {
     x_c <- matrix(apply(x_s, 2, as.character), ncol = ncol(x), nrow = nrow(x))
@@ -96,9 +108,15 @@ pp_mat <- function(x, digits, width = NULL, sep = NULL, groups = NULL, colnames 
     assertthat::assert_that(!is.null(groups))
   }
   if (is.matrix(x_pad)) {
-    x_rows <- apply(x_pad, 1, str_c_group, sep = sep, groups = groups, with_rn = !is.null(rownames), rn_sep = rn_sep)
+    x_rows <- apply(x_pad, 1, str_c_group,
+      sep = sep, groups = groups,
+      with_rn = !is.null(rownames), rn_sep = rn_sep,
+      fsep = first_grp_sep
+    )
   } else {
-    x_rows <- str_c_group(x_pad, sep, groups, !is.null(rownames), rn_sep)
+    x_rows <- str_c_group(x_pad, sep, groups, !is.null(rownames), rn_sep,
+      fsep = first_grp_sep
+    )
   }
   x_rows
 }

@@ -2,9 +2,12 @@
 ## Breaking changes
 * defaults for `draw.covlmc()` have changed (issue #66):
   * `p_value` is now `FALSE` by default
+  * the intercept is separated from other coefficients by the characters
+    specified in the `intercept_sep` member of the `control` list. Defaults
+    to `" & "`
   * the characters used to separate levels from models is now `" ~ "`
   * temporal blocks are now separated by default by the `time_sep` member
-    in the `control` list. The default value is set to `" | "` and the
+    of the `control` list. The default value is set to `" | "` and the
     `time_sep` parameter has been removed from `draw.covlmc()`
 
 # mixvlmc 0.2.1

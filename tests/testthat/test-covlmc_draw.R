@@ -10,6 +10,11 @@ test_that("draw obeys its contract (with vgam)", {
   expect_snapshot_output(draw(prune(model, 0.0001), control = draw_control(time_sep = " % ")))
   expect_snapshot_output(draw(prune(model, 0.0001), model = "full", control = draw_control(time_sep = " % ")))
   expect_snapshot_output(draw(prune(model, 0.0001), model = "full", control = draw_control(time_sep = " % "), with_state = TRUE))
+  expect_snapshot_output(draw(prune(model, 0.0001),
+    model = "full",
+    control = draw_control(time_sep = " % ", intercept_sep = " + "),
+    with_state = TRUE
+  ))
   expect_snapshot_output(draw(prune(model, 0.0001), model = "coef", control = draw_control(time_sep = " % "), with_state = TRUE))
   expect_snapshot_output(draw(prune(model, 0.0001),
     model = "coef", control = draw_control(time_sep = " % ", level_sep = " @ "),
@@ -65,7 +70,11 @@ test_that("draw handles cases when levels have been dropped", {
   dts_cov <- data.frame(y = y, z = z)
   m_cov <- covlmc(x = x, covariate = dts_cov, min_size = 3, alpha = 0.5)
   expect_snapshot_output(draw(m_cov, model = "full", control = draw_control(time_sep = " % "), digits = 1))
-  expect_snapshot_output(draw(m_cov, model = "full", control = draw_control(time_sep = " % "), digits = 2, with_state = TRUE))
+  expect_snapshot_output(draw(m_cov,
+    model = "full",
+    control = draw_control(time_sep = " % ", intercept_sep = " + "),
+    digits = 2, with_state = TRUE
+  ))
 })
 
 test_that("draw handles cases when multinom is used for two states time series", {
@@ -85,7 +94,11 @@ test_that("draw handles cases when multinom is used for two states time series",
   dts_cov <- data.frame(y = y, z = z)
   m_cov <- covlmc(x = x, covariate = dts_cov, min_size = 3, alpha = 0.5)
   expect_snapshot_output(draw(m_cov, model = "full", control = draw_control(time_sep = " % "), digits = 1))
-  expect_snapshot_output(draw(m_cov, model = "full", control = draw_control(time_sep = " % "), digits = 1, with_state = TRUE))
+  expect_snapshot_output(draw(m_cov,
+    model = "full",
+    control = draw_control(time_sep = " % ", intercept_sep = " + "),
+    digits = 1, with_state = TRUE
+  ))
 })
 
 test_that("draw handles degenerate cases", {
@@ -96,6 +109,10 @@ test_that("draw handles degenerate cases", {
     dts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
     m_cov <- covlmc(dts, dts_cov, min_size = 10, keep_data = TRUE)
     expect_snapshot_output(draw(m_cov, model = "coef", control = draw_control(time_sep = " % "), with_state = TRUE, digits = 2))
-    expect_snapshot_output(draw(m_cov, model = "full", control = draw_control(time_sep = " % "), with_state = TRUE, digits = 2))
+    expect_snapshot_output(draw(m_cov,
+      model = "full",
+      control = draw_control(time_sep = " % ", intercept_sep = " + "),
+      with_state = TRUE, digits = 2
+    ))
   }
 })
