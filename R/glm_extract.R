@@ -151,7 +151,7 @@ glm_to_probs.glm <- function(model, lev) {
     NULL
   } else {
     probs <- model$family$linkinv(as.numeric(coefs))
-    c(probs, 1 - probs)
+    c(1 - probs, probs)
   }
 }
 
@@ -178,11 +178,11 @@ glm_to_probs.multinom <- function(model, lev) {
     newdata <- data.frame(tmp = 0L)[-1]
     probs <- stats::predict(model, newdata, type = "probs")
     if (length(lev) == 2) {
-      c(probs, 1 - probs)
+      c(1 - probs, probs)
     } else {
       if (length(probs) == 1) {
         ## fully degenerate case
-        probs <- c(probs, 1 - probs)
+        probs <- c(1 - probs, probs)
       }
       res <- rep(0, length(lev))
       model_lev <- model$lev
