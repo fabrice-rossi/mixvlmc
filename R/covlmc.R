@@ -695,6 +695,7 @@ covlmc <- function(x, covariate, alpha = 0.05, min_size = 5L, max_depth = 100L, 
   pre_result$alpha <- alpha
   pre_result$control <- control
   pre_result$cov_desc <- cov_desc
+  pre_result$cov_logical <- desc$cov_logical
   pre_result$max_depth <- ctx_tree$max_depth
   pre_result$data_size <- length(x)
   if (keep_data) {
@@ -900,6 +901,7 @@ prune.covlmc <- function(vlmc, alpha = 0.05, cutoff = NULL, ...) {
   pre_result$alpha <- alpha
   pre_result$control <- vlmc$control
   pre_result$cov_desc <- vlmc$cov_desc
+  pre_result$cov_logical <- vlmc$cov_logical
   pre_result$max_depth <- vlmc$max_depth
   pre_result$data_size <- vlmc$data_size
   pre_result$x <- vlmc$x

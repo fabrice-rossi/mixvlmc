@@ -57,7 +57,10 @@ test_that("covlmc prune works with more that 2 states", {
   x <- sample(c("A", "B", "C"), 500, replace = TRUE)
   y <- ifelse(runif(length(x)) > 0.5, c(x[-1], sample(c("A", "B", "C"), 1)), c(x[-c(1, 2)], sample(c("A", "B", "C"), 2, replace = TRUE)))
   y <- as.factor(ifelse(runif(length(x)) > 0.2, y, sample(c("A", "B", "C"), 500, replace = TRUE)))
-  df_y <- data.frame(y = y, z = runif(length(y)))
+  df_y <- data.frame(
+    y = y, z = runif(length(y)),
+    q = sample(c(TRUE, FALSE), length(y), replace = TRUE)
+  )
   model <- covlmc(x, df_y, max_depth = 5, min_size = 3, alpha = 0.005)
   model_2 <- prune(model, 0.0001)
   model_3 <- covlmc(x, df_y, max_depth = 5, min_size = 3, alpha = 0.0001)
