@@ -75,16 +75,21 @@
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S3 method for vlmc</span></span>
-<span><span class="fu"><a href="draw.html">draw</a></span><span class="op">(</span><span class="va">ct</span>, control <span class="op">=</span> <span class="fu"><a href="draw_control.html">draw_control</a></span><span class="op">(</span><span class="op">)</span>, prob <span class="op">=</span> <span class="cn">TRUE</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu"><a href="draw.html">draw</a></span><span class="op">(</span><span class="va">ct</span>, <span class="va">format</span>, control <span class="op">=</span> <span class="fu"><a href="draw_control.html">draw_control</a></span><span class="op">(</span><span class="op">)</span>, prob <span class="op">=</span> <span class="cn">TRUE</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for vlmc_cpp</span></span>
-<span><span class="fu"><a href="draw.html">draw</a></span><span class="op">(</span><span class="va">ct</span>, control <span class="op">=</span> <span class="fu"><a href="draw_control.html">draw_control</a></span><span class="op">(</span><span class="op">)</span>, prob <span class="op">=</span> <span class="cn">TRUE</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="draw.html">draw</a></span><span class="op">(</span><span class="va">ct</span>, <span class="va">format</span>, control <span class="op">=</span> <span class="fu"><a href="draw_control.html">draw_control</a></span><span class="op">(</span><span class="op">)</span>, prob <span class="op">=</span> <span class="cn">TRUE</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>ct</dt>
 <dd><p>a fitted vlmc.</p></dd>
+
+
+<dt>format</dt>
+<dd><p>a character string that specifies the output format of the
+function. Possible values are <code>ascii</code> (default) and <code>latex</code>. See details.</p></dd>
 
 
 <dt>control</dt>
@@ -113,13 +118,33 @@ removes all additional information.</p></dd>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>The function uses basic "ascii art" to represent the context tree. Characters
-used to represent the structure of the tree, e.g. branches, can be modified
-using <code><a href="draw_control.html">draw_control()</a></code>.</p>
-<p>In addition to the structure of the context tree, <code>draw</code> can represent
-information attached to the node (contexts and partial contexts). This is
+    <p>The function uses different text based formats (plain "ascii art" and LaTeX)
+to represent the context tree. Fine tuning of the representation can be done
+via the <code><a href="draw_control.html">draw_control()</a></code> function.</p>
+<p>In addition to the structure of the context tree, <code><a href="draw.html">draw()</a></code> can represent
+information attached to the nodes (contexts and partial contexts). This is
 controlled by additional parameters depending on the type of the context
-tree (as well as by the <code>control</code> parameter).</p>
+tree. In general, parameters given directly to <code><a href="draw.html">draw()</a></code> specify <em>what</em>
+information is represented while details on <em>how</em> this representation is made
+can be controlled via the <code>control</code> parameter and the associated
+<code><a href="draw_control.html">draw_control()</a></code> function.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="format">Format<a class="anchor" aria-label="anchor" href="#format"></a></h2>
+    
+
+
+<p>The <code>format</code> parameter specifies the format used for the textual output.
+With the default value <code>ascii</code> the output is produced in "ascii art" using
+by default only ascii characters (notice that <code><a href="draw_control.html">draw_control()</a></code> can be used
+to specified non ascii characters, but this is discouraged).</p>
+<p>With the <code>latex</code> value, the output is produced in LaTeX, leveraging the
+<a href="https://ctan.org/pkg/forest" class="external-link">forest</a> Latex package (see
+<a href="https://ctan.org/pkg/forest" class="external-link">https://ctan.org/pkg/forest</a>). Each call to <code><a href="draw.html">draw()</a></code> produces a full
+<code>forest</code> LaTeX environment. This can be included as is in a LaTeX document,
+provided the <code>forest</code> package is loaded in the preamble of the document.
+The LaTeX output is sanitized to avoid potential problems induced by
+special characters in the names of the states of the context tree.</p>
     </div>
 
     <div class="section level2">
@@ -127,29 +152,50 @@ tree (as well as by the <code>control</code> parameter).</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">dts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A"</span>, <span class="st">"B"</span>, <span class="st">"C"</span><span class="op">)</span>, <span class="fl">500</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="vlmc.html">vlmc</a></span><span class="op">(</span><span class="va">dts</span>, alpha <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="draw.html">draw</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> * (0.364, 0.312, 0.324)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> +-- B (0.3097, 0.3484, 0.3419)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |   '-- A (0.2692, 0.3846, 0.3462)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |       '-- B (0.4118, 0.1176, 0.4706)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> '-- C (0.3889, 0.3025, 0.3086)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     '-- B (0.4528, 0.3019, 0.2453)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         '-- B (0.7368, 0.1579, 0.1053)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> * (0.362, 0.304, 0.334)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> +-- A (0.3812, 0.2983, 0.3204)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |   +-- A (0.4203, 0.2609, 0.3188)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |   |   '-- A (0.4138, 0.2759, 0.3103)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |   |       '-- C (0, 0.25, 0.75)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |   '-- C (0.3443, 0.3443, 0.3115)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |       '-- B (0.25, 0.4, 0.35)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |           '-- C (0, 1, 0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> '-- C (0.3675, 0.2952, 0.3373)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     +-- B (0.3846, 0.3462, 0.2692)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     |   '-- B (0.6875, 0.1875, 0.125)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     '-- C (0.3929, 0.3214, 0.2857)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         '-- A (0.3846, 0.3462, 0.2692)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             '-- B (0.5, 0.5, 0)</span>
 <span class="r-in"><span><span class="fu"><a href="draw.html">draw</a></span><span class="op">(</span><span class="va">model</span>, prob <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> * (182, 156, 162)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> +-- B (48, 54, 53)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |   '-- A (14, 20, 18)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |       '-- B (7, 2, 8)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> '-- C (63, 49, 50)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     '-- B (24, 16, 13)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         '-- B (14, 3, 2)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> * (181, 152, 167)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> +-- A (69, 54, 58)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |   +-- A (29, 18, 22)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |   |   '-- A (12, 8, 9)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |   |       '-- C (0, 2, 6)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |   '-- C (21, 21, 19)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |       '-- B (5, 8, 7)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |           '-- C (0, 4, 0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> '-- C (61, 49, 56)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     +-- B (20, 18, 14)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     |   '-- B (11, 3, 2)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     '-- C (22, 18, 16)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         '-- A (10, 9, 7)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             '-- B (5, 5, 0)</span>
 <span class="r-in"><span><span class="fu"><a href="draw.html">draw</a></span><span class="op">(</span><span class="va">model</span>, prob <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> *</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> +-- B</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |   '-- A</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> +-- A</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |   +-- A</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |   |   '-- A</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |   |       '-- C</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |   '-- C</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> |       '-- B</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |           '-- C</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> '-- C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     '-- B</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         '-- B</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     +-- B</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     |   '-- B</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     '-- C</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         '-- A</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             '-- B</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
