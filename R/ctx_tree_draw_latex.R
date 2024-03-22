@@ -1,17 +1,17 @@
 ## R based context tree
-ctx_tree_node2latex <- function(label, ct, params) {
+ctx_tree_node2latex <- function(label, ct, control) {
   the_node <- stringr::str_c("\\textbf{", label, "}", sep = "")
   if (!is.null(ct[["f_by"]])) {
-    if (isTRUE(params$tabular)) {
-      if (!is.null(params[["frequency"]])) {
-        if (params$frequency == "detailed") {
-          the_node <- tabular_content(the_node, ct[["f_by"]], params)
-        } else if (params$frequency == "total") {
-          the_node <- tabular_content(the_node, sum(ct[["f_by"]]), params)
+    if (isTRUE(control$tabular)) {
+      if (!is.null(control[["frequency"]])) {
+        if (control$frequency == "detailed") {
+          the_node <- tabular_content(the_node, ct[["f_by"]], control)
+        } else if (control$frequency == "total") {
+          the_node <- tabular_content(the_node, sum(ct[["f_by"]]), control)
         }
       }
     } else {
-      if (!is.null(params[["frequency"]])) {
+      if (!is.null(control[["frequency"]])) {
         the_counts <- stringr::str_c(
           "(",
           stringr::str_flatten(ct[["f_by"]],
@@ -24,16 +24,16 @@ ctx_tree_node2latex <- function(label, ct, params) {
       }
       the_node <- stringr::str_glue(
         "{{{the_node} {content}}}",
-        content = add_fontsize(the_counts, params)
+        content = add_fontsize(the_counts, control)
       )
     }
   }
   the_node
 }
 
-draw_latex_ctx_tree <- function(ct, vals, node2latex, params) {
+draw_latex_ctx_tree <- function(ct, vals, control, node2latex) {
   rec_draw_latex <- function(node, label) {
-    cat("[", node2latex(label, node, params),
+    cat("[", node2latex(label, node, control),
       sep = ""
     )
     if (!is.null(node$children)) {
@@ -47,7 +47,7 @@ draw_latex_ctx_tree <- function(ct, vals, node2latex, params) {
     }
     cat("]\n")
   }
-  start_forest(params)
+  start_forest(control)
   rec_draw_latex(ct, "$\\epsilon$")
-  end_forest(params)
+  end_forest(control)
 }

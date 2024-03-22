@@ -1,7 +1,7 @@
 ## C++ based context tree
-draw_latex_ctx_tree_cpp <- function(tree, ct, vals, node2latex, params) {
+draw_latex_ctx_tree_cpp <- function(tree, ct, vals, control, node2latex) {
   rec_draw_latex_cpp <- function(node, label) {
-    cat("[", node2latex(label, node, params),
+    cat("[", node2latex(label, node, control),
       sep = ""
     )
     if (!is.null(node$children)) {
@@ -16,7 +16,7 @@ draw_latex_ctx_tree_cpp <- function(tree, ct, vals, node2latex, params) {
     }
     cat("]\n")
   }
-  start_forest(params)
+  start_forest(control)
   rec_draw_latex_cpp(ct, "$\\epsilon$")
-  end_forest(params)
+  end_forest(control)
 }

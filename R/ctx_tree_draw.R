@@ -126,10 +126,10 @@ cat_with_prefix <- function(label, prefix, node_txt, control) {
   cat(control$close_ct)
 }
 
-rec_draw <- function(label, prefix, ct, vals, control, node2txt, params) {
+rec_draw <- function(label, prefix, ct, vals, control, node2txt) {
   cat(label)
   if (!is.null(node2txt)) {
-    node_txt <- node2txt(ct, params)
+    node_txt <- node2txt(ct, control)
     if (!is.null(node_txt)) {
       cat_with_prefix(label, prefix, node_txt, control)
     }
@@ -156,7 +156,7 @@ rec_draw <- function(label, prefix, ct, vals, control, node2txt, params) {
         ## recursive call
         rec_draw(
           stringr::str_c(prefix, c_prelabel, vals[v]),
-          stringr::str_c(prefix, c_prefix), child, vals, control, node2txt, params
+          stringr::str_c(prefix, c_prefix), child, vals, control, node2txt
         )
         ## prepare for next child
         c_symbol <- control$next_node
@@ -219,14 +219,14 @@ draw <- function(ct, format, control = draw_control(), ...) {
   invisible(ct)
 }
 
-ctx_tree_node2txt <- function(ct, params) {
+ctx_tree_node2txt <- function(ct, control) {
   if (is.null(ct[["f_by"]])) {
     NULL
   } else {
-    if (!is.null(params[["frequency"]])) {
-      if (params$frequency == "detailed") {
+    if (!is.null(control[["frequency"]])) {
+      if (control$frequency == "detailed") {
         stringr::str_c(ct[["f_by"]], collapse = ",")
-      } else if (params$frequency == "total") {
+      } else if (control$frequency == "total") {
         as.character(sum(ct[["f_by"]]))
       } else {
         NULL
@@ -264,19 +264,19 @@ draw.ctx_tree <- function(ct, format, control = draw_control(),
   }
   if (format == "ascii") {
     if (is.null(frequency)) {
-      rec_draw(control$root, "", ct, ct$vals, control, NULL, list(...))
+      rec_draw(control$root, "", ct, ct$vals, c(control, list(...)), NULL)
     } else {
       frequency <- match.arg(frequency, c("total", "detailed"))
       rec_draw(
-        control$root, "", ct, ct$vals, control, ctx_tree_node2txt,
-        c(list(frequency = frequency), list(...))
+        control$root, "", ct, ct$vals,
+        c(control, list(frequency = frequency), list(...)), ctx_tree_node2txt
       )
     }
   } else if (format == "latex") {
     draw_latex_ctx_tree(
       ct, xtable::sanitize(ct$vals, "latex"),
-      ctx_tree_node2latex,
-      c(control, list(...), list(frequency = frequency))
+      c(control, list(...), list(frequency = frequency)),
+      ctx_tree_node2latex
     )
   }
   invisible(ct)

@@ -176,9 +176,9 @@ covlmc_node2latex <- function(label, node, vals, covars, control) {
   the_node
 }
 
-draw_latex_covlmc <- function(ct, vals, node2latex, params) {
+draw_latex_covlmc <- function(ct, vals, control, node2latex) {
   rec_draw_latex_covlmc <- function(node, label, covars) {
-    cat("[", node2latex(label, node, vals, covars, params),
+    cat("[", node2latex(label, node, vals, covars, control),
       sep = ""
     )
     if (!is.null(node$children)) {
@@ -198,13 +198,13 @@ draw_latex_covlmc <- function(ct, vals, node2latex, params) {
         the_merged_vals <- stringr::str_c(vals[node$merged], collapse = ", ")
         cat("[", node2latex(
           the_merged_vals,
-          list(model = node[["merged_model"]]), vals, covars, params
+          list(model = node[["merged_model"]]), vals, covars, control
         ), "]\n")
       }
     }
     cat("]\n")
   }
-  start_forest(params)
+  start_forest(control)
   ## let us compute first the covar names
   covar_names <- covlmc_model_covar_names(
     ct$cov_names,
@@ -214,5 +214,5 @@ draw_latex_covlmc <- function(ct, vals, node2latex, params) {
   covar_names <- xtable::sanitize(covar_names, "latex")
   ## then compute
   rec_draw_latex_covlmc(ct, "$\\epsilon$", covar_names)
-  end_forest(params)
+  end_forest(control)
 }

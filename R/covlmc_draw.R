@@ -1,14 +1,14 @@
-draw_covlmc_model <- function(coefficients, p_value, hsize, names, lev, params,
+draw_covlmc_model <- function(coefficients, p_value, hsize, names, lev,
                               control, model) {
   collapsed <- FALSE
-  if (params[["model"]] == "coef" || params[["model"]] == "full") {
-    if (params[["model"]] == "coef") {
-      if (!is.null(model) && isTRUE(params$collapse_constant) && glm_is_constant(model)) {
+  if (control[["model"]] == "coef" || control[["model"]] == "full") {
+    if (control[["model"]] == "coef") {
+      if (!is.null(model) && isTRUE(control$collapse_constant) && glm_is_constant(model)) {
         coeffs <- stringr::str_c(signif(glm_to_probs(model, lev), control$digit),
           collapse = ", "
         )
         collapsed <- TRUE
-      } else if (isTRUE(params$with_state)) {
+      } else if (isTRUE(control$with_state)) {
         lev <- stringr::str_c(lev[-1], lev[1], sep = "/")
         coeffs <- pp_mat(coefficients, control$digits,
           sep = control$time_sep,
@@ -23,7 +23,7 @@ draw_covlmc_model <- function(coefficients, p_value, hsize, names, lev, params,
         )
       }
     } else {
-      if (isTRUE(params$with_state)) {
+      if (isTRUE(control$with_state)) {
         lev <- as.character(lev)
         lev[1] <- stringr::str_c("(", lev[1], ")")
         coeffs <- pp_mat(coefficients, control$digits,
@@ -41,7 +41,7 @@ draw_covlmc_model <- function(coefficients, p_value, hsize, names, lev, params,
       }
     }
     if (length(coeffs) == 1) {
-      if (isTRUE(params$p_value)) {
+      if (isTRUE(control$p_value)) {
         p_value_str <- stringr::str_c(control$open_p_value,
           signif_null(p_value, control$digits),
           control$close_p_value,
@@ -60,7 +60,7 @@ draw_covlmc_model <- function(coefficients, p_value, hsize, names, lev, params,
         }
       }
     } else {
-      if (isTRUE(params$p_value)) {
+      if (isTRUE(control$p_value)) {
         p_value_str <- stringr::str_c(control$open_p_value,
           as.character(signif_null(p_value, control$digits)),
           control$close_p_value,
@@ -79,7 +79,7 @@ draw_covlmc_model <- function(coefficients, p_value, hsize, names, lev, params,
       coeffs
     }
   } else {
-    if (isTRUE(params$p_value)) {
+    if (isTRUE(control$p_value)) {
       as.character(signif_null(p_value, control$digits))
     } else {
       NULL
@@ -87,10 +87,10 @@ draw_covlmc_model <- function(coefficients, p_value, hsize, names, lev, params,
   }
 }
 
-rec_draw_covlmc <- function(label, prefix, ct, vals, control, node2txt, params) {
+rec_draw_covlmc <- function(label, prefix, ct, vals, control, node2txt) {
   cat(label)
   if (!is.null(node2txt)) {
-    node_txt <- node2txt(ct, vals, params, control)
+    node_txt <- node2txt(ct, vals, control)
     if (!is.null(node_txt)) {
       cat_with_prefix(label, prefix, node_txt, control)
     }
@@ -118,7 +118,7 @@ rec_draw_covlmc <- function(label, prefix, ct, vals, control, node2txt, params) 
         ## recursive call
         rec_draw_covlmc(
           stringr::str_c(prefix, c_prelabel, vals[v]),
-          stringr::str_c(prefix, c_prefix), child, vals, control, node2txt, params
+          stringr::str_c(prefix, c_prefix), child, vals, control, node2txt
         )
         ## prepare for next child
         c_symbol <- control$next_node
@@ -134,7 +134,7 @@ rec_draw_covlmc <- function(label, prefix, ct, vals, control, node2txt, params) 
       c_prefix <- stringr::str_c(prefix, c_prefix)
       cat(c_label)
       if (!is.null(node2txt)) {
-        node_txt <- node2txt(list(model = ct[["merged_model"]]), vals, params, control)
+        node_txt <- node2txt(list(model = ct[["merged_model"]]), vals, control)
         if (!is.null(node_txt)) {
           cat_with_prefix(c_label, c_prefix, node_txt, control)
         }
@@ -144,7 +144,7 @@ rec_draw_covlmc <- function(label, prefix, ct, vals, control, node2txt, params) 
   }
 }
 
-covlmc_node2txt <- function(node, vals, params, control) {
+covlmc_node2txt <- function(node, vals, control) {
   if (!is.null(node$model)) {
     if (!is.null(node$model$model)) {
       model_levels <- glm_levels(node$model$model, vals)
@@ -157,12 +157,12 @@ covlmc_node2txt <- function(node, vals, params, control) {
     }
     draw_covlmc_model(
       node$model$coefficients, node$model$p_value, node$model$hsize,
-      node$model$var_names, model_levels, params, control,
+      node$model$var_names, model_levels, control,
       node$model$model
     )
-  } else if (!is.null(node$p_value) && isTRUE(params$p_value)) {
+  } else if (!is.null(node$p_value) && isTRUE(control$p_value)) {
     stringr::str_c("collapsing:", signif(node$p_value, control$digits), sep = " ")
-  } else if (!is.null(node$merged_p_value) && isTRUE(params$p_value)) {
+  } else if (!is.null(node$merged_p_value) && isTRUE(control$p_value)) {
     stringr::str_c(
       "merging (", stringr::str_c(vals[node$merged_candidates], collapse = " and "), "): ",
       signif(node$merged_p_value, control$digits)
@@ -349,21 +349,20 @@ draw.covlmc <- function(ct, format,
   dot_params$with_state <- with_state
   if (format == "ascii") {
     rec_draw_covlmc(
-      control$root, "", ct, ct$vals, control, covlmc_node2txt,
-      c(list(
+      control$root, "", ct, ct$vals,
+      c(control, list(
         model = model, p_value = p_value,
-        collapse_constant = constant_as_prob,
-        digits = control$digits
-      ), dot_params)
+        collapse_constant = constant_as_prob
+      ), dot_params), covlmc_node2txt
     )
   } else if (format == "latex") {
     draw_latex_covlmc(
       ct, xtable::sanitize(ct$vals, "latex"),
-      covlmc_node2latex,
       c(control, list(
         model = model, p_value = p_value,
         collapse_constant = constant_as_prob
-      ), dot_params)
+      ), dot_params),
+      covlmc_node2latex
     )
   }
   invisible(ct)
