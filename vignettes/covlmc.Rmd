@@ -292,7 +292,7 @@ The estimation process is controlled by three parameters:
 The default parameters work well on the previous example, as shown by the obtained
 model:
 ```{r}
-draw(model, model = "full", p_value = FALSE)
+draw(model, model = "full")
 ```
 
 The model has 2 contexts, 0 and 1, as expected. The logistic models are described
@@ -326,7 +326,7 @@ model_tune
 ```
 and
 ```{r}
-draw(as_covlmc(model_tune), model = "full", p_value = FALSE)
+draw(as_covlmc(model_tune), model = "full")
 ```
 The resulting model is the same as the one obtained before but it was properly 
 obtained by minimising the BIC.
@@ -375,7 +375,7 @@ print(autoplot(elec_tune))
 
 The final model is:
 ```{r}
-draw(as_covlmc(elec_tune), model = "full", p_value = FALSE, with_state = TRUE)
+draw(as_covlmc(elec_tune), model = "full", with_state = TRUE)
 ```
 
 It shows some interesting patterns:
@@ -434,7 +434,7 @@ BIC(elec_model)
 The model can be explored in details by drawing its context tree 
 (see `vignette("context-trees")` for details) as follows:
 ```{r}
-draw(elec_model)
+draw(elec_model, p_value = TRUE)
 ```
 
 The `draw.covlmc()` function is more advanced than its VLMC counterpart. It provides more detailed information, particularly regarding p-values associated with pruning operations. The "merging" p-value corresponds to replacing some of the contexts with a single joint model, while the "collapsing" p-value is associated to pruning all the sub-contexts of a context. P-values associated to specific models correspond to reducing the memory of the corresponding model, that is discarding the dependency 

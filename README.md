@@ -263,23 +263,23 @@ A COVLMC is estimated using the `covlmc` function:
 
 ``` r
 elec_covlmc <- covlmc(elec_dts, elec_cov, min_size = 2, alpha = 0.5)
-draw(elec_covlmc, time_sep = " | ", model = "full", p_value = FALSE)
+draw(elec_covlmc, model = "full")
 #> *
-#> +-- low ([ (I)    | day_1TRUE
-#> |          -1.558 | 1.006     ])
+#> +-- low ([ (I)    & day_1TRUE
+#> |          -1.558 & 1.006     ])
 #> '-- typical
-#> |   +-- low ([ (I)    | day_1TRUE | day_2TRUE
-#> |   |          0.3567 | -27.81    | 27.81    
-#> |   |          -1.253 | -14.39    | 13.69     ])
-#> |   '-- typical ([ (I)    | day_1TRUE
-#> |   |              2.666  | 0.566    
-#> |   |              0.2683 | 0.2426    ])
-#> |   '-- high ([ (I)    | day_1TRUE
-#> |               2.015  | 16.18    
-#> |               0.6931 | 16.61     ])
-#> '-- high ([ (I)   | day_1TRUE
-#>             17.41 | -14.23   
-#>             19.38 | -14.88    ])
+#> |   +-- low ([ (I)    & day_1TRUE | day_2TRUE
+#> |   |          0.3567 & -27.81    | 27.81    
+#> |   |          -1.253 & -14.39    | 13.69     ])
+#> |   '-- typical ([ (I)    & day_1TRUE
+#> |   |              2.666  & 0.566    
+#> |   |              0.2683 & 0.2426    ])
+#> |   '-- high ([ (I)    & day_1TRUE
+#> |               2.015  & 16.18    
+#> |               0.6931 & 16.61     ])
+#> '-- high ([ (I)   & day_1TRUE
+#>             17.41 & -14.23   
+#>             19.38 & -14.88    ])
 ```
 
 The model appears a bit complex. To get a more adapted model, we use a
@@ -294,10 +294,10 @@ print(autoplot(elec_covlmc_tune))
 
 ``` r
 best_elec_covlmc <- as_covlmc(elec_covlmc_tune)
-draw(best_elec_covlmc, model = "full", time_sep = " | ", p_value = FALSE)
+draw(best_elec_covlmc, model = "full")
 #> *
-#> +-- low ([ (I)    | day_1TRUE
-#> |          -1.558 | 1.006     ])
+#> +-- low ([ (I)    & day_1TRUE
+#> |          -1.558 & 1.006     ])
 #> '-- typical
 #> |   +-- low ([ (I)   
 #> |   |          0.3365

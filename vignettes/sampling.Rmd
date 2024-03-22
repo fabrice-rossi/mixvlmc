@@ -272,7 +272,7 @@ Then we adjust a COVLMC with a binary covariate day/night, using the AIC.
 ```{r}
 elec_covlmc_tune <- tune_covlmc(elec_dts, elec_cov, criterion = "AIC")
 best_elec_covlmc <- as_covlmc(elec_covlmc_tune)
-draw(best_elec_covlmc, model = "full", time_sep = " | ", p_value = FALSE)
+draw(best_elec_covlmc, model = "full")
 ```
 
 Then we can simulate longer or shorter days by manipulating the covariates. For
