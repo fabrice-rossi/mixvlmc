@@ -2,6 +2,9 @@
 #'
 #' This function returns a list used to fine tune the [draw()] function behaviour.
 #'
+#' @param digits numerical parameters and p-values are represented using the
+#'   [base::signif()] function, using the number of significant digits specified
+#'   with this parameter (defaults to 4).
 #' @param root character used for the root node.
 #' @param first_node characters used for the first child of a node.
 #' @param next_node characters used for other children of a node.
@@ -23,7 +26,8 @@
 #'
 #' @examples
 #' draw_control(open_ct = "[", close_ct = "]")
-draw_control <- function(root = "*",
+draw_control <- function(digits = 4,
+                         root = "*",
                          first_node = "+",
                          next_node = "'",
                          vbranch = "|",
@@ -36,6 +40,7 @@ draw_control <- function(root = "*",
                          open_p_value = "<",
                          close_p_value = ">") {
   list(
+    digits = digits,
     root = root,
     first_node = first_node,
     next_node = next_node,

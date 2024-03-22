@@ -14,6 +14,8 @@
     `time_sep` parameter has been removed from `draw.covlmc()`
   * the new parameter `constant_as_prob` is set to `TRUE` which modifies also
     the default display
+* the `digits` parameter of `draw.covlmc()` has been removed and replaced by a
+  similar parameter in `draw_control()`
     
 ## New features
 ### Model representation (with `draw()`)

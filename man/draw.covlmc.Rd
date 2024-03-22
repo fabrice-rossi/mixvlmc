@@ -9,7 +9,6 @@
   control = draw_control(),
   model = c("coef", "full"),
   p_value = FALSE,
-  digits = 4,
   with_state = FALSE,
   constant_as_prob = TRUE,
   ...
@@ -31,10 +30,6 @@ be used to tweak model representations (see details).}
 \item{p_value}{specifies whether the p-values of the likelihood ratio tests
 conducted during the covlmc construction must be included in the
 representation (defaults to \code{FALSE}).}
-
-\item{digits}{numerical parameters and p-values are represented using the
-\link[base:Round]{base::signif} function, using the number of significant digits specified
-with this parameter.}
 
 \item{with_state}{specifies whether to display the state associated to each
 dimension of the logistic model (see details).}
@@ -115,7 +110,7 @@ pc <- powerconsumption[powerconsumption$week == 5, ]
 dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1))))
 dts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
 m_cov <- covlmc(dts, dts_cov, min_size = 5)
-draw(m_cov, digits = 3)
+draw(m_cov, control = draw_control(digits = 3))
 draw(m_cov, model = NULL)
 draw(m_cov, p_value = TRUE)
 draw(m_cov, p_value = FALSE, control = draw_control(time_sep = " ^ "))

@@ -1,7 +1,8 @@
 # trimmed model can be drawn
 
     Code
-      draw(t_m_cov_model, model = "coef", with_state = TRUE, digits = 2, p_value = TRUE)
+      draw(t_m_cov_model, model = "coef", with_state = TRUE, control = draw_control(
+        digits = 2), p_value = TRUE)
     Output
       *
       +-- (0,1.28]
@@ -24,7 +25,8 @@
 ---
 
     Code
-      draw(t_m_cov_model, model = "coef", with_state = TRUE, digits = 2)
+      draw(t_m_cov_model, model = "coef", with_state = TRUE, control = draw_control(
+        digits = 2))
     Output
       *
       +-- (0,1.28]
@@ -47,7 +49,8 @@
 ---
 
     Code
-      draw(t_m_cov, model = "coef", with_state = TRUE, digits = 2, p_value = TRUE)
+      draw(t_m_cov, model = "coef", with_state = TRUE, control = draw_control(digits = 2),
+      p_value = TRUE)
     Output
       *
       +-- (0,1.28]
@@ -70,8 +73,8 @@
 ---
 
     Code
-      draw(t_m_cov_model, model = "full", control = draw_control(time_sep = " % "),
-      with_state = TRUE, digits = 2)
+      draw(t_m_cov_model, model = "full", control = draw_control(time_sep = " % ",
+        digits = 2), with_state = TRUE)
     Output
       *
       +-- (0,1.28]
@@ -104,7 +107,7 @@
 
     Code
       draw(t_m_cov, model = "full", control = draw_control(time_sep = " % ",
-        intercept_sep = " + "), with_state = TRUE, digits = 2)
+        intercept_sep = " + ", digits = 2), with_state = TRUE)
     Output
       *
       +-- (0,1.28]
@@ -136,7 +139,8 @@
 ---
 
     Code
-      draw(t_m_cov_model, model = "coef", with_state = TRUE, digits = 2, p_value = TRUE)
+      draw(t_m_cov_model, model = "coef", with_state = TRUE, control = draw_control(
+        digits = 2), p_value = TRUE)
     Output
       *
       +-- (0,0.48] (<8.7e-07> [ (0.48,1.63]/(0,0.48] ~ -2.7 & 1.1 
@@ -152,7 +156,8 @@
 ---
 
     Code
-      draw(t_m_cov_model, model = "coef", with_state = TRUE, digits = 2)
+      draw(t_m_cov_model, model = "coef", with_state = TRUE, control = draw_control(
+        digits = 2))
     Output
       *
       +-- (0,0.48] ([ (0.48,1.63]/(0,0.48] ~ -2.7 & 1.1 
@@ -168,7 +173,8 @@
 ---
 
     Code
-      draw(t_m_cov, model = "coef", with_state = TRUE, digits = 2, p_value = TRUE)
+      draw(t_m_cov, model = "coef", with_state = TRUE, control = draw_control(digits = 2),
+      p_value = TRUE)
     Output
       *
       +-- (0,0.48] (<8.7e-07> [ (0.48,1.63]/(0,0.48] ~ -2.7 & 1.1 
@@ -184,8 +190,8 @@
 ---
 
     Code
-      draw(t_m_cov_model, model = "full", control = draw_control(time_sep = " % "),
-      with_state = TRUE, digits = 2)
+      draw(t_m_cov_model, model = "full", control = draw_control(time_sep = " % ",
+        digits = 2), with_state = TRUE)
     Output
       *
       +-- (0,0.48] ([ ((0,0.48])  ~ (I)  & day_night_1TRUE
@@ -206,7 +212,7 @@
 
     Code
       draw(t_m_cov, model = "full", control = draw_control(time_sep = " % ",
-        intercept_sep = " + "), with_state = TRUE, digits = 2)
+        intercept_sep = " + ", digits = 2), with_state = TRUE)
     Output
       *
       +-- (0,0.48] ([ ((0,0.48])  ~ (I)  + day_night_1TRUE
@@ -226,7 +232,8 @@
 ---
 
     Code
-      draw(t_m_cov_model, model = "coef", with_state = TRUE, digits = 2, p_value = TRUE)
+      draw(t_m_cov_model, model = "coef", with_state = TRUE, control = draw_control(
+        digits = 2), p_value = TRUE)
     Output
       *
       +-- (0,1.28]
@@ -249,7 +256,8 @@
 ---
 
     Code
-      draw(t_m_cov_model, model = "coef", with_state = TRUE, digits = 2)
+      draw(t_m_cov_model, model = "coef", with_state = TRUE, control = draw_control(
+        digits = 2))
     Output
       *
       +-- (0,1.28]
@@ -272,7 +280,8 @@
 ---
 
     Code
-      draw(t_m_cov, model = "coef", with_state = TRUE, digits = 2, p_value = TRUE)
+      draw(t_m_cov, model = "coef", with_state = TRUE, control = draw_control(digits = 2),
+      p_value = TRUE)
     Output
       *
       +-- (0,1.28]
@@ -295,8 +304,8 @@
 ---
 
     Code
-      draw(t_m_cov_model, model = "full", control = draw_control(time_sep = " % "),
-      with_state = TRUE, digits = 2)
+      draw(t_m_cov_model, model = "full", control = draw_control(time_sep = " % ",
+        digits = 2), with_state = TRUE)
     Output
       *
       +-- (0,1.28]
@@ -329,7 +338,7 @@
 
     Code
       draw(t_m_cov, model = "full", control = draw_control(time_sep = " % ",
-        intercept_sep = " + "), with_state = TRUE, digits = 2)
+        intercept_sep = " + ", digits = 2), with_state = TRUE)
     Output
       *
       +-- (0,1.28]
@@ -361,7 +370,8 @@
 ---
 
     Code
-      draw(t_m_cov_model, model = "coef", with_state = TRUE, digits = 2, p_value = TRUE)
+      draw(t_m_cov_model, model = "coef", with_state = TRUE, control = draw_control(
+        digits = 2), p_value = TRUE)
     Output
       *
       +-- (0,0.48] (<8.7e-07> [ (0.48,1.63]/(0,0.48] ~ -2.7 & 1.1 
@@ -377,7 +387,8 @@
 ---
 
     Code
-      draw(t_m_cov_model, model = "coef", with_state = TRUE, digits = 2)
+      draw(t_m_cov_model, model = "coef", with_state = TRUE, control = draw_control(
+        digits = 2))
     Output
       *
       +-- (0,0.48] ([ (0.48,1.63]/(0,0.48] ~ -2.7 & 1.1 
@@ -393,7 +404,8 @@
 ---
 
     Code
-      draw(t_m_cov, model = "coef", with_state = TRUE, digits = 2, p_value = TRUE)
+      draw(t_m_cov, model = "coef", with_state = TRUE, control = draw_control(digits = 2),
+      p_value = TRUE)
     Output
       *
       +-- (0,0.48] (<8.7e-07> [ (0.48,1.63]/(0,0.48] ~ -2.7 & 1.1 
@@ -409,8 +421,8 @@
 ---
 
     Code
-      draw(t_m_cov_model, model = "full", control = draw_control(time_sep = " % "),
-      with_state = TRUE, digits = 2)
+      draw(t_m_cov_model, model = "full", control = draw_control(time_sep = " % ",
+        digits = 2), with_state = TRUE)
     Output
       *
       +-- (0,0.48] ([ ((0,0.48])  ~ (I)  & day_night_1TRUE
@@ -431,7 +443,7 @@
 
     Code
       draw(t_m_cov, model = "full", control = draw_control(time_sep = " % ",
-        intercept_sep = " + "), with_state = TRUE, digits = 2)
+        intercept_sep = " + ", digits = 2), with_state = TRUE)
     Output
       *
       +-- (0,0.48] ([ ((0,0.48])  ~ (I)  + day_night_1TRUE

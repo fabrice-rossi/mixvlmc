@@ -4,19 +4,19 @@ draw_covlmc_model <- function(coefficients, p_value, hsize, names, lev, params,
   if (params[["model"]] == "coef" || params[["model"]] == "full") {
     if (params[["model"]] == "coef") {
       if (!is.null(model) && isTRUE(params$collapse_constant) && glm_is_constant(model)) {
-        coeffs <- stringr::str_c(signif(glm_to_probs(model, lev), params$digit),
+        coeffs <- stringr::str_c(signif(glm_to_probs(model, lev), control$digit),
           collapse = ", "
         )
         collapsed <- TRUE
       } else if (isTRUE(params$with_state)) {
         lev <- stringr::str_c(lev[-1], lev[1], sep = "/")
-        coeffs <- pp_mat(coefficients, params$digits,
+        coeffs <- pp_mat(coefficients, control$digits,
           sep = control$time_sep,
           groups = hsize, rownames = lev, rn_sep = control$level_sep,
           first_grp_sep = control$intercept_sep
         )
       } else {
-        coeffs <- pp_mat(coefficients, params$digits,
+        coeffs <- pp_mat(coefficients, control$digits,
           sep = control$time_sep,
           groups = hsize,
           first_grp_sep = control$intercept_sep
@@ -26,14 +26,14 @@ draw_covlmc_model <- function(coefficients, p_value, hsize, names, lev, params,
       if (isTRUE(params$with_state)) {
         lev <- as.character(lev)
         lev[1] <- stringr::str_c("(", lev[1], ")")
-        coeffs <- pp_mat(coefficients, params$digits,
+        coeffs <- pp_mat(coefficients, control$digits,
           sep = control$time_sep,
           groups = hsize, colnames = names, rownames = lev,
           rn_sep = control$level_sep,
           first_grp_sep = control$intercept_sep
         )
       } else {
-        coeffs <- pp_mat(coefficients, params$digits,
+        coeffs <- pp_mat(coefficients, control$digits,
           sep = control$time_sep,
           groups = hsize, colnames = names,
           first_grp_sep = control$intercept_sep
@@ -43,7 +43,7 @@ draw_covlmc_model <- function(coefficients, p_value, hsize, names, lev, params,
     if (length(coeffs) == 1) {
       if (isTRUE(params$p_value)) {
         p_value_str <- stringr::str_c(control$open_p_value,
-          signif_null(p_value, params$digits),
+          signif_null(p_value, control$digits),
           control$close_p_value,
           sep = ""
         )
@@ -62,7 +62,7 @@ draw_covlmc_model <- function(coefficients, p_value, hsize, names, lev, params,
     } else {
       if (isTRUE(params$p_value)) {
         p_value_str <- stringr::str_c(control$open_p_value,
-          as.character(signif_null(p_value, params$digits)),
+          as.character(signif_null(p_value, control$digits)),
           control$close_p_value,
           sep = ""
         )
@@ -80,7 +80,7 @@ draw_covlmc_model <- function(coefficients, p_value, hsize, names, lev, params,
     }
   } else {
     if (isTRUE(params$p_value)) {
-      as.character(signif_null(p_value, params$digits))
+      as.character(signif_null(p_value, control$digits))
     } else {
       NULL
     }
@@ -145,10 +145,6 @@ rec_draw_covlmc <- function(label, prefix, ct, vals, control, node2txt, params) 
 }
 
 covlmc_node2txt <- function(node, vals, params, control) {
-  digits <- params$digits
-  if (is.null(digits)) {
-    digits <- 2
-  }
   if (!is.null(node$model)) {
     if (!is.null(node$model$model)) {
       model_levels <- glm_levels(node$model$model, vals)
@@ -165,11 +161,11 @@ covlmc_node2txt <- function(node, vals, params, control) {
       node$model$model
     )
   } else if (!is.null(node$p_value) && isTRUE(params$p_value)) {
-    stringr::str_c("collapsing:", signif(node$p_value, params$digits), sep = " ")
+    stringr::str_c("collapsing:", signif(node$p_value, control$digits), sep = " ")
   } else if (!is.null(node$merged_p_value) && isTRUE(params$p_value)) {
     stringr::str_c(
       "merging (", stringr::str_c(vals[node$merged_candidates], collapse = " and "), "): ",
-      signif(node$merged_p_value, params$digits)
+      signif(node$merged_p_value, control$digits)
     )
   } else {
     NULL
@@ -189,9 +185,6 @@ covlmc_node2txt <- function(node, vals, params, control) {
 #' @param p_value specifies whether the p-values of the likelihood ratio tests
 #'   conducted during the covlmc construction must be included in the
 #'   representation (defaults to `FALSE`).
-#' @param digits numerical parameters and p-values are represented using the
-#'   [base::signif] function, using the number of significant digits specified
-#'   with this parameter.
 #' @param with_state specifies whether to display the state associated to each
 #'   dimension of the logistic model (see details).
 #' @param constant_as_prob specifies whether to represent logistic models that
@@ -247,14 +240,14 @@ covlmc_node2txt <- function(node, vals, params, control) {
 #' dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1))))
 #' dts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
 #' m_cov <- covlmc(dts, dts_cov, min_size = 5)
-#' draw(m_cov, digits = 3)
+#' draw(m_cov, control = draw_control(digits = 3))
 #' draw(m_cov, model = NULL)
 #' draw(m_cov, p_value = TRUE)
 #' draw(m_cov, p_value = FALSE, control = draw_control(time_sep = " ^ "))
 #' draw(m_cov, model = "full", control = draw_control(time_sep = " ^ "))
 #' @export
 draw.covlmc <- function(ct, control = draw_control(), model = c("coef", "full"),
-                        p_value = FALSE, digits = 4, with_state = FALSE,
+                        p_value = FALSE, with_state = FALSE,
                         constant_as_prob = TRUE,
                         ...) {
   if (is.null(model)) {
@@ -267,7 +260,7 @@ draw.covlmc <- function(ct, control = draw_control(), model = c("coef", "full"),
   rec_draw_covlmc(
     control$root, "", ct, ct$vals, control, covlmc_node2txt,
     c(list(
-      model = model, p_value = p_value, digits = digits,
+      model = model, p_value = p_value,
       collapse_constant = constant_as_prob
     ), dot_params)
   )

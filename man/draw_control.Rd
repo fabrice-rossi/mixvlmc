@@ -5,6 +5,7 @@
 \title{Control parameters for \code{draw}}
 \usage{
 draw_control(
+  digits = 4,
   root = "*",
   first_node = "+",
   next_node = "'",
@@ -20,6 +21,10 @@ draw_control(
 )
 }
 \arguments{
+\item{digits}{numerical parameters and p-values are represented using the
+\code{\link[base:Round]{base::signif()}} function, using the number of significant digits specified
+with this parameter (defaults to 4).}
+
 \item{root}{character used for the root node.}
 
 \item{first_node}{characters used for the first child of a node.}

@@ -6,7 +6,10 @@ draw.vlmc_cpp <- function(ct, control = draw_control(), prob = TRUE, ...) {
   if (is.null(prob)) {
     rec_draw_cpp(control$root, "", ct_r, ct_r[[1]], ct$vals, control, NULL, list(...))
   } else {
-    rec_draw_cpp(control$root, "", ct_r, ct_r[[1]], ct$vals, control, vlmc_node2txt, c(list(prob = prob), list(...)))
+    rec_draw_cpp(
+      control$root, "", ct_r, ct_r[[1]], ct$vals, control, vlmc_node2txt,
+      c(list(prob = prob, digits = control$digits), list(...))
+    )
   }
   invisible(ct)
 }

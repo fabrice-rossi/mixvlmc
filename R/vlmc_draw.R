@@ -3,7 +3,9 @@ vlmc_node2txt <- function(ct, params) {
     NULL
   } else {
     if (isTRUE(params$prob)) {
-      stringr::str_c(signif(ct[["f_by"]] / sum(ct[["f_by"]]), 4), collapse = ", ")
+      stringr::str_c(signif(ct[["f_by"]] / sum(ct[["f_by"]]), params$digits),
+        collapse = ", "
+      )
     } else {
       stringr::str_c(ct[["f_by"]], collapse = ", ")
     }
@@ -31,7 +33,10 @@ draw.vlmc <- function(ct, control = draw_control(), prob = TRUE, ...) {
   if (is.null(prob)) {
     rec_draw(control$root, "", ct, ct$vals, control, NULL, list(...))
   } else {
-    rec_draw(control$root, "", ct, ct$vals, control, vlmc_node2txt, c(list(prob = prob), list(...)))
+    rec_draw(
+      control$root, "", ct, ct$vals, control, vlmc_node2txt,
+      c(list(prob = prob, digits = control$digits, list(...)))
+    )
   }
   invisible(ct)
 }
