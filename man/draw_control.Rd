@@ -17,7 +17,13 @@ draw_control(
   time_sep = " | ",
   intercept_sep = " & ",
   open_p_value = "<",
-  close_p_value = ">"
+  close_p_value = ">",
+  orientation = c("vertical", "horizontal"),
+  tabular = TRUE,
+  tab_orientation = c("vertical", "horizontal"),
+  decoration = c("none", "rectangle", "circle", "ellipse"),
+  fontsize = "normalsize",
+  prob_fontsize = "small"
 )
 }
 \arguments{
@@ -25,39 +31,89 @@ draw_control(
 \code{\link[base:Round]{base::signif()}} function, using the number of significant digits specified
 with this parameter (defaults to 4).}
 
-\item{root}{character used for the root node.}
+\item{root}{character used for the root node ("ascii").}
 
-\item{first_node}{characters used for the first child of a node.}
+\item{first_node}{characters used for the first child of a node ("ascii").}
 
-\item{next_node}{characters used for other children of a node.}
+\item{next_node}{characters used for other children of a node ("ascii").}
 
-\item{vbranch}{characters used to represent a branch in a vertical way.}
+\item{vbranch}{characters used to represent a branch in a vertical way
+("ascii").}
 
-\item{hbranch}{characters used to represent a branch in a horizontal was.}
+\item{hbranch}{characters used to represent a branch in a horizontal was
+("ascii").}
 
-\item{open_ct}{characters used to start each node specific text representation.}
+\item{open_ct}{characters used to start each node specific text
+representation ("ascii").}
 
-\item{close_ct}{characters used to end each node specific text representation.}
+\item{close_ct}{characters used to end each node specific text representation
+("ascii").}
 
-\item{level_sep}{characters used to separate levels from models in \code{\link[=draw.covlmc]{draw.covlmc()}}.}
+\item{level_sep}{characters used to separate levels from models in
+\code{\link[=draw.covlmc]{draw.covlmc()}} ("ascii").}
 
-\item{time_sep}{characters used to separate temporal blocks in \code{\link[=draw.covlmc]{draw.covlmc()}}.}
+\item{time_sep}{characters used to separate temporal blocks in
+\code{\link[=draw.covlmc]{draw.covlmc()}} ("ascii").}
 
-\item{intercept_sep}{characters used to the intercept from the other parameters
-in \code{\link[=draw.covlmc]{draw.covlmc()}}}
+\item{intercept_sep}{characters used to the intercept from the other
+parameters in \code{\link[=draw.covlmc]{draw.covlmc()}} ("ascii").}
 
 \item{open_p_value}{characters used as opening delimiters for the p value of
-a node in \code{\link[=draw.covlmc]{draw.covlmc()}}}
+a node in \code{\link[=draw.covlmc]{draw.covlmc()}} ("ascii").}
 
 \item{close_p_value}{characters used as closing delimiters for the p value of
-a node in \code{\link[=draw.covlmc]{draw.covlmc()}}}
+a node in \code{\link[=draw.covlmc]{draw.covlmc()}} ("ascii").}
+
+\item{orientation}{specifies the global orientation of the tree, either
+"vertical" (default) or "horizontal" ("latex").}
+
+\item{tabular}{if TRUE (default value), the "latex" format will use tables
+for each node, with one row for the state value and other rows for
+additional information (such as the conditional probability associated to
+the context). Notice that \code{\link[=draw.covlmc]{draw.covlmc()}} always uses tables regardless
+of the value of \code{tabular}.}
+
+\item{tab_orientation}{specifies the way the models are represented when used
+by \code{\link[=draw.covlmc]{draw.covlmc()}} ("latex"). The default value is \code{"vertical"}: this is
+well adapted to models with long covariate dependencies (see
+\code{covariate_depth()}). The other possible value is \code{"horizontal"}.}
+
+\item{decoration}{specifies node decoration in the "latex" format, see
+details.}
+
+\item{fontsize}{font size for the state names in the "latex" format (using
+latex standard font size, default to \code{"normalsize"}).}
+
+\item{prob_fontsize}{font size for the context counts, probabilities or
+models in the "latex" format (using latex standard font size, defaults to
+\code{"small"}).}
 }
 \value{
 a list
 }
 \description{
-This function returns a list used to fine tune the \code{\link[=draw]{draw()}} function behaviour.
+This function returns a list used to fine tune the \code{\link[=draw]{draw()}} function
+behaviour.
 }
+\details{
+Parameters are generally specific to the \code{format} used for \code{\link[=draw]{draw()}}. If this
+is the case, the format is given at the end of the parameter description.
+Some parameters are also specific to some functions inheriting from \code{\link[=draw]{draw()}}.
+}
+\section{Decoration}{
+
+
+The LaTeX format (\code{"latex"}) can "decorate" the nodes of the context tree
+by drawing borders. We support only basic decorations, but in theory all
+TikZ possibilities could be used (see the documentation of the \href{https://ctan.org/pkg/forest}{forest LaTeX package}). Supported decorations:
+\itemize{
+\item \code{"none"}: default, no decoration;
+\item \code{"rectangle"}: adds a rectangular border to all nodes;
+\item \code{"circle"}: adds a circular border to all nodes;
+\item \code{"ellipse"}: adds an ellipsoidal border to all nodes.
+}
+}
+
 \examples{
 draw_control(open_ct = "[", close_ct = "]")
 }

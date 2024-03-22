@@ -174,70 +174,153 @@ covlmc_node2txt <- function(node, vals, params, control) {
 
 #' Text based representation of a covlmc model
 #'
-#' @inherit draw
+#' This function 'draws' a covlmc as a text.
+#'
+#' The function uses different text based formats (plain "ascii art" and LaTeX)
+#' to represent the context tree. Fine tuning of the representation can be done
+#' via the [draw_control()] function.
+#'
+#' Contrarily to [draw()] functions adapted to context trees [draw.ctx_tree()]
+#' and VLMC [draw.vlmc()], the present function does not try to produce similar
+#' results for the `"ascii"` format and the `"latex"` format as the `"ascii"`
+#' format is intrinsically more limited in terms of model representations. This
+#' is detailed below.
+#'
 #' @param ct a fitted covlmc model.
 #' @param model this parameter controls the display of logistic models
-#'   associated to nodes. The default `model="coef"` represents the coefficients
-#'   of the logistic models associated to each context. `model="full"` includes
-#'   the name of the variables in the representation (see details). Setting
-#'   `model=NULL` removes the model representations. Additional parameters can
-#'   be used to tweak model representations (see details).
+#'   associated to nodes (accepted values: `"coeff"`, `"full"` and `NULL`). The
+#'   interpretation of the parameter depends on the format, see below for
+#'   details.
 #' @param p_value specifies whether the p-values of the likelihood ratio tests
 #'   conducted during the covlmc construction must be included in the
 #'   representation (defaults to `FALSE`).
 #' @param with_state specifies whether to display the state associated to each
 #'   dimension of the logistic model (see details).
-#' @param constant_as_prob specifies whether to represent logistic models that
+#' @param constant_as_prob specifies how to represent constant logistic models
+#'   for `format="ascii"` (defaults to `TRUE`, see details). Disregarded when
+#'   `format="latex"`.
+#'
+#' @inheritParams draw
+#' @section Format:
+#'
+#'   The `format` parameter specifies the format used for the textual output.
+#'   With the default value `ascii` the output is produced in "ascii art" using
+#'   by default only ascii characters (notice that `draw_control()` can be used
+#'   to specified non ascii characters, but this is discouraged).
+#'
+#'   With the `latex` value, the output is produced in LaTeX, leveraging the
+#'   [forest](https://ctan.org/pkg/forest) Latex package (see
+#'   <https://ctan.org/pkg/forest>). Each call to `draw.covlmc()` produces a full
+#'   `forest` LaTeX environment. This can be included as is in a LaTeX document,
+#'   provided the `forest` package  is loaded in the preamble of the document.
+#'   The LaTeX output is sanitized to avoid potential problems induced by
+#'   special characters in the names of the states of the context tree.
+#'
+#' @section `"ascii"` format:
+#' ## Parameters
+#'
+#' When `format="ascii"` the parameters are interpreted as follows:
+#'
+#' - `model`: the default `model="coef"` represents only the *coefficients*
+#'   of the logistic models associated to each context. `model="full"` includes
+#'   the name of the variables in the representation. Setting `model=NULL`
+#'   removes the model representations. Additional parameters can be used to
+#'   tweak model representations (see below).
+#'
+#' - `constant_as_prob`: specifies whether to represent logistic models that
 #'   do not use covariates (a.k.a. constant models) using the probability
-#'   distributions they induced on the state space (default behaviour with
-#'   `constant_as_prob=TRUE`) or as normal models (when set to `FALSE`). This
-#'   is not taken into account when `model` is not set to `"coef"`.
-#' @section Specific parameters in `control`:
+#'   distributions they induce on the state space (default behaviour with
+#'   `constant_as_prob=TRUE`) or as normal models (when set to `FALSE`). This is
+#'   not taken into account when `model` is not set to `"coef"`.
 #'
-#'   Model representations are affected by the following additional
-#'   fields of `control` that are specific to [covlmc()]:
+#' - fields of the `control` list:
 #'
-#'   - `intercept_sep`: character(s) used to separate the intercept from
+#'    - `intercept_sep`: character(s) used to separate the intercept from
 #'   the other coefficients in model representation.
 #'
-#'   - `time_sep`: character(s) used to split the coefficients list by blocks
+#'    - `time_sep`: character(s) used to split the coefficients list by blocks
 #'   associated to time delays in the covariate inclusion into the logistic
 #'   model. The first block contains the intercept(s), the second block the
 #'   covariate values a time t-1, the third block at time t-2, etc.
 #'
-#'   - `level_sep`: character(s) used separate levels from model, see below.
+#'    - `level_sep`: character(s) used separate levels from model, see below.
 #'
-#'   - `open_p_value` and `close_p_value`: delimiters used around the p-values
+#'    - `open_p_value` and `close_p_value`: delimiters used around the p-values
 #'   when `p_value=TRUE`
 #'
-#' @section Variable representation:
-#'
-#'   When `model="full"`, the representation includes the names of the variables
-#'   used by the logistic models. Names are the one generated by the underlying
-#'   logistic model, e.g. [stats::glm()]. Numerical variable names are used as
-#'   is, while factors have levels appended. The intercept is denoted `(I)` to
-#'   save space. The time delays are represented by an underscore followed by
-#'   the time delay. For instance if the model uses the numerical covariate `y`
-#'   with two delays, it will appear with two variables `y_1` and `y_2`.
-#'
-#' @section State representation:
+#' ## State representation
 #'
 #'   When `model` is not `NULL`, the coefficients of the logistic models are
 #'   presented, organized in rows associated to states. One state is used as the
 #'   reference state and the logistic model aims at predicting the ratio of
 #'   probability between another state and the reference one (in log scale).
 #'   When `with_state` is `TRUE`, the display includes for each row of
-#'   coefficients the target state. This is useful when using e.g. `VGAM::vglm`
+#'   coefficients the target state. This is useful when using e.g. `VGAM::vglm()`
 #'   as unused levels of the target variable will be automatically dropped from
 #'   the model, leading to a reduce number of rows. The reference state is
 #'   either shown on the first row if `model` is `"full"` or after the state on
 #'   each row if `model` is `"coef"`. States are separated from the model
-#'   representation by the character(s) specified in `level_sep` in the `control`
-#'   list (see [draw_control()]).
+#'   representation by the character(s) specified in `level_sep` in the
+#'   `control` list.
+#'
+#' @section `"latex"` format:
+#' ## Parameters
+#' When `format="latex"` the parameters are interpreted as follows:
+#'
+#' - `model`: the models are always represented completely in the LaTeX export
+#'   unless `model` is set to `NULL`.
+#'
+#' - `constant_as_prob`: in the LaTeX export, constant logistic models are
+#'   always represented by the corresponding probability distribution on the
+#'   state space, regardless of the value of `constant_as_prob`.
+#'
+#' - fields of the `control` list:
+#'
+#'   - `orientation`: specifies the orientation of the tree, either the default
+#'     `"vertical"` (expanding from top to bottom) or `"horizontal"` (expanding
+#'     from right to left);
+#'
+#'    - `tab_orientation`: specifies the orientation of the tables used to
+#'     represent model coefficients in the tree, either the default `"vertical"`
+#'     (covariates are listed on one column) or `"horizontal"` (covariates are listed
+#'     on one row);
+#'
+#'    - `fontsize` and `prob_fontsize` handle the size of the fonts used for the
+#'    states and for the models, see [draw_control()] for details;
+#'
+#'    - `decoration` can be used to add borders around states, see
+#'     [draw_control()] for details;
+#'
+#' ## State representation
+#'
+#'   When `model` is not `NULL`, the coefficients of the logistic models are
+#'   presented, organized in rows or in columns (depending `tab_orientation`) on
+#'   associated to states. One state is used as the reference state and the
+#'   logistic model aims at predicting the ratio of probability between another
+#'   state and the reference one (in log scale). When `with_state` is `TRUE`,
+#'   the display includes for each row/column of coefficients the target state.
+#'   The reference state is shown on the first row/column.
+#'
+#' @section Variable representation:
+#'
+#' When the representation includes the names of the variables used by the
+#' logistic models, they are the one generated by the underlying logistic model,
+#' e.g. [stats::glm()]. Numerical variable names are used as is, while factors
+#' have levels appended. The intercept is denoted `(I)` to save space.
+#'
+#' When `format="ascii"`, the time delays are represented by an underscore
+#' followed by the time delay. For instance if the model uses the numerical
+#' covariate `y` with two delays, it will appear with two variables `y_1` and
+#' `y_2`.
+#'
+#' When `format="latex"`, the representation uses a temporal subscript of the
+#' form `t-1`, `t-2`, etc.
 #'
 #' @examples
 #' pc <- powerconsumption[powerconsumption$week == 5, ]
-#' dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1))))
+#' dts <- cut(pc$active_power,
+#'   breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1)))
+#' )
 #' dts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
 #' m_cov <- covlmc(dts, dts_cov, min_size = 5)
 #' draw(m_cov, control = draw_control(digits = 3))
@@ -245,11 +328,18 @@ covlmc_node2txt <- function(node, vals, params, control) {
 #' draw(m_cov, p_value = TRUE)
 #' draw(m_cov, p_value = FALSE, control = draw_control(time_sep = " ^ "))
 #' draw(m_cov, model = "full", control = draw_control(time_sep = " ^ "))
+#' draw(m_cov, format = "latex", control = draw_control(orientation = "h"))
 #' @export
-draw.covlmc <- function(ct, control = draw_control(), model = c("coef", "full"),
+draw.covlmc <- function(ct, format,
+                        control = draw_control(), model = c("coef", "full"),
                         p_value = FALSE, with_state = FALSE,
                         constant_as_prob = TRUE,
                         ...) {
+  if (rlang::is_missing(format)) {
+    format <- "ascii"
+  } else {
+    format <- match.arg(format, c("ascii", "latex"))
+  }
   if (is.null(model)) {
     model <- "none"
   } else {
@@ -257,12 +347,24 @@ draw.covlmc <- function(ct, control = draw_control(), model = c("coef", "full"),
   }
   dot_params <- list(...)
   dot_params$with_state <- with_state
-  rec_draw_covlmc(
-    control$root, "", ct, ct$vals, control, covlmc_node2txt,
-    c(list(
-      model = model, p_value = p_value,
-      collapse_constant = constant_as_prob
-    ), dot_params)
-  )
+  if (format == "ascii") {
+    rec_draw_covlmc(
+      control$root, "", ct, ct$vals, control, covlmc_node2txt,
+      c(list(
+        model = model, p_value = p_value,
+        collapse_constant = constant_as_prob,
+        digits = control$digits
+      ), dot_params)
+    )
+  } else if (format == "latex") {
+    draw_latex_covlmc(
+      ct, xtable::sanitize(ct$vals, "latex"),
+      covlmc_node2latex,
+      c(control, list(
+        model = model, p_value = p_value,
+        collapse_constant = constant_as_prob
+      ), dot_params)
+    )
+  }
   invisible(ct)
 }

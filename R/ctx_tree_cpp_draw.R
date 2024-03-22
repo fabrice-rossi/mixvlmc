@@ -42,14 +42,28 @@ rec_draw_cpp <- function(label, prefix, tree, ct, vals, control, node2txt, param
 
 #' @export
 #' @rdname draw.ctx_tree
-draw.ctx_tree_cpp <- function(ct, control = draw_control(), frequency = NULL, ...) {
+draw.ctx_tree_cpp <- function(ct, format, control = draw_control(),
+                              frequency = NULL, ...) {
+  if (rlang::is_missing(format)) {
+    format <- "ascii"
+  } else {
+    format <- match.arg(format, c("ascii", "latex"))
+  }
   restore_model(ct)
   ct_r <- ct$root$representation()
-  if (is.null(frequency)) {
-    rec_draw_cpp(control$root, "", ct_r, ct_r[[1]], ct$vals, control, NULL, list(...))
-  } else {
-    frequency <- match.arg(frequency, c("total", "detailed"))
-    rec_draw_cpp(control$root, "", ct_r, ct_r[[1]], ct$vals, control, ctx_tree_node2txt, c(list(frequency = frequency), list(...)))
+  if (format == "ascii") {
+    if (is.null(frequency)) {
+      rec_draw_cpp(control$root, "", ct_r, ct_r[[1]], ct$vals, control, NULL, list(...))
+    } else {
+      frequency <- match.arg(frequency, c("total", "detailed"))
+      rec_draw_cpp(control$root, "", ct_r, ct_r[[1]], ct$vals, control, ctx_tree_node2txt, c(list(frequency = frequency), list(...)))
+    }
+  } else if (format == "latex") {
+    draw_latex_ctx_tree_cpp(
+      ct_r, ct_r[[1]], xtable::sanitize(ct$vals, "latex"),
+      ctx_tree_node2latex,
+      c(control, list(...), list(frequency = frequency))
+    )
   }
   invisible(ct)
 }

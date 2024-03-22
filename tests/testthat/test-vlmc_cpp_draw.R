@@ -34,3 +34,40 @@ test_that("C++ based vlmc draw produces identical results as the R one", {
     ))
   }
 })
+
+test_that("C++ based vlmc draw produces identical results as the R one (latex)", {
+  data_set <- build_markov_chain(1000, 3, seed = 0)
+  x_vlmc <- vlmc(data_set$x)
+  x_vlmc_cpp <- vlmc(data_set$x, backend = "C++")
+  expect_true(compare_output(
+    {
+      draw(x_vlmc, format = "latex")
+      draw(x_vlmc, format = "latex", prob = NULL)
+      draw(x_vlmc, format = "latex", prob = FALSE)
+    },
+    {
+      draw(x_vlmc_cpp, format = "latex")
+      draw(x_vlmc_cpp, format = "latex", prob = NULL)
+      draw(x_vlmc_cpp, format = "latex", prob = FALSE)
+    }
+  ))
+  skip_on_ci()
+  skip_on_cran()
+  for (k in 1:5) {
+    dts <- sample(0:k, 100, replace = TRUE)
+    r_vlmc <- vlmc(dts, min_size = 1, max_depth = 8, alpha = 0.5)
+    cpp_vlmc <- vlmc(dts, min_size = 1, max_depth = 8, alpha = 0.5, backend = "C++")
+    expect_true(compare_output(
+      {
+        draw(r_vlmc, format = "latex")
+        draw(r_vlmc, format = "latex", prob = NULL)
+        draw(r_vlmc, format = "latex", prob = FALSE)
+      },
+      {
+        draw(cpp_vlmc, format = "latex")
+        draw(cpp_vlmc, format = "latex", prob = NULL)
+        draw(cpp_vlmc, format = "latex", prob = FALSE)
+      }
+    ))
+  }
+})

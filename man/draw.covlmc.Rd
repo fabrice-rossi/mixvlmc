@@ -6,6 +6,7 @@
 \usage{
 \method{draw}{covlmc}(
   ct,
+  format,
   control = draw_control(),
   model = c("coef", "full"),
   p_value = FALSE,
@@ -17,15 +18,16 @@
 \arguments{
 \item{ct}{a fitted covlmc model.}
 
+\item{format}{a character string that specifies the output format of the
+function. Possible values are \code{ascii} (default) and \code{latex}. See details.}
+
 \item{control}{a list of low level control parameters of the text
 representation. See details and \code{\link[=draw_control]{draw_control()}}.}
 
 \item{model}{this parameter controls the display of logistic models
-associated to nodes. The default \code{model="coef"} represents the coefficients
-of the logistic models associated to each context. \code{model="full"} includes
-the name of the variables in the representation (see details). Setting
-\code{model=NULL} removes the model representations. Additional parameters can
-be used to tweak model representations (see details).}
+associated to nodes (accepted values: \code{"coeff"}, \code{"full"} and \code{NULL}). The
+interpretation of the parameter depends on the format, see below for
+details.}
 
 \item{p_value}{specifies whether the p-values of the likelihood ratio tests
 conducted during the covlmc construction must be included in the
@@ -34,35 +36,60 @@ representation (defaults to \code{FALSE}).}
 \item{with_state}{specifies whether to display the state associated to each
 dimension of the logistic model (see details).}
 
-\item{constant_as_prob}{specifies whether to represent logistic models that
-do not use covariates (a.k.a. constant models) using the probability
-distributions they induced on the state space (default behaviour with
-\code{constant_as_prob=TRUE}) or as normal models (when set to \code{FALSE}). This
-is not taken into account when \code{model} is not set to \code{"coef"}.}
+\item{constant_as_prob}{specifies how to represent constant logistic models
+for \code{format="ascii"} (defaults to \code{TRUE}, see details). Disregarded when
+\code{format="latex"}.}
 
 \item{...}{additional arguments for draw.}
 }
-\value{
-the context tree (invisibly).
-}
 \description{
-This function 'draws' a context tree as a text.
+This function 'draws' a covlmc as a text.
 }
 \details{
-The function uses basic "ascii art" to represent the context tree. Characters
-used to represent the structure of the tree, e.g. branches, can be modified
-using \code{\link[=draw_control]{draw_control()}}.
+The function uses different text based formats (plain "ascii art" and LaTeX)
+to represent the context tree. Fine tuning of the representation can be done
+via the \code{\link[=draw_control]{draw_control()}} function.
 
-In addition to the structure of the context tree, \code{draw} can represent
-information attached to the node (contexts and partial contexts). This is
-controlled by additional parameters depending on the type of the context
-tree (as well as by the \code{control} parameter).
+Contrarily to \code{\link[=draw]{draw()}} functions adapted to context trees \code{\link[=draw.ctx_tree]{draw.ctx_tree()}}
+and VLMC \code{\link[=draw.vlmc]{draw.vlmc()}}, the present function does not try to produce similar
+results for the \code{"ascii"} format and the \code{"latex"} format as the \code{"ascii"}
+format is intrinsically more limited in terms of model representations. This
+is detailed below.
 }
-\section{Specific parameters in \code{control}}{
+\section{Format}{
 
 
-Model representations are affected by the following additional
-fields of \code{control} that are specific to \code{\link[=covlmc]{covlmc()}}:
+The \code{format} parameter specifies the format used for the textual output.
+With the default value \code{ascii} the output is produced in "ascii art" using
+by default only ascii characters (notice that \code{draw_control()} can be used
+to specified non ascii characters, but this is discouraged).
+
+With the \code{latex} value, the output is produced in LaTeX, leveraging the
+\href{https://ctan.org/pkg/forest}{forest} Latex package (see
+\url{https://ctan.org/pkg/forest}). Each call to \code{draw.covlmc()} produces a full
+\code{forest} LaTeX environment. This can be included as is in a LaTeX document,
+provided the \code{forest} package  is loaded in the preamble of the document.
+The LaTeX output is sanitized to avoid potential problems induced by
+special characters in the names of the states of the context tree.
+}
+
+\section{\code{"ascii"} format}{
+
+\subsection{Parameters}{
+
+When \code{format="ascii"} the parameters are interpreted as follows:
+\itemize{
+\item \code{model}: the default \code{model="coef"} represents only the \emph{coefficients}
+of the logistic models associated to each context. \code{model="full"} includes
+the name of the variables in the representation. Setting \code{model=NULL}
+removes the model representations. Additional parameters can be used to
+tweak model representations (see below).
+\item \code{constant_as_prob}: specifies whether to represent logistic models that
+do not use covariates (a.k.a. constant models) using the probability
+distributions they induce on the state space (default behaviour with
+\code{constant_as_prob=TRUE}) or as normal models (when set to \code{FALSE}). This is
+not taken into account when \code{model} is not set to \code{"coef"}.
+\item fields of the \code{control} list:
 \itemize{
 \item \code{intercept_sep}: character(s) used to separate the intercept from
 the other coefficients in model representation.
@@ -75,39 +102,87 @@ covariate values a time t-1, the third block at time t-2, etc.
 when \code{p_value=TRUE}
 }
 }
-
-\section{Variable representation}{
-
-
-When \code{model="full"}, the representation includes the names of the variables
-used by the logistic models. Names are the one generated by the underlying
-logistic model, e.g. \code{\link[stats:glm]{stats::glm()}}. Numerical variable names are used as
-is, while factors have levels appended. The intercept is denoted \code{(I)} to
-save space. The time delays are represented by an underscore followed by
-the time delay. For instance if the model uses the numerical covariate \code{y}
-with two delays, it will appear with two variables \code{y_1} and \code{y_2}.
 }
 
-\section{State representation}{
-
+\subsection{State representation}{
 
 When \code{model} is not \code{NULL}, the coefficients of the logistic models are
 presented, organized in rows associated to states. One state is used as the
 reference state and the logistic model aims at predicting the ratio of
 probability between another state and the reference one (in log scale).
 When \code{with_state} is \code{TRUE}, the display includes for each row of
-coefficients the target state. This is useful when using e.g. \code{VGAM::vglm}
+coefficients the target state. This is useful when using e.g. \code{VGAM::vglm()}
 as unused levels of the target variable will be automatically dropped from
 the model, leading to a reduce number of rows. The reference state is
 either shown on the first row if \code{model} is \code{"full"} or after the state on
 each row if \code{model} is \code{"coef"}. States are separated from the model
-representation by the character(s) specified in \code{level_sep} in the \code{control}
-list (see \code{\link[=draw_control]{draw_control()}}).
+representation by the character(s) specified in \code{level_sep} in the
+\code{control} list.
+}
+}
+
+\section{\code{"latex"} format}{
+
+\subsection{Parameters}{
+
+When \code{format="latex"} the parameters are interpreted as follows:
+\itemize{
+\item \code{model}: the models are always represented completely in the LaTeX export
+unless \code{model} is set to \code{NULL}.
+\item \code{constant_as_prob}: in the LaTeX export, constant logistic models are
+always represented by the corresponding probability distribution on the
+state space, regardless of the value of \code{constant_as_prob}.
+\item fields of the \code{control} list:
+\itemize{
+\item \code{orientation}: specifies the orientation of the tree, either the default
+\code{"vertical"} (expanding from top to bottom) or \code{"horizontal"} (expanding
+from right to left);
+\item \code{tab_orientation}: specifies the orientation of the tables used to
+represent model coefficients in the tree, either the default \code{"vertical"}
+(covariates are listed on one column) or \code{"horizontal"} (covariates are listed
+on one row);
+\item \code{fontsize} and \code{prob_fontsize} handle the size of the fonts used for the
+states and for the models, see \code{\link[=draw_control]{draw_control()}} for details;
+\item \code{decoration} can be used to add borders around states, see
+\code{\link[=draw_control]{draw_control()}} for details;
+}
+}
+}
+
+\subsection{State representation}{
+
+When \code{model} is not \code{NULL}, the coefficients of the logistic models are
+presented, organized in rows or in columns (depending \code{tab_orientation}) on
+associated to states. One state is used as the reference state and the
+logistic model aims at predicting the ratio of probability between another
+state and the reference one (in log scale). When \code{with_state} is \code{TRUE},
+the display includes for each row/column of coefficients the target state.
+The reference state is shown on the first row/column.
+}
+}
+
+\section{Variable representation}{
+
+
+When the representation includes the names of the variables used by the
+logistic models, they are the one generated by the underlying logistic model,
+e.g. \code{\link[stats:glm]{stats::glm()}}. Numerical variable names are used as is, while factors
+have levels appended. The intercept is denoted \code{(I)} to save space.
+
+When \code{format="ascii"}, the time delays are represented by an underscore
+followed by the time delay. For instance if the model uses the numerical
+covariate \code{y} with two delays, it will appear with two variables \code{y_1} and
+\code{y_2}.
+
+When \code{format="latex"}, the representation uses a temporal subscript of the
+form \code{t-1}, \code{t-2}, etc.
 }
 
 \examples{
 pc <- powerconsumption[powerconsumption$week == 5, ]
-dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1))))
+dts <- cut(pc$active_power,
+  breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1)))
+)
 dts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
 m_cov <- covlmc(dts, dts_cov, min_size = 5)
 draw(m_cov, control = draw_control(digits = 3))
@@ -115,4 +190,5 @@ draw(m_cov, model = NULL)
 draw(m_cov, p_value = TRUE)
 draw(m_cov, p_value = FALSE, control = draw_control(time_sep = " ^ "))
 draw(m_cov, model = "full", control = draw_control(time_sep = " ^ "))
+draw(m_cov, format = "latex", control = draw_control(orientation = "h"))
 }

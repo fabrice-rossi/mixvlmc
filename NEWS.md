@@ -16,10 +16,23 @@
     the default display
 * the `digits` parameter of `draw.covlmc()` has been removed and replaced by a
   similar parameter in `draw_control()`
-    
+* `draw()` has now a second parameter `format` with no default. This may break
+  codes that used the fact that the `control` parameter was previously the 
+  second one. 
+
 ## New features
 ### Model representation (with `draw()`)
-Text based model representation has been improved (as per issue #66) as follows:
+A major change of `draw()` is the support of multiple output formats. This is
+done via a `format` parameter. It supports currently:
+
+* the format of previous versions of `mixvlmc` with `format="ascii"`. This is
+  the default text based representation.
+* a new LaTeX export with `format="latex"` based on the LaTeX package `forest` 
+  (<https://ctan.org/pkg/forest>) as per issue #66. This can be used to include
+  (CO)VLMC models in LaTeX document, for instance when using rmarkdown or quarto.
+
+In addition, text based model representation has been improved (as per 
+issue #66) as follows:
 
 * the `draw.covlmc()` function uses arguably better default parameters 
   (described above)

@@ -1,0 +1,245 @@
+---
+title: "Latex export test"
+format: 
+  pdf:
+    include-in-header: 
+      - text: |
+          \usepackage{forest}
+    keep-tex: true
+knitr:
+  opts_chunk: 
+    tidy: styler
+    tidy.opts: { width.cutoff: 55 }
+---
+
+```{r}
+#| include: FALSE
+devtools::load_all()
+```
+
+## Context trees
+
+```{r}
+set.seed(0)
+dts <- sample(c(0, 1), 100, replace = TRUE)
+ctree <- ctx_tree(dts, min_size = 8, max_depth = 9)
+```
+
+```{r}
+draw(ctree, frequency = "detailed")
+```
+
+```{r}
+#| results: asis
+draw(ctree, "latex")
+```
+
+```{r}
+#| results: asis
+draw(ctree, "latex", frequency = "total")
+```
+```{r}
+#| results: asis
+draw(ctree, "latex", frequency = "detailed")
+```
+```{r}
+#| results: asis
+draw(ctree, "latex",
+  frequency = "detailed",
+  control = draw_control(tabular = FALSE)
+)
+```
+```{r}
+#| results: asis
+draw(ctree, "latex",
+  frequency = "total",
+  control = draw_control(decoration = "rect", tabular = FALSE)
+)
+```
+```{r}
+#| results: asis
+draw(ctree, "latex",
+  frequency = "detailed",
+  control = draw_control(
+    decoration = "rect",
+    orientation = "h",
+    fontsize = "small",
+    prob_fontsize = "footnotesize"
+  )
+)
+```
+```{r}
+#| results: asis
+draw(ctree, "latex",
+  frequency = "detailed",
+  control = draw_control(
+    decoration = "circle",
+    orientation = "h",
+    tab_orientation = "h",
+    fontsize = "small",
+    prob_fontsize = "footnotesize"
+  )
+)
+```
+
+## VLMC
+```{r}
+#| echo: FALSE
+dts <- sample(c("$A$", "_B_", "{C}"), 500, replace = TRUE)
+model <- vlmc(dts, alpha = 0.05, backend = "C++")
+```
+
+```{r}
+draw(model)
+```
+
+```{r}
+#| results: asis
+draw(model, "latex", control = draw_control(decoration = "ellipse"))
+```
+
+```{r}
+#| results: asis
+draw(model, "latex",
+  prob = FALSE,
+  control = draw_control(
+    tabular = FALSE,
+    orientation = "h",
+    fontsize = "small"
+  )
+)
+```
+
+
+## COVLMC
+### Binary state space
+```{r}
+pc <- powerconsumption[powerconsumption$week == 5, ]
+dts <- cut(pc$active_power,
+  breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1)))
+)
+dts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
+m_cov <- covlmc(dts, dts_cov, min_size = 5)
+```
+
+```{r}
+draw(m_cov, digits = 3)
+```
+
+```{r}
+#| results: asis
+draw(m_cov, "latex",
+  digits = 3,
+  with_state = TRUE,
+  control = draw_control(
+    orientation = "h",
+    decoration = "r",
+    tab_orientation = "h",
+    fontsize = "small",
+    prob_fontsize = "scriptsize"
+  )
+)
+```
+```{r}
+#| results: asis
+draw(m_cov, "latex",
+  digits = 3,
+  control = draw_control(
+    orientation = "v",
+    decoration = "r",
+    tab_orientation = "v",
+    fontsize = "small"
+  )
+)
+```
+```{r}
+#| results: asis
+draw(m_cov, "latex",
+  digits = 3,
+  with_state = TRUE,
+  control = draw_control(
+    orientation = "v",
+    decoration = "r",
+    tab_orientation = "v",
+    fontsize = "small",
+    prob_fontsize = "scriptsize"
+  )
+)
+```
+
+### More than two states
+```{r}
+#| cache: true
+pc_week_15_16 <- powerconsumption[powerconsumption$week %in% c(15, 16), ]
+elec <- pc_week_15_16$active_power
+elec_dts <- cut(elec,
+  breaks = c(0, 0.4, 2, 8),
+  labels = c("low", "typ.", "high")
+)
+elec_cov <-
+  data.frame(day = (pc_week_15_16$hour >= 7 & pc_week_15_16$hour <= 18))
+elec_tune <- tune_covlmc(elec_dts, elec_cov)
+elec_model <- as_covlmc(elec_tune)
+```
+
+```{r}
+draw(elec_model, model = "full", with_state = TRUE)
+```
+```{r}
+#| results: asis
+draw(elec_model, "latex",
+  with_state = TRUE,
+  control = draw_control(
+    tab_orientation = "h",
+    orientation = "h",
+    fontsize = "small",
+    prob_fontsize = "scriptsize"
+  )
+)
+```
+
+```{r}
+#| results: asis
+draw(elec_model, "latex",
+  with_state = TRUE,
+  control = draw_control(
+    tab_orientation = "v",
+    orientation = "h",
+    fontsize = "small",
+    prob_fontsize = "scriptsize"
+  )
+)
+```
+
+### Merged models
+```{r}
+#| cache: true
+elec_model_merged <- prune(elec_model, alpha = 3.961e-10)
+```
+
+```{r}
+draw(elec_model_merged, p_value = TRUE)
+```
+
+
+```{r}
+#| results: asis
+draw(elec_model_merged, "latex",
+  model = NULL,
+  p_value = TRUE
+)
+```
+
+```{r}
+#| results: asis
+draw(elec_model_merged, "latex",
+  with_state = TRUE,
+  p_value = TRUE,
+  control = draw_control(
+    tab_orientation = "v",
+    orientation = "v",
+    fontsize = "small",
+    prob_fontsize = "scriptsize"
+  )
+)
+```

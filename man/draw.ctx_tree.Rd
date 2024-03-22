@@ -5,12 +5,15 @@
 \alias{draw.ctx_tree}
 \title{Text based representation of a context tree}
 \usage{
-\method{draw}{ctx_tree_cpp}(ct, control = draw_control(), frequency = NULL, ...)
+\method{draw}{ctx_tree_cpp}(ct, format, control = draw_control(), frequency = NULL, ...)
 
-\method{draw}{ctx_tree}(ct, control = draw_control(), frequency = NULL, ...)
+\method{draw}{ctx_tree}(ct, format, control = draw_control(), frequency = NULL, ...)
 }
 \arguments{
 \item{ct}{a context tree.}
+
+\item{format}{a character string that specifies the output format of the
+function. Possible values are \code{ascii} (default) and \code{latex}. See details.}
 
 \item{control}{a list of low level control parameters of the text
 representation. See details and \code{\link[=draw_control]{draw_control()}}.}
@@ -30,18 +33,44 @@ the context tree (invisibly).
 This function 'draws' a context tree as a text.
 }
 \details{
-The function uses basic "ascii art" to represent the context tree. Characters
-used to represent the structure of the tree, e.g. branches, can be modified
-using \code{\link[=draw_control]{draw_control()}}.
+The function uses different text based formats (plain "ascii art" and LaTeX)
+to represent the context tree. Fine tuning of the representation can be done
+via the \code{\link[=draw_control]{draw_control()}} function.
 
-In addition to the structure of the context tree, \code{draw} can represent
-information attached to the node (contexts and partial contexts). This is
+In addition to the structure of the context tree, \code{draw()} can represent
+information attached to the nodes (contexts and partial contexts). This is
 controlled by additional parameters depending on the type of the context
-tree (as well as by the \code{control} parameter).
+tree. In general, parameters given directly to \code{draw()} specify \emph{what}
+information is represented while details on \emph{how} this representation is made
+can be controlled via the \code{control} parameter and the associated
+\code{\link[=draw_control]{draw_control()}} function.
 }
+\section{Format}{
+
+
+The \code{format} parameter specifies the format used for the textual output.
+With the default value \code{ascii} the output is produced in "ascii art" using
+by default only ascii characters (notice that \code{draw_control()} can be used
+to specified non ascii characters, but this is discouraged).
+
+With the \code{latex} value, the output is produced in LaTeX, leveraging the
+\href{https://ctan.org/pkg/forest}{forest} Latex package (see
+\url{https://ctan.org/pkg/forest}). Each call to \code{draw()} produces a full
+\code{forest} LaTeX environment. This can be included as is in a LaTeX document,
+provided the \code{forest} package is loaded in the preamble of the document.
+The LaTeX output is sanitized to avoid potential problems induced by
+special characters in the names of the states of the context tree.
+}
+
 \examples{
 dts_c <- sample(c("A", "B", "CD"), 100, replace = TRUE)
 ctree_c <- ctx_tree(dts_c, min_size = 10, max_depth = 2)
 draw(ctree_c, frequency = "total")
 draw(ctree_c, frequency = "detailed")
+## LaTeX output
+draw(ctree_c, "latex", frequency = "detailed")
+dts_c <- sample(c("A$", "_{B", "{C}_{D}"), 100, replace = TRUE)
+ctree_c <- ctx_tree(dts_c, min_size = 10, max_depth = 2)
+## the LaTeX output is sanitized
+draw(ctree_c, "latex", frequency = "detailed")
 }

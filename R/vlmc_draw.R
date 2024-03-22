@@ -29,14 +29,35 @@ vlmc_node2txt <- function(ct, params) {
 #' draw(model, prob = FALSE)
 #' draw(model, prob = NULL)
 #' @export
-draw.vlmc <- function(ct, control = draw_control(), prob = TRUE, ...) {
-  if (is.null(prob)) {
-    rec_draw(control$root, "", ct, ct$vals, control, NULL, list(...))
+draw.vlmc <- function(ct, format, control = draw_control(), prob = TRUE, ...) {
+  if (rlang::is_missing(format)) {
+    format <- "ascii"
   } else {
-    rec_draw(
-      control$root, "", ct, ct$vals, control, vlmc_node2txt,
-      c(list(prob = prob, digits = control$digits, list(...)))
-    )
+    format <- match.arg(format, c("ascii", "latex"))
+  }
+  if (format == "ascii") {
+    if (is.null(prob)) {
+      rec_draw(control$root, "", ct, ct$vals, control, NULL, list(...))
+    } else {
+      rec_draw(
+        control$root, "", ct, ct$vals, control, vlmc_node2txt,
+        c(list(prob = prob, digits = control$digits, list(...)))
+      )
+    }
+  } else if (format == "latex") {
+    if (is.null(prob)) {
+      draw_latex_ctx_tree(
+        ct, xtable::sanitize(ct$vals, "latex"),
+        ctx_tree_node2latex,
+        c(control, list(...))
+      )
+    } else {
+      draw_latex_ctx_tree(
+        ct, xtable::sanitize(ct$vals, "latex"),
+        vlmc_node2latex,
+        c(control, list(prob = prob), list(...))
+      )
+    }
   }
   invisible(ct)
 }

@@ -1,26 +1,72 @@
+latex_font_size <- c(
+  "tiny", "scriptsize", "footnotesize",
+  "small", "normalsize", "large", "Large",
+  "LARGE", "huge", "Huge"
+)
+
 #' Control parameters for `draw`
 #'
-#' This function returns a list used to fine tune the [draw()] function behaviour.
+#' This function returns a list used to fine tune the [draw()] function
+#' behaviour.
+#'
+#' Parameters are generally specific to the `format` used for [draw()]. If this
+#' is the case, the format is given at the end of the parameter description.
+#' Some parameters are also specific to some functions inheriting from [draw()].
+#'
+#' @section Decoration:
+#'
+#'   The LaTeX format (`"latex"`) can "decorate" the nodes of the context tree
+#'   by drawing borders. We support only basic decorations, but in theory all
+#'   TikZ possibilities could be used (see the documentation of the [forest
+#'   LaTeX package](https://ctan.org/pkg/forest)). Supported decorations:
+#'
+#' - `"none"`: default, no decoration;
+#' - `"rectangle"`: adds a rectangular border to all nodes;
+#' - `"circle"`: adds a circular border to all nodes;
+#' - `"ellipse"`: adds an ellipsoidal border to all nodes.
 #'
 #' @param digits numerical parameters and p-values are represented using the
 #'   [base::signif()] function, using the number of significant digits specified
 #'   with this parameter (defaults to 4).
-#' @param root character used for the root node.
-#' @param first_node characters used for the first child of a node.
-#' @param next_node characters used for other children of a node.
-#' @param vbranch characters used to represent a branch in a vertical way.
-#' @param hbranch characters used to represent a branch in a horizontal was.
-#' @param open_ct characters used to start each node specific text representation.
-#' @param close_ct characters used to end each node specific text representation.
-#' @param level_sep characters used to separate levels from models in [draw.covlmc()].
-#' @param time_sep characters used to separate temporal blocks in [draw.covlmc()].
-#' @param intercept_sep characters used to the intercept from the other parameters
-#'   in [draw.covlmc()]
+#' @param root character used for the root node ("ascii").
+#' @param first_node characters used for the first child of a node ("ascii").
+#' @param next_node characters used for other children of a node ("ascii").
+#' @param vbranch characters used to represent a branch in a vertical way
+#'   ("ascii").
+#' @param hbranch characters used to represent a branch in a horizontal was
+#'   ("ascii").
+#' @param open_ct characters used to start each node specific text
+#'   representation ("ascii").
+#' @param close_ct characters used to end each node specific text representation
+#'   ("ascii").
+#' @param level_sep characters used to separate levels from models in
+#'   [draw.covlmc()] ("ascii").
+#' @param time_sep characters used to separate temporal blocks in
+#'   [draw.covlmc()] ("ascii").
+#' @param intercept_sep characters used to the intercept from the other
+#'   parameters in [draw.covlmc()] ("ascii").
 #' @param open_p_value characters used as opening delimiters for the p value of
-#'   a node in [draw.covlmc()]
+#'   a node in [draw.covlmc()] ("ascii").
 #' @param close_p_value characters used as closing delimiters for the p value of
-#'   a node in [draw.covlmc()]
-#'
+#'   a node in [draw.covlmc()] ("ascii").
+#' @param orientation specifies the global orientation of the tree, either
+#'   "vertical" (default) or "horizontal" ("latex").
+#' @param tabular if TRUE (default value), the "latex" format will use tables
+#'   for each node, with one row for the state value and other rows for
+#'   additional information (such as the conditional probability associated to
+#'   the context). Notice that [draw.covlmc()] always uses tables regardless
+#'   of the value of `tabular`.
+#' @param tab_orientation specifies the way the models are represented when used
+#'   by [draw.covlmc()] ("latex"). The default value is `"vertical"`: this is
+#'   well adapted to models with long covariate dependencies (see
+#'   `covariate_depth()`). The other possible value is `"horizontal"`.
+#' @param decoration specifies node decoration in the "latex" format, see
+#'   details.
+#' @param fontsize font size for the state names in the "latex" format (using
+#'   latex standard font size, default to `"normalsize"`).
+#' @param prob_fontsize font size for the context counts, probabilities or
+#'   models in the "latex" format (using latex standard font size, defaults to
+#'   `"small"`).
 #' @returns a list
 #' @export
 #'
@@ -38,7 +84,13 @@ draw_control <- function(digits = 4,
                          time_sep = " | ",
                          intercept_sep = " & ",
                          open_p_value = "<",
-                         close_p_value = ">") {
+                         close_p_value = ">",
+                         orientation = c("vertical", "horizontal"),
+                         tabular = TRUE,
+                         tab_orientation = c("vertical", "horizontal"),
+                         decoration = c("none", "rectangle", "circle", "ellipse"),
+                         fontsize = "normalsize",
+                         prob_fontsize = "small") {
   list(
     digits = digits,
     root = root,
@@ -52,7 +104,13 @@ draw_control <- function(digits = 4,
     time_sep = time_sep,
     intercept_sep = intercept_sep,
     open_p_value = open_p_value,
-    close_p_value = close_p_value
+    close_p_value = close_p_value,
+    orientation = match.arg(orientation),
+    tabular = tabular,
+    tab_orientation = match.arg(tab_orientation),
+    decoration = match.arg(decoration),
+    fontsize = match.arg(fontsize, choices = latex_font_size),
+    prob_fontsize = match.arg(prob_fontsize, choices = latex_font_size)
   )
 }
 
@@ -112,16 +170,21 @@ rec_draw <- function(label, prefix, ct, vals, control, node2txt, params) {
 #'
 #' This function 'draws' a context tree as a text.
 #'
-#' The function uses basic "ascii art" to represent the context tree. Characters
-#' used to represent the structure of the tree, e.g. branches, can be modified
-#' using [draw_control()].
+#' The function uses different text based formats (plain "ascii art" and LaTeX)
+#' to represent the context tree. Fine tuning of the representation can be done
+#' via the [draw_control()] function.
 #'
-#' In addition to the structure of the context tree, `draw` can represent
-#' information attached to the node (contexts and partial contexts). This is
+#' In addition to the structure of the context tree, `draw()` can represent
+#' information attached to the nodes (contexts and partial contexts). This is
 #' controlled by additional parameters depending on the type of the context
-#' tree (as well as by the `control` parameter).
+#' tree. In general, parameters given directly to `draw()` specify *what*
+#' information is represented while details on *how* this representation is made
+#' can be controlled via the `control` parameter and the associated
+#' [draw_control()] function.
 #'
 #' @param ct a context tree.
+#' @param format a character string that specifies the output format of the
+#'   function. Possible values are `ascii` (default) and `latex`. See details.
 #' @param control a list of low level control parameters of the text
 #'   representation. See details and [draw_control()].
 #' @param ... additional arguments for draw.
@@ -132,9 +195,26 @@ rec_draw <- function(label, prefix, ct, vals, control, node2txt, params) {
 #' draw(ctree)
 #' dts_c <- sample(c("A", "B", "CD"), 100, replace = TRUE)
 #' ctree_c <- ctx_tree(dts_c, min_size = 10, max_depth = 2)
-#' draw(ctree_c, draw_control(root = "x"))
+#' draw(ctree_c, control = draw_control(root = "x"))
+#' ## LaTeX output
+#' draw(ctree_c, "latex")
+#' @section Format:
+#'
+#'   The `format` parameter specifies the format used for the textual output.
+#'   With the default value `ascii` the output is produced in "ascii art" using
+#'   by default only ascii characters (notice that `draw_control()` can be used
+#'   to specified non ascii characters, but this is discouraged).
+#'
+#'   With the `latex` value, the output is produced in LaTeX, leveraging the
+#'   [forest](https://ctan.org/pkg/forest) Latex package (see
+#'   <https://ctan.org/pkg/forest>). Each call to `draw()` produces a full
+#'   `forest` LaTeX environment. This can be included as is in a LaTeX document,
+#'   provided the `forest` package is loaded in the preamble of the document.
+#'   The LaTeX output is sanitized to avoid potential problems induced by
+#'   special characters in the names of the states of the context tree.
+#'
 #' @export
-draw <- function(ct, control = draw_control(), ...) {
+draw <- function(ct, format, control = draw_control(), ...) {
   UseMethod("draw")
   invisible(ct)
 }
@@ -168,13 +248,36 @@ ctx_tree_node2txt <- function(ct, params) {
 #' ctree_c <- ctx_tree(dts_c, min_size = 10, max_depth = 2)
 #' draw(ctree_c, frequency = "total")
 #' draw(ctree_c, frequency = "detailed")
+#' ## LaTeX output
+#' draw(ctree_c, "latex", frequency = "detailed")
+#' dts_c <- sample(c("A$", "_{B", "{C}_{D}"), 100, replace = TRUE)
+#' ctree_c <- ctx_tree(dts_c, min_size = 10, max_depth = 2)
+#' ## the LaTeX output is sanitized
+#' draw(ctree_c, "latex", frequency = "detailed")
 #' @export
-draw.ctx_tree <- function(ct, control = draw_control(), frequency = NULL, ...) {
-  if (is.null(frequency)) {
-    rec_draw(control$root, "", ct, ct$vals, control, NULL, list(...))
+draw.ctx_tree <- function(ct, format, control = draw_control(),
+                          frequency = NULL, ...) {
+  if (rlang::is_missing(format)) {
+    format <- "ascii"
   } else {
-    frequency <- match.arg(frequency, c("total", "detailed"))
-    rec_draw(control$root, "", ct, ct$vals, control, ctx_tree_node2txt, c(list(frequency = frequency), list(...)))
+    format <- match.arg(format, c("ascii", "latex"))
+  }
+  if (format == "ascii") {
+    if (is.null(frequency)) {
+      rec_draw(control$root, "", ct, ct$vals, control, NULL, list(...))
+    } else {
+      frequency <- match.arg(frequency, c("total", "detailed"))
+      rec_draw(
+        control$root, "", ct, ct$vals, control, ctx_tree_node2txt,
+        c(list(frequency = frequency), list(...))
+      )
+    }
+  } else if (format == "latex") {
+    draw_latex_ctx_tree(
+      ct, xtable::sanitize(ct$vals, "latex"),
+      ctx_tree_node2latex,
+      c(control, list(...), list(frequency = frequency))
+    )
   }
   invisible(ct)
 }
