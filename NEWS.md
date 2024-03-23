@@ -1,5 +1,10 @@
 # mixvlmc (development version)
 ## Breaking changes
+* `draw()` has now a second parameter `format` with no default. This may break
+  codes that used the fact that the `control` parameter was previously the 
+  second one. 
+* the `digits` parameter of `draw.covlmc()` has been removed and replaced by a
+  similar parameter in `draw_control()`
 * defaults for `draw.covlmc()` have changed (issue #66):
   * `p_value` is now `FALSE` by default
   * when `p_value` is `TRUE` the p-values are represented between separators 
@@ -14,18 +19,16 @@
     `time_sep` parameter has been removed from `draw.covlmc()`
   * the new parameter `constant_as_prob` is set to `TRUE` which modifies also
     the default display
-* the `digits` parameter of `draw.covlmc()` has been removed and replaced by a
-  similar parameter in `draw_control()`
-* `draw()` has now a second parameter `format` with no default. This may break
-  codes that used the fact that the `control` parameter was previously the 
-  second one. 
+* the interface of `draw_control()` has been significantly changed (issue #66)
+  which should break most customisation code at the level of characters used
+  by `draw()` to display a model
 
 ## New features
 ### Model representation (with `draw()`)
 A major change of `draw()` is the support of multiple output formats. This is
 done via a `format` parameter. It supports currently:
 
-* the format of previous versions of `mixvlmc` with `format="ascii"`. This is
+* the format of previous versions of `mixvlmc` with `format="text"`. This is
   the default text based representation.
 * a new LaTeX export with `format="latex"` based on the LaTeX package `forest` 
   (<https://ctan.org/pkg/forest>) as per issue #66. This can be used to include
@@ -34,6 +37,12 @@ done via a `format` parameter. It supports currently:
 In addition, text based model representation has been improved (as per 
 issue #66) as follows:
 
+* a new global option `mixvlmc.charset` can be used to select the characters
+  used by `draw()` when `format="text"` between pure ASCII and UTF-8
+* when possible, the text based representation will default to UTF-8 symbols to 
+  provide a cleaner display of the context tree
+* full customisation of the character set has moved from `draw_control()` to 
+  `charset_ascii()` and `charset_utf8()`
 * the `draw.covlmc()` function uses arguably better default parameters 
   (described above)
 * when a logistic model does not use the covariates, it is now represented 

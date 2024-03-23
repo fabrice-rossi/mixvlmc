@@ -6,12 +6,15 @@ exercise_draw <- function(ctx) {
   draw(ctx, format = "latex", frequency = "total")
   draw(ctx, format = "latex", frequency = "detailed")
   draw(ctx, control = draw_control(
-    root = "x",
-    open_ct = "[", close_ct = "]",
-    first_node = "*",
-    next_node = "°",
-    vbranch = "^",
-    hbranch = "->"
+    charset = charset_ascii(
+      root = "x",
+      open_ct = "[", close_ct = "]",
+      first_node = "*",
+      next_node = "|",
+      final_node = "°",
+      vbranch = "^",
+      hbranch = "->"
+    )
   ), frequency = "detailed")
   draw(ctx,
     format = "latex", frequency = "detailed",

@@ -47,7 +47,7 @@ contexts of length 1. In general, if a node represents the context $c=(c_k,
 represented by the children of the node. Descending in the context tree 
 corresponds to adding to the past of the context. 
 
-Let us consider again $x=(0, 0, 0, 1, 1, 1)$ and all contexts that appear _at least twice_ in $x$ (i.e. which are observed for at least two different values of $t$). An ASCII art representation of the corresponding context tree is:
+Let us consider again $x=(0, 0, 0, 1, 1, 1)$ and all contexts that appear _at least twice_ in $x$ (i.e. which are observed for at least two different values of $t$). An ASCII art representation of the corresponding context tree is (in pure ASCII):
 ```
 *
 +-- 0

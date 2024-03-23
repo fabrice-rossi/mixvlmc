@@ -32,6 +32,7 @@ LazyData: true
 Imports: 
     assertthat,
     butcher,
+    cli,
     ggplot2,
     methods,
     nnet,

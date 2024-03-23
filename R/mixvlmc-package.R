@@ -21,6 +21,14 @@
 #'    - `"C++"`: this corresponds to the experimental C++ implementation. This
 #'      version is significantly faster than the R version, but is still
 #'      considered experimental.
+#'  - `mixvlmc.charset`: specifies the collection of characters used to display
+#'    context trees in "ascii art" when using the `"text"` format for [draw()]
+#'    and related functions. Two values are supported:
+#'    - `"ascii"`: the collection uses only standard ASCII characters and
+#'      should be compatible with all environments;
+#'    - `"utf8"`: the collection uses UTF-8 symbols and needs a compatible display.
+#'    At loading the option is set based on a call to [cli::is_utf8_output()].
+#'    It defaults to `"utf8"` is this encoding is supported.
 #'
 #' @docType package
 "_PACKAGE"

@@ -50,13 +50,16 @@ draw_covlmc_model <- function(coefficients, p_value, hsize, names, lev,
         if (collapsed) {
           stringr::str_c(p_value_str, coeffs, sep = " ")
         } else {
-          stringr::str_c(p_value_str, "[", coeffs, "]", sep = " ")
+          stringr::str_c(p_value_str, control$open_model, coeffs,
+            control$close_model,
+            sep = " "
+          )
         }
       } else {
         if (collapsed) {
           coeffs
         } else {
-          stringr::str_c("[", coeffs, "]", sep = " ")
+          stringr::str_c(control$open_model, coeffs, control$close_model, sep = " ")
         }
       }
     } else {
@@ -66,16 +69,16 @@ draw_covlmc_model <- function(coefficients, p_value, hsize, names, lev,
           control$close_p_value,
           sep = ""
         )
-        pad <- stringr::str_pad("", stringr::str_length(p_value_str) + 2)
-        coeffs[1] <- stringr::str_c(p_value_str, "[", coeffs[1], sep = " ")
+        pad <- stringr::str_pad("", cli::utf8_nchar(p_value_str, "width") + 2)
+        coeffs[1] <- stringr::str_c(p_value_str, control$open_model, coeffs[1], sep = " ")
       } else {
-        coeffs[1] <- stringr::str_c("[", coeffs[1], sep = " ")
+        coeffs[1] <- stringr::str_c(control$open_model, coeffs[1], sep = " ")
         pad <- " "
       }
       for (k in 2:length(coeffs)) {
         coeffs[k] <- stringr::str_c(pad, coeffs[k], sep = " ")
       }
-      coeffs[length(coeffs)] <- stringr::str_c(coeffs[length(coeffs)], "]", sep = " ")
+      coeffs[length(coeffs)] <- stringr::str_c(coeffs[length(coeffs)], control$close_model, sep = " ")
       coeffs
     }
   } else {
@@ -100,10 +103,12 @@ rec_draw_covlmc <- function(label, prefix, ct, vals, control, node2txt) {
     c_symbol <- control$first_node
     idx <- 1
     nst <- nb_sub_tree(ct)
+    nb_nodes <- sum(sapply(ct$children, \(x) length(x) > 0))
     if (is.null(ct[["merged_model"]])) {
       active_children <- seq_along(ct$children)
     } else {
       active_children <- setdiff(seq_along(ct$children), ct$merged)
+      nb_nodes <- nb_nodes + 1
     }
     for (v in active_children) {
       child <- ct$children[[v]]
@@ -112,24 +117,28 @@ rec_draw_covlmc <- function(label, prefix, ct, vals, control, node2txt) {
         if (idx < nst) {
           c_prefix <- control$vbranch
         } else {
-          c_prefix <- stringr::str_pad("", stringr::str_length(control$vbranch))
+          c_prefix <- stringr::str_pad("", cli::utf8_nchar(control$vbranch, "width"))
         }
-        c_prefix <- stringr::str_pad(c_prefix, stringr::str_length(c_prelabel), side = "right")
+        c_prefix <- utf8_pad(c_prefix, cli::utf8_nchar(c_prelabel, "width"), "right")
         ## recursive call
         rec_draw_covlmc(
           stringr::str_c(prefix, c_prelabel, vals[v]),
           stringr::str_c(prefix, c_prefix), child, vals, control, node2txt
         )
         ## prepare for next child
-        c_symbol <- control$next_node
         idx <- idx + 1
+        if (idx == nb_nodes) {
+          c_symbol <- control$final_node
+        } else {
+          c_symbol <- control$next_node
+        }
       }
     }
     if (!is.null(ct[["merged_model"]])) {
       the_merged_vals <- stringr::str_c(vals[ct$merged], collapse = ", ")
-      c_prelabel <- stringr::str_c(c_symbol, control$hbranch, " ")
-      c_prefix <- stringr::str_pad("", stringr::str_length(control$vbranch))
-      c_prefix <- stringr::str_pad(c_prefix, stringr::str_length(c_prelabel), side = "right")
+      c_prelabel <- stringr::str_c(control$final_node, control$hbranch, " ")
+      c_prefix <- stringr::str_pad("", cli::utf8_nchar(control$vbranch, "width"))
+      c_prefix <- utf8_pad(c_prefix, cli::utf8_nchar(c_prelabel, "width"), "right")
       c_label <- stringr::str_c(prefix, c_prelabel, the_merged_vals)
       c_prefix <- stringr::str_c(prefix, c_prefix)
       cat(c_label)
@@ -155,9 +164,12 @@ covlmc_node2txt <- function(node, vals, control) {
         model_levels <- vals
       }
     }
+    var_names <- node$model$var_names
+    ## intercept
+    var_names[1] <- control$intercept
     draw_covlmc_model(
       node$model$coefficients, node$model$p_value, node$model$hsize,
-      node$model$var_names, model_levels, control,
+      var_names, model_levels, control,
       node$model$model
     )
   } else if (!is.null(node$p_value) && isTRUE(control$p_value)) {
@@ -182,7 +194,7 @@ covlmc_node2txt <- function(node, vals, control) {
 #'
 #' Contrarily to [draw()] functions adapted to context trees [draw.ctx_tree()]
 #' and VLMC [draw.vlmc()], the present function does not try to produce similar
-#' results for the `"ascii"` format and the `"latex"` format as the `"ascii"`
+#' results for the `"text"` format and the `"latex"` format as the `"text"`
 #' format is intrinsically more limited in terms of model representations. This
 #' is detailed below.
 #'
@@ -197,16 +209,15 @@ covlmc_node2txt <- function(node, vals, control) {
 #' @param with_state specifies whether to display the state associated to each
 #'   dimension of the logistic model (see details).
 #' @param constant_as_prob specifies how to represent constant logistic models
-#'   for `format="ascii"` (defaults to `TRUE`, see details). Disregarded when
+#'   for `format="text"` (defaults to `TRUE`, see details). Disregarded when
 #'   `format="latex"`.
 #'
 #' @inheritParams draw
 #' @section Format:
 #'
 #'   The `format` parameter specifies the format used for the textual output.
-#'   With the default value `ascii` the output is produced in "ascii art" using
-#'   by default only ascii characters (notice that `draw_control()` can be used
-#'   to specified non ascii characters, but this is discouraged).
+#'   With the default value `"text"` the output is produced in "ascii art" using
+#'   the charset specified by the global option `mixvlmc.charset`.
 #'
 #'   With the `latex` value, the output is produced in LaTeX, leveraging the
 #'   [forest](https://ctan.org/pkg/forest) Latex package (see
@@ -216,10 +227,10 @@ covlmc_node2txt <- function(node, vals, control) {
 #'   The LaTeX output is sanitized to avoid potential problems induced by
 #'   special characters in the names of the states of the context tree.
 #'
-#' @section `"ascii"` format:
+#' @section `"text"` format:
 #' ## Parameters
 #'
-#' When `format="ascii"` the parameters are interpreted as follows:
+#' When `format="text"` the parameters are interpreted as follows:
 #'
 #' - `model`: the default `model="coef"` represents only the *coefficients*
 #'   of the logistic models associated to each context. `model="full"` includes
@@ -233,7 +244,10 @@ covlmc_node2txt <- function(node, vals, control) {
 #'   `constant_as_prob=TRUE`) or as normal models (when set to `FALSE`). This is
 #'   not taken into account when `model` is not set to `"coef"`.
 #'
-#' - fields of the `control` list:
+#' - fields of the `control` list (including the charset):
+#'
+#'    - `intercept` : character(s) used to represent the intercept when
+#'    `model="full"`
 #'
 #'    - `intercept_sep`: character(s) used to separate the intercept from
 #'   the other coefficients in model representation.
@@ -247,6 +261,9 @@ covlmc_node2txt <- function(node, vals, control) {
 #'
 #'    - `open_p_value` and `close_p_value`: delimiters used around the p-values
 #'   when `p_value=TRUE`
+#'
+#'   - `open_model` and `close_model`: delimiters around the model when `model`
+#'   is not `NULL`
 #'
 #' ## State representation
 #'
@@ -306,9 +323,11 @@ covlmc_node2txt <- function(node, vals, control) {
 #' When the representation includes the names of the variables used by the
 #' logistic models, they are the one generated by the underlying logistic model,
 #' e.g. [stats::glm()]. Numerical variable names are used as is, while factors
-#' have levels appended. The intercept is denoted `(I)` to save space.
+#' have levels appended. The intercept is denoted by the `intercept` member
+#' of the `control` list when`format="text"` (as part of the charset). It is
+#' always represented by `(I)` when `format="latex"`.
 #'
-#' When `format="ascii"`, the time delays are represented by an underscore
+#' When `format="text"`, the time delays are represented by an underscore
 #' followed by the time delay. For instance if the model uses the numerical
 #' covariate `y` with two delays, it will appear with two variables `y_1` and
 #' `y_2`.
@@ -326,8 +345,8 @@ covlmc_node2txt <- function(node, vals, control) {
 #' draw(m_cov, control = draw_control(digits = 3))
 #' draw(m_cov, model = NULL)
 #' draw(m_cov, p_value = TRUE)
-#' draw(m_cov, p_value = FALSE, control = draw_control(time_sep = " ^ "))
-#' draw(m_cov, model = "full", control = draw_control(time_sep = " ^ "))
+#' draw(m_cov, p_value = FALSE, control = draw_control(digits = 2))
+#' draw(m_cov, model = "full", control = draw_control(digits = 3))
 #' draw(m_cov, format = "latex", control = draw_control(orientation = "h"))
 #' @export
 draw.covlmc <- function(ct, format,
@@ -336,9 +355,9 @@ draw.covlmc <- function(ct, format,
                         constant_as_prob = TRUE,
                         ...) {
   if (rlang::is_missing(format)) {
-    format <- "ascii"
+    format <- "text"
   } else {
-    format <- match.arg(format, c("ascii", "latex"))
+    format <- match.arg(format, c("text", "latex"))
   }
   if (is.null(model)) {
     model <- "none"
@@ -347,7 +366,7 @@ draw.covlmc <- function(ct, format,
   }
   dot_params <- list(...)
   dot_params$with_state <- with_state
-  if (format == "ascii") {
+  if (format == "text") {
     rec_draw_covlmc(
       control$root, "", ct, ct$vals,
       c(control, list(

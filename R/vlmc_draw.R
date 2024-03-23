@@ -31,11 +31,11 @@ vlmc_node2txt <- function(ct, control) {
 #' @export
 draw.vlmc <- function(ct, format, control = draw_control(), prob = TRUE, ...) {
   if (rlang::is_missing(format)) {
-    format <- "ascii"
+    format <- "text"
   } else {
-    format <- match.arg(format, c("ascii", "latex"))
+    format <- match.arg(format, c("text", "latex"))
   }
-  if (format == "ascii") {
+  if (format == "text") {
     if (is.null(prob)) {
       rec_draw(control$root, "", ct, ct$vals, c(control, list(...)), NULL)
     } else {

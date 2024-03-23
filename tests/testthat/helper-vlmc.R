@@ -119,7 +119,7 @@ matched_vlmc_node2txt <- function(ct, params) {
 draw_matched_vlmc <- function(ct) {
   rec_draw(
     "*", "", ct, ct$vals, draw_control(),
-    matched_vlmc_node2txt, list()
+    matched_vlmc_node2txt
   )
 }
 

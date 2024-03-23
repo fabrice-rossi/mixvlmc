@@ -6,18 +6,7 @@
 \usage{
 draw_control(
   digits = 4,
-  root = "*",
-  first_node = "+",
-  next_node = "'",
-  vbranch = "|",
-  hbranch = "--",
-  open_ct = "(",
-  close_ct = ")",
-  level_sep = " ~ ",
-  time_sep = " | ",
-  intercept_sep = " & ",
-  open_p_value = "<",
-  close_p_value = ">",
+  charset = NULL,
   orientation = c("vertical", "horizontal"),
   tabular = TRUE,
   tab_orientation = c("vertical", "horizontal"),
@@ -31,38 +20,8 @@ draw_control(
 \code{\link[base:Round]{base::signif()}} function, using the number of significant digits specified
 with this parameter (defaults to 4).}
 
-\item{root}{character used for the root node ("ascii").}
-
-\item{first_node}{characters used for the first child of a node ("ascii").}
-
-\item{next_node}{characters used for other children of a node ("ascii").}
-
-\item{vbranch}{characters used to represent a branch in a vertical way
-("ascii").}
-
-\item{hbranch}{characters used to represent a branch in a horizontal was
-("ascii").}
-
-\item{open_ct}{characters used to start each node specific text
-representation ("ascii").}
-
-\item{close_ct}{characters used to end each node specific text representation
-("ascii").}
-
-\item{level_sep}{characters used to separate levels from models in
-\code{\link[=draw.covlmc]{draw.covlmc()}} ("ascii").}
-
-\item{time_sep}{characters used to separate temporal blocks in
-\code{\link[=draw.covlmc]{draw.covlmc()}} ("ascii").}
-
-\item{intercept_sep}{characters used to the intercept from the other
-parameters in \code{\link[=draw.covlmc]{draw.covlmc()}} ("ascii").}
-
-\item{open_p_value}{characters used as opening delimiters for the p value of
-a node in \code{\link[=draw.covlmc]{draw.covlmc()}} ("ascii").}
-
-\item{close_p_value}{characters used as closing delimiters for the p value of
-a node in \code{\link[=draw.covlmc]{draw.covlmc()}} ("ascii").}
+\item{charset}{specifies the characters used for the "ascii art" represention
+when the format is "text", see details.}
 
 \item{orientation}{specifies the global orientation of the tree, either
 "vertical" (default) or "horizontal" ("latex").}
@@ -114,6 +73,28 @@ TikZ possibilities could be used (see the documentation of the \href{https://cta
 }
 }
 
+\section{Charset}{
+
+
+The "ascii art" format (\code{"text"}) uses a collection of characters to
+display a context tree. The default collection is specified by the
+package option \code{"mixvlmc.charset"} and is used when \code{charset=NULL} (default
+value). If \code{charset} is set to a character value, this value is used to
+select the collection in the same way that \code{"mixvlmc.charset"} specifies
+it:
+\itemize{
+\item \code{"ascii"}: the collection uses only standard ASCII characters and
+should be compatible with all environments;
+\item \code{"utf8"}: the collection uses UTF-8 symbols and needs a compatible display.
+}
+
+Finally, \code{charset} can a user supplied list of characters as the one returned
+by \code{\link[=charset_ascii]{charset_ascii()}} and \code{\link[=charset_utf8]{charset_utf8()}}.
+}
+
 \examples{
-draw_control(open_ct = "[", close_ct = "]")
+draw_control(digits = 2, tabular = FALSE)
+}
+\seealso{
+\code{\link[=draw]{draw()}}, \code{\link[=charset_ascii]{charset_ascii()}} and \code{\link[=charset_utf8]{charset_utf8()}}.
 }

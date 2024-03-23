@@ -118,6 +118,10 @@ reference:
   - starts_with("as_")
   - starts_with("is_")
   - starts_with("trim")
+- title: Low level customisation
+- contents:
+  - charset_utf8
+  - charset_ascii
 - title: Generics
   desc: Generic S3 methods defined by the package
 - contents:

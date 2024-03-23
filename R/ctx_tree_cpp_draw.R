@@ -12,7 +12,7 @@ rec_draw_cpp <- function(label, prefix, tree, ct, vals, control, node2txt) {
     if (nst > 1) {
       c_symbol <- control$first_node
     } else {
-      c_symbol <- control$next_node
+      c_symbol <- control$final_node
     }
     idx <- 1
     for (v in seq_along(ct$children)) {
@@ -23,12 +23,9 @@ rec_draw_cpp <- function(label, prefix, tree, ct, vals, control, node2txt) {
         if (idx < nst) {
           c_prefix <- control$vbranch
         } else {
-          c_prefix <- stringr::str_pad("", stringr::str_length(control$vbranch))
+          c_prefix <- stringr::str_pad("", cli::utf8_nchar(control$vbranch, "width"))
         }
-        c_prefix <-
-          stringr::str_pad(c_prefix, stringr::str_length(c_prelabel),
-            side = "right"
-          )
+        c_prefix <- utf8_pad(c_prefix, cli::utf8_nchar(c_prelabel, "width"), "right")
         ## recursive call
         rec_draw_cpp(
           stringr::str_c(prefix, c_prelabel, vals[v]),
@@ -36,8 +33,12 @@ rec_draw_cpp <- function(label, prefix, tree, ct, vals, control, node2txt) {
           tree, child, vals, control, node2txt
         )
         ## prepare for next child
-        c_symbol <- control$next_node
         idx <- idx + 1
+        if (idx == nst) {
+          c_symbol <- control$final_node
+        } else {
+          c_symbol <- control$next_node
+        }
       }
     }
   }
@@ -49,13 +50,13 @@ rec_draw_cpp <- function(label, prefix, tree, ct, vals, control, node2txt) {
 draw.ctx_tree_cpp <- function(ct, format, control = draw_control(),
                               frequency = NULL, ...) {
   if (rlang::is_missing(format)) {
-    format <- "ascii"
+    format <- "text"
   } else {
-    format <- match.arg(format, c("ascii", "latex"))
+    format <- match.arg(format, c("text", "latex"))
   }
   restore_model(ct)
   ct_r <- ct$root$representation()
-  if (format == "ascii") {
+  if (format == "text") {
     if (is.null(frequency)) {
       rec_draw_cpp(
         control$root, "", ct_r, ct_r[[1]], ct$vals,

@@ -2,13 +2,13 @@
 #' @rdname draw.vlmc
 draw.vlmc_cpp <- function(ct, format, control = draw_control(), prob = TRUE, ...) {
   if (rlang::is_missing(format)) {
-    format <- "ascii"
+    format <- "text"
   } else {
-    format <- match.arg(format, c("ascii", "latex"))
+    format <- match.arg(format, c("text", "latex"))
   }
   restore_model(ct)
   ct_r <- ct$root$representation()
-  if (format == "ascii") {
+  if (format == "text") {
     if (is.null(prob)) {
       rec_draw_cpp(
         control$root, "", ct_r, ct_r[[1]], ct$vals,
