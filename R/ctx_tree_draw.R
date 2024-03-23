@@ -30,7 +30,8 @@ latex_font_size <- c(
 #'   with this parameter (defaults to 4).
 #' @param root character used for the root node ("ascii").
 #' @param first_node characters used for the first child of a node ("ascii").
-#' @param next_node characters used for other children of a node ("ascii").
+#' @param next_node characters used for intermediate children of a node ("ascii").
+#' @param final_node characters used for the last child of a node ("ascii").
 #' @param vbranch characters used to represent a branch in a vertical way
 #'   ("ascii").
 #' @param hbranch characters used to represent a branch in a horizontal was
@@ -76,6 +77,7 @@ draw_control <- function(digits = 4,
                          root = "*",
                          first_node = "+",
                          next_node = "'",
+                         final_node = "'",
                          vbranch = "|",
                          hbranch = "--",
                          open_ct = "(",
@@ -96,6 +98,7 @@ draw_control <- function(digits = 4,
     root = root,
     first_node = first_node,
     next_node = next_node,
+    final_node = final_node,
     vbranch = vbranch,
     hbranch = hbranch,
     open_ct = open_ct,
@@ -144,9 +147,10 @@ rec_draw <- function(label, prefix, ct, vals, control, node2txt) {
     if (nst > 1) {
       c_symbol <- control$first_node
     } else {
-      c_symbol <- control$next_node
+      c_symbol <- control$final_node
     }
     idx <- 1
+    nb_nodes <- sum(sapply(ct$children, \(x) length(x) > 0))
     for (v in seq_along(ct$children)) {
       child <- ct$children[[v]]
       if (length(child) > 0) {
@@ -163,8 +167,12 @@ rec_draw <- function(label, prefix, ct, vals, control, node2txt) {
           stringr::str_c(prefix, c_prefix), child, vals, control, node2txt
         )
         ## prepare for next child
-        c_symbol <- control$next_node
         idx <- idx + 1
+        if (idx == nb_nodes) {
+          c_symbol <- control$final_node
+        } else {
+          c_symbol <- control$next_node
+        }
       }
     }
   }

@@ -12,7 +12,7 @@ rec_draw_cpp <- function(label, prefix, tree, ct, vals, control, node2txt) {
     if (nst > 1) {
       c_symbol <- control$first_node
     } else {
-      c_symbol <- control$next_node
+      c_symbol <- control$final_node
     }
     idx <- 1
     for (v in seq_along(ct$children)) {
@@ -33,8 +33,12 @@ rec_draw_cpp <- function(label, prefix, tree, ct, vals, control, node2txt) {
           tree, child, vals, control, node2txt
         )
         ## prepare for next child
-        c_symbol <- control$next_node
         idx <- idx + 1
+        if (idx == nst) {
+          c_symbol <- control$final_node
+        } else {
+          c_symbol <- control$next_node
+        }
       }
     }
   }

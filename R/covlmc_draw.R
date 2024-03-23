@@ -100,10 +100,12 @@ rec_draw_covlmc <- function(label, prefix, ct, vals, control, node2txt) {
     c_symbol <- control$first_node
     idx <- 1
     nst <- nb_sub_tree(ct)
+    nb_nodes <- sum(sapply(ct$children, \(x) length(x) > 0))
     if (is.null(ct[["merged_model"]])) {
       active_children <- seq_along(ct$children)
     } else {
       active_children <- setdiff(seq_along(ct$children), ct$merged)
+      nb_nodes <- nb_nodes + 1
     }
     for (v in active_children) {
       child <- ct$children[[v]]
@@ -121,8 +123,12 @@ rec_draw_covlmc <- function(label, prefix, ct, vals, control, node2txt) {
           stringr::str_c(prefix, c_prefix), child, vals, control, node2txt
         )
         ## prepare for next child
-        c_symbol <- control$next_node
         idx <- idx + 1
+        if (idx == nb_nodes) {
+          c_symbol <- control$final_node
+        } else {
+          c_symbol <- control$next_node
+        }
       }
     }
     if (!is.null(ct[["merged_model"]])) {

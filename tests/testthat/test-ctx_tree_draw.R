@@ -4,7 +4,16 @@ test_that("draw obeys its contract for default ascii output", {
   expect_snapshot_output(draw(dts_ctree))
   expect_snapshot_output(draw(dts_ctree, frequency = "total"))
   expect_snapshot_output(draw(dts_ctree, frequency = "detailed"))
-  expect_snapshot_output(draw(dts_ctree, control = draw_control(root = "x", open_ct = "[", close_ct = "]", first_node = "*", next_node = "°", vbranch = "^", hbranch = "->"), frequency = "detailed"))
+  expect_snapshot_output(draw(dts_ctree,
+    control = draw_control(
+      root = "x",
+      open_ct = "[", close_ct = "]",
+      first_node = "*",
+      final_node = "°",
+      vbranch = "^",
+      hbranch = "->"
+    ), frequency = "detailed"
+  ))
 })
 
 test_that("draw obeys its contract for LaTeX output", {

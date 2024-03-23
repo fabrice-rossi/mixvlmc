@@ -9,7 +9,8 @@ exercise_draw <- function(ctx) {
     root = "x",
     open_ct = "[", close_ct = "]",
     first_node = "*",
-    next_node = "°",
+    next_node = "|",
+    final_node = "°",
     vbranch = "^",
     hbranch = "->"
   ), frequency = "detailed")

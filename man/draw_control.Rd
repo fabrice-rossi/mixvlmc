@@ -9,6 +9,7 @@ draw_control(
   root = "*",
   first_node = "+",
   next_node = "'",
+  final_node = "'",
   vbranch = "|",
   hbranch = "--",
   open_ct = "(",
@@ -35,7 +36,9 @@ with this parameter (defaults to 4).}
 
 \item{first_node}{characters used for the first child of a node ("ascii").}
 
-\item{next_node}{characters used for other children of a node ("ascii").}
+\item{next_node}{characters used for intermediate children of a node ("ascii").}
+
+\item{final_node}{characters used for the last child of a node ("ascii").}
 
 \item{vbranch}{characters used to represent a branch in a vertical way
 ("ascii").}
