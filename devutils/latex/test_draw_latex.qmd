@@ -123,15 +123,15 @@ m_cov <- covlmc(dts, dts_cov, min_size = 5)
 ```
 
 ```{r}
-draw(m_cov, digits = 3)
+draw(m_cov, control = draw_control(digits = 3))
 ```
 
 ```{r}
 #| results: asis
 draw(m_cov, "latex",
-  digits = 3,
   with_state = TRUE,
   control = draw_control(
+    digits = 3,
     orientation = "h",
     decoration = "r",
     tab_orientation = "h",
@@ -143,8 +143,8 @@ draw(m_cov, "latex",
 ```{r}
 #| results: asis
 draw(m_cov, "latex",
-  digits = 3,
   control = draw_control(
+    digits = 3,
     orientation = "v",
     decoration = "r",
     tab_orientation = "v",
@@ -155,9 +155,9 @@ draw(m_cov, "latex",
 ```{r}
 #| results: asis
 draw(m_cov, "latex",
-  digits = 3,
   with_state = TRUE,
   control = draw_control(
+    digits = 3,
     orientation = "v",
     decoration = "r",
     tab_orientation = "v",
