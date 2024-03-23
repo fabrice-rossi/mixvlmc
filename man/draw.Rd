@@ -59,7 +59,7 @@ ctree <- ctx_tree(dts, min_size = 10, max_depth = 2)
 draw(ctree)
 dts_c <- sample(c("A", "B", "CD"), 100, replace = TRUE)
 ctree_c <- ctx_tree(dts_c, min_size = 10, max_depth = 2)
-draw(ctree_c, control = draw_control(root = "x"))
+draw(ctree_c, control = draw_control(digits = 2))
 ## LaTeX output
 draw(ctree_c, "latex")
 }

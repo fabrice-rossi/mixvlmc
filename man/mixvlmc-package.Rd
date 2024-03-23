@@ -36,6 +36,16 @@ implementation.
 version is significantly faster than the R version, but is still
 considered experimental.
 }
+\item \code{mixvlmc.charset}: specifies the collection of characters used to display
+context trees in "ascii art" when using the \code{"text"} format for \code{\link[=draw]{draw()}}
+and related functions. Two values are supported:
+\itemize{
+\item \code{"ascii"}: the collection uses only standard ASCII characters and
+should be compatible with all environments;
+\item \code{"utf8"}: the collection uses UTF-8 symbols and needs a compatible display.
+At loading the option is set based on a call to \code{\link[cli:is_utf8_output]{cli::is_utf8_output()}}.
+It defaults to \code{"utf8"} is this encoding is supported.
+}
 }
 }
 

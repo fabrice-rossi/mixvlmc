@@ -4,6 +4,156 @@ latex_font_size <- c(
   "LARGE", "huge", "Huge"
 )
 
+#' ASCII character set for context tree text representation
+#'
+#' This function returns a list of ASCII characters used to fine tune the [draw()]
+#' function behaviour when it is used with `format="text"`. It can be used
+#' as is or customised using its parameters.
+#'
+#' @param root character used for the root node.
+#' @param first_node characters used for the first child of a node.
+#' @param next_node characters used for intermediate children of a node.
+#' @param final_node characters used for the last child of a node.
+#' @param vbranch characters used to represent a branch in a vertical way.
+#' @param hbranch characters used to represent a branch in a horizontal was.
+#' @param open_ct characters used to start each node specific text
+#'   representation.
+#' @param close_ct characters used to end each node specific text
+#'   representation.
+#' @param level_sep characters used to separate levels from models in
+#'   [draw.covlmc()].
+#' @param time_sep characters used to separate temporal blocks in
+#'   [draw.covlmc()].
+#' @param intercept characters used to represent the intercept in
+#'   [draw.covlmc()].
+#' @param intercept_sep characters used to the intercept from the other
+#'   parameters in [draw.covlmc()].
+#' @param open_p_value characters used as opening delimiters for the p value of
+#'   a node in [draw.covlmc()].
+#' @param close_p_value characters used as closing delimiters for the p value of
+#'   a node in [draw.covlmc()].
+#' @param open_model characters used as opening delimiters for the
+#'   representation of a model in [draw.covlmc()].
+#' @param close_model characters used as closing delimiters for the
+#'   representation of a model in [draw.covlmc()].
+#' @returns a list
+#' @seealso [draw()], [charset_utf8()].
+#' @export
+#' @examples
+#' charset_ascii(root = "x")
+#'
+charset_ascii <- function(root = "*",
+                          first_node = "+",
+                          next_node = "'",
+                          final_node = "'",
+                          vbranch = "|",
+                          hbranch = "--",
+                          open_ct = "(",
+                          close_ct = ")",
+                          level_sep = " ~ ",
+                          time_sep = " | ",
+                          intercept = "(I)",
+                          intercept_sep = " & ",
+                          open_p_value = "<",
+                          close_p_value = ">",
+                          open_model = "[",
+                          close_model = "]") {
+  list(
+    root = root,
+    first_node = first_node,
+    next_node = next_node,
+    final_node = final_node,
+    vbranch = vbranch,
+    hbranch = hbranch,
+    open_ct = open_ct,
+    close_ct = close_ct,
+    level_sep = level_sep,
+    time_sep = time_sep,
+    intercept = intercept,
+    intercept_sep = intercept_sep,
+    open_p_value = open_p_value,
+    close_p_value = close_p_value,
+    open_model = open_model,
+    close_model = close_model
+  )
+}
+
+#' UTF-8 character set for context tree text representation
+#'
+#' This function returns a list of UTF-8 characters and symbols used to fine
+#' tune the [draw()] function behaviour when it is used with `format="text"`. It
+#' can be used as is or customised using its parameters.
+#'
+#' @param root character used for the root node.
+#' @param first_node characters used for the first child of a node.
+#' @param next_node characters used for intermediate children of a node.
+#' @param final_node characters used for the last child of a node.
+#' @param vbranch characters used to represent a branch in a vertical way.
+#' @param hbranch characters used to represent a branch in a horizontal was.
+#' @param open_ct characters used to start each node specific text
+#'   representation.
+#' @param close_ct characters used to end each node specific text
+#'   representation.
+#' @param level_sep characters used to separate levels from models in
+#'   [draw.covlmc()].
+#' @param time_sep characters used to separate temporal blocks in
+#'   [draw.covlmc()].
+#' @param intercept characters used to represent the intercept in
+#'   [draw.covlmc()].
+#' @param intercept_sep characters used to the intercept from the other
+#'   parameters in [draw.covlmc()].
+#' @param open_p_value characters used as opening delimiters for the p value of
+#'   a node in [draw.covlmc()].
+#' @param close_p_value characters used as closing delimiters for the p value of
+#'   a node in [draw.covlmc()].
+#' @param open_model characters used as opening delimiters for the
+#'   representation of a model in [draw.covlmc()].
+#' @param close_model characters used as closing delimiters for the
+#'   representation of a model in [draw.covlmc()].
+#' @returns a list
+#' @seealso [draw()], [charset_ascii()].
+#' @export
+#' @examples
+#' charset_utf8(root = "\u27E1")
+charset_utf8 <- function(root = "\u23F9", # ⏹
+                         first_node = "\u251C", # ├
+                         next_node = "\u251C", # ├ ,
+                         final_node = "\u2514", # └
+                         vbranch = "\u2502", # │
+                         hbranch = "\u2500", # ─
+                         open_ct = "(",
+                         close_ct = ")",
+                         level_sep = " ~ ",
+                         time_sep = " \u205E ", # ⁞
+                         #    time_sep = " \u2022 ", # •
+                         #    time_sep = " \u250A ", # ┆
+                         intercept = "\u24BE", # Ⓘ
+                         intercept_sep = " \u2022 ", # •
+                         open_p_value = "\u2039", # ‹
+                         close_p_value = "\u203A", # ›
+                         open_model = "\u27EC", # ⟬
+                         close_model = "\u27ED" # ⟭
+) {
+  list(
+    root = root,
+    first_node = first_node,
+    next_node = next_node,
+    final_node = final_node,
+    vbranch = vbranch,
+    hbranch = hbranch,
+    open_ct = open_ct,
+    close_ct = close_ct,
+    level_sep = level_sep,
+    time_sep = time_sep,
+    intercept = intercept,
+    intercept_sep = intercept_sep,
+    open_p_value = open_p_value,
+    close_p_value = close_p_value,
+    open_model = open_model,
+    close_model = close_model
+  )
+}
+
 #' Control parameters for `draw`
 #'
 #' This function returns a list used to fine tune the [draw()] function
@@ -13,49 +163,11 @@ latex_font_size <- c(
 #' is the case, the format is given at the end of the parameter description.
 #' Some parameters are also specific to some functions inheriting from [draw()].
 #'
-#' @section Decoration:
-#'
-#'   The LaTeX format (`"latex"`) can "decorate" the nodes of the context tree
-#'   by drawing borders. We support only basic decorations, but in theory all
-#'   TikZ possibilities could be used (see the documentation of the [forest
-#'   LaTeX package](https://ctan.org/pkg/forest)). Supported decorations:
-#'
-#' - `"none"`: default, no decoration;
-#' - `"rectangle"`: adds a rectangular border to all nodes;
-#' - `"circle"`: adds a circular border to all nodes;
-#' - `"ellipse"`: adds an ellipsoidal border to all nodes.
-#'
 #' @param digits numerical parameters and p-values are represented using the
 #'   [base::signif()] function, using the number of significant digits specified
 #'   with this parameter (defaults to 4).
-#' @param root character used for the root node ("text").
-#' @param first_node characters used for the first child of a node ("text").
-#' @param next_node characters used for intermediate children of a node ("text").
-#' @param final_node characters used for the last child of a node ("text").
-#' @param vbranch characters used to represent a branch in a vertical way
-#'   ("text").
-#' @param hbranch characters used to represent a branch in a horizontal was
-#'   ("text").
-#' @param open_ct characters used to start each node specific text
-#'   representation ("text").
-#' @param close_ct characters used to end each node specific text representation
-#'   ("text").
-#' @param level_sep characters used to separate levels from models in
-#'   [draw.covlmc()] ("text").
-#' @param time_sep characters used to separate temporal blocks in
-#'   [draw.covlmc()] ("text").
-#' @param intercept characters used to represent the intercept in
-#'   [draw.covlmc()] ("text").
-#' @param intercept_sep characters used to the intercept from the other
-#'   parameters in [draw.covlmc()] ("text").
-#' @param open_p_value characters used as opening delimiters for the p value of
-#'   a node in [draw.covlmc()] ("text").
-#' @param close_p_value characters used as closing delimiters for the p value of
-#'   a node in [draw.covlmc()] ("text").
-#' @param open_model characters used as opening delimiters for the representation
-#'   of a model in [draw.covlmc()] ("text").
-#' @param close_model characters used as closing delimiters for the representation
-#'   of a model in [draw.covlmc()] ("text").
+#' @param charset specifies the characters used for the "ascii art" represention
+#'   when the format is "text", see details.
 #' @param orientation specifies the global orientation of the tree, either
 #'   "vertical" (default) or "horizontal" ("latex").
 #' @param tabular if TRUE (default value), the "latex" format will use tables
@@ -77,55 +189,68 @@ latex_font_size <- c(
 #' @returns a list
 #' @export
 #'
+#' @section Decoration:
+#'
+#'   The LaTeX format (`"latex"`) can "decorate" the nodes of the context tree
+#'   by drawing borders. We support only basic decorations, but in theory all
+#'   TikZ possibilities could be used (see the documentation of the [forest
+#'   LaTeX package](https://ctan.org/pkg/forest)). Supported decorations:
+#'
+#' - `"none"`: default, no decoration;
+#' - `"rectangle"`: adds a rectangular border to all nodes;
+#' - `"circle"`: adds a circular border to all nodes;
+#' - `"ellipse"`: adds an ellipsoidal border to all nodes.
+#'
+#' @section Charset:
+#'
+#'   The "ascii art" format (`"text"`) uses a collection of characters to
+#'   display a context tree. The default collection is specified by the
+#'   package option `"mixvlmc.charset"` and is used when `charset=NULL` (default
+#'   value). If `charset` is set to a character value, this value is used to
+#'   select the collection in the same way that `"mixvlmc.charset"` specifies
+#'   it:
+#'
+#'   - `"ascii"`: the collection uses only standard ASCII characters and
+#'      should be compatible with all environments;
+#'
+#'  - `"utf8"`: the collection uses UTF-8 symbols and needs a compatible display.
+#'
+#'  Finally, `charset` can a user supplied list of characters as the one returned
+#'  by [charset_ascii()] and [charset_utf8()].
+#'
+#' @seealso [draw()], [charset_ascii()] and [charset_utf8()].
 #' @examples
-#' draw_control(open_ct = "[", close_ct = "]")
+#' draw_control(digits = 2, tabular = FALSE)
 draw_control <- function(digits = 4,
-                         root = "*",
-                         first_node = "+",
-                         next_node = "'",
-                         final_node = "'",
-                         vbranch = "|",
-                         hbranch = "--",
-                         open_ct = "(",
-                         close_ct = ")",
-                         level_sep = " ~ ",
-                         time_sep = " | ",
-                         intercept = "(I)",
-                         intercept_sep = " & ",
-                         open_p_value = "<",
-                         close_p_value = ">",
-                         open_model = "[",
-                         close_model = "]",
+                         charset = NULL,
                          orientation = c("vertical", "horizontal"),
                          tabular = TRUE,
                          tab_orientation = c("vertical", "horizontal"),
                          decoration = c("none", "rectangle", "circle", "ellipse"),
                          fontsize = "normalsize",
                          prob_fontsize = "small") {
-  list(
-    digits = digits,
-    root = root,
-    first_node = first_node,
-    next_node = next_node,
-    final_node = final_node,
-    vbranch = vbranch,
-    hbranch = hbranch,
-    open_ct = open_ct,
-    close_ct = close_ct,
-    level_sep = level_sep,
-    time_sep = time_sep,
-    intercept = intercept,
-    intercept_sep = intercept_sep,
-    open_p_value = open_p_value,
-    close_p_value = close_p_value,
-    open_model = open_model,
-    close_model = close_model,
-    orientation = match.arg(orientation),
-    tabular = tabular,
-    tab_orientation = match.arg(tab_orientation),
-    decoration = match.arg(decoration),
-    fontsize = match.arg(fontsize, choices = latex_font_size),
-    prob_fontsize = match.arg(prob_fontsize, choices = latex_font_size)
+  if (is.null(charset)) {
+    charset <- options("mixvlmc.charset")[[1]]
+  }
+  if (is.character(charset)) {
+    charset <- match.arg(charset, choices = c("ascii", "utf8"))
+    if (charset == "ascii") {
+      charset <- charset_ascii()
+    } else {
+      charset <- charset_utf8()
+    }
+  }
+  c(
+    list(
+      digits = digits,
+      orientation = match.arg(orientation),
+      tabular = tabular,
+      tab_orientation = match.arg(tab_orientation),
+      decoration = match.arg(decoration),
+      fontsize = match.arg(fontsize, choices = latex_font_size),
+      prob_fontsize = match.arg(prob_fontsize, choices = latex_font_size)
+    ),
+    charset
   )
 }
 
@@ -219,7 +344,7 @@ rec_draw <- function(label, prefix, ct, vals, control, node2txt) {
 #' draw(ctree)
 #' dts_c <- sample(c("A", "B", "CD"), 100, replace = TRUE)
 #' ctree_c <- ctx_tree(dts_c, min_size = 10, max_depth = 2)
-#' draw(ctree_c, control = draw_control(root = "x"))
+#' draw(ctree_c, control = draw_control(digits = 2))
 #' ## LaTeX output
 #' draw(ctree_c, "latex")
 #' @section Format:

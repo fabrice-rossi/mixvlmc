@@ -90,26 +90,34 @@ test_that("trimmed model can be drawn", {
       m_cov <- covlmc(dts, dts_cov, min_size = 10, keep_data = TRUE)
       t_m_cov_model <- trim(m_cov, keep_model = TRUE)
       t_m_cov <- trim(m_cov)
+      for (charset in c("ascii", "utf8")) {
+        withr::local_options(mixvlmc.charset = charset)
+        expect_snapshot(draw(t_m_cov_model,
+          model = "coef", with_state = TRUE,
+          control = draw_control(digits = 2), p_value = TRUE
+        ))
+        expect_snapshot(draw(t_m_cov_model,
+          model = "coef", with_state = TRUE,
+          control = draw_control(digits = 2)
+        ))
+        expect_snapshot(draw(t_m_cov,
+          model = "coef", with_state = TRUE,
+          control = draw_control(digits = 2), p_value = TRUE
+        ))
+        expect_snapshot(draw(t_m_cov_model,
+          model = "full",
+          control = draw_control(digits = 2),
+          with_state = TRUE
+        ))
+        expect_snapshot(draw(t_m_cov,
+          model = "full",
+          control = draw_control(digits = 2),
+          with_state = TRUE
+        ))
+      }
       expect_snapshot(draw(t_m_cov_model,
-        model = "coef", with_state = TRUE,
-        control = draw_control(digits = 2), p_value = TRUE
-      ))
-      expect_snapshot(draw(t_m_cov_model,
-        model = "coef", with_state = TRUE,
-        control = draw_control(digits = 2)
-      ))
-      expect_snapshot(draw(t_m_cov,
-        model = "coef", with_state = TRUE,
-        control = draw_control(digits = 2), p_value = TRUE
-      ))
-      expect_snapshot(draw(t_m_cov_model,
-        model = "full",
-        control = draw_control(time_sep = " % ", digits = 2),
-        with_state = TRUE
-      ))
-      expect_snapshot(draw(t_m_cov,
-        model = "full",
-        control = draw_control(time_sep = " % ", intercept_sep = " + ", digits = 2),
+        "latex",
+        control = draw_control(digits = 2),
         with_state = TRUE
       ))
     }
