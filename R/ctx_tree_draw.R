@@ -44,12 +44,18 @@ latex_font_size <- c(
 #'   [draw.covlmc()] ("ascii").
 #' @param time_sep characters used to separate temporal blocks in
 #'   [draw.covlmc()] ("ascii").
+#' @param intercept characters used to represent the intercept in
+#'   [draw.covlmc()] ("ascii").
 #' @param intercept_sep characters used to the intercept from the other
 #'   parameters in [draw.covlmc()] ("ascii").
 #' @param open_p_value characters used as opening delimiters for the p value of
 #'   a node in [draw.covlmc()] ("ascii").
 #' @param close_p_value characters used as closing delimiters for the p value of
 #'   a node in [draw.covlmc()] ("ascii").
+#' @param open_model characters used as opening delimiters for the representation
+#'   of a model in [draw.covlmc()] ("ascii").
+#' @param close_model characters used as closing delimiters for the representation
+#'   of a model in [draw.covlmc()] ("ascii").
 #' @param orientation specifies the global orientation of the tree, either
 #'   "vertical" (default) or "horizontal" ("latex").
 #' @param tabular if TRUE (default value), the "latex" format will use tables
@@ -84,9 +90,12 @@ draw_control <- function(digits = 4,
                          close_ct = ")",
                          level_sep = " ~ ",
                          time_sep = " | ",
+                         intercept = "(I)",
                          intercept_sep = " & ",
                          open_p_value = "<",
                          close_p_value = ">",
+                         open_model = "[",
+                         close_model = "]",
                          orientation = c("vertical", "horizontal"),
                          tabular = TRUE,
                          tab_orientation = c("vertical", "horizontal"),
@@ -105,9 +114,12 @@ draw_control <- function(digits = 4,
     close_ct = close_ct,
     level_sep = level_sep,
     time_sep = time_sep,
+    intercept = intercept,
     intercept_sep = intercept_sep,
     open_p_value = open_p_value,
     close_p_value = close_p_value,
+    open_model = open_model,
+    close_model = close_model,
     orientation = match.arg(orientation),
     tabular = tabular,
     tab_orientation = match.arg(tab_orientation),

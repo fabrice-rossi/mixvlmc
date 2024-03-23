@@ -16,9 +16,12 @@ draw_control(
   close_ct = ")",
   level_sep = " ~ ",
   time_sep = " | ",
+  intercept = "(I)",
   intercept_sep = " & ",
   open_p_value = "<",
   close_p_value = ">",
+  open_model = "[",
+  close_model = "]",
   orientation = c("vertical", "horizontal"),
   tabular = TRUE,
   tab_orientation = c("vertical", "horizontal"),
@@ -58,6 +61,9 @@ representation ("ascii").}
 \item{time_sep}{characters used to separate temporal blocks in
 \code{\link[=draw.covlmc]{draw.covlmc()}} ("ascii").}
 
+\item{intercept}{characters used to represent the intercept in
+\code{\link[=draw.covlmc]{draw.covlmc()}} ("ascii").}
+
 \item{intercept_sep}{characters used to the intercept from the other
 parameters in \code{\link[=draw.covlmc]{draw.covlmc()}} ("ascii").}
 
@@ -66,6 +72,12 @@ a node in \code{\link[=draw.covlmc]{draw.covlmc()}} ("ascii").}
 
 \item{close_p_value}{characters used as closing delimiters for the p value of
 a node in \code{\link[=draw.covlmc]{draw.covlmc()}} ("ascii").}
+
+\item{open_model}{characters used as opening delimiters for the representation
+of a model in \code{\link[=draw.covlmc]{draw.covlmc()}} ("ascii").}
+
+\item{close_model}{characters used as closing delimiters for the representation
+of a model in \code{\link[=draw.covlmc]{draw.covlmc()}} ("ascii").}
 
 \item{orientation}{specifies the global orientation of the tree, either
 "vertical" (default) or "horizontal" ("latex").}
