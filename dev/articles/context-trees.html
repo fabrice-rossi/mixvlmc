@@ -147,7 +147,8 @@ corresponds to adding to the past of the context.</p>
 1)\)</span> and all contexts that appear <em>at least twice</em> in
 <span class="math inline">\(x\)</span> (i.e. which are observed for at
 least two different values of <span class="math inline">\(t\)</span>).
-An ASCII art representation of the corresponding context tree is:</p>
+An ASCII art representation of the corresponding context tree is (in
+pure ASCII):</p>
 <pre><code>*
 +-- 0
 |   '-- 0
@@ -176,10 +177,10 @@ using the <code><a href="../reference/ctx_tree.html">ctx_tree()</a></code> funct
 object. It can be drawn using ascii art</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/draw.html">draw</a></span><span class="op">(</span><span class="va">x_ctx</span><span class="op">)</span></span>
-<span><span class="co">#&gt; *</span></span>
-<span><span class="co">#&gt; +-- 0</span></span>
-<span><span class="co">#&gt; |   '-- 0</span></span>
-<span><span class="co">#&gt; '-- 1</span></span></code></pre></div>
+<span><span class="co">#&gt; ⏹</span></span>
+<span><span class="co">#&gt; ├─ 0</span></span>
+<span><span class="co">#&gt; │  └─ 0</span></span>
+<span><span class="co">#&gt; └─ 1</span></span></code></pre></div>
 <p>The default extraction is done with <code>min_size=2</code> and
 <code>max_depth=10</code> which means that</p>
 <ul>

@@ -139,13 +139,13 @@ BIC for model selection):</p>
 <code class="sourceCode R"><span><span class="va">elec_vlmc_tune</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tune_vlmc.html">tune_vlmc</a></span><span class="op">(</span><span class="va">elec_dts</span><span class="op">)</span></span>
 <span><span class="va">best_elec_vlmc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/as_vlmc.html">as_vlmc</a></span><span class="op">(</span><span class="va">elec_vlmc_tune</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/draw.html">draw</a></span><span class="op">(</span><span class="va">best_elec_vlmc</span><span class="op">)</span></span>
-<span><span class="co">#&gt; * (0.3269, 0.4841, 0.189)</span></span>
-<span><span class="co">#&gt; +-- low (0.8088, 0.1821, 0.009105)</span></span>
-<span><span class="co">#&gt; '-- typical (0.1292, 0.8041, 0.06667)</span></span>
-<span><span class="co">#&gt; |   +-- low (0.3667, 0.5833, 0.05)</span></span>
-<span><span class="co">#&gt; |   '-- typical (0.1022, 0.8365, 0.0613)</span></span>
-<span><span class="co">#&gt; |       '-- low (0.4058, 0.5507, 0.04348)</span></span>
-<span><span class="co">#&gt; '-- high (0, 0.1864, 0.8136)</span></span></code></pre></div>
+<span><span class="co">#&gt; ⏹ (0.3269, 0.4841, 0.189)</span></span>
+<span><span class="co">#&gt; ├─ low (0.8088, 0.1821, 0.009105)</span></span>
+<span><span class="co">#&gt; ├─ typical (0.1292, 0.8041, 0.06667)</span></span>
+<span><span class="co">#&gt; │  ├─ low (0.3667, 0.5833, 0.05)</span></span>
+<span><span class="co">#&gt; │  └─ typical (0.1022, 0.8365, 0.0613)</span></span>
+<span><span class="co">#&gt; │     └─ low (0.4058, 0.5507, 0.04348)</span></span>
+<span><span class="co">#&gt; └─ high (0, 0.1864, 0.8136)</span></span></code></pre></div>
 <p>Considering the apparent regularity of the time series, one may
 wonder whether this model is really capturing the dynamics of power
 electricity consumption. In particular the longest memory of 3 time
@@ -389,12 +389,12 @@ tests.</li>
 <p>The default parameters work well on the previous example, as shown by
 the obtained model:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/draw.html">draw</a></span><span class="op">(</span><span class="va">model</span>, model <span class="op">=</span> <span class="st">"full"</span>, p_value <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; *</span></span>
-<span><span class="co">#&gt; +-- 0 ([ (I)    &amp; y_1  </span></span>
-<span><span class="co">#&gt; |        -2.951 &amp; 6.236 ])</span></span>
-<span><span class="co">#&gt; '-- 1 ([ (I)   &amp; y_1   </span></span>
-<span><span class="co">#&gt;          1.719 &amp; -1.881 ])</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/draw.html">draw</a></span><span class="op">(</span><span class="va">model</span>, model <span class="op">=</span> <span class="st">"full"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; ⏹</span></span>
+<span><span class="co">#&gt; ├─ 0 (⟬ Ⓘ      • y_1  </span></span>
+<span><span class="co">#&gt; │       -2.951 • 6.236 ⟭)</span></span>
+<span><span class="co">#&gt; └─ 1 (⟬ Ⓘ     • y_1   </span></span>
+<span><span class="co">#&gt;         1.719 • -1.881 ⟭)</span></span></code></pre></div>
 <p>The model has 2 contexts, 0 and 1, as expected. The logistic models
 are described by their parameters. For context 0, the intercept is
 negative and the coefficient of <span class="math inline">\(y_{t-1}\)</span> is positive: the probability of
@@ -436,12 +436,12 @@ the full “pruning space” associated to a given data set.</p>
 <span><span class="co">#&gt;  Selected by BIC (245.1046) with likelihood function "truncated" (-112.3135)</span></span></code></pre></div>
 <p>and</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/draw.html">draw</a></span><span class="op">(</span><span class="fu"><a href="../reference/as_covlmc.html">as_covlmc</a></span><span class="op">(</span><span class="va">model_tune</span><span class="op">)</span>, model <span class="op">=</span> <span class="st">"full"</span>, p_value <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; *</span></span>
-<span><span class="co">#&gt; +-- 0 ([ (I)    &amp; y_1  </span></span>
-<span><span class="co">#&gt; |        -2.951 &amp; 6.236 ])</span></span>
-<span><span class="co">#&gt; '-- 1 ([ (I)   &amp; y_1   </span></span>
-<span><span class="co">#&gt;          1.719 &amp; -1.881 ])</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/draw.html">draw</a></span><span class="op">(</span><span class="fu"><a href="../reference/as_covlmc.html">as_covlmc</a></span><span class="op">(</span><span class="va">model_tune</span><span class="op">)</span>, model <span class="op">=</span> <span class="st">"full"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; ⏹</span></span>
+<span><span class="co">#&gt; ├─ 0 (⟬ Ⓘ      • y_1  </span></span>
+<span><span class="co">#&gt; │       -2.951 • 6.236 ⟭)</span></span>
+<span><span class="co">#&gt; └─ 1 (⟬ Ⓘ     • y_1   </span></span>
+<span><span class="co">#&gt;         1.719 • -1.881 ⟭)</span></span></code></pre></div>
 <p>The resulting model is the same as the one obtained before but it was
 properly obtained by minimising the BIC.</p>
 <p>As for <code><a href="../reference/tune_vlmc.html">tune_vlmc()</a></code>, the <code>max_depth</code> parameter
@@ -498,30 +498,30 @@ or automatically using e.g. <code><a href="https://ggplot2.tidyverse.org/refere
 <p><img src="covlmc_files/figure-html/unnamed-chunk-14-1.png" width="672" style="display: block; margin: auto;"></p>
 <p>The final model is:</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/draw.html">draw</a></span><span class="op">(</span><span class="fu"><a href="../reference/as_covlmc.html">as_covlmc</a></span><span class="op">(</span><span class="va">elec_tune</span><span class="op">)</span>, model <span class="op">=</span> <span class="st">"full"</span>, p_value <span class="op">=</span> <span class="cn">FALSE</span>, with_state <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; *</span></span>
-<span><span class="co">#&gt; +-- low ([ (low)   ~ (I)   </span></span>
-<span><span class="co">#&gt; |          typical ~ -1.491</span></span>
-<span><span class="co">#&gt; |          high    ~ -4.487 ])</span></span>
-<span><span class="co">#&gt; '-- typical</span></span>
-<span><span class="co">#&gt; |   +-- low ([ (low)   ~ (I)   </span></span>
-<span><span class="co">#&gt; |   |          typical ~ 0.4643</span></span>
-<span><span class="co">#&gt; |   |          high    ~ -1.992 ])</span></span>
-<span><span class="co">#&gt; |   '-- typical</span></span>
-<span><span class="co">#&gt; |   |   +-- low ([ (low)   ~ (I)   </span></span>
-<span><span class="co">#&gt; |   |   |          typical ~ 0.3054</span></span>
-<span><span class="co">#&gt; |   |   |          high    ~ -2.234 ])</span></span>
-<span><span class="co">#&gt; |   |   '-- typical ([ (low)   ~ (I)     &amp; day_1TRUE</span></span>
-<span><span class="co">#&gt; |   |   |              typical ~ 1.839   &amp; 0.975    </span></span>
-<span><span class="co">#&gt; |   |   |              high    ~ -0.1823 &amp; -0.1462   ])</span></span>
-<span><span class="co">#&gt; |   |   '-- high ([ (low)   ~ (I)   </span></span>
-<span><span class="co">#&gt; |   |               typical ~ 2.773 </span></span>
-<span><span class="co">#&gt; |   |               high    ~ 0.8473 ])</span></span>
-<span><span class="co">#&gt; |   '-- high ([ (low)   ~ (I)  </span></span>
-<span><span class="co">#&gt; |               typical ~ 3.367</span></span>
-<span><span class="co">#&gt; |               high    ~ 1.705 ])</span></span>
-<span><span class="co">#&gt; '-- high ([ (typical) ~ (I)  </span></span>
-<span><span class="co">#&gt;             high      ~ 1.474 ])</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/draw.html">draw</a></span><span class="op">(</span><span class="fu"><a href="../reference/as_covlmc.html">as_covlmc</a></span><span class="op">(</span><span class="va">elec_tune</span><span class="op">)</span>, model <span class="op">=</span> <span class="st">"full"</span>, with_state <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; ⏹</span></span>
+<span><span class="co">#&gt; ├─ low (⟬ (low)   ~ Ⓘ     </span></span>
+<span><span class="co">#&gt; │         typical ~ -1.491</span></span>
+<span><span class="co">#&gt; │         high    ~ -4.487 ⟭)</span></span>
+<span><span class="co">#&gt; ├─ typical</span></span>
+<span><span class="co">#&gt; │  ├─ low (⟬ (low)   ~ Ⓘ     </span></span>
+<span><span class="co">#&gt; │  │         typical ~ 0.4643</span></span>
+<span><span class="co">#&gt; │  │         high    ~ -1.992 ⟭)</span></span>
+<span><span class="co">#&gt; │  ├─ typical</span></span>
+<span><span class="co">#&gt; │  │  ├─ low (⟬ (low)   ~ Ⓘ     </span></span>
+<span><span class="co">#&gt; │  │  │         typical ~ 0.3054</span></span>
+<span><span class="co">#&gt; │  │  │         high    ~ -2.234 ⟭)</span></span>
+<span><span class="co">#&gt; │  │  ├─ typical (⟬ (low)   ~ Ⓘ       • day_1TRUE</span></span>
+<span><span class="co">#&gt; │  │  │             typical ~ 1.839   • 0.975    </span></span>
+<span><span class="co">#&gt; │  │  │             high    ~ -0.1823 • -0.1462   ⟭)</span></span>
+<span><span class="co">#&gt; │  │  └─ high (⟬ (low)   ~ Ⓘ     </span></span>
+<span><span class="co">#&gt; │  │             typical ~ 2.773 </span></span>
+<span><span class="co">#&gt; │  │             high    ~ 0.8473 ⟭)</span></span>
+<span><span class="co">#&gt; │  └─ high (⟬ (low)   ~ Ⓘ    </span></span>
+<span><span class="co">#&gt; │             typical ~ 3.367</span></span>
+<span><span class="co">#&gt; │             high    ~ 1.705 ⟭)</span></span>
+<span><span class="co">#&gt; └─ high (⟬ (typical) ~ Ⓘ    </span></span>
+<span><span class="co">#&gt;            high      ~ 1.474 ⟭)</span></span></code></pre></div>
 <p>It shows some interesting patterns:</p>
 <ul>
 <li>one of the logistic model is degenerate: in the <code>high</code>
@@ -603,18 +603,18 @@ characteristics:</p>
 <p>The model can be explored in details by drawing its context tree (see
 <code><a href="../articles/context-trees.html">vignette("context-trees")</a></code> for details) as follows:</p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/draw.html">draw</a></span><span class="op">(</span><span class="va">elec_model</span><span class="op">)</span></span>
-<span><span class="co">#&gt; *</span></span>
-<span><span class="co">#&gt; +-- low (0.8088, 0.1821, 0.009105)</span></span>
-<span><span class="co">#&gt; '-- typical</span></span>
-<span><span class="co">#&gt; |   +-- low (0.3667, 0.5833, 0.05)</span></span>
-<span><span class="co">#&gt; |   '-- typical</span></span>
-<span><span class="co">#&gt; |   |   +-- low (0.4058, 0.5507, 0.04348)</span></span>
-<span><span class="co">#&gt; |   |   '-- typical ([ 1.839   &amp; 0.975  </span></span>
-<span><span class="co">#&gt; |   |   |              -0.1823 &amp; -0.1462 ])</span></span>
-<span><span class="co">#&gt; |   |   '-- high (0.05172, 0.8276, 0.1207)</span></span>
-<span><span class="co">#&gt; |   '-- high (0.02817, 0.8169, 0.1549)</span></span>
-<span><span class="co">#&gt; '-- high (0.1864, 0.8136)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/draw.html">draw</a></span><span class="op">(</span><span class="va">elec_model</span>, p_value <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; ⏹ (merging (low and high): 8.121e-230)</span></span>
+<span><span class="co">#&gt; ├─ low (‹0.03454› 0.8088, 0.1821, 0.009105)</span></span>
+<span><span class="co">#&gt; ├─ typical (merging (low and high): 8.264e-09)</span></span>
+<span><span class="co">#&gt; │  ├─ low (‹0.8447› 0.3667, 0.5833, 0.05)</span></span>
+<span><span class="co">#&gt; │  ├─ typical (collapsing: 3.961e-10)</span></span>
+<span><span class="co">#&gt; │  │  ├─ low (‹0.2323› 0.4058, 0.5507, 0.04348)</span></span>
+<span><span class="co">#&gt; │  │  ├─ typical (‹6.269e-05› ⟬ 1.839   • 0.975  </span></span>
+<span><span class="co">#&gt; │  │  │                         -0.1823 • -0.1462 ⟭)</span></span>
+<span><span class="co">#&gt; │  │  └─ high (‹0.6393› 0.05172, 0.8276, 0.1207)</span></span>
+<span><span class="co">#&gt; │  └─ high (‹0.1638› 0.02817, 0.8169, 0.1549)</span></span>
+<span><span class="co">#&gt; └─ high (‹0.776› 0.1864, 0.8136)</span></span></code></pre></div>
 <p>The <code><a href="../reference/draw.covlmc.html">draw.covlmc()</a></code> function is more advanced than its
 VLMC counterpart. It provides more detailed information, particularly
 regarding p-values associated with pruning operations. The “merging”

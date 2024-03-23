@@ -79,18 +79,7 @@ behaviour.</p>
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">draw_control</span><span class="op">(</span></span>
 <span>  digits <span class="op">=</span> <span class="fl">4</span>,</span>
-<span>  root <span class="op">=</span> <span class="st">"*"</span>,</span>
-<span>  first_node <span class="op">=</span> <span class="st">"+"</span>,</span>
-<span>  next_node <span class="op">=</span> <span class="st">"'"</span>,</span>
-<span>  vbranch <span class="op">=</span> <span class="st">"|"</span>,</span>
-<span>  hbranch <span class="op">=</span> <span class="st">"--"</span>,</span>
-<span>  open_ct <span class="op">=</span> <span class="st">"("</span>,</span>
-<span>  close_ct <span class="op">=</span> <span class="st">")"</span>,</span>
-<span>  level_sep <span class="op">=</span> <span class="st">" ~ "</span>,</span>
-<span>  time_sep <span class="op">=</span> <span class="st">" | "</span>,</span>
-<span>  intercept_sep <span class="op">=</span> <span class="st">" &amp; "</span>,</span>
-<span>  open_p_value <span class="op">=</span> <span class="st">"&lt;"</span>,</span>
-<span>  close_p_value <span class="op">=</span> <span class="st">"&gt;"</span>,</span>
+<span>  charset <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  orientation <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"vertical"</span>, <span class="st">"horizontal"</span><span class="op">)</span>,</span>
 <span>  tabular <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  tab_orientation <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"vertical"</span>, <span class="st">"horizontal"</span><span class="op">)</span>,</span>
@@ -108,61 +97,9 @@ behaviour.</p>
 with this parameter (defaults to 4).</p></dd>
 
 
-<dt>root</dt>
-<dd><p>character used for the root node ("ascii").</p></dd>
-
-
-<dt>first_node</dt>
-<dd><p>characters used for the first child of a node ("ascii").</p></dd>
-
-
-<dt>next_node</dt>
-<dd><p>characters used for other children of a node ("ascii").</p></dd>
-
-
-<dt>vbranch</dt>
-<dd><p>characters used to represent a branch in a vertical way
-("ascii").</p></dd>
-
-
-<dt>hbranch</dt>
-<dd><p>characters used to represent a branch in a horizontal was
-("ascii").</p></dd>
-
-
-<dt>open_ct</dt>
-<dd><p>characters used to start each node specific text
-representation ("ascii").</p></dd>
-
-
-<dt>close_ct</dt>
-<dd><p>characters used to end each node specific text representation
-("ascii").</p></dd>
-
-
-<dt>level_sep</dt>
-<dd><p>characters used to separate levels from models in
-<code><a href="draw.covlmc.html">draw.covlmc()</a></code> ("ascii").</p></dd>
-
-
-<dt>time_sep</dt>
-<dd><p>characters used to separate temporal blocks in
-<code><a href="draw.covlmc.html">draw.covlmc()</a></code> ("ascii").</p></dd>
-
-
-<dt>intercept_sep</dt>
-<dd><p>characters used to the intercept from the other
-parameters in <code><a href="draw.covlmc.html">draw.covlmc()</a></code> ("ascii").</p></dd>
-
-
-<dt>open_p_value</dt>
-<dd><p>characters used as opening delimiters for the p value of
-a node in <code><a href="draw.covlmc.html">draw.covlmc()</a></code> ("ascii").</p></dd>
-
-
-<dt>close_p_value</dt>
-<dd><p>characters used as closing delimiters for the p value of
-a node in <code><a href="draw.covlmc.html">draw.covlmc()</a></code> ("ascii").</p></dd>
+<dt>charset</dt>
+<dd><p>specifies the characters used for the "ascii art" represention
+when the format is "text", see details.</p></dd>
 
 
 <dt>orientation</dt>
@@ -225,54 +162,38 @@ TikZ possibilities could be used (see the documentation of the <a href="https://
 <li><p><code>"circle"</code>: adds a circular border to all nodes;</p></li>
 <li><p><code>"ellipse"</code>: adds an ellipsoidal border to all nodes.</p></li>
 </ul></div>
+    <div class="section level2">
+    <h2 id="charset">Charset<a class="anchor" aria-label="anchor" href="#charset"></a></h2>
+    
+
+
+<p>The "ascii art" format (<code>"text"</code>) uses a collection of characters to
+display a context tree. The default collection is specified by the
+package option <code>"mixvlmc.charset"</code> and is used when <code>charset=NULL</code> (default
+value). If <code>charset</code> is set to a character value, this value is used to
+select the collection in the same way that <code>"mixvlmc.charset"</code> specifies
+it:</p><ul><li><p><code>"ascii"</code>: the collection uses only standard ASCII characters and
+should be compatible with all environments;</p></li>
+<li><p><code>"utf8"</code>: the collection uses UTF-8 symbols and needs a compatible display.</p></li>
+</ul><p>Finally, <code>charset</code> can a user supplied list of characters as the one returned
+by <code><a href="charset_ascii.html">charset_ascii()</a></code> and <code><a href="charset_utf8.html">charset_utf8()</a></code>.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
+    <div class="dont-index"><p><code><a href="draw.html">draw()</a></code>, <code><a href="charset_ascii.html">charset_ascii()</a></code> and <code><a href="charset_utf8.html">charset_utf8()</a></code>.</p></div>
+    </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">draw_control</span><span class="op">(</span>open_ct <span class="op">=</span> <span class="st">"["</span>, close_ct <span class="op">=</span> <span class="st">"]"</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">draw_control</span><span class="op">(</span>digits <span class="op">=</span> <span class="fl">2</span>, tabular <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $digits</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $root</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "*"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $first_node</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "+"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $next_node</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "'"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $vbranch</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "|"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $hbranch</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $open_ct</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "["</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $close_ct</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "]"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $level_sep</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] " ~ "</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $time_sep</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] " | "</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $intercept_sep</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] " &amp; "</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $open_p_value</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "&lt;"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $close_p_value</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "&gt;"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $orientation</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "vertical"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $tabular</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] FALSE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $tab_orientation</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "vertical"</span>
@@ -285,6 +206,54 @@ TikZ possibilities could be used (see the documentation of the <a href="https://
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $prob_fontsize</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "small"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $root</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "⏹"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $first_node</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "├"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $next_node</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "├"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $final_node</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "└"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $vbranch</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "│"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $hbranch</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "─"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $open_ct</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "("</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $close_ct</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] ")"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $level_sep</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] " ~ "</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $time_sep</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] " ⁞ "</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $intercept</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Ⓘ"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $intercept_sep</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] " • "</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $open_p_value</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "‹"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $close_p_value</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "›"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $open_model</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "⟬"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $close_model</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "⟭"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 </code></pre></div>
     </div>

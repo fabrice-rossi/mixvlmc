@@ -95,7 +95,7 @@
 
 <dt>format</dt>
 <dd><p>a character string that specifies the output format of the
-function. Possible values are <code>ascii</code> (default) and <code>latex</code>. See details.</p></dd>
+function. Possible values are <code>"text"</code> (default) and <code>"latex"</code>. See details.</p></dd>
 
 
 <dt>control</dt>
@@ -123,7 +123,7 @@ dimension of the logistic model (see details).</p></dd>
 
 <dt>constant_as_prob</dt>
 <dd><p>specifies how to represent constant logistic models
-for <code>format="ascii"</code> (defaults to <code>TRUE</code>, see details). Disregarded when
+for <code>format="text"</code> (defaults to <code>TRUE</code>, see details). Disregarded when
 <code>format="latex"</code>.</p></dd>
 
 
@@ -138,7 +138,7 @@ to represent the context tree. Fine tuning of the representation can be done
 via the <code><a href="draw_control.html">draw_control()</a></code> function.</p>
 <p>Contrarily to <code><a href="draw.html">draw()</a></code> functions adapted to context trees <code><a href="draw.ctx_tree.html">draw.ctx_tree()</a></code>
 and VLMC <code><a href="draw.vlmc.html">draw.vlmc()</a></code>, the present function does not try to produce similar
-results for the <code>"ascii"</code> format and the <code>"latex"</code> format as the <code>"ascii"</code>
+results for the <code>"text"</code> format and the <code>"latex"</code> format as the <code>"text"</code>
 format is intrinsically more limited in terms of model representations. This
 is detailed below.</p>
     </div>
@@ -148,9 +148,8 @@ is detailed below.</p>
 
 
 <p>The <code>format</code> parameter specifies the format used for the textual output.
-With the default value <code>ascii</code> the output is produced in "ascii art" using
-by default only ascii characters (notice that <code><a href="draw_control.html">draw_control()</a></code> can be used
-to specified non ascii characters, but this is discouraged).</p>
+With the default value <code>"text"</code> the output is produced in "ascii art" using
+the charset specified by the global option <code>mixvlmc.charset</code>.</p>
 <p>With the <code>latex</code> value, the output is produced in LaTeX, leveraging the
 <a href="https://ctan.org/pkg/forest" class="external-link">forest</a> Latex package (see
 <a href="https://ctan.org/pkg/forest" class="external-link">https://ctan.org/pkg/forest</a>). Each call to <code>draw.covlmc()</code> produces a full
@@ -160,14 +159,14 @@ The LaTeX output is sanitized to avoid potential problems induced by
 special characters in the names of the states of the context tree.</p>
     </div>
     <div class="section level2">
-    <h2 id="-ascii-format"><code>"ascii"</code> format<a class="anchor" aria-label="anchor" href="#-ascii-format"></a></h2>
+    <h2 id="-text-format"><code>"text"</code> format<a class="anchor" aria-label="anchor" href="#-text-format"></a></h2>
     
 
 <div class="section">
 <h3 id="parameters">Parameters<a class="anchor" aria-label="anchor" href="#parameters"></a></h3>
 
 
-<p>When <code>format="ascii"</code> the parameters are interpreted as follows:</p><ul><li><p><code>model</code>: the default <code>model="coef"</code> represents only the <em>coefficients</em>
+<p>When <code>format="text"</code> the parameters are interpreted as follows:</p><ul><li><p><code>model</code>: the default <code>model="coef"</code> represents only the <em>coefficients</em>
 of the logistic models associated to each context. <code>model="full"</code> includes
 the name of the variables in the representation. Setting <code>model=NULL</code>
 removes the model representations. Additional parameters can be used to
@@ -177,7 +176,9 @@ do not use covariates (a.k.a. constant models) using the probability
 distributions they induce on the state space (default behaviour with
 <code>constant_as_prob=TRUE</code>) or as normal models (when set to <code>FALSE</code>). This is
 not taken into account when <code>model</code> is not set to <code>"coef"</code>.</p></li>
-<li><p>fields of the <code>control</code> list:</p><ul><li><p><code>intercept_sep</code>: character(s) used to separate the intercept from
+<li><p>fields of the <code>control</code> list (including the charset):</p><ul><li><p><code>intercept</code> : character(s) used to represent the intercept when
+<code>model="full"</code></p></li>
+<li><p><code>intercept_sep</code>: character(s) used to separate the intercept from
 the other coefficients in model representation.</p></li>
 <li><p><code>time_sep</code>: character(s) used to split the coefficients list by blocks
 associated to time delays in the covariate inclusion into the logistic
@@ -186,6 +187,8 @@ covariate values a time t-1, the third block at time t-2, etc.</p></li>
 <li><p><code>level_sep</code>: character(s) used separate levels from model, see below.</p></li>
 <li><p><code>open_p_value</code> and <code>close_p_value</code>: delimiters used around the p-values
 when <code>p_value=TRUE</code></p></li>
+<li><p><code>open_model</code> and <code>close_model</code>: delimiters around the model when <code>model</code>
+is not <code>NULL</code></p></li>
 </ul></li>
 </ul></div>
 
@@ -257,8 +260,10 @@ The reference state is shown on the first row/column.</p>
 <p>When the representation includes the names of the variables used by the
 logistic models, they are the one generated by the underlying logistic model,
 e.g. <code><a href="https://rdrr.io/r/stats/glm.html" class="external-link">stats::glm()</a></code>. Numerical variable names are used as is, while factors
-have levels appended. The intercept is denoted <code>(I)</code> to save space.</p>
-<p>When <code>format="ascii"</code>, the time delays are represented by an underscore
+have levels appended. The intercept is denoted by the <code>intercept</code> member
+of the <code>control</code> list when<code>format="text"</code> (as part of the charset). It is
+always represented by <code>(I)</code> when <code>format="latex"</code>.</p>
+<p>When <code>format="text"</code>, the time delays are represented by an underscore
 followed by the time delay. For instance if the model uses the numerical
 covariate <code>y</code> with two delays, it will appear with two variables <code>y_1</code> and
 <code>y_2</code>.</p>
@@ -275,49 +280,49 @@ form <code>t-1</code>, <code>t-2</code>, etc.</p>
 <span class="r-in"><span><span class="va">dts_cov</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>day_night <span class="op">=</span> <span class="op">(</span><span class="va">pc</span><span class="op">$</span><span class="va">hour</span> <span class="op">&gt;=</span> <span class="fl">7</span> <span class="op">&amp;</span> <span class="va">pc</span><span class="op">$</span><span class="va">hour</span> <span class="op">&lt;=</span> <span class="fl">17</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">m_cov</span> <span class="op">&lt;-</span> <span class="fu"><a href="covlmc.html">covlmc</a></span><span class="op">(</span><span class="va">dts</span>, <span class="va">dts_cov</span>, min_size <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="draw.html">draw</a></span><span class="op">(</span><span class="va">m_cov</span>, control <span class="op">=</span> <span class="fu"><a href="draw_control.html">draw_control</a></span><span class="op">(</span>digits <span class="op">=</span> <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> *</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> +-- (0,1.34]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |   +-- (0,1.34]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |   |   +-- (0,1.34] ([ -2.81 &amp; 2.18 | -4.45 | 2.42 ])</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |   |   '-- (1.34,7.54] ([ -19.6 &amp; 18.4 ])</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |   '-- (1.34,7.54] (0.865, 0.135)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> '-- (1.34,7.54] (0.0734, 0.927)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ⏹</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ├─ (0,1.34]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> │  ├─ (0,1.34]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> │  │  ├─ (0,1.34] (⟬ -2.81 • 2.18 ⁞ -4.45 ⁞ 2.42 ⟭)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> │  │  └─ (1.34,7.54] (⟬ -19.6 • 18.4 ⟭)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> │  └─ (1.34,7.54] (0.865, 0.135)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> └─ (1.34,7.54] (0.0734, 0.927)</span>
 <span class="r-in"><span><span class="fu"><a href="draw.html">draw</a></span><span class="op">(</span><span class="va">m_cov</span>, model <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> *</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> +-- (0,1.34]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |   +-- (0,1.34]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |   |   +-- (0,1.34]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |   |   '-- (1.34,7.54]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |   '-- (1.34,7.54]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> '-- (1.34,7.54]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ⏹</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ├─ (0,1.34]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> │  ├─ (0,1.34]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> │  │  ├─ (0,1.34]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> │  │  └─ (1.34,7.54]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> │  └─ (1.34,7.54]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> └─ (1.34,7.54]</span>
 <span class="r-in"><span><span class="fu"><a href="draw.html">draw</a></span><span class="op">(</span><span class="va">m_cov</span>, p_value <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> *</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> +-- (0,1.34]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |   +-- (0,1.34]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |   |   +-- (0,1.34] (&lt;0.02329&gt; [ -2.813 &amp; 2.178 | -4.449 | 2.418 ])</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |   |   '-- (1.34,7.54] (&lt;0.01834&gt; [ -19.57 &amp; 18.39 ])</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |   '-- (1.34,7.54] (&lt;0.6763&gt; 0.8649, 0.1351)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> '-- (1.34,7.54] (&lt;0.8175&gt; 0.07341, 0.9266)</span>
-<span class="r-in"><span><span class="fu"><a href="draw.html">draw</a></span><span class="op">(</span><span class="va">m_cov</span>, p_value <span class="op">=</span> <span class="cn">FALSE</span>, control <span class="op">=</span> <span class="fu"><a href="draw_control.html">draw_control</a></span><span class="op">(</span>time_sep <span class="op">=</span> <span class="st">" ^ "</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> *</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> +-- (0,1.34]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |   +-- (0,1.34]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |   |   +-- (0,1.34] ([ -2.813 &amp; 2.178 ^ -4.449 ^ 2.418 ])</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |   |   '-- (1.34,7.54] ([ -19.57 &amp; 18.39 ])</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |   '-- (1.34,7.54] (0.8649, 0.1351)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> '-- (1.34,7.54] (0.07341, 0.9266)</span>
-<span class="r-in"><span><span class="fu"><a href="draw.html">draw</a></span><span class="op">(</span><span class="va">m_cov</span>, model <span class="op">=</span> <span class="st">"full"</span>, control <span class="op">=</span> <span class="fu"><a href="draw_control.html">draw_control</a></span><span class="op">(</span>time_sep <span class="op">=</span> <span class="st">" ^ "</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> *</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> +-- (0,1.34]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |   +-- (0,1.34]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |   |   +-- (0,1.34] ([ (I)    &amp; day_night_1TRUE ^ day_night_2TRUE ^ day_night_3TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |   |   |               -2.813 &amp; 2.178           ^ -4.449          ^ 2.418           ])</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |   |   '-- (1.34,7.54] ([ (I)    &amp; day_night_1TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |   |                      -19.57 &amp; 18.39           ])</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |   '-- (1.34,7.54] ([ (I)   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |                      -1.856 ])</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> '-- (1.34,7.54] ([ (I)  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                    2.535 ])</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ⏹</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ├─ (0,1.34]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> │  ├─ (0,1.34]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> │  │  ├─ (0,1.34] (‹0.02329› ⟬ -2.813 • 2.178 ⁞ -4.449 ⁞ 2.418 ⟭)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> │  │  └─ (1.34,7.54] (‹0.01834› ⟬ -19.57 • 18.39 ⟭)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> │  └─ (1.34,7.54] (‹0.6763› 0.8649, 0.1351)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> └─ (1.34,7.54] (‹0.8175› 0.07341, 0.9266)</span>
+<span class="r-in"><span><span class="fu"><a href="draw.html">draw</a></span><span class="op">(</span><span class="va">m_cov</span>, p_value <span class="op">=</span> <span class="cn">FALSE</span>, control <span class="op">=</span> <span class="fu"><a href="draw_control.html">draw_control</a></span><span class="op">(</span>digits <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ⏹</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ├─ (0,1.34]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> │  ├─ (0,1.34]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> │  │  ├─ (0,1.34] (⟬ -2.8 • 2.2 ⁞ -4.4 ⁞ 2.4 ⟭)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> │  │  └─ (1.34,7.54] (⟬ -20 • 18 ⟭)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> │  └─ (1.34,7.54] (0.86, 0.14)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> └─ (1.34,7.54] (0.073, 0.93)</span>
+<span class="r-in"><span><span class="fu"><a href="draw.html">draw</a></span><span class="op">(</span><span class="va">m_cov</span>, model <span class="op">=</span> <span class="st">"full"</span>, control <span class="op">=</span> <span class="fu"><a href="draw_control.html">draw_control</a></span><span class="op">(</span>digits <span class="op">=</span> <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ⏹</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ├─ (0,1.34]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> │  ├─ (0,1.34]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> │  │  ├─ (0,1.34] (⟬ Ⓘ     • day_night_1TRUE ⁞ day_night_2TRUE ⁞ day_night_3TRUE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> │  │  │              -2.81 • 2.18            ⁞ -4.45           ⁞ 2.42            ⟭)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> │  │  └─ (1.34,7.54] (⟬ Ⓘ     • day_night_1TRUE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> │  │                    -19.6 • 18.4            ⟭)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> │  └─ (1.34,7.54] (⟬ Ⓘ    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> │                    -1.86 ⟭)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> └─ (1.34,7.54] (⟬ Ⓘ   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                   2.54 ⟭)</span>
 <span class="r-in"><span><span class="fu"><a href="draw.html">draw</a></span><span class="op">(</span><span class="va">m_cov</span>, format <span class="op">=</span> <span class="st">"latex"</span>, control <span class="op">=</span> <span class="fu"><a href="draw_control.html">draw_control</a></span><span class="op">(</span>orientation <span class="op">=</span> <span class="st">"h"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> \begin{forest}</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   for tree={grow'=west}[\textbf{$\epsilon$}</span>

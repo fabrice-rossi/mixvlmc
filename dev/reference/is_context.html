@@ -99,20 +99,20 @@ in the other case.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">dts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">0</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">dts_ctree</span> <span class="op">&lt;-</span> <span class="fu"><a href="ctx_tree.html">ctx_tree</a></span><span class="op">(</span><span class="va">dts</span>, min_size <span class="op">=</span> <span class="fl">1</span>, max_depth <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="draw.html">draw</a></span><span class="op">(</span><span class="va">dts_ctree</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> *</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> +-- 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |   +-- 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |   |   '-- 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |   '-- 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |       +-- 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |       '-- 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> '-- 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     +-- 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     |   +-- 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     |   '-- 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     '-- 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         +-- 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         '-- 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ⏹</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ├─ 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> │  ├─ 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> │  │  └─ 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> │  └─ 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> │     ├─ 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> │     └─ 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> └─ 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    ├─ 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    │  ├─ 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    │  └─ 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    └─ 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       ├─ 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       └─ 1</span>
 <span class="r-in"><span><span class="co">## 0, 0 is a context but 1, 0 is not</span></span></span>
 <span class="r-in"><span><span class="fu">is_context</span><span class="op">(</span><span class="fu"><a href="find_sequence.html">find_sequence</a></span><span class="op">(</span><span class="va">dts_ctree</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>

@@ -89,7 +89,7 @@
 
 <dt>format</dt>
 <dd><p>a character string that specifies the output format of the
-function. Possible values are <code>ascii</code> (default) and <code>latex</code>. See details.</p></dd>
+function. Possible values are <code>"text"</code> (default) and <code>"latex"</code>. See details.</p></dd>
 
 
 <dt>control</dt>
@@ -134,7 +134,7 @@ can be controlled via the <code>control</code> parameter and the associated
 
 
 <p>The <code>format</code> parameter specifies the format used for the textual output.
-With the default value <code>ascii</code> the output is produced in "ascii art" using
+With the default value <code>"text"</code> the output is produced in "ascii art" using
 by default only ascii characters (notice that <code><a href="draw_control.html">draw_control()</a></code> can be used
 to specified non ascii characters, but this is discouraged).</p>
 <p>With the <code>latex</code> value, the output is produced in LaTeX, leveraging the
@@ -151,27 +151,27 @@ special characters in the names of the states of the context tree.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">dts_c</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A"</span>, <span class="st">"B"</span>, <span class="st">"CD"</span><span class="op">)</span>, <span class="fl">100</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">ctree_c</span> <span class="op">&lt;-</span> <span class="fu"><a href="ctx_tree.html">ctx_tree</a></span><span class="op">(</span><span class="va">dts_c</span>, min_size <span class="op">=</span> <span class="fl">10</span>, max_depth <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="draw.html">draw</a></span><span class="op">(</span><span class="va">ctree_c</span>, frequency <span class="op">=</span> <span class="st">"total"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> * (100)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> +-- A (28)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |   '-- B (12)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> '-- B (37)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |   +-- A (11)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |   '-- B (10)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |   '-- CD (15)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> '-- CD (34)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     +-- B (15)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     '-- CD (10)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ⏹ (100)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ├─ A (28)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> │  └─ B (12)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ├─ B (37)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> │  ├─ A (11)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> │  ├─ B (10)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> │  └─ CD (15)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> └─ CD (34)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    ├─ B (15)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    └─ CD (10)</span>
 <span class="r-in"><span><span class="fu"><a href="draw.html">draw</a></span><span class="op">(</span><span class="va">ctree_c</span>, frequency <span class="op">=</span> <span class="st">"detailed"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> * (28,38,34)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> +-- A (7,12,9)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |   '-- B (3,5,4)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> '-- B (12,10,15)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |   +-- A (2,4,5)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |   '-- B (5,2,3)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |   '-- CD (5,4,6)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> '-- CD (9,15,10)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     +-- B (5,6,4)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     '-- CD (2,5,3)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ⏹ (28,38,34)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ├─ A (7,12,9)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> │  └─ B (3,5,4)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ├─ B (12,10,15)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> │  ├─ A (2,4,5)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> │  ├─ B (5,2,3)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> │  └─ CD (5,4,6)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> └─ CD (9,15,10)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    ├─ B (5,6,4)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    └─ CD (2,5,3)</span>
 <span class="r-in"><span><span class="co">## LaTeX output</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="draw.html">draw</a></span><span class="op">(</span><span class="va">ctree_c</span>, <span class="st">"latex"</span>, frequency <span class="op">=</span> <span class="st">"detailed"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> \begin{forest}</span>

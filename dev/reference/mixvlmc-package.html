@@ -101,6 +101,14 @@ implementation.</p></li>
 version is significantly faster than the R version, but is still
 considered experimental.</p></li>
 </ul></li>
+<li><p><code>mixvlmc.charset</code>: specifies the collection of characters used to display
+context trees in "ascii art" when using the <code>"text"</code> format for <code><a href="draw.html">draw()</a></code>
+and related functions. Two values are supported:</p><ul><li><p><code>"ascii"</code>: the collection uses only standard ASCII characters and
+should be compatible with all environments;</p></li>
+<li><p><code>"utf8"</code>: the collection uses UTF-8 symbols and needs a compatible display.
+At loading the option is set based on a call to <code><a href="https://cli.r-lib.org/reference/is_utf8_output.html" class="external-link">cli::is_utf8_output()</a></code>.
+It defaults to <code>"utf8"</code> is this encoding is supported.</p></li>
+</ul></li>
 </ul></div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

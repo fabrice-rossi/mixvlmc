@@ -71,7 +71,11 @@
 <h2 class="pkg-version" data-toc-text="development version" id="mixvlmc-development-version">mixvlmc (development version)<a class="anchor" aria-label="anchor" href="#mixvlmc-development-version"></a></h2>
 <div class="section level3">
 <h3 id="breaking-changes-development-version">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-development-version"></a></h3>
-<ul><li>defaults for <code><a href="../reference/draw.covlmc.html">draw.covlmc()</a></code> have changed (issue <a href="https://github.com/fabrice-rossi/mixvlmc/issues/66" class="external-link">#66</a>):
+<ul><li>
+<code><a href="../reference/draw.html">draw()</a></code> has now a second parameter <code>format</code> with no default. This may break codes that used the fact that the <code>control</code> parameter was previously the second one.</li>
+<li>the <code>digits</code> parameter of <code><a href="../reference/draw.covlmc.html">draw.covlmc()</a></code> has been removed and replaced by a similar parameter in <code><a href="../reference/draw_control.html">draw_control()</a></code>
+</li>
+<li>defaults for <code><a href="../reference/draw.covlmc.html">draw.covlmc()</a></code> have changed (issue <a href="https://github.com/fabrice-rossi/mixvlmc/issues/66" class="external-link">#66</a>):
 <ul><li>
 <code>p_value</code> is now <code>FALSE</code> by default</li>
 <li>when <code>p_value</code> is <code>TRUE</code> the p-values are represented between separators given by the <code>open_p_value</code> and <code>close_p_value</code> members of the <code>control</code> list. Defaults are <code>&lt;</code> and <code>&gt;</code>
@@ -84,20 +88,21 @@
 </li>
 <li>the new parameter <code>constant_as_prob</code> is set to <code>TRUE</code> which modifies also the default display</li>
 </ul></li>
-<li>the <code>digits</code> parameter of <code><a href="../reference/draw.covlmc.html">draw.covlmc()</a></code> has been removed and replaced by a similar parameter in <code><a href="../reference/draw_control.html">draw_control()</a></code>
-</li>
-<li>
-<code><a href="../reference/draw.html">draw()</a></code> has now a second parameter <code>format</code> with no default. This may break codes that used the fact that the <code>control</code> parameter was previously the second one.</li>
+<li>the interface of <code><a href="../reference/draw_control.html">draw_control()</a></code> has been significantly changed (issue <a href="https://github.com/fabrice-rossi/mixvlmc/issues/66" class="external-link">#66</a>) which should break most customisation code at the level of characters used by <code><a href="../reference/draw.html">draw()</a></code> to display a model</li>
 </ul></div>
 <div class="section level3">
 <h3 id="new-features-development-version">New features<a class="anchor" aria-label="anchor" href="#new-features-development-version"></a></h3>
 <div class="section level4">
 <h4 id="model-representation-with-draw-development-version">Model representation (with <code>draw()</code>)<a class="anchor" aria-label="anchor" href="#model-representation-with-draw-development-version"></a></h4>
 <p>A major change of <code><a href="../reference/draw.html">draw()</a></code> is the support of multiple output formats. This is done via a <code>format</code> parameter. It supports currently:</p>
-<ul><li>the format of previous versions of <code>mixvlmc</code> with <code>format="ascii"</code>. This is the default text based representation.</li>
+<ul><li>the format of previous versions of <code>mixvlmc</code> with <code>format="text"</code>. This is the default text based representation.</li>
 <li>a new LaTeX export with <code>format="latex"</code> based on the LaTeX package <code>forest</code> (<a href="https://ctan.org/pkg/forest" class="external-link uri">https://ctan.org/pkg/forest</a>) as per issue <a href="https://github.com/fabrice-rossi/mixvlmc/issues/66" class="external-link">#66</a>. This can be used to include (CO)VLMC models in LaTeX document, for instance when using rmarkdown or quarto.</li>
 </ul><p>In addition, text based model representation has been improved (as per issue <a href="https://github.com/fabrice-rossi/mixvlmc/issues/66" class="external-link">#66</a>) as follows:</p>
-<ul><li>the <code><a href="../reference/draw.covlmc.html">draw.covlmc()</a></code> function uses arguably better default parameters (described above)</li>
+<ul><li>a new global option <code>mixvlmc.charset</code> can be used to select the characters used by <code><a href="../reference/draw.html">draw()</a></code> when <code>format="text"</code> between pure ASCII and UTF-8</li>
+<li>when possible, the text based representation will default to UTF-8 symbols to provide a cleaner display of the context tree</li>
+<li>full customisation of the character set has moved from <code><a href="../reference/draw_control.html">draw_control()</a></code> to <code><a href="../reference/charset_ascii.html">charset_ascii()</a></code> and <code><a href="../reference/charset_utf8.html">charset_utf8()</a></code>
+</li>
+<li>the <code><a href="../reference/draw.covlmc.html">draw.covlmc()</a></code> function uses arguably better default parameters (described above)</li>
 <li>when a logistic model does not use the covariates, it is now represented by <code><a href="../reference/draw.covlmc.html">draw.covlmc()</a></code> as a VLMC node, that is with the probability distribution on the state space that it represents</li>
 </ul></div>
 </div>
