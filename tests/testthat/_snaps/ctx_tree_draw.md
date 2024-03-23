@@ -1,4 +1,4 @@
-# draw obeys its contract for default ascii output
+# draw obeys its contract for default text output
 
     *
     +-- 0

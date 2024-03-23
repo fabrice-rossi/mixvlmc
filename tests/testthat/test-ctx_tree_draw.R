@@ -1,4 +1,4 @@
-test_that("draw obeys its contract for default ascii output", {
+test_that("draw obeys its contract for default text output", {
   dts <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 0)
   dts_ctree <- ctx_tree(dts, min_size = 1, max_depth = 2)
   expect_snapshot_output(draw(dts_ctree))

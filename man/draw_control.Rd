@@ -35,49 +35,49 @@ draw_control(
 \code{\link[base:Round]{base::signif()}} function, using the number of significant digits specified
 with this parameter (defaults to 4).}
 
-\item{root}{character used for the root node ("ascii").}
+\item{root}{character used for the root node ("text").}
 
-\item{first_node}{characters used for the first child of a node ("ascii").}
+\item{first_node}{characters used for the first child of a node ("text").}
 
-\item{next_node}{characters used for intermediate children of a node ("ascii").}
+\item{next_node}{characters used for intermediate children of a node ("text").}
 
-\item{final_node}{characters used for the last child of a node ("ascii").}
+\item{final_node}{characters used for the last child of a node ("text").}
 
 \item{vbranch}{characters used to represent a branch in a vertical way
-("ascii").}
+("text").}
 
 \item{hbranch}{characters used to represent a branch in a horizontal was
-("ascii").}
+("text").}
 
 \item{open_ct}{characters used to start each node specific text
-representation ("ascii").}
+representation ("text").}
 
 \item{close_ct}{characters used to end each node specific text representation
-("ascii").}
+("text").}
 
 \item{level_sep}{characters used to separate levels from models in
-\code{\link[=draw.covlmc]{draw.covlmc()}} ("ascii").}
+\code{\link[=draw.covlmc]{draw.covlmc()}} ("text").}
 
 \item{time_sep}{characters used to separate temporal blocks in
-\code{\link[=draw.covlmc]{draw.covlmc()}} ("ascii").}
+\code{\link[=draw.covlmc]{draw.covlmc()}} ("text").}
 
 \item{intercept}{characters used to represent the intercept in
-\code{\link[=draw.covlmc]{draw.covlmc()}} ("ascii").}
+\code{\link[=draw.covlmc]{draw.covlmc()}} ("text").}
 
 \item{intercept_sep}{characters used to the intercept from the other
-parameters in \code{\link[=draw.covlmc]{draw.covlmc()}} ("ascii").}
+parameters in \code{\link[=draw.covlmc]{draw.covlmc()}} ("text").}
 
 \item{open_p_value}{characters used as opening delimiters for the p value of
-a node in \code{\link[=draw.covlmc]{draw.covlmc()}} ("ascii").}
+a node in \code{\link[=draw.covlmc]{draw.covlmc()}} ("text").}
 
 \item{close_p_value}{characters used as closing delimiters for the p value of
-a node in \code{\link[=draw.covlmc]{draw.covlmc()}} ("ascii").}
+a node in \code{\link[=draw.covlmc]{draw.covlmc()}} ("text").}
 
 \item{open_model}{characters used as opening delimiters for the representation
-of a model in \code{\link[=draw.covlmc]{draw.covlmc()}} ("ascii").}
+of a model in \code{\link[=draw.covlmc]{draw.covlmc()}} ("text").}
 
 \item{close_model}{characters used as closing delimiters for the representation
-of a model in \code{\link[=draw.covlmc]{draw.covlmc()}} ("ascii").}
+of a model in \code{\link[=draw.covlmc]{draw.covlmc()}} ("text").}
 
 \item{orientation}{specifies the global orientation of the tree, either
 "vertical" (default) or "horizontal" ("latex").}

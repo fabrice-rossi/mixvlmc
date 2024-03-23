@@ -28,34 +28,34 @@ latex_font_size <- c(
 #' @param digits numerical parameters and p-values are represented using the
 #'   [base::signif()] function, using the number of significant digits specified
 #'   with this parameter (defaults to 4).
-#' @param root character used for the root node ("ascii").
-#' @param first_node characters used for the first child of a node ("ascii").
-#' @param next_node characters used for intermediate children of a node ("ascii").
-#' @param final_node characters used for the last child of a node ("ascii").
+#' @param root character used for the root node ("text").
+#' @param first_node characters used for the first child of a node ("text").
+#' @param next_node characters used for intermediate children of a node ("text").
+#' @param final_node characters used for the last child of a node ("text").
 #' @param vbranch characters used to represent a branch in a vertical way
-#'   ("ascii").
+#'   ("text").
 #' @param hbranch characters used to represent a branch in a horizontal was
-#'   ("ascii").
+#'   ("text").
 #' @param open_ct characters used to start each node specific text
-#'   representation ("ascii").
+#'   representation ("text").
 #' @param close_ct characters used to end each node specific text representation
-#'   ("ascii").
+#'   ("text").
 #' @param level_sep characters used to separate levels from models in
-#'   [draw.covlmc()] ("ascii").
+#'   [draw.covlmc()] ("text").
 #' @param time_sep characters used to separate temporal blocks in
-#'   [draw.covlmc()] ("ascii").
+#'   [draw.covlmc()] ("text").
 #' @param intercept characters used to represent the intercept in
-#'   [draw.covlmc()] ("ascii").
+#'   [draw.covlmc()] ("text").
 #' @param intercept_sep characters used to the intercept from the other
-#'   parameters in [draw.covlmc()] ("ascii").
+#'   parameters in [draw.covlmc()] ("text").
 #' @param open_p_value characters used as opening delimiters for the p value of
-#'   a node in [draw.covlmc()] ("ascii").
+#'   a node in [draw.covlmc()] ("text").
 #' @param close_p_value characters used as closing delimiters for the p value of
-#'   a node in [draw.covlmc()] ("ascii").
+#'   a node in [draw.covlmc()] ("text").
 #' @param open_model characters used as opening delimiters for the representation
-#'   of a model in [draw.covlmc()] ("ascii").
+#'   of a model in [draw.covlmc()] ("text").
 #' @param close_model characters used as closing delimiters for the representation
-#'   of a model in [draw.covlmc()] ("ascii").
+#'   of a model in [draw.covlmc()] ("text").
 #' @param orientation specifies the global orientation of the tree, either
 #'   "vertical" (default) or "horizontal" ("latex").
 #' @param tabular if TRUE (default value), the "latex" format will use tables
@@ -208,7 +208,7 @@ rec_draw <- function(label, prefix, ct, vals, control, node2txt) {
 #'
 #' @param ct a context tree.
 #' @param format a character string that specifies the output format of the
-#'   function. Possible values are `ascii` (default) and `latex`. See details.
+#'   function. Possible values are `"text"` (default) and `"latex"`. See details.
 #' @param control a list of low level control parameters of the text
 #'   representation. See details and [draw_control()].
 #' @param ... additional arguments for draw.
@@ -225,7 +225,7 @@ rec_draw <- function(label, prefix, ct, vals, control, node2txt) {
 #' @section Format:
 #'
 #'   The `format` parameter specifies the format used for the textual output.
-#'   With the default value `ascii` the output is produced in "ascii art" using
+#'   With the default value `"text"` the output is produced in "ascii art" using
 #'   by default only ascii characters (notice that `draw_control()` can be used
 #'   to specified non ascii characters, but this is discouraged).
 #'
@@ -282,11 +282,11 @@ ctx_tree_node2txt <- function(ct, control) {
 draw.ctx_tree <- function(ct, format, control = draw_control(),
                           frequency = NULL, ...) {
   if (rlang::is_missing(format)) {
-    format <- "ascii"
+    format <- "text"
   } else {
-    format <- match.arg(format, c("ascii", "latex"))
+    format <- match.arg(format, c("text", "latex"))
   }
-  if (format == "ascii") {
+  if (format == "text") {
     if (is.null(frequency)) {
       rec_draw(control$root, "", ct, ct$vals, c(control, list(...)), NULL)
     } else {

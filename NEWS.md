@@ -25,7 +25,7 @@
 A major change of `draw()` is the support of multiple output formats. This is
 done via a `format` parameter. It supports currently:
 
-* the format of previous versions of `mixvlmc` with `format="ascii"`. This is
+* the format of previous versions of `mixvlmc` with `format="text"`. This is
   the default text based representation.
 * a new LaTeX export with `format="latex"` based on the LaTeX package `forest` 
   (<https://ctan.org/pkg/forest>) as per issue #66. This can be used to include

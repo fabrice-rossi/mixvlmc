@@ -1,4 +1,4 @@
-test_that("draw obeys its contract for default ascii output", {
+test_that("draw obeys its contract for default text output", {
   data_set <- build_markov_chain(1000, 3, seed = 0)
   x_vlmc <- vlmc(data_set$x)
   expect_snapshot_output(draw(x_vlmc))

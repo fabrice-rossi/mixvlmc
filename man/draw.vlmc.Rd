@@ -13,7 +13,7 @@
 \item{ct}{a fitted vlmc.}
 
 \item{format}{a character string that specifies the output format of the
-function. Possible values are \code{ascii} (default) and \code{latex}. See details.}
+function. Possible values are \code{"text"} (default) and \code{"latex"}. See details.}
 
 \item{control}{a list of low level control parameters of the text
 representation. See details and \code{\link[=draw_control]{draw_control()}}.}
@@ -50,7 +50,7 @@ can be controlled via the \code{control} parameter and the associated
 
 
 The \code{format} parameter specifies the format used for the textual output.
-With the default value \code{ascii} the output is produced in "ascii art" using
+With the default value \code{"text"} the output is produced in "ascii art" using
 by default only ascii characters (notice that \code{draw_control()} can be used
 to specified non ascii characters, but this is discouraged).
 

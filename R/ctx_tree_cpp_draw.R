@@ -50,13 +50,13 @@ rec_draw_cpp <- function(label, prefix, tree, ct, vals, control, node2txt) {
 draw.ctx_tree_cpp <- function(ct, format, control = draw_control(),
                               frequency = NULL, ...) {
   if (rlang::is_missing(format)) {
-    format <- "ascii"
+    format <- "text"
   } else {
-    format <- match.arg(format, c("ascii", "latex"))
+    format <- match.arg(format, c("text", "latex"))
   }
   restore_model(ct)
   ct_r <- ct$root$representation()
-  if (format == "ascii") {
+  if (format == "text") {
     if (is.null(frequency)) {
       rec_draw_cpp(
         control$root, "", ct_r, ct_r[[1]], ct$vals,
