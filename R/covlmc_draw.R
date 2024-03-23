@@ -66,7 +66,7 @@ draw_covlmc_model <- function(coefficients, p_value, hsize, names, lev,
           control$close_p_value,
           sep = ""
         )
-        pad <- stringr::str_pad("", stringr::str_length(p_value_str) + 2)
+        pad <- stringr::str_pad("", cli::utf8_nchar(p_value_str, "width") + 2)
         coeffs[1] <- stringr::str_c(p_value_str, "[", coeffs[1], sep = " ")
       } else {
         coeffs[1] <- stringr::str_c("[", coeffs[1], sep = " ")
@@ -112,9 +112,9 @@ rec_draw_covlmc <- function(label, prefix, ct, vals, control, node2txt) {
         if (idx < nst) {
           c_prefix <- control$vbranch
         } else {
-          c_prefix <- stringr::str_pad("", stringr::str_length(control$vbranch))
+          c_prefix <- stringr::str_pad("", cli::utf8_nchar(control$vbranch, "width"))
         }
-        c_prefix <- stringr::str_pad(c_prefix, stringr::str_length(c_prelabel), side = "right")
+        c_prefix <- utf8_pad(c_prefix, cli::utf8_nchar(c_prelabel, "width"), "right")
         ## recursive call
         rec_draw_covlmc(
           stringr::str_c(prefix, c_prelabel, vals[v]),
@@ -127,9 +127,9 @@ rec_draw_covlmc <- function(label, prefix, ct, vals, control, node2txt) {
     }
     if (!is.null(ct[["merged_model"]])) {
       the_merged_vals <- stringr::str_c(vals[ct$merged], collapse = ", ")
-      c_prelabel <- stringr::str_c(c_symbol, control$hbranch, " ")
-      c_prefix <- stringr::str_pad("", stringr::str_length(control$vbranch))
-      c_prefix <- stringr::str_pad(c_prefix, stringr::str_length(c_prelabel), side = "right")
+      c_prelabel <- stringr::str_c(control$final_node, control$hbranch, " ")
+      c_prefix <- stringr::str_pad("", cli::utf8_nchar(control$vbranch, "width"))
+      c_prefix <- utf8_pad(c_prefix, cli::utf8_nchar(c_prelabel, "width"), "right")
       c_label <- stringr::str_c(prefix, c_prelabel, the_merged_vals)
       c_prefix <- stringr::str_c(prefix, c_prefix)
       cat(c_label)

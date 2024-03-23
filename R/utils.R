@@ -68,6 +68,23 @@ str_c_group <- function(txt, sep, groups, with_rn, rn_sep = sep, fsep = sep) {
   }
 }
 
+utf8_pad <- function(string, width, side = c("left", "right")) {
+  side <- match.arg(side)
+  to_add <- width - cli::utf8_nchar(string, "width")
+  to_add_b <- to_add > 0
+  res <- string
+  if (any(to_add_b)) {
+    padding <- stringr::str_pad("", to_add[to_add_b])
+    if (side == "left") {
+      res[to_add_b] <- stringr::str_c(padding, res[to_add_b])
+    } else {
+      res[to_add_b] <- stringr::str_c(res[to_add_b], padding)
+    }
+  }
+  res
+}
+
+
 pp_mat <- function(x, digits, width = NULL, sep = NULL, groups = NULL,
                    colnames = NULL, rownames = NULL, rn_sep = sep,
                    first_grp_sep = sep) {
@@ -89,15 +106,15 @@ pp_mat <- function(x, digits, width = NULL, sep = NULL, groups = NULL,
   }
   if (is.matrix(x_c)) {
     if (is.null(width)) {
-      width <- apply(x_c, 2, function(x) max(stringr::str_length(x)))
+      width <- apply(x_c, 2, function(x) max(cli::utf8_nchar(x, "width")))
     }
     if (length(width) > 1) {
       x_pad <- x_c
       for (l in 1:ncol(x_c)) {
-        x_pad[, l] <- stringr::str_pad(x_c[, l], width[l], side = "right")
+        x_pad[, l] <- utf8_pad(x_c[, l], width[l], "right")
       }
     } else {
-      x_pad <- apply(x_c, 2, stringr::str_pad, width, side = "right")
+      x_pad <- apply(x_c, 2, utf8_pad, width, "right")
     }
   } else {
     x_pad <- x_c

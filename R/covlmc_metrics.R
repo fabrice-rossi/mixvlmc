@@ -87,8 +87,8 @@ print.metrics.covlmc <- function(x, ...) {
   cat(paste(" Confusion matrix:", "\n"))
   pcm <- pp_mat(x$conf_mat, colnames = colnames(x$conf_mat))
   rn <- rownames(x$conf_mat)
-  l_rn <- max(stringr::str_length(rn))
-  rn <- stringr::str_pad(c("", rn), l_rn, side = "right")
+  l_rn <- max(cli::utf8_nchar(rn, "width"))
+  rn <- utf8_pad(c("", rn), l_rn, "right")
   for (k in seq_along(rn)) {
     cat(paste("  ", rn[k], " ", pcm[k], sep = ""), "\n")
   }

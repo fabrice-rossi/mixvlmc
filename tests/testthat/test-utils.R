@@ -25,9 +25,9 @@ test_that("pp_mat obeys its contract", {
     expect_equal(length(mm_pp), nrow(mm))
     mwidth <- 0
     for (i in seq_along(mm_vec)) {
-      mwidth <- max(mwidth, stringr::str_length(signif(mm_vec[i], k)))
+      mwidth <- max(mwidth, cli::utf8_nchar(as.character(signif(mm_vec[i], k))))
     }
-    expect_true(all(stringr::str_length(mm_pp) <= ncol(mm) * (1 + mwidth) - 1))
+    expect_true(all(cli::utf8_nchar(mm_pp) <= ncol(mm) * (1 + mwidth) - 1))
   }
 })
 

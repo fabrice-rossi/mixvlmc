@@ -23,12 +23,9 @@ rec_draw_cpp <- function(label, prefix, tree, ct, vals, control, node2txt) {
         if (idx < nst) {
           c_prefix <- control$vbranch
         } else {
-          c_prefix <- stringr::str_pad("", stringr::str_length(control$vbranch))
+          c_prefix <- stringr::str_pad("", cli::utf8_nchar(control$vbranch, "width"))
         }
-        c_prefix <-
-          stringr::str_pad(c_prefix, stringr::str_length(c_prelabel),
-            side = "right"
-          )
+        c_prefix <- utf8_pad(c_prefix, cli::utf8_nchar(c_prelabel, "width"), "right")
         ## recursive call
         rec_draw_cpp(
           stringr::str_c(prefix, c_prelabel, vals[v]),
