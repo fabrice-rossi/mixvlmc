@@ -4,8 +4,12 @@ format:
   pdf:
     include-in-header: 
       - text: |
-          \usepackage{forest}
+          \usepackage[external]{forest}
+          \tikzexternalize
     keep-tex: true
+    latex-auto-install: false
+    pdf-engine-opts:
+      - '-shell-escape'
 knitr:
   opts_chunk: 
     tidy: styler
