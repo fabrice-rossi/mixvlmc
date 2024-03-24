@@ -2,17 +2,25 @@ trim_one_model <- function(model, keep_model, vals) {
   model$data <- NULL
   model$metrics$roc <- NULL
   ml <- glm_levels(model$model, vals)
-  if (!identical(ml, vals)) {
+  if (length(ml) < length(vals)) {
     model_levels <- ml
   } else {
     model_levels <- NULL
   }
+  model_probs <- NULL
   if (keep_model) {
     model$model <- glm_trim(model$model)
   } else {
+    if (glm_is_constant(model$model)) {
+      model_probs <- as.numeric(glm_to_probs(model$model, vals))
+    }
     model$model <- NULL
   }
-  list(model = model, model_levels = model_levels)
+  if (is.null(model_probs)) {
+    list(model = model, model_levels = model_levels)
+  } else {
+    list(model = model, model_levels = model_levels, model_probs = model_probs)
+  }
 }
 
 rec_trim_covlmc <- function(ct, keep_model, vals) {
@@ -22,14 +30,19 @@ rec_trim_covlmc <- function(ct, keep_model, vals) {
     tr_model <- trim_one_model(ct$model, keep_model, vals)
     ct$model <- tr_model$model
     ct$model_levels <- tr_model[["model_levels"]]
+    ct$model_probs <- tr_model[["model_probs"]]
   }
   if (!is.null(ct$merged_model)) {
     tr_model <- trim_one_model(ct$merged_model, keep_model, vals)
     ct$merged_model <- tr_model$model
+    ct$merged_model$model_levels <- tr_model$model_levels
+    ct$merged_model$model_probs <- tr_model$model_probs
   }
   if (!is.null(ct$extended_model)) {
     tr_model <- trim_one_model(ct$extended_model, keep_model, vals)
     ct$extended_model <- tr_model$model
+    ct$extended_model$model_levels <- tr_model$model_levels
+    ct$extended_model$model_probs <- tr_model$model_probs
   }
   if (!is.null(ct$children)) {
     for (k in seq_along(ct$children)) {
