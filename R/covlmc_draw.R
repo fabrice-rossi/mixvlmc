@@ -69,14 +69,18 @@ draw_covlmc_model <- function(coefficients, p_value, hsize, names, lev,
           control$close_p_value,
           sep = ""
         )
-        pad <- stringr::str_pad("", cli::utf8_nchar(p_value_str, "width") + 2)
-        coeffs[1] <- stringr::str_c(p_value_str, control$open_model, coeffs[1], sep = " ")
+        pre_pad_length <- cli::utf8_nchar(coeffs[1], "width")
+        coeffs[1] <- stringr::str_c(
+          p_value_str, " ", control$open_model, " ",
+          coeffs[1]
+        )
       } else {
-        coeffs[1] <- stringr::str_c(control$open_model, coeffs[1], sep = " ")
-        pad <- " "
+        pre_pad_length <- cli::utf8_nchar(coeffs[1], "width")
+        coeffs[1] <- stringr::str_c(control$open_model, " ", coeffs[1])
       }
+      pad <- stringr::str_pad("", cli::utf8_nchar(coeffs[1], "width") - pre_pad_length)
       for (k in 2:length(coeffs)) {
-        coeffs[k] <- stringr::str_c(pad, coeffs[k], sep = " ")
+        coeffs[k] <- stringr::str_c(pad, coeffs[k], sep = "")
       }
       coeffs[length(coeffs)] <- stringr::str_c(coeffs[length(coeffs)], control$close_model, sep = " ")
       coeffs

@@ -260,7 +260,7 @@ cat_with_prefix <- function(label, prefix, node_txt, control) {
   if (length(node_txt_lines) > 1) {
     local_prefix <- utf8_pad(
       prefix,
-      cli::utf8_nchar(label, "width") + 1 + cli::utf8_nchar(control$open_ct, "width"),
+      cli::utf8_nchar(stringr::str_c(label, " ", control$open_ct), "width"),
       "right"
     )
     for (k in seq_along(node_txt_lines)[-1]) {
