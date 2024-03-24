@@ -1,12 +1,18 @@
-draw_covlmc_model <- function(coefficients, p_value, hsize, names, lev,
-                              control, model) {
+draw_covlmc_model <- function(coefficients, p_value, hsize, names, vals, lev,
+                              control, model, probs) {
   collapsed <- FALSE
   if (control[["model"]] == "coef" || control[["model"]] == "full") {
     if (control[["model"]] == "coef") {
-      if (!is.null(model) && isTRUE(control$collapse_constant) && glm_is_constant(model)) {
-        coeffs <- stringr::str_c(signif(glm_to_probs(model, lev), control$digit),
-          collapse = ", "
-        )
+      if (isTRUE(control$collapse_constant) && hsize == 0) {
+        if (!is.null(model)) {
+          coeffs <- stringr::str_c(signif(glm_to_probs(model, vals), control$digit),
+            collapse = ", "
+          )
+        } else {
+          coeffs <- stringr::str_c(signif(probs, control$digit),
+            collapse = ", "
+          )
+        }
         collapsed <- TRUE
       } else if (isTRUE(control$with_state)) {
         lev <- stringr::str_c(lev[-1], lev[1], sep = "/")
@@ -147,7 +153,11 @@ rec_draw_covlmc <- function(label, prefix, ct, vals, control, node2txt) {
       c_prefix <- stringr::str_c(prefix, c_prefix)
       cat(c_label)
       if (!is.null(node2txt)) {
-        node_txt <- node2txt(list(model = ct[["merged_model"]]), vals, control)
+        mm <- ct[["merged_model"]]
+        node_txt <- node2txt(list(
+          model = mm, model_probs = mm$model_probs,
+          model_levels = mm$model_levels
+        ), vals, control)
         if (!is.null(node_txt)) {
           cat_with_prefix(c_label, c_prefix, node_txt, control)
         }
@@ -158,8 +168,8 @@ rec_draw_covlmc <- function(label, prefix, ct, vals, control, node2txt) {
 }
 
 covlmc_node2txt <- function(node, vals, control) {
-  if (!is.null(node$model)) {
-    if (!is.null(node$model$model)) {
+  if (!is.null(node[["model"]])) {
+    if (!is.null(node$model[["model"]])) {
       model_levels <- glm_levels(node$model$model, vals)
     } else {
       ## if the COVLMC has been trimmed
@@ -167,14 +177,15 @@ covlmc_node2txt <- function(node, vals, control) {
       if (is.null(model_levels)) {
         model_levels <- vals
       }
+      model_probs <- node[["model_probs"]]
     }
     var_names <- node$model$var_names
     ## intercept
     var_names[1] <- control$intercept
     draw_covlmc_model(
       node$model$coefficients, node$model$p_value, node$model$hsize,
-      var_names, model_levels, control,
-      node$model$model
+      var_names, vals, model_levels, control,
+      node$model[["model"]], model_probs
     )
   } else if (!is.null(node$p_value) && isTRUE(control$p_value)) {
     stringr::str_c("collapsing:", signif(node$p_value, control$digits), sep = " ")

@@ -132,8 +132,7 @@ charset_utf8 <- function(root = "\u25AA", # ▪
                          open_p_value = "\u2039", # ‹
                          close_p_value = "\u203A", # ›
                          open_model = "[",
-                         close_model = "]"
-) {
+                         close_model = "]") {
   list(
     root = root,
     first_node = first_node,

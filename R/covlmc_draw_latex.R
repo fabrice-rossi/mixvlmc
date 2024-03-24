@@ -19,8 +19,8 @@ covlmc_model_covar_names <- function(cov_names, cov_desc, cov_logical) {
 }
 
 draw_latex_covlmc_model <- function(coefficients, hsize,
-                                    covar_names, lev,
-                                    control, model) {
+                                    covar_names, vals, lev,
+                                    control, model, model_probs) {
   if (control[["model"]] == "none") {
     NULL
   } else {
@@ -110,7 +110,11 @@ draw_latex_covlmc_model <- function(coefficients, hsize,
         }
       }
     } else {
-      probs <- signif(glm_to_probs(model, lev), control$digit)
+      if (!is.null(model)) {
+        probs <- signif(glm_to_probs(model, vals), control$digit)
+      } else {
+        probs <- signif(model_probs, control$digit)
+      }
       probs
     }
   }
@@ -119,6 +123,16 @@ draw_latex_covlmc_model <- function(coefficients, hsize,
 covlmc_node2latex <- function(label, node, vals, covars, control) {
   the_node <- stringr::str_c("\\textbf{", label, "}", sep = "")
   if (!is.null(node$model)) {
+    if (!is.null(node$model[["model"]])) {
+      model_levels <- glm_levels(node$model$model, vals)
+    } else {
+      ## if the COVLMC has been trimmed
+      model_levels <- node[["model_levels"]]
+      if (is.null(model_levels)) {
+        model_levels <- vals
+      }
+      model_probs <- node[["model_probs"]]
+    }
     if (isTRUE(control$p_value)) {
       the_node <- stringr::str_c(
         the_node, " ",
@@ -130,8 +144,8 @@ covlmc_node2latex <- function(label, node, vals, covars, control) {
     model <- draw_latex_covlmc_model(
       node$model$coefficients,
       node$model$hsize,
-      covars, vals,
-      control, node$model$model
+      covars, vals, model_levels,
+      control, node$model[["model"]], model_probs
     )
     if (!is.null(model)) {
       if (node$model$hsize > 0) {
@@ -195,10 +209,12 @@ draw_latex_covlmc <- function(ct, vals, control, node2latex) {
         }
       }
       if (!is.null(node[["merged_model"]])) {
+        mm <- node[["merged_model"]]
         the_merged_vals <- stringr::str_c(vals[node$merged], collapse = ", ")
         cat("[", node2latex(
           the_merged_vals,
-          list(model = node[["merged_model"]]), vals, covars, control
+          list(model = mm, model_probs = mm$model_probs, model_levels = mm$model_levels),
+          vals, covars, control
         ), "]\n")
       }
     }

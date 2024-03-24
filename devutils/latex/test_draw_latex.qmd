@@ -247,3 +247,35 @@ draw(elec_model_merged, "latex",
   )
 )
 ```
+
+```{r}
+#| results: asis
+draw(trim(elec_model_merged), "latex",
+  p_value = TRUE
+)
+```
+### Degenerate case
+```{r}
+#| cache: true
+options(mixvlmc.predictive = "multinom")
+pc <- powerconsumption[powerconsumption$week %in% 5:7, ]
+dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1))))
+dts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
+m_cov <- covlmc(dts, dts_cov, min_size = 10, keep_data = TRUE)
+```
+
+```{r}
+draw(m_cov, with_state = TRUE)
+```
+
+```{r}
+#| results: asis
+draw(m_cov, "latex",
+  with_state = TRUE,
+  control = draw_control(
+    fontsize = "small",
+    prob_fontsize = "scriptsize"
+  )
+)
+```
+

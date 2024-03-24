@@ -120,6 +120,11 @@ test_that("trimmed model can be drawn", {
         control = draw_control(digits = 2),
         with_state = TRUE
       ))
+      expect_snapshot(draw(t_m_cov,
+        "latex",
+        control = draw_control(digits = 2),
+        with_state = TRUE
+      ))
     }
   }
 })
