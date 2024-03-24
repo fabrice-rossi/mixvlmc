@@ -125,7 +125,15 @@ glm_levels.vglm <- function(model, vals) {
 
 #' @exportS3Method
 glm_levels.multinom <- function(model, vals) {
-  model$lev
+  if (rlang::is_missing(vals)) {
+    model$lev
+  } else {
+    if (length(model$lev) == length(vals)) {
+      vals
+    } else {
+      model$lev
+    }
+  }
 }
 
 
