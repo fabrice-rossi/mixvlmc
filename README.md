@@ -97,7 +97,7 @@ complex model, as illustrated by its text based representation
 
 ``` r
 draw(model)
-#> ⏹ (0.505, 0.495)
+#> ▪ (0.505, 0.495)
 #> └─ 1 (0.4848, 0.5152)
 #>    ├─ 0 (0.5319, 0.4681)
 #>    │  └─ 1 (0.5, 0.5)
@@ -117,10 +117,10 @@ The representation uses simple ASCII art to display the contexts of the
 VLMC organized into a tree (see `vignette("context-trees")` for a more
 detailed introduction):
 
-- the root `*` corresponds to an empty context;
-- one can read contexts by following branches (represented by 2 dashes
-  `--`) down to their ends (the leaves): for instance
-  $(0, 0, 0, 1, 0, 1)$ is one of the contexts of the tree.
+- the root ▪ corresponds to an empty context;
+- one can read contexts by following branches (represented by ─) down to
+  their ends (the leaves): for instance $(0, 0, 0, 1, 0, 1)$ is one of
+  the contexts of the tree.
 
 Here the context $(0, 0, 0, 1, 0, 1)$ is associated to the transition
 probabilities $(1, 0)$. This means that when one observes this context
@@ -147,7 +147,7 @@ first a complex VLMC and then *prunes* it (using a combination of
 best_model_tune <- tune_vlmc(x)
 best_model <- as_vlmc(best_model_tune)
 draw(best_model)
-#> ⏹ (0.505, 0.495)
+#> ▪ (0.505, 0.495)
 ```
 
 As expected, we end up with a constant model.
@@ -189,7 +189,7 @@ complex (as expected based on the periodicity of the Solar cycle):
 ``` r
 best_sun_model <- as_vlmc(sun_model_tune)
 draw(best_sun_model)
-#> ⏹ (0.5052, 0.4948)
+#> ▪ (0.5052, 0.4948)
 #> ├─ high (0.8207, 0.1793)
 #> │  ├─ high (0.7899, 0.2101)
 #> │  │  ├─ high (0.7447, 0.2553)
@@ -244,7 +244,7 @@ Markov chain, up to the order 2 context used when the active power is
 elec_vlmc_tune <- tune_vlmc(elec_dts)
 best_elec_vlmc <- as_vlmc(elec_vlmc_tune)
 draw(best_elec_vlmc)
-#> ⏹ (0.1667, 0.5496, 0.2837)
+#> ▪ (0.1667, 0.5496, 0.2837)
 #> ├─ low (0.7665, 0.2335, 0)
 #> ├─ typical (0.0704, 0.8466, 0.08303)
 #> │  └─ low (0.3846, 0.5385, 0.07692)
@@ -264,22 +264,22 @@ A COVLMC is estimated using the `covlmc` function:
 ``` r
 elec_covlmc <- covlmc(elec_dts, elec_cov, min_size = 2, alpha = 0.5)
 draw(elec_covlmc, model = "full")
-#> ⏹
-#> ├─ low (⟬ Ⓘ      • day_1TRUE
-#> │         -1.558 • 1.006     ⟭)
+#> ▪
+#> ├─ low ([ (I)    • day_1TRUE
+#> │         -1.558 • 1.006     ])
 #> ├─ typical
-#> │  ├─ low (⟬ Ⓘ      • day_1TRUE ⁞ day_2TRUE
+#> │  ├─ low ([ (I)    • day_1TRUE ⁞ day_2TRUE
 #> │  │         0.3567 • -27.81    ⁞ 27.81    
-#> │  │         -1.253 • -14.39    ⁞ 13.69     ⟭)
-#> │  ├─ typical (⟬ Ⓘ      • day_1TRUE
+#> │  │         -1.253 • -14.39    ⁞ 13.69     ])
+#> │  ├─ typical ([ (I)    • day_1TRUE
 #> │  │             2.666  • 0.566    
-#> │  │             0.2683 • 0.2426    ⟭)
-#> │  └─ high (⟬ Ⓘ      • day_1TRUE
+#> │  │             0.2683 • 0.2426    ])
+#> │  └─ high ([ (I)    • day_1TRUE
 #> │             2.015  • 16.18    
-#> │             0.6931 • 16.61     ⟭)
-#> └─ high (⟬ Ⓘ     • day_1TRUE
+#> │             0.6931 • 16.61     ])
+#> └─ high ([ (I)   • day_1TRUE
 #>            17.41 • -14.23   
-#>            19.38 • -14.88    ⟭)
+#>            19.38 • -14.88    ])
 ```
 
 The model appears a bit complex. To get a more adapted model, we use a
@@ -295,22 +295,22 @@ print(autoplot(elec_covlmc_tune))
 ``` r
 best_elec_covlmc <- as_covlmc(elec_covlmc_tune)
 draw(best_elec_covlmc, model = "full")
-#> ⏹
-#> ├─ low (⟬ Ⓘ      • day_1TRUE
-#> │         -1.558 • 1.006     ⟭)
+#> ▪
+#> ├─ low ([ (I)    • day_1TRUE
+#> │         -1.558 • 1.006     ])
 #> ├─ typical
-#> │  ├─ low (⟬ Ⓘ     
+#> │  ├─ low ([ (I)   
 #> │  │         0.3365
-#> │  │         -1.609 ⟭)
-#> │  ├─ typical (⟬ Ⓘ     
+#> │  │         -1.609 ])
+#> │  ├─ typical ([ (I)   
 #> │  │             2.937 
-#> │  │             0.3747 ⟭)
-#> │  └─ high (⟬ Ⓘ    
+#> │  │             0.3747 ])
+#> │  └─ high ([ (I)  
 #> │             2.773
-#> │             1.705 ⟭)
-#> └─ high (⟬ Ⓘ    
+#> │             1.705 ])
+#> └─ high ([ (I)  
 #>            3.807
-#>            5.481 ⟭)
+#>            5.481 ])
 ```
 
 As in the VLMC case, the optimal model remains rather simple:

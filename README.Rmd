@@ -81,8 +81,10 @@ draw(model)
 
 The representation uses simple ASCII art to display the contexts of the VLMC organized into a tree (see `vignette("context-trees")` for a more detailed introduction):
 
--   the root `*` corresponds to an empty context;
--   one can read contexts by following branches (represented by 2 dashes `--`) down to their ends (the leaves): for instance $(0, 0, 0, 1, 0, 1)$ is one of the contexts of the tree.
+-   the root `r draw_control()$root` corresponds to an empty context;
+-   one can read contexts by following branches (represented by 
+   `r draw_control()$hbranch`) down to their ends (the leaves): for instance 
+   $(0, 0, 0, 1, 0, 1)$ is one of the contexts of the tree.
 
 Here the context $(0, 0, 0, 1, 0, 1)$ is associated to the transition
 probabilities $(1, 0)$. This means that when one observes this context in
