@@ -118,7 +118,7 @@ is documented in concrete implementation of the function.</p>
 <span class="r-in"><span><span class="va">dts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cut.html" class="external-link">cut</a></span><span class="op">(</span><span class="va">pc</span><span class="op">$</span><span class="va">active_power</span>, breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">pc</span><span class="op">$</span><span class="va">active_power</span>, probs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.25</span>, <span class="fl">0.5</span>, <span class="fl">0.75</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="vlmc.html">vlmc</a></span><span class="op">(</span><span class="va">dts</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="draw.html">draw</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ⏹ (0.25, 0.25, 0.25, 0.25)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ▪ (0.25, 0.25, 0.25, 0.25)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ├─ (0,0.458] (0.7968, 0.1912, 0.007968, 0.003984)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> │  └─ (0,0.458] (0.809, 0.1809, 0.005025, 0.005025)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> │     └─ (0,0.458] (0.8188, 0.1688, 0.00625, 0.00625)</span>
@@ -137,7 +137,7 @@ is documented in concrete implementation of the function.</p>
 <span class="r-in"><span><span class="va">model_cuts</span> <span class="op">&lt;-</span> <span class="fu">cutoff</span><span class="op">(</span><span class="va">model</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">model_2</span> <span class="op">&lt;-</span> <span class="fu"><a href="prune.html">prune</a></span><span class="op">(</span><span class="va">model</span>, <span class="va">model_cuts</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="draw.html">draw</a></span><span class="op">(</span><span class="va">model_2</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ⏹ (0.25, 0.25, 0.25, 0.25)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ▪ (0.25, 0.25, 0.25, 0.25)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ├─ (0,0.458] (0.7968, 0.1912, 0.007968, 0.003984)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> │  └─ (0,0.458] (0.809, 0.1809, 0.005025, 0.005025)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> │     └─ (0,0.458] (0.8188, 0.1688, 0.00625, 0.00625)</span>

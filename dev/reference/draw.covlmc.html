@@ -280,15 +280,15 @@ form <code>t-1</code>, <code>t-2</code>, etc.</p>
 <span class="r-in"><span><span class="va">dts_cov</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>day_night <span class="op">=</span> <span class="op">(</span><span class="va">pc</span><span class="op">$</span><span class="va">hour</span> <span class="op">&gt;=</span> <span class="fl">7</span> <span class="op">&amp;</span> <span class="va">pc</span><span class="op">$</span><span class="va">hour</span> <span class="op">&lt;=</span> <span class="fl">17</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">m_cov</span> <span class="op">&lt;-</span> <span class="fu"><a href="covlmc.html">covlmc</a></span><span class="op">(</span><span class="va">dts</span>, <span class="va">dts_cov</span>, min_size <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="draw.html">draw</a></span><span class="op">(</span><span class="va">m_cov</span>, control <span class="op">=</span> <span class="fu"><a href="draw_control.html">draw_control</a></span><span class="op">(</span>digits <span class="op">=</span> <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ⏹</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ▪</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ├─ (0,1.34]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> │  ├─ (0,1.34]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> │  │  ├─ (0,1.34] (⟬ -2.81 • 2.18 ⁞ -4.45 ⁞ 2.42 ⟭)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> │  │  └─ (1.34,7.54] (⟬ -19.6 • 18.4 ⟭)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> │  │  ├─ (0,1.34] ([ -2.81 • 2.18 ⁞ -4.45 ⁞ 2.42 ])</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> │  │  └─ (1.34,7.54] ([ -19.6 • 18.4 ])</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> │  └─ (1.34,7.54] (0.865, 0.135)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> └─ (1.34,7.54] (0.0734, 0.927)</span>
 <span class="r-in"><span><span class="fu"><a href="draw.html">draw</a></span><span class="op">(</span><span class="va">m_cov</span>, model <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ⏹</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ▪</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ├─ (0,1.34]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> │  ├─ (0,1.34]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> │  │  ├─ (0,1.34]</span>
@@ -296,33 +296,33 @@ form <code>t-1</code>, <code>t-2</code>, etc.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> │  └─ (1.34,7.54]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> └─ (1.34,7.54]</span>
 <span class="r-in"><span><span class="fu"><a href="draw.html">draw</a></span><span class="op">(</span><span class="va">m_cov</span>, p_value <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ⏹</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ▪</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ├─ (0,1.34]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> │  ├─ (0,1.34]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> │  │  ├─ (0,1.34] (‹0.02329› ⟬ -2.813 • 2.178 ⁞ -4.449 ⁞ 2.418 ⟭)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> │  │  └─ (1.34,7.54] (‹0.01834› ⟬ -19.57 • 18.39 ⟭)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> │  │  ├─ (0,1.34] (‹0.02329› [ -2.813 • 2.178 ⁞ -4.449 ⁞ 2.418 ])</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> │  │  └─ (1.34,7.54] (‹0.01834› [ -19.57 • 18.39 ])</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> │  └─ (1.34,7.54] (‹0.6763› 0.8649, 0.1351)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> └─ (1.34,7.54] (‹0.8175› 0.07341, 0.9266)</span>
 <span class="r-in"><span><span class="fu"><a href="draw.html">draw</a></span><span class="op">(</span><span class="va">m_cov</span>, p_value <span class="op">=</span> <span class="cn">FALSE</span>, control <span class="op">=</span> <span class="fu"><a href="draw_control.html">draw_control</a></span><span class="op">(</span>digits <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ⏹</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ▪</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ├─ (0,1.34]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> │  ├─ (0,1.34]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> │  │  ├─ (0,1.34] (⟬ -2.8 • 2.2 ⁞ -4.4 ⁞ 2.4 ⟭)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> │  │  └─ (1.34,7.54] (⟬ -20 • 18 ⟭)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> │  │  ├─ (0,1.34] ([ -2.8 • 2.2 ⁞ -4.4 ⁞ 2.4 ])</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> │  │  └─ (1.34,7.54] ([ -20 • 18 ])</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> │  └─ (1.34,7.54] (0.86, 0.14)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> └─ (1.34,7.54] (0.073, 0.93)</span>
 <span class="r-in"><span><span class="fu"><a href="draw.html">draw</a></span><span class="op">(</span><span class="va">m_cov</span>, model <span class="op">=</span> <span class="st">"full"</span>, control <span class="op">=</span> <span class="fu"><a href="draw_control.html">draw_control</a></span><span class="op">(</span>digits <span class="op">=</span> <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ⏹</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ▪</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ├─ (0,1.34]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> │  ├─ (0,1.34]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> │  │  ├─ (0,1.34] (⟬ Ⓘ     • day_night_1TRUE ⁞ day_night_2TRUE ⁞ day_night_3TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> │  │  │              -2.81 • 2.18            ⁞ -4.45           ⁞ 2.42            ⟭)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> │  │  └─ (1.34,7.54] (⟬ Ⓘ     • day_night_1TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> │  │                    -19.6 • 18.4            ⟭)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> │  └─ (1.34,7.54] (⟬ Ⓘ    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> │                    -1.86 ⟭)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> └─ (1.34,7.54] (⟬ Ⓘ   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                   2.54 ⟭)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> │  │  ├─ (0,1.34] ([ (I)   • day_night_1TRUE ⁞ day_night_2TRUE ⁞ day_night_3TRUE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> │  │  │              -2.81 • 2.18            ⁞ -4.45           ⁞ 2.42            ])</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> │  │  └─ (1.34,7.54] ([ (I)   • day_night_1TRUE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> │  │                    -19.6 • 18.4            ])</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> │  └─ (1.34,7.54] ([ (I)  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> │                    -1.86 ])</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> └─ (1.34,7.54] ([ (I) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                   2.54 ])</span>
 <span class="r-in"><span><span class="fu"><a href="draw.html">draw</a></span><span class="op">(</span><span class="va">m_cov</span>, format <span class="op">=</span> <span class="st">"latex"</span>, control <span class="op">=</span> <span class="fu"><a href="draw_control.html">draw_control</a></span><span class="op">(</span>orientation <span class="op">=</span> <span class="st">"h"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> \begin{forest}</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   for tree={grow'=west}[\textbf{$\epsilon$}</span>

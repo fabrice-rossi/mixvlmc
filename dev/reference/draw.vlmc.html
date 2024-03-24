@@ -152,7 +152,7 @@ special characters in the names of the states of the context tree.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">dts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A"</span>, <span class="st">"B"</span>, <span class="st">"C"</span><span class="op">)</span>, <span class="fl">500</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="vlmc.html">vlmc</a></span><span class="op">(</span><span class="va">dts</span>, alpha <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="draw.html">draw</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ⏹ (0.362, 0.304, 0.334)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ▪ (0.362, 0.304, 0.334)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ├─ A (0.3812, 0.2983, 0.3204)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> │  ├─ A (0.4203, 0.2609, 0.3188)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> │  │  └─ A (0.4138, 0.2759, 0.3103)</span>
@@ -167,7 +167,7 @@ special characters in the names of the states of the context tree.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       └─ A (0.3846, 0.3462, 0.2692)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>          └─ B (0.5, 0.5, 0)</span>
 <span class="r-in"><span><span class="fu"><a href="draw.html">draw</a></span><span class="op">(</span><span class="va">model</span>, prob <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ⏹ (181, 152, 167)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ▪ (181, 152, 167)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ├─ A (69, 54, 58)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> │  ├─ A (29, 18, 22)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> │  │  └─ A (12, 8, 9)</span>
@@ -182,7 +182,7 @@ special characters in the names of the states of the context tree.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       └─ A (10, 9, 7)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>          └─ B (5, 5, 0)</span>
 <span class="r-in"><span><span class="fu"><a href="draw.html">draw</a></span><span class="op">(</span><span class="va">model</span>, prob <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ⏹</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ▪</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ├─ A</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> │  ├─ A</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> │  │  └─ A</span>

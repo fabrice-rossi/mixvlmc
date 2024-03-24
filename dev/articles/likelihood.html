@@ -215,7 +215,7 @@ obtained as follows (see the vignette for details):</p>
 <span><span class="op">)</span></span>
 <span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/as_vlmc.html">as_vlmc</a></span><span class="op">(</span><span class="va">California_weeks_earth_quakes_model</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/draw.html">draw</a></span><span class="op">(</span><span class="va">model</span>, prob <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ⏹ (5126, 1291)</span></span>
+<span><span class="co">#&gt; ▪ (5126, 1291)</span></span>
 <span><span class="co">#&gt; ├─ 0 (4185, 940)</span></span>
 <span><span class="co">#&gt; │  ├─ 0 (3460, 725)</span></span>
 <span><span class="co">#&gt; │  │  └─ 0 (2883, 577)</span></span>
@@ -461,7 +461,7 @@ selected with the <em>truncated</em> likelihood (as well as by the
 <code class="sourceCode R"><span><span class="va">CA_model_extented</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tune_vlmc.html">tune_vlmc</a></span><span class="op">(</span><span class="va">California_weeks</span>, initial <span class="op">=</span> <span class="st">"extended"</span><span class="op">)</span></span>
 <span><span class="va">model_extended</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/as_vlmc.html">as_vlmc</a></span><span class="op">(</span><span class="va">CA_model_extented</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/draw.html">draw</a></span><span class="op">(</span><span class="va">model_extended</span>, prob <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ⏹ (5126, 1291)</span></span>
+<span><span class="co">#&gt; ▪ (5126, 1291)</span></span>
 <span><span class="co">#&gt; └─ 1 (940, 351)</span></span></code></pre></div>
 <p>This is also the case for, e.g., the sun spot time series used in the
 introduction to the package, as shown below:</p>
@@ -469,7 +469,7 @@ introduction to the package, as shown below:</p>
 <code class="sourceCode R"><span><span class="va">sun_activity</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">sunspot.year</span> <span class="op">&gt;=</span> <span class="fu"><a href="https://rdrr.io/r/stats/median.html" class="external-link">median</a></span><span class="op">(</span><span class="va">sunspot.year</span><span class="op">)</span>, <span class="st">"high"</span>, <span class="st">"low"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">sun_model_tune_truncated</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tune_vlmc.html">tune_vlmc</a></span><span class="op">(</span><span class="va">sun_activity</span>, initial <span class="op">=</span> <span class="st">"truncated"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/draw.html">draw</a></span><span class="op">(</span><span class="fu"><a href="../reference/as_vlmc.html">as_vlmc</a></span><span class="op">(</span><span class="va">sun_model_tune_truncated</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ⏹ (0.5052, 0.4948)</span></span>
+<span><span class="co">#&gt; ▪ (0.5052, 0.4948)</span></span>
 <span><span class="co">#&gt; ├─ high (0.8207, 0.1793)</span></span>
 <span><span class="co">#&gt; │  ├─ high (0.7899, 0.2101)</span></span>
 <span><span class="co">#&gt; │  │  ├─ high (0.7447, 0.2553)</span></span>
@@ -487,7 +487,7 @@ introduction to the package, as shown below:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sun_model_tune_extended</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tune_vlmc.html">tune_vlmc</a></span><span class="op">(</span><span class="va">sun_activity</span>, initial <span class="op">=</span> <span class="st">"extended"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/draw.html">draw</a></span><span class="op">(</span><span class="fu"><a href="../reference/as_vlmc.html">as_vlmc</a></span><span class="op">(</span><span class="va">sun_model_tune_extended</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ⏹ (0.5052, 0.4948)</span></span>
+<span><span class="co">#&gt; ▪ (0.5052, 0.4948)</span></span>
 <span><span class="co">#&gt; ├─ high (0.8207, 0.1793)</span></span>
 <span><span class="co">#&gt; │  └─ high (0.7899, 0.2101)</span></span>
 <span><span class="co">#&gt; │     └─ high (0.7447, 0.2553)</span></span>
@@ -527,7 +527,7 @@ generated as follows:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">MC_extended</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tune_vlmc.html">tune_vlmc</a></span><span class="op">(</span><span class="va">dts</span>, initial <span class="op">=</span> <span class="st">"extended"</span>, save <span class="op">=</span> <span class="st">"all"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/draw.html">draw</a></span><span class="op">(</span><span class="fu"><a href="../reference/as_vlmc.html">as_vlmc</a></span><span class="op">(</span><span class="va">MC_extended</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ⏹ (0.5458, 0.4542)</span></span>
+<span><span class="co">#&gt; ▪ (0.5458, 0.4542)</span></span>
 <span><span class="co">#&gt; └─ 1 (0.5746, 0.4254)</span></span>
 <span><span class="co">#&gt;    ├─ 0 (0.374, 0.626)</span></span>
 <span><span class="co">#&gt;    └─ 1 (0.8454, 0.1546)</span></span></code></pre></div>
@@ -535,7 +535,7 @@ generated as follows:</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">MC_truncated</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tune_vlmc.html">tune_vlmc</a></span><span class="op">(</span><span class="va">dts</span>, initial <span class="op">=</span> <span class="st">"truncated"</span>, save <span class="op">=</span> <span class="st">"all"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/draw.html">draw</a></span><span class="op">(</span><span class="fu"><a href="../reference/as_vlmc.html">as_vlmc</a></span><span class="op">(</span><span class="va">MC_truncated</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ⏹ (0.5458, 0.4542)</span></span>
+<span><span class="co">#&gt; ▪ (0.5458, 0.4542)</span></span>
 <span><span class="co">#&gt; ├─ 0 (0.5201, 0.4799)</span></span>
 <span><span class="co">#&gt; │  ├─ 0 (0.6408, 0.3592)</span></span>
 <span><span class="co">#&gt; │  └─ 1 (0.3923, 0.6077)</span></span>
@@ -546,7 +546,7 @@ generated as follows:</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">MC_specific</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tune_vlmc.html">tune_vlmc</a></span><span class="op">(</span><span class="va">dts</span>, initial <span class="op">=</span> <span class="st">"specific"</span>, save <span class="op">=</span> <span class="st">"all"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/draw.html">draw</a></span><span class="op">(</span><span class="fu"><a href="../reference/as_vlmc.html">as_vlmc</a></span><span class="op">(</span><span class="va">MC_specific</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ⏹ (0.5458, 0.4542)</span></span>
+<span><span class="co">#&gt; ▪ (0.5458, 0.4542)</span></span>
 <span><span class="co">#&gt; ├─ 0 (0.5201, 0.4799)</span></span>
 <span><span class="co">#&gt; │  ├─ 0 (0.6408, 0.3592)</span></span>
 <span><span class="co">#&gt; │  └─ 1 (0.3923, 0.6077)</span></span>

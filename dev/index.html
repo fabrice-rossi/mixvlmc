@@ -146,7 +146,7 @@
 <p>The default parameters of <code><a href="reference/vlmc.html">vlmc()</a></code> will tend to produce overly complex VLMC in order to avoid missing potential structure in the time series. In the example above, we expect the optimal VLMC to be a constant distribution as the sample is independent and uniformly distributed (it has no temporal structure). The default parameters give here an overly complex model, as illustrated by its text based representation</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/draw.html">draw</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ⏹ (0.505, 0.495)</span></span>
+<span><span class="co">#&gt; ▪ (0.505, 0.495)</span></span>
 <span><span class="co">#&gt; └─ 1 (0.4848, 0.5152)</span></span>
 <span><span class="co">#&gt;    ├─ 0 (0.5319, 0.4681)</span></span>
 <span><span class="co">#&gt;    │  └─ 1 (0.5, 0.5)</span></span>
@@ -162,8 +162,8 @@
 <span><span class="co">#&gt;                └─ 1 (1, 0)</span></span></code></pre></div>
 <p>The representation uses simple ASCII art to display the contexts of the VLMC organized into a tree (see <code><a href="articles/context-trees.html">vignette("context-trees")</a></code> for a more detailed introduction):</p>
 <ul>
-<li>the root <code>*</code> corresponds to an empty context;</li>
-<li>one can read contexts by following branches (represented by 2 dashes <code>--</code>) down to their ends (the leaves): for instance <span class="math inline">(0,0,0,1,0,1)</span> is one of the contexts of the tree.</li>
+<li>the root ▪ corresponds to an empty context;</li>
+<li>one can read contexts by following branches (represented by ─) down to their ends (the leaves): for instance <span class="math inline">(0,0,0,1,0,1)</span> is one of the contexts of the tree.</li>
 </ul>
 <p>Here the context <span class="math inline">(0,0,0,1,0,1)</span> is associated to the transition probabilities <span class="math inline">(1,0)</span>. This means that when one observes this context in the time series, it is <em>always</em> followed by a 0. Notice that contexts are extends to the left when we go down in the tree as deep nodes corresponds to older values. Some papers prefer to write contexts from the most recent value to the oldest one. With this convention, the “reverse” context <span class="math inline">(1,0,1,0,0,0)</span> corresponds to the sub time series <span class="math inline">(0,0,0,1,0,1)</span>. Unless otherwise specified, we write contexts in the temporal order.</p>
 <div class="section level4">
@@ -174,7 +174,7 @@
 <code class="sourceCode R"><span><span class="va">best_model_tune</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/tune_vlmc.html">tune_vlmc</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
 <span><span class="va">best_model</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/as_vlmc.html">as_vlmc</a></span><span class="op">(</span><span class="va">best_model_tune</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/draw.html">draw</a></span><span class="op">(</span><span class="va">best_model</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ⏹ (0.505, 0.495)</span></span></code></pre></div>
+<span><span class="co">#&gt; ▪ (0.505, 0.495)</span></span></code></pre></div>
 <p>As expected, we end up with a constant model.</p>
 <p>In time series with actual temporal patterns, the optimal model will be more complex. As a very basic illustrative example, let us consider the <code>sunspot.year</code> time series and turn it into a binary one, with high activity associated to a number of sun spots larger than the median number.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
@@ -196,7 +196,7 @@
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">best_sun_model</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/as_vlmc.html">as_vlmc</a></span><span class="op">(</span><span class="va">sun_model_tune</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/draw.html">draw</a></span><span class="op">(</span><span class="va">best_sun_model</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ⏹ (0.5052, 0.4948)</span></span>
+<span><span class="co">#&gt; ▪ (0.5052, 0.4948)</span></span>
 <span><span class="co">#&gt; ├─ high (0.8207, 0.1793)</span></span>
 <span><span class="co">#&gt; │  ├─ high (0.7899, 0.2101)</span></span>
 <span><span class="co">#&gt; │  │  ├─ high (0.7447, 0.2553)</span></span>
@@ -239,7 +239,7 @@
 <code class="sourceCode R"><span><span class="va">elec_vlmc_tune</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/tune_vlmc.html">tune_vlmc</a></span><span class="op">(</span><span class="va">elec_dts</span><span class="op">)</span></span>
 <span><span class="va">best_elec_vlmc</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/as_vlmc.html">as_vlmc</a></span><span class="op">(</span><span class="va">elec_vlmc_tune</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/draw.html">draw</a></span><span class="op">(</span><span class="va">best_elec_vlmc</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ⏹ (0.1667, 0.5496, 0.2837)</span></span>
+<span><span class="co">#&gt; ▪ (0.1667, 0.5496, 0.2837)</span></span>
 <span><span class="co">#&gt; ├─ low (0.7665, 0.2335, 0)</span></span>
 <span><span class="co">#&gt; ├─ typical (0.0704, 0.8466, 0.08303)</span></span>
 <span><span class="co">#&gt; │  └─ low (0.3846, 0.5385, 0.07692)</span></span>
@@ -251,22 +251,22 @@
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">elec_covlmc</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/covlmc.html">covlmc</a></span><span class="op">(</span><span class="va">elec_dts</span>, <span class="va">elec_cov</span>, min_size <span class="op">=</span> <span class="fl">2</span>, alpha <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/draw.html">draw</a></span><span class="op">(</span><span class="va">elec_covlmc</span>, model <span class="op">=</span> <span class="st">"full"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ⏹</span></span>
-<span><span class="co">#&gt; ├─ low (⟬ Ⓘ      • day_1TRUE</span></span>
-<span><span class="co">#&gt; │         -1.558 • 1.006     ⟭)</span></span>
+<span><span class="co">#&gt; ▪</span></span>
+<span><span class="co">#&gt; ├─ low ([ (I)    • day_1TRUE</span></span>
+<span><span class="co">#&gt; │         -1.558 • 1.006     ])</span></span>
 <span><span class="co">#&gt; ├─ typical</span></span>
-<span><span class="co">#&gt; │  ├─ low (⟬ Ⓘ      • day_1TRUE ⁞ day_2TRUE</span></span>
+<span><span class="co">#&gt; │  ├─ low ([ (I)    • day_1TRUE ⁞ day_2TRUE</span></span>
 <span><span class="co">#&gt; │  │         0.3567 • -27.81    ⁞ 27.81    </span></span>
-<span><span class="co">#&gt; │  │         -1.253 • -14.39    ⁞ 13.69     ⟭)</span></span>
-<span><span class="co">#&gt; │  ├─ typical (⟬ Ⓘ      • day_1TRUE</span></span>
+<span><span class="co">#&gt; │  │         -1.253 • -14.39    ⁞ 13.69     ])</span></span>
+<span><span class="co">#&gt; │  ├─ typical ([ (I)    • day_1TRUE</span></span>
 <span><span class="co">#&gt; │  │             2.666  • 0.566    </span></span>
-<span><span class="co">#&gt; │  │             0.2683 • 0.2426    ⟭)</span></span>
-<span><span class="co">#&gt; │  └─ high (⟬ Ⓘ      • day_1TRUE</span></span>
+<span><span class="co">#&gt; │  │             0.2683 • 0.2426    ])</span></span>
+<span><span class="co">#&gt; │  └─ high ([ (I)    • day_1TRUE</span></span>
 <span><span class="co">#&gt; │             2.015  • 16.18    </span></span>
-<span><span class="co">#&gt; │             0.6931 • 16.61     ⟭)</span></span>
-<span><span class="co">#&gt; └─ high (⟬ Ⓘ     • day_1TRUE</span></span>
+<span><span class="co">#&gt; │             0.6931 • 16.61     ])</span></span>
+<span><span class="co">#&gt; └─ high ([ (I)   • day_1TRUE</span></span>
 <span><span class="co">#&gt;            17.41 • -14.23   </span></span>
-<span><span class="co">#&gt;            19.38 • -14.88    ⟭)</span></span></code></pre></div>
+<span><span class="co">#&gt;            19.38 • -14.88    ])</span></span></code></pre></div>
 <p>The model appears a bit complex. To get a more adapted model, we use a BIC based model selection as follows:</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">elec_covlmc_tune</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/tune_covlmc.html">tune_covlmc</a></span><span class="op">(</span><span class="va">elec_dts</span>, <span class="va">elec_cov</span><span class="op">)</span></span>
@@ -275,22 +275,22 @@
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">best_elec_covlmc</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/as_covlmc.html">as_covlmc</a></span><span class="op">(</span><span class="va">elec_covlmc_tune</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/draw.html">draw</a></span><span class="op">(</span><span class="va">best_elec_covlmc</span>, model <span class="op">=</span> <span class="st">"full"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ⏹</span></span>
-<span><span class="co">#&gt; ├─ low (⟬ Ⓘ      • day_1TRUE</span></span>
-<span><span class="co">#&gt; │         -1.558 • 1.006     ⟭)</span></span>
+<span><span class="co">#&gt; ▪</span></span>
+<span><span class="co">#&gt; ├─ low ([ (I)    • day_1TRUE</span></span>
+<span><span class="co">#&gt; │         -1.558 • 1.006     ])</span></span>
 <span><span class="co">#&gt; ├─ typical</span></span>
-<span><span class="co">#&gt; │  ├─ low (⟬ Ⓘ     </span></span>
+<span><span class="co">#&gt; │  ├─ low ([ (I)   </span></span>
 <span><span class="co">#&gt; │  │         0.3365</span></span>
-<span><span class="co">#&gt; │  │         -1.609 ⟭)</span></span>
-<span><span class="co">#&gt; │  ├─ typical (⟬ Ⓘ     </span></span>
+<span><span class="co">#&gt; │  │         -1.609 ])</span></span>
+<span><span class="co">#&gt; │  ├─ typical ([ (I)   </span></span>
 <span><span class="co">#&gt; │  │             2.937 </span></span>
-<span><span class="co">#&gt; │  │             0.3747 ⟭)</span></span>
-<span><span class="co">#&gt; │  └─ high (⟬ Ⓘ    </span></span>
+<span><span class="co">#&gt; │  │             0.3747 ])</span></span>
+<span><span class="co">#&gt; │  └─ high ([ (I)  </span></span>
 <span><span class="co">#&gt; │             2.773</span></span>
-<span><span class="co">#&gt; │             1.705 ⟭)</span></span>
-<span><span class="co">#&gt; └─ high (⟬ Ⓘ    </span></span>
+<span><span class="co">#&gt; │             1.705 ])</span></span>
+<span><span class="co">#&gt; └─ high ([ (I)  </span></span>
 <span><span class="co">#&gt;            3.807</span></span>
-<span><span class="co">#&gt;            5.481 ⟭)</span></span></code></pre></div>
+<span><span class="co">#&gt;            5.481 ])</span></span></code></pre></div>
 <p>As in the VLMC case, the optimal model remains rather simple:</p>
 <ul>
 <li>the <em>high</em> context do not use the covariate and is equivalent to the vlmc context;</li>

@@ -190,7 +190,7 @@ chains. Ann. Statist." 27 (2) 480-513 <a href="https://doi.org/10.1214/aos/10180
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu">vlmc</span><span class="op">(</span><span class="va">dts</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="draw.html">draw</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ⏹ (0.25, 0.25, 0.25, 0.25)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ▪ (0.25, 0.25, 0.25, 0.25)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ├─ (0,0.458] (0.7968, 0.1912, 0.007968, 0.003984)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> │  └─ (0,0.458] (0.809, 0.1809, 0.005025, 0.005025)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> │     └─ (0,0.458] (0.8188, 0.1688, 0.00625, 0.00625)</span>
@@ -211,7 +211,7 @@ chains. Ann. Statist." 27 (2) 480-513 <a href="https://doi.org/10.1214/aos/10180
 <span class="r-in"><span><span class="co">## reduce the detph of the model</span></span></span>
 <span class="r-in"><span><span class="va">shallow_model</span> <span class="op">&lt;-</span> <span class="fu">vlmc</span><span class="op">(</span><span class="va">dts</span>, max_depth <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="draw.html">draw</a></span><span class="op">(</span><span class="va">shallow_model</span>, prob <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ⏹ (252, 252, 252, 252)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ▪ (252, 252, 252, 252)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ├─ (0,0.458] (200, 48, 2, 1)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ├─ (0.458,1.34] (50, 168, 27, 7)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> │  ├─ (0,0.458] (18, 20, 7, 3)</span>
@@ -224,7 +224,7 @@ chains. Ann. Statist." 27 (2) 480-513 <a href="https://doi.org/10.1214/aos/10180
 <span class="r-in"><span><span class="co">## improve probability estimates</span></span></span>
 <span class="r-in"><span><span class="va">robust_model</span> <span class="op">&lt;-</span> <span class="fu">vlmc</span><span class="op">(</span><span class="va">dts</span>, min_size <span class="op">=</span> <span class="fl">25</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="draw.html">draw</a></span><span class="op">(</span><span class="va">robust_model</span>, prob <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="co">## show the frequencies</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ⏹ (252, 252, 252, 252)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ▪ (252, 252, 252, 252)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ├─ (0,0.458] (200, 48, 2, 1)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ├─ (0.458,1.34] (50, 168, 27, 7)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> │  └─ (0,0.458] (18, 20, 7, 3)</span>
@@ -232,7 +232,7 @@ chains. Ann. Statist." 27 (2) 480-513 <a href="https://doi.org/10.1214/aos/10180
 <span class="r-out co"><span class="r-pr">#&gt;</span> │  └─ (2.13,7.54] (0, 8, 21, 11)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> └─ (2.13,7.54] (1, 4, 40, 207)</span>
 <span class="r-in"><span><span class="fu"><a href="draw.html">draw</a></span><span class="op">(</span><span class="va">robust_model</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ⏹ (0.25, 0.25, 0.25, 0.25)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ▪ (0.25, 0.25, 0.25, 0.25)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ├─ (0,0.458] (0.7968, 0.1912, 0.007968, 0.003984)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ├─ (0.458,1.34] (0.1984, 0.6667, 0.1071, 0.02778)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> │  └─ (0,0.458] (0.375, 0.4167, 0.1458, 0.0625)</span>

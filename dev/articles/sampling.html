@@ -151,7 +151,7 @@ initial values.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">best_vlmc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tune_vlmc.html">tune_vlmc</a></span><span class="op">(</span><span class="va">dts</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/draw.html">draw</a></span><span class="op">(</span><span class="fu"><a href="../reference/as_vlmc.html">as_vlmc</a></span><span class="op">(</span><span class="va">best_vlmc</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ⏹ (0.47, 0.53)</span></span></code></pre></div>
+<span><span class="co">#&gt; ▪ (0.524, 0.476)</span></span></code></pre></div>
 <p>Simulating a sequence using the model is done via
 <code><a href="../reference/simulate.vlmc.html">simulate.vlmc()</a></code> which overrides the standard
 <code><a href="https://rdrr.io/r/stats/simulate.html" class="external-link">stats::simulate()</a></code>. For instance:</p>
@@ -180,7 +180,7 @@ the <code>init</code> parameter, for instance:</p>
 0\)</span>:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dts_sample_2</span></span>
-<span><span class="co">#&gt;  [1] 0 0 1 1 0 1 1 1 0 1</span></span>
+<span><span class="co">#&gt;  [1] 0 0 0 1 0 1 0 0 1 1</span></span>
 <span><span class="co">#&gt; attr(,"class")</span></span>
 <span><span class="co">#&gt; [1] "dts"     "integer"</span></span></code></pre></div>
 <p>This provides an alternative to dropping the initial values of the
@@ -308,17 +308,17 @@ we select a model with the AIC criterion:</p>
 <p>The obtained model is relatively complex as shown below:</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/draw.html">draw</a></span><span class="op">(</span><span class="va">CAC_comodel</span>, model <span class="op">=</span> <span class="st">"full"</span>, with_state <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ⏹</span></span>
+<span><span class="co">#&gt; ▪</span></span>
 <span><span class="co">#&gt; ├─ Stay</span></span>
-<span><span class="co">#&gt; │  ├─ Stay (⟬ (Down) ~ Ⓘ     • DAX_1     SMI_1     FTSE_1  ⁞ DAX_2     SMI_2    FTSE_2  </span></span>
+<span><span class="co">#&gt; │  ├─ Stay ([ (Down) ~ (I)   • DAX_1     SMI_1     FTSE_1  ⁞ DAX_2     SMI_2    FTSE_2  </span></span>
 <span><span class="co">#&gt; │  │          Stay   ~ 0.871 • 0.007903  -0.009399 0.01673 ⁞ -0.007771 0.009261 -0.01684</span></span>
-<span><span class="co">#&gt; │  │          Up     ~ 2.838 • -0.005994 -0.01448  0.0299  ⁞ 0.003666  0.0169   -0.03126 ⟭)</span></span>
-<span><span class="co">#&gt; │  └─ Down, Up (⟬ (Down) ~ Ⓘ      • DAX_1     SMI_1     FTSE_1   </span></span>
+<span><span class="co">#&gt; │  │          Up     ~ 2.838 • -0.005994 -0.01448  0.0299  ⁞ 0.003666  0.0169   -0.03126 ])</span></span>
+<span><span class="co">#&gt; │  └─ Down, Up ([ (Down) ~ (I)    • DAX_1     SMI_1     FTSE_1   </span></span>
 <span><span class="co">#&gt; │                 Stay   ~ -1.707 • -0.001755 0.0004276 0.001412 </span></span>
-<span><span class="co">#&gt; │                 Up     ~ -1.397 • -0.001357 0.0006376 0.0008178 ⟭)</span></span>
-<span><span class="co">#&gt; └─ Down, Up (⟬ (Down) ~ Ⓘ      </span></span>
+<span><span class="co">#&gt; │                 Up     ~ -1.397 • -0.001357 0.0006376 0.0008178 ])</span></span>
+<span><span class="co">#&gt; └─ Down, Up ([ (Down) ~ (I)    </span></span>
 <span><span class="co">#&gt;                Stay   ~ 0.347  </span></span>
-<span><span class="co">#&gt;                Up     ~ 0.05716 ⟭)</span></span></code></pre></div>
+<span><span class="co">#&gt;                Up     ~ 0.05716 ])</span></span></code></pre></div>
 <p>The variability of the discrete time series for fixed values of the
 covariates can be investigated using simulated sequences. The only
 difference between <code><a href="../reference/simulate.vlmc.html">simulate.vlmc()</a></code> and
@@ -365,20 +365,20 @@ AIC.</p>
 <code class="sourceCode R"><span><span class="va">elec_covlmc_tune</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tune_covlmc.html">tune_covlmc</a></span><span class="op">(</span><span class="va">elec_dts</span>, <span class="va">elec_cov</span>, criterion <span class="op">=</span> <span class="st">"AIC"</span><span class="op">)</span></span>
 <span><span class="va">best_elec_covlmc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/as_covlmc.html">as_covlmc</a></span><span class="op">(</span><span class="va">elec_covlmc_tune</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/draw.html">draw</a></span><span class="op">(</span><span class="va">best_elec_covlmc</span>, model <span class="op">=</span> <span class="st">"full"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ⏹</span></span>
+<span><span class="co">#&gt; ▪</span></span>
 <span><span class="co">#&gt; ├─ background</span></span>
-<span><span class="co">#&gt; │  ├─ background (⟬ Ⓘ      • day_1TRUE</span></span>
-<span><span class="co">#&gt; │  │                -3.383 • 0.8979    ⟭)</span></span>
-<span><span class="co">#&gt; │  └─ active (⟬ Ⓘ     </span></span>
-<span><span class="co">#&gt; │               -1.526 ⟭)</span></span>
+<span><span class="co">#&gt; │  ├─ background ([ (I)    • day_1TRUE</span></span>
+<span><span class="co">#&gt; │  │                -3.383 • 0.8979    ])</span></span>
+<span><span class="co">#&gt; │  └─ active ([ (I)   </span></span>
+<span><span class="co">#&gt; │               -1.526 ])</span></span>
 <span><span class="co">#&gt; └─ active</span></span>
-<span><span class="co">#&gt;    ├─ background (⟬ Ⓘ     • day_1TRUE</span></span>
-<span><span class="co">#&gt;    │                20.57 • -19.36    ⟭)</span></span>
+<span><span class="co">#&gt;    ├─ background ([ (I)   • day_1TRUE</span></span>
+<span><span class="co">#&gt;    │                20.57 • -19.36    ])</span></span>
 <span><span class="co">#&gt;    └─ active</span></span>
-<span><span class="co">#&gt;       ├─ background (⟬ Ⓘ    </span></span>
-<span><span class="co">#&gt;       │                1.609 ⟭)</span></span>
-<span><span class="co">#&gt;       └─ active (⟬ Ⓘ     • day_1TRUE</span></span>
-<span><span class="co">#&gt;                    2.552 • 0.8602    ⟭)</span></span></code></pre></div>
+<span><span class="co">#&gt;       ├─ background ([ (I)  </span></span>
+<span><span class="co">#&gt;       │                1.609 ])</span></span>
+<span><span class="co">#&gt;       └─ active ([ (I)   • day_1TRUE</span></span>
+<span><span class="co">#&gt;                    2.552 • 0.8602    ])</span></span></code></pre></div>
 <p>Then we can simulate longer or shorter days by manipulating the
 covariates. For instance a “day only” full week could be obtained as
 follows</p>
