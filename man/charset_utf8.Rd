@@ -5,7 +5,7 @@
 \title{UTF-8 character set for context tree text representation}
 \usage{
 charset_utf8(
-  root = "⏹",
+  root = "▪",
   first_node = "├",
   next_node = "├",
   final_node = "└",
@@ -15,12 +15,12 @@ charset_utf8(
   close_ct = ")",
   level_sep = " ~ ",
   time_sep = " ⁞ ",
-  intercept = "Ⓘ",
+  intercept = "(I)",
   intercept_sep = " • ",
   open_p_value = "‹",
   close_p_value = "›",
-  open_model = "⟬",
-  close_model = "⟭"
+  open_model = "[",
+  close_model = "]"
 )
 }
 \arguments{

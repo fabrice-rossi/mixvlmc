@@ -115,7 +115,7 @@ charset_ascii <- function(root = "*",
 #' @export
 #' @examples
 #' charset_utf8(root = "\u27E1")
-charset_utf8 <- function(root = "\u23F9", # ⏹
+charset_utf8 <- function(root = "\u25AA", # ▪
                          first_node = "\u251C", # ├
                          next_node = "\u251C", # ├ ,
                          final_node = "\u2514", # └
@@ -127,12 +127,12 @@ charset_utf8 <- function(root = "\u23F9", # ⏹
                          time_sep = " \u205E ", # ⁞
                          #    time_sep = " \u2022 ", # •
                          #    time_sep = " \u250A ", # ┆
-                         intercept = "\u24BE", # Ⓘ
+                         intercept = "(I)", #
                          intercept_sep = " \u2022 ", # •
                          open_p_value = "\u2039", # ‹
                          close_p_value = "\u203A", # ›
-                         open_model = "\u27EC", # ⟬
-                         close_model = "\u27ED" # ⟭
+                         open_model = "[",
+                         close_model = "]"
 ) {
   list(
     root = root,
