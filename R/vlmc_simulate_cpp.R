@@ -61,5 +61,5 @@ simulate.vlmc_cpp <- function(object, nsim = 1, seed = NULL, init = NULL, burnin
   }
   pre_res <- object$root$simulate(ctx, nsim, burnin, isample)
   pre_res <- object$vals[pre_res + 1]
-  structure(pre_res, "seed" = seed, "class" = c("dts", class(pre_res)))
+  structure(pre_res, "seed" = seed, "class" = c("dts_simulated", class(pre_res)))
 }
