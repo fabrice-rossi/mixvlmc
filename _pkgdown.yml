@@ -25,6 +25,13 @@ articles:
   - articles/implementation
 
 reference:
+- title: Discrete time series
+  desc: Build specialized representation of discrete time series.
+- contents:
+  - dts
+  - is_dts
+  - dts_data
+  - print.dts
 - title: Context trees
   desc: Build context trees and extract information from them.
 - contents:
