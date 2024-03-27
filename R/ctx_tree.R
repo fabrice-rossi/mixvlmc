@@ -215,11 +215,12 @@ print.ctx_tree <- function(x, ...) {
   invisible(x)
 }
 
-#' State space of a context tree
+#' State space of an object
 #'
-#' This function returns the state space of a context tree.
+#' This function returns the state space of an object for which this is
+#' meaningful such as a discrete time series or a context tree.
 #'
-#' @param ct a context tree.
+#' @param x an object with a state space.
 #' @returns the state space of the context tree.
 #'
 #' @export
@@ -228,9 +229,14 @@ print.ctx_tree <- function(x, ...) {
 #' rdts_ctree <- ctx_tree(rdts, min_size = 1, max_depth = 2)
 #' ## should be c(0, 1)
 #' states(rdts_ctree)
-states <- function(ct) {
-  assertthat::assert_that(is_ctx_tree(ct))
-  ct$vals
+states <- function(x) {
+  UseMethod("states")
+}
+
+#' @export
+#' @rdname states
+states.ctx_tree <- function(x) {
+  x$vals
 }
 
 rec_depth <- function(ct) {

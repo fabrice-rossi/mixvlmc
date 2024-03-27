@@ -4,6 +4,7 @@ test_that("dts conversion works", {
   expect_true(is_dts(x_dts))
   expect_equal(length(x_dts), length(x))
   expect_identical(x, dts_data(x_dts))
+  expect_identical(c(0, 1), states(x_dts))
 
   x <- sample(-2:4, 50, replace = TRUE)
   x_dts <- dts(x)
@@ -22,12 +23,14 @@ test_that("dts conversion works", {
   expect_true(is_dts(x_dts))
   expect_equal(length(x_dts), length(x))
   expect_identical(x, dts_data(x_dts))
+  expect_identical(c(FALSE, TRUE), states(x_dts))
 
   x <- sample(as.factor(c("U", "V", "Z")), 500, replace = TRUE)
   x_dts <- dts(x)
   expect_true(is_dts(x_dts))
   expect_equal(length(x_dts), length(x))
   expect_identical(x, dts_data(x_dts))
+  expect_identical(as.factor(c("U", "V", "Z")), states(x_dts))
 })
 
 test_that("dts printing works", {

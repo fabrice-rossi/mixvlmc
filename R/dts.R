@@ -152,3 +152,13 @@ print.dts <- function(x, n = 5, ...) {
   )
   invisible(x)
 }
+
+#' @export
+#' @rdname states
+#' @examples
+#' x_dts <- dts(sample(c("A", "B", "C"), 20, replace = TRUE))
+#' ## should be c("A", "B", "C")
+#' states(x_dts)
+states.dts <- function(x) {
+  x$vals
+}
