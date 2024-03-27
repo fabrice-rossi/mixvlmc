@@ -162,3 +162,17 @@ print.dts <- function(x, n = 5, ...) {
 states.dts <- function(x) {
   x$vals
 }
+
+# if x is a dts, compare its states to vals and stop if they differ
+# if x is not a dts tries to convert it using vals as the state space
+# in case of success return x as a dts
+convert_with_check <- function(x, vals, var_name = "x") {
+  if (is_dts(x)) {
+    assertthat::assert_that(identical(x$vals, vals),
+      msg = stringr::str_c(var_name, " is not compatible with the model state space")
+    )
+  } else {
+    x <- dts(x, vals)
+  }
+  x
+}
