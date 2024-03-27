@@ -176,3 +176,8 @@ convert_with_check <- function(x, vals, var_name = "x") {
   }
   x
 }
+
+#' @export
+rev.dts <- function(x) {
+  new_dts(rev(x$ix), x$vals, rev(x$fx))
+}
