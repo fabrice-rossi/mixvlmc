@@ -17,10 +17,7 @@ predict.vlmc_cpp <- function(object, newdata, type = c("raw", "probs"),
   type <- match.arg(type)
   assertthat::assert_that(rlang::is_logical(final_pred))
   if (!missing(newdata) && !is.null(newdata)) {
-    assertthat::assert_that((typeof(newdata) == typeof(object$vals)) && (class(newdata) == class(object$vals)),
-      msg = "newdata is not compatible with the model state space"
-    )
-    nd_dts <- to_dts(newdata, object$vals)
+    nd_dts <- convert_with_check(newdata, object$vals, "newdata")
   } else {
     stop("newdata must be provided.")
   }

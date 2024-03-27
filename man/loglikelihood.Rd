@@ -33,7 +33,8 @@ loglikelihood(
 \arguments{
 \item{vlmc}{the vlmc representation.}
 
-\item{newdata}{an optional discrete time series.}
+\item{newdata}{an optional object that can be interpreted as a discrete time
+series (for instance a \code{dts} object).}
 
 \item{initial}{specifies the likelihood function, more precisely the way the
 first few observations for which contexts cannot be calculated are integrated
@@ -55,17 +56,19 @@ the log-likelihood of the (CO)VLMC with the following attributes:
 }
 }
 \description{
-This function evaluates the log-likelihood of a VLMC fitted on a discrete time series.
-When the optional argument \code{newdata} is provided, the function evaluates instead the
-log-likelihood for this (new) discrete time series.
+This function evaluates the log-likelihood of a VLMC fitted on a discrete
+time series. When the optional argument \code{newdata} is provided, the function
+evaluates instead the log-likelihood for this (new) discrete time series.
 }
 \details{
 The definition of the likelihood function depends on the value of the
 \code{initial} parameters, see the section below as well as the dedicated
 vignette: \code{vignette("likelihood", package = "mixvlmc")}.
 
-For VLMC objects, the method \code{loglikelihood.vlmc} will be used. For VLMC with covariables, \code{loglikelihood.covlmc}
-will instead be called. For more informations on \code{loglikelihood} methods, use \code{methods(loglikelihood)} and their associated documentation.
+For VLMC objects, the method \code{loglikelihood.vlmc} will be used. For VLMC with
+covariables, \code{loglikelihood.covlmc} will instead be called. For more
+informations on \code{loglikelihood} methods, use \code{methods(loglikelihood)} and
+their associated documentation.
 }
 \section{likelihood calculation}{
 

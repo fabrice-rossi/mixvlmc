@@ -120,3 +120,11 @@ test_that("covlmc handles tibble correctly", {
   model_tb <- covlmc(data_set$x, data_set$covariate, alpha = alpha, min_size = 3)
   expect_true(compare_covlmc(model_df, model_tb))
 })
+
+test_that("covlmc results do not depend on the dts representation", {
+  data_set <- build_data_set(1000, seed = 0)
+  alpha <- 0.1
+  model <- covlmc(data_set$x, data_set$covariate, alpha = alpha, min_size = 3)
+  dts_model <- covlmc(dts(data_set$x), data_set$covariate, alpha = alpha, min_size = 3)
+  expect_true(compare_covlmc(model, dts_model))
+})

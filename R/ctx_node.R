@@ -169,13 +169,10 @@ find_sequence.ctx_tree <- function(ct, ctx, reverse = FALSE, ...) {
     }
     new_ctx_node(ctx, ct, ct, reverse)
   } else {
-    assertthat::assert_that((typeof(ctx) == typeof(ct$vals)) && methods::is(ctx, class(ct$vals)),
-      msg = "ctx is not compatible with the model state space"
-    )
     if (!reverse) {
       ctx <- rev(ctx)
     }
-    nx <- to_dts(ctx, ct$vals)
+    nx <- convert_with_check(ctx, ct$vals, "ctx")
     current <- ct
     for (k in seq_along(ctx)) {
       if (is.null(current$children)) {

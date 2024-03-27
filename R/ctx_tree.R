@@ -112,8 +112,8 @@ grow_ctx_tree <- function(x, vals, min_size, max_depth, covsize = 0L, keep_match
 #' stores the frequencies of the states that follow each context. Optionally,
 #' the positions of the contexts in the time series can be stored in the tree.
 #'
-#' @param x a discrete time series; can be numeric, character, factor or
-#'   logical.
+#' @param x an object that can be interpreted as a discrete time series, such
+#'  as an integer vector or a `dts` object (see [dts()])
 #' @param min_size integer >= 1 (default: 2). Minimum number of observations for
 #'   a context to be included in the tree.
 #' @param max_depth integer >= 1 (default: 100). Maximum length of a context to
@@ -123,6 +123,7 @@ grow_ctx_tree <- function(x, vals, min_size, max_depth, covsize = 0L, keep_match
 #' @param backend "R" or "C++" (default: as specified by the "mixvlmc.backend"
 #'   option). Specifies the implementation used to represent the context tree
 #'   and to built it. See details.
+#' @param ... additional parameters
 #' @section Back ends:
 #'
 #'   Two back ends are available to compute context trees:
@@ -147,24 +148,66 @@ grow_ctx_tree <- function(x, vals, min_size, max_depth, covsize = 0L, keep_match
 #' rdts_ctree <- ctx_tree(rdts, min_size = 1, max_depth = 2)
 #' draw(rdts_ctree)
 ctx_tree <- function(x, min_size = 2L, max_depth = 100L, keep_position = TRUE,
-                     backend = getOption("mixvlmc.backend", "R")) {
+                     backend = getOption("mixvlmc.backend", "R"), ...) {
+  UseMethod("ctx_tree")
+}
+
+#' @export
+#' @param x a numeric, character, factor or logical vector
+#' @inherit ctx_tree
+ctx_tree.default <- function(x, min_size = 2L, max_depth = 100L,
+                             keep_position = TRUE,
+                             backend = getOption("mixvlmc.backend", "R"),
+                             ...) {
+  x_dts <- dts(x)
+  ctx_tree_internal(
+    x_dts$ix, x_dts$vals, min_size, max_depth, keep_position,
+    backend
+  )
+}
+
+#' @export
+#' @param x a discrete time series represented by a `dts` object as created by
+#'   [dts()]
+#' @inherit ctx_tree
+#' @examples
+#' x_dts <- dts(c(0, 1, 1, 1, 0, 0, 1, 0, 1, 0))
+#' ## get all contexts of length 2
+#' ctree <- ctx_tree(x_dts, min_size = 1, max_depth = 2)
+#' draw(ctree)
+ctx_tree.dts <- function(x, min_size = 2L, max_depth = 100L,
+                         keep_position = TRUE,
+                         backend = getOption("mixvlmc.backend", "R"),
+                         ...) {
+  ctx_tree_internal(
+    x$ix, x$vals, min_size, max_depth, keep_position,
+    backend
+  )
+}
+
+ctx_tree_internal <- function(ix,
+                              vals,
+                              min_size,
+                              max_depth,
+                              keep_position,
+                              backend) {
   backend <- match.arg(backend, c("R", "C++"))
-  nx <- to_dts(x)
-  ix <- nx$ix
-  vals <- nx$vals
-  if (length(vals) > max(10, 0.05 * length(x))) {
+  if (length(vals) > max(10, 0.05 * length(ix))) {
     warning(paste0("x as numerous unique values (", length(vals), ")"))
   }
   if (backend == "R") {
-    result <- grow_ctx_tree(ix, vals, min_size = min_size, max_depth = max_depth, keep_match = keep_position, compute_stats = TRUE)
+    result <- grow_ctx_tree(ix, vals,
+      min_size = min_size, max_depth = max_depth,
+      keep_match = keep_position, compute_stats = TRUE
+    )
     if (keep_position) {
       ## handle the case where the root is context
       if (!is_full_node(result)) {
-        result$match <- 0:(length(x) - 1)
+        result$match <- 0:(length(ix) - 1)
       }
     }
   } else {
-    cpp_tree <- build_suffix_tree(rev(ix)[-1], length(nx$vals))
+    cpp_tree <- build_suffix_tree(rev(ix)[-1], length(vals))
     cpp_tree$compute_counts(ix[length(ix)], keep_position)
     cpp_tree$prune(min_size, max_depth)
     result <- new_ctx_tree_cpp(vals, cpp_tree)
@@ -173,9 +216,9 @@ ctx_tree <- function(x, min_size = 2L, max_depth = 100L, keep_position = TRUE,
     result$restoration <- cpp_tree$restoration_info()
   }
   result$keep_match <- keep_position
-  result$data_size <- length(x)
+  result$data_size <- length(ix)
   if (depth(result) > 0) {
-    result$ix <- ix[1:min(depth(result), length(x))]
+    result$ix <- ix[1:min(depth(result), length(ix))]
   }
   result
 }

@@ -60,12 +60,7 @@ predict.covlmc <- function(object, newdata, newcov, type = c("raw", "probs"),
   if (missing(newdata) || is.null(newdata)) {
     stop("newdata must be provided.")
   }
-  assertthat::assert_that(
-    (typeof(newdata) == typeof(object$vals)) &&
-      methods::is(newdata, class(object$vals)),
-    msg = "newdata is not compatible with the model state space"
-  )
-  nx <- to_dts(newdata, object$vals)
+  nx <- convert_with_check(newdata, object$vals, "newdata")
   x <- nx$ix + 1
   if (missing(newcov) || is.null(newcov)) {
     stop("newcov must be provided.")

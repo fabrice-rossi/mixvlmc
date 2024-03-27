@@ -20,8 +20,8 @@
 #' collection, including the initial complex tree, as the one that minimizes the
 #' chosen information criterion.
 #'
-#' @param x a discrete time series; can be numeric, character, factor and
-#'   logical.
+#' @param x an object that can be interpreted as a discrete time series, such
+#'  as an integer vector or a `dts` object (see [dts()]).
 #' @param criterion criterion used to select the best model. Either `"BIC"`
 #'   (default) or `"AIC"` (see details).
 #' @param initial specifies the likelihood function, more precisely the way the
@@ -77,6 +77,10 @@ tune_vlmc <- function(x, criterion = c("BIC", "AIC"),
   initial <- match.arg(initial)
   backend <- match.arg(backend, c("R", "C++"))
   save <- match.arg(save)
+  ## make sure that x is a dts
+  if (!is_dts(x)) {
+    x <- dts(x)
+  }
   if (is.null(alpha_init) && is.null(cutoff_init)) {
     if (criterion == "BIC") {
       cutoff <- 0.25 * log(length(x))
@@ -91,8 +95,7 @@ tune_vlmc <- function(x, criterion = c("BIC", "AIC"),
         stop("the alpha_init parameter must be in (0, 1]")
       }
       ## we need to compute the state model
-      nx <- to_dts(x)
-      cutoff <- to_native(alpha_init, length(nx$vals))
+      cutoff <- to_native(alpha_init, length(states(x)))
     } else {
       ## cutoff takes precedence
       if (!is.numeric(cutoff_init) || cutoff_init < 0) {
@@ -149,7 +152,10 @@ tune_vlmc <- function(x, criterion = c("BIC", "AIC"),
   max_order <- depth(model)
   repeat {
     if (initial == "truncated") {
-      ll <- loglikelihood(model, initial = "truncated", newdata = x, ignore = max_order)
+      ll <- loglikelihood(model,
+        initial = "truncated", newdata = x,
+        ignore = max_order
+      )
     } else {
       ll <- stats::logLik(model, initial = initial)
     }

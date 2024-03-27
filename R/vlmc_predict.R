@@ -57,10 +57,7 @@ predict.vlmc <- function(object, newdata, type = c("raw", "probs"),
   max_depth <- depth(object)
   assertthat::assert_that(rlang::is_logical(final_pred))
   if (!missing(newdata) && !is.null(newdata)) {
-    assertthat::assert_that((typeof(newdata) == typeof(object$vals)) && methods::is(newdata, class(object$vals)),
-      msg = "newdata is not compatible with the model state space"
-    )
-    nd_dts <- to_dts(newdata, object$vals)
+    nd_dts <- convert_with_check(newdata, object$vals, "newdata")
     ctx <- rev(nd_dts$ix) + 1
   } else {
     stop("newdata must be provided.")

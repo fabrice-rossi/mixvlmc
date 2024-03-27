@@ -36,7 +36,8 @@ reference:
 - title: Context trees
   desc: Build context trees and extract information from them.
 - contents:
-  - ctx_tree
+  - ctx_tree.default
+  - ctx_tree.dts
   - context_number
   - contexts
   - contexts.ctx_tree
@@ -68,7 +69,8 @@ reference:
 - title: Variable Length Markov Chain (VLMC)
   desc: Estimate VLMC from a time series and extract information from them.
 - contents:
-  - vlmc
+  - vlmc.default
+  - vlmc.dts
   - context_number
   - contexts.vlmc
   - depth
@@ -82,7 +84,8 @@ reference:
 - title: Variable Length Markov Chain with covariates (COVLMC)
   desc: Estimate COVLMC from a time series and covariates. Extract information from them.
 - contents:
-  - covlmc
+  - covlmc.default
+  - covlmc.dts
   - covlmc_control
   - context_number.covlmc
   - contexts.covlmc
@@ -133,9 +136,13 @@ reference:
 - title: Generics
   desc: Generic S3 methods defined by the package
 - contents:
+  - covlmc
+  - ctx_tree
   - cutoff
   - draw
   - metrics
+  - states
+  - vlmc
 
 news:
  releases:

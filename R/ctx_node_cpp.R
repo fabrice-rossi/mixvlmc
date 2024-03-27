@@ -2,7 +2,7 @@ restore_ctx_node_cpp <- function(node) {
   restore_model(node$tree)
   if (extptr_is_null(node$node_env$node)) {
     if (length(node$sequence) > 0) {
-      nx <- to_dts(node$sequence, node$tree$vals)
+      nx <- dts(node$sequence, node$tree$vals)
       node$node_env$node <- node$tree$root$raw_find_sequence(nx$ix)
     } else {
       node$node_env$node <- node$tree$root$raw_find_sequence(integer())
@@ -64,13 +64,10 @@ find_sequence.ctx_tree_cpp <- function(ct, ctx, reverse = FALSE, ...) {
     root <- ct$root$raw_find_sequence(integer())
     new_ctx_node_cpp(ctx, ct, root, reverse)
   } else {
-    assertthat::assert_that((typeof(ctx) == typeof(ct$vals)) && methods::is(ctx, class(ct$vals)),
-      msg = "ctx is not compatible with the model state space"
-    )
     if (!reverse) {
       ctx <- rev(ctx)
     }
-    nx <- to_dts(ctx, ct$vals)
+    nx <- convert_with_check(ctx, ct$vals, "ctx")
     node <- ct$root$raw_find_sequence(nx$ix)
     if (extptr_is_null(node)) {
       NULL

@@ -21,7 +21,8 @@
 
 \item{seed}{an optional random seed (see the dedicated section).}
 
-\item{init}{an optional initial sequence for the time series.}
+\item{init}{an optional initial sequence for the time series given by an object
+that can be interpreted as a discrete time series.}
 
 \item{burnin}{number of initial observations to discard or \code{"auto"} (see the
 dedicated section).}

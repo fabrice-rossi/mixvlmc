@@ -281,8 +281,8 @@ prune.vlmc <- function(vlmc, alpha = 0.05, cutoff = NULL, ...) {
 #' convenience parameter to avoid setting `alpha=1` (which essentially prevents
 #' any pruning). Automated model selection is provided by [tune_vlmc()].
 #'
-#' @param x a discrete time series; can be numeric, character, factor or
-#'   logical.
+#' @param x an object that can be interpreted as a discrete time series, such
+#'  as an integer vector or a `dts` object (see [dts()])
 #' @param alpha number in (0,1] (default: 0.05) cut off value in quantile scale
 #'   in the pruning phase.
 #' @param cutoff non negative number: cut off value in native (likelihood ratio)
@@ -310,7 +310,7 @@ prune.vlmc <- function(vlmc, alpha = 0.05, cutoff = NULL, ...) {
 #' model <- vlmc(rdts)
 #' draw(model)
 #' depth(model)
-#' ## reduce the detph of the model
+#' ## reduce the depth of the model
 #' shallow_model <- vlmc(rdts, max_depth = 3)
 #' draw(shallow_model, prob = FALSE)
 #' ## improve probability estimates
@@ -324,11 +324,57 @@ prune.vlmc <- function(vlmc, alpha = 0.05, cutoff = NULL, ...) {
 vlmc <- function(x, alpha = 0.05, cutoff = NULL, min_size = 2L, max_depth = 100L,
                  prune = TRUE, keep_match = FALSE,
                  backend = getOption("mixvlmc.backend", "R")) {
+  UseMethod("vlmc")
+}
+
+#' @export
+#' @param x a numeric, character, factor or logical vector
+#' @inherit vlmc
+vlmc.default <- function(x, alpha = 0.05, cutoff = NULL, min_size = 2L, max_depth = 100L,
+                         prune = TRUE, keep_match = FALSE,
+                         backend = getOption("mixvlmc.backend", "R")) {
+  x_dts <- dts(x)
+  vlmc_internal(
+    x_dts$ix, x_dts$vals, alpha, cutoff, min_size, max_depth,
+    prune, keep_match,
+    backend
+  )
+}
+
+#' @export
+#' @param x a discrete time series represented by a `dts` object as created by
+#'   [dts()]
+#' @inherit vlmc
+#' @examples
+#' pc <- powerconsumption[powerconsumption$week == 5, ]
+#' power_dts <- dts(cut(pc$active_power,
+#'   breaks = c(0, quantile(pc$active_power, probs = c(0.25, 0.5, 0.75, 1)))
+#' ))
+#' model <- vlmc(power_dts)
+#' draw(model)
+#' depth(model)
+#' ## reduce the depth of the model
+#' shallow_model <- vlmc(power_dts, max_depth = 3)
+#' draw(shallow_model, prob = FALSE)
+#' ## improve probability estimates
+#' robust_model <- vlmc(power_dts, min_size = 25)
+#' draw(robust_model, prob = FALSE) ## show the frequencies
+#' draw(robust_model)
+vlmc.dts <- function(x, alpha = 0.05, cutoff = NULL, min_size = 2L, max_depth = 100L,
+                     prune = TRUE, keep_match = FALSE,
+                     backend = getOption("mixvlmc.backend", "R")) {
+  vlmc_internal(
+    x$ix, x$vals, alpha, cutoff, min_size, max_depth,
+    prune, keep_match,
+    backend
+  )
+}
+
+
+vlmc_internal <- function(ix, vals, alpha, cutoff, min_size, max_depth,
+                          prune, keep_match,
+                          backend) {
   backend <- match.arg(backend, c("R", "C++"))
-  # data conversion
-  nx <- to_dts(x)
-  ix <- nx$ix
-  vals <- nx$vals
   if (is.null(cutoff)) {
     if (is.null(alpha) || !is.numeric(alpha) || alpha <= 0 || alpha > 1) {
       stop("the alpha parameter must be in (0, 1]")
@@ -341,11 +387,15 @@ vlmc <- function(x, alpha = 0.05, cutoff = NULL, min_size = 2L, max_depth = 100L
     }
     alpha <- to_quantile(cutoff, length(vals))
   }
-  if (length(vals) > max(10, 0.05 * length(x))) {
+  if (length(vals) > max(10, 0.05 * length(ix))) {
     warning(paste0("x as numerous unique values (", length(vals), ")"))
   }
   if (backend == "R") {
-    ctx_tree <- grow_ctx_tree(ix, vals, min_size = min_size, max_depth = max_depth, compute_stats = !prune, keep_match = keep_match)
+    ctx_tree <- grow_ctx_tree(ix, vals,
+      min_size = min_size,
+      max_depth = max_depth, compute_stats = !prune,
+      keep_match = keep_match
+    )
     result <- ctx_tree
     if (prune) {
       result <- prune_ctx_tree(ctx_tree, alpha = alpha, cutoff = cutoff)
@@ -353,7 +403,7 @@ vlmc <- function(x, alpha = 0.05, cutoff = NULL, min_size = 2L, max_depth = 100L
       result <- new_ctx_tree(result$vals, result, class = "vlmc")
     }
   } else {
-    cpp_tree <- build_suffix_tree(rev(ix)[-1], length(nx$vals))
+    cpp_tree <- build_suffix_tree(rev(ix)[-1], length(vals))
     cpp_tree$compute_counts(ix[length(ix)], keep_match)
     if (prune) {
       cpp_tree$prune_context(min_size, max_depth, cutoff)
@@ -371,7 +421,7 @@ vlmc <- function(x, alpha = 0.05, cutoff = NULL, min_size = 2L, max_depth = 100L
   result$alpha <- alpha
   result$cutoff <- cutoff
   if (depth(result) > 0) {
-    result$ix <- ix[1:min(depth(result), length(x))]
+    result$ix <- ix[1:min(depth(result), length(ix))]
     if (backend == "R") {
       ivlmc <- match_ctx(result, result$ix)
       result$extended_ll <- rec_loglikelihood_vlmc(ivlmc, TRUE)
@@ -382,11 +432,11 @@ vlmc <- function(x, alpha = 0.05, cutoff = NULL, min_size = 2L, max_depth = 100L
     result$extended_ll <- 0
   }
   result$keep_match <- keep_match
-  result$data_size <- length(x)
+  result$data_size <- length(ix)
   if (backend == "R" && keep_match) {
     ## handle the case where the root is context
     if (!is_full_node(result)) {
-      result$match <- 0:(length(x) - 1)
+      result$match <- 0:(length(ix) - 1)
     }
   }
   result$pruned <- prune

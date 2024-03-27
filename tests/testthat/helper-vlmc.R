@@ -48,7 +48,11 @@ slow_loglikelihood <- function(model, x, initial = c("truncated", "specific", "e
     stop("Must ignore at least ", depth(model), " for truncated likelihood")
   }
   assertthat::assert_that(length(x) >= 1)
-  nx <- to_dts(x, model$vals)$ix + 1
+  if (is_dts(x)) {
+    nx <- x$ix + 1
+  } else {
+    nx <- dts(x, vals = model$vals)$ix + 1
+  }
   ctx <- c()
   max_depth <- depth(model)
   if (max_depth == 0) {

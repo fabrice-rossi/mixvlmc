@@ -61,7 +61,10 @@ test_that("covlmc simulates uses correctly the initial values", {
 test_that("covlmc simulate detects unadapted init values", {
   data_set <- build_data_set(500, seed = 0)
   model <- covlmc(data_set$x, data_set$covariate, alpha = 0.2)
-  expect_error(simulate(model, 100, covariate = data_set$covariate[1:250, , drop = FALSE], init = c(0L, 1L)))
+  expect_error(simulate(model, 100,
+    covariate = data_set$covariate[1:250, , drop = FALSE],
+    init = c(0L, 2L)
+  ))
   withr::local_seed(0)
   x <- sample(c("A", "B", "C"), 500, replace = TRUE)
   y <- ifelse(runif(length(x)) > 0.5, c(x[-1], sample(c("A", "B", "C"), 1)), c(x[-c(1, 2)], sample(c("A", "B", "C"), 2, replace = TRUE)))

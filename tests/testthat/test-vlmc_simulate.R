@@ -39,7 +39,7 @@ test_that("vlmc simulate detects unadapted init values", {
     data_set <- build_markov_chain(1000, k, seed = k)
     x_vlmc <- vlmc(data_set$x, alpha = 0.01)
     expect_error(simulate(x_vlmc, nsim = 10, init = sample(x_vlmc$vals, 11, replace = TRUE)))
-    expect_error(simulate(x_vlmc, nsim = 10, init = c(1.0, 2.0)))
+    expect_error(simulate(x_vlmc, nsim = 10, init = c(1.0, 2.0, 5.0)))
   }
   rdts <- sample(c("A", "B", "C"), 100, replace = TRUE)
   model <- vlmc(rdts, alpha = 0.5)

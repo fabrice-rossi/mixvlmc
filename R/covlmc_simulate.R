@@ -42,7 +42,8 @@ match_context_co <- function(tree, ctx) {
 #' @param nsim length of the simulated time series (defaults to 1).
 #' @param seed an optional random seed (see the dedicated section).
 #' @param covariate values of the covariates.
-#' @param init an optional initial sequence for the time series.
+#' @param init an optional initial sequence for the time series given by an object
+#'  that can be interpreted as a discrete time series.
 #' @param ... additional arguments.
 #'
 #' @section Extended contexts:
@@ -90,11 +91,8 @@ simulate.covlmc <- function(object, nsim = 1, seed = NULL, covariate, init = NUL
   }
   int_vals <- seq_along(object$vals)
   if (!is.null(init)) {
-    assertthat::assert_that((typeof(init) == typeof(object$vals)) && methods::is(init, class(object$vals)),
-      msg = "init is not compatible with the model state space"
-    )
     assertthat::assert_that(length(init) <= nsim, msg = "too many initial values")
-    init_dts <- to_dts(init, object$vals)
+    init_dts <- convert_with_check(init, object$vals, "init")
     ctx <- rev(init_dts$ix)[1:(min(max_depth, length(init)))] + 1
     istart <- 1 + length(init)
   } else {

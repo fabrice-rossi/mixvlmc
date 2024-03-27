@@ -21,8 +21,8 @@
 #' collection, including the initial complex tree, as the one that minimizes the
 #' chosen information criterion.
 #'
-#' @param x a discrete time series; can be numeric, character, factor and
-#'   logical.
+#' @param x an object that can be interpreted as a discrete time series, such
+#'  as an integer vector or a `dts` object (see [dts()]).
 #' @param covariate a data frame of covariates.
 #' @param criterion criterion used to select the best model. Either `"BIC"`
 #'   (default) or `"AIC"` (see details).
@@ -102,6 +102,10 @@ tune_covlmc <- function(x, covariate, criterion = c("BIC", "AIC"),
   save <- match.arg(save)
   criterion <- match.arg(criterion)
   trimming <- match.arg(trimming)
+  ## make sure that x is a dts
+  if (!is_dts(x)) {
+    x <- dts(x)
+  }
   if (criterion == "BIC") {
     f_criterion <- stats::BIC
   } else {
@@ -119,7 +123,10 @@ tune_covlmc <- function(x, covariate, criterion = c("BIC", "AIC"),
     cat("Fitting a covlmc with max_depth=", max_depth, "and alpha=", alpha, "\n")
   }
   saved_models <- list()
-  base_model <- covlmc(x, covariate, alpha = alpha, min_size = min_size, max_depth = max_depth)
+  base_model <- covlmc(x, covariate,
+    alpha = alpha, min_size = min_size,
+    max_depth = max_depth
+  )
   while (base_model$max_depth) {
     n_max_depth <- min(2 * max_depth, length(x) - 1)
     if (n_max_depth > max_depth) {
@@ -127,7 +134,10 @@ tune_covlmc <- function(x, covariate, criterion = c("BIC", "AIC"),
         cat("Max depth reached, increasing it to", n_max_depth, "\n")
       }
       max_depth <- n_max_depth
-      base_model <- covlmc(x, covariate, alpha = alpha, min_size = min_size, max_depth = max_depth)
+      base_model <- covlmc(x, covariate,
+        alpha = alpha, min_size = min_size,
+        max_depth = max_depth
+      )
     } else {
       warning("cannot find a suitable value for max_depth")
       break
@@ -146,7 +156,7 @@ tune_covlmc <- function(x, covariate, criterion = c("BIC", "AIC"),
   repeat {
     if (initial == "truncated") {
       ll <- loglikelihood(model,
-        newdata = x, initial = "truncated",
+        newdata = dts_data(x), initial = "truncated",
         ignore = max_order, newcov = covariate
       )
     } else {

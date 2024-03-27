@@ -58,7 +58,8 @@
 #' @param object a fitted vlmc object.
 #' @param nsim length of the simulated time series (defaults to 1).
 #' @param seed an optional random seed (see the dedicated section).
-#' @param init an optional initial sequence for the time series.
+#' @param init an optional initial sequence for the time series given by an object
+#'  that can be interpreted as a discrete time series.
 #' @param burnin number of initial observations to discard or `"auto"` (see the
 #'   dedicated section).
 #' @param ... additional arguments.
@@ -101,11 +102,8 @@ simulate.vlmc <- function(object, nsim = 1L, seed = NULL, init = NULL, burnin = 
     }
   }
   if (!is.null(init)) {
-    assertthat::assert_that((typeof(init) == typeof(object$vals)) && methods::is(init, class(object$vals)),
-      msg = "init is not compatible with the model state space"
-    )
     assertthat::assert_that(length(init) <= nsim + burnin, msg = "too many initial values")
-    init_dts <- to_dts(init, object$vals)
+    init_dts <- convert_with_check(init, object$vals, "init")
     ctx <- rev(init_dts$ix)[1:(min(max_depth, length(init)))] + 1L
   } else {
     ctx <- c()

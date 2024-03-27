@@ -15,7 +15,8 @@
 
 \item{covariate}{values of the covariates.}
 
-\item{init}{an optional initial sequence for the time series.}
+\item{init}{an optional initial sequence for the time series given by an object
+that can be interpreted as a discrete time series.}
 
 \item{...}{additional arguments.}
 }

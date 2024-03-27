@@ -200,7 +200,8 @@ logLik.covlmc <- function(object, initial = c("truncated", "specific", "extended
 #' attributes(ll_new)
 #'
 #' @export
-loglikelihood.covlmc <- function(vlmc, newdata, initial = c("truncated", "specific", "extended"),
+loglikelihood.covlmc <- function(vlmc, newdata,
+                                 initial = c("truncated", "specific", "extended"),
                                  ignore, newcov, ...) {
   initial <- match.arg(initial)
   if (missing(ignore)) {
@@ -243,9 +244,7 @@ loglikelihood.covlmc <- function(vlmc, newdata, initial = c("truncated", "specif
     if (isTRUE(vlmc$trimmed == "full")) {
       stop("loglikelihood calculation for new data is not supported by fully trimmed covlmc")
     }
-    assertthat::assert_that((typeof(newdata) == typeof(vlmc$vals)) && methods::is(newdata, class(vlmc$vals)),
-      msg = "newdata is not compatible with the model state space"
-    )
+    newdata <- convert_with_check(newdata, vlmc$vals, "newdata")
     assertthat::assert_that(!missing(newcov),
       msg = "Need new covariate values (newcov) with new data (newdata)"
     )
@@ -256,23 +255,22 @@ loglikelihood.covlmc <- function(vlmc, newdata, initial = c("truncated", "specif
     assertthat::assert_that(nrow(newcov) == length(newdata))
     data_size <- length(newdata)
     newcov <- validate_covariate(vlmc, newcov)
-    nx <- to_dts(newdata, vlmc$vals)
-    ncovlmc <- match_ctx(vlmc, nx$ix, keep_match = TRUE)
+    ncovlmc <- match_ctx(vlmc, newdata$ix, keep_match = TRUE)
     if (length(vlmc$vals) > 2) {
-      newdata <- nx$fx
+      nx <- newdata$fx
     } else {
-      newdata <- nx$ix
+      nx <- newdata$ix
     }
     ignore_counts <- ignore
     if (initial == "specific" && ignore < depth(vlmc)) {
       ignore <- depth(vlmc)
     }
-    res <- rec_loglikelihood_covlmc_newdata(ncovlmc, 0, length(vlmc$vals), newdata, newcov)
+    res <- rec_loglikelihood_covlmc_newdata(ncovlmc, 0, length(vlmc$vals), nx, newcov)
     if (ignore > 0) {
-      icovlmc <- match_ctx(vlmc, nx$ix[1:min(ignore, length(newdata))], keep_match = TRUE)
+      icovlmc <- match_ctx(vlmc, newdata$ix[1:min(ignore, length(newdata))], keep_match = TRUE)
       delta_res <- rec_loglikelihood_covlmc_newdata(
         icovlmc, 0, length(vlmc$vals),
-        newdata[1:min(ignore, length(newdata))],
+        nx[1:min(ignore, length(newdata))],
         newcov[1:min(ignore, length(newdata)), , drop = FALSE]
       )
       res <- res - delta_res

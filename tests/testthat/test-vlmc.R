@@ -75,3 +75,16 @@ test_that("vlmc returns an object with all the needed internal fields", {
     "keep_match", "data_size", "pruned"
   ), ignore.order = TRUE)
 })
+
+test_that("vlmc results do not depend on the time series representation", {
+  data_set <- build_markov_chain(500, 2, seed = 6)
+  model <- vlmc(data_set$x,
+    cutoff = 0.1 * log(length(data_set$x)),
+    max_depth = 4, prune = FALSE
+  )
+  dts_model <- vlmc(dts(data_set$x),
+    cutoff = 0.1 * log(length(data_set$x)),
+    max_depth = 4, prune = FALSE
+  )
+  expect_identical(model, dts_model)
+})

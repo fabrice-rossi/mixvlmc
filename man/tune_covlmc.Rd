@@ -19,8 +19,8 @@ tune_covlmc(
 )
 }
 \arguments{
-\item{x}{a discrete time series; can be numeric, character, factor and
-logical.}
+\item{x}{an object that can be interpreted as a discrete time series, such
+as an integer vector or a \code{dts} object (see \code{\link[=dts]{dts()}}).}
 
 \item{covariate}{a data frame of covariates.}
 

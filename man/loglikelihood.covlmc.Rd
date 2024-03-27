@@ -16,7 +16,8 @@
 \arguments{
 \item{vlmc}{the covlmc representation.}
 
-\item{newdata}{an optional discrete time series.}
+\item{newdata}{an optional object that can be interpreted as a discrete time
+series (for instance a \code{dts} object).}
 
 \item{initial}{specifies the likelihood function, more precisely the way the
 first few observations for which contexts cannot be calculated are integrated

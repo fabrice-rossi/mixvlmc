@@ -37,3 +37,13 @@ test_that("printing", {
   rdts_ctree <- ctx_tree(rdts, min_size = 1, max_depth = 2)
   expect_snapshot_output(print(rdts_ctree))
 })
+
+
+test_that("results do not depend on the use of dts", {
+  withr::local_seed(42)
+  rdts <- sample(sample(letters, 4), 100, replace = TRUE)
+  xdts <- dts(rdts)
+  rtree <- ctx_tree(rdts)
+  xtree <- ctx_tree(xdts)
+  expect_identical(rtree, xtree)
+})

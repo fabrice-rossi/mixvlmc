@@ -12,6 +12,20 @@ test_that("loglikelihood computes the expected values", {
   }
 })
 
+test_that("loglikelihood computes the expected values from a dts", {
+  withr::local_seed(0)
+  for (k in 1:9) {
+    x <- dts(sample(0:k, 1000 + 100 * k, replace = TRUE))
+    x_tree <- vlmc(x, alpha = 0.1)
+    for (initial in c("truncated", "specific", "extended")) {
+      fll <- loglikelihood(x_tree, newdata = x, initial = initial)
+      sll <- slow_loglikelihood(x_tree, x, initial = initial)
+      expect_equal(as.numeric(fll), as.numeric(sll))
+      expect_equal(attr(fll, "nobs"), attr(sll, "nobs"))
+    }
+  }
+})
+
 test_that("the loglikelihood output format is valid", {
   x <- sample(c("A", "B", "C"), 1000, replace = TRUE)
   x_tree <- vlmc(x, alpha = 0.05)

@@ -580,7 +580,8 @@ covlmc_control <- function(pseudo_obs = 1) {
 #' This function fits a  Variable Length Markov Chain with covariates (coVLMC)
 #' to a discrete time series coupled with a time series of covariates.
 #'
-#' @param x a discrete time series; can be numeric, character, factor or logical.
+#' @param x an object that can be interpreted as a discrete time series, such
+#'  as an integer vector or a `dts` object (see [dts()])
 #' @param covariate a data frame of covariates.
 #' @param alpha number in (0,1) (default: 0.05) cut off value in the pruning
 #'   phase (in quantile scale).
@@ -645,7 +646,9 @@ covlmc_control <- function(pseudo_obs = 1) {
 #' @export
 #' @examples
 #' pc <- powerconsumption[powerconsumption$week == 5, ]
-#' rdts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(1 / 3, 2 / 3, 1))))
+#' rdts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power,
+#'   probs = c(1 / 3, 2 / 3, 1)
+#' )))
 #' rdts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
 #' m_cov <- covlmc(rdts, rdts_cov, min_size = 15)
 #' draw(m_cov)
@@ -655,17 +658,52 @@ covlmc_control <- function(pseudo_obs = 1) {
 #' )
 #' draw(m_cov_nnet)
 #' @seealso [cutoff.covlmc()] and [prune.covlmc()] for post-pruning.
-covlmc <- function(x, covariate, alpha = 0.05, min_size = 5L, max_depth = 100L, keep_data = TRUE, control = covlmc_control(...), ...) {
+covlmc <- function(x, covariate, alpha = 0.05, min_size = 5L, max_depth = 100L,
+                   keep_data = TRUE, control = covlmc_control(...), ...) {
+  UseMethod("covlmc")
+}
+
+#' @export
+#' @export
+#' @param x a numeric, character, factor or logical vector
+#' @inherit covlmc
+covlmc.default <- function(x, covariate, alpha = 0.05, min_size = 5L, max_depth = 100L,
+                           keep_data = TRUE, control = covlmc_control(...), ...) {
+  x_dts <- dts(x)
+  covlmc_internal(
+    x_dts$ix, x_dts$fx, x_dts$vals, covariate, alpha, min_size, max_depth,
+    keep_data, control
+  )
+}
+
+#' @export
+#' @param x a discrete time series represented by a `dts` object as created by
+#'   [dts()]
+#' @inherit covlmc
+#' @examples
+#' pc <- powerconsumption[powerconsumption$week == 5, ]
+#' power_dts <- dts(cut(pc$active_power, breaks = c(0, quantile(pc$active_power,
+#'   probs = c(1 / 3, 2 / 3, 1)
+#' ))))
+#' power_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
+#' m_cov <- covlmc(power_dts, power_cov, min_size = 15)
+#' draw(m_cov)
+covlmc.dts <- function(x, covariate, alpha = 0.05, min_size = 5L, max_depth = 100L,
+                       keep_data = TRUE, control = covlmc_control(...), ...) {
+  covlmc_internal(
+    x$ix, x$fx, x$vals, covariate, alpha, min_size, max_depth,
+    keep_data, control
+  )
+}
+
+covlmc_internal <- function(ix, fx, vals, covariate, alpha, min_size, max_depth,
+                            keep_data, control) {
   assertthat::assert_that(is.data.frame(covariate))
-  assertthat::assert_that(nrow(covariate) == length(x))
+  assertthat::assert_that(nrow(covariate) == length(ix))
   if (is.null(alpha) || !is.numeric(alpha) || alpha <= 0 || alpha > 1) {
     stop("the alpha parameter must be in (0, 1]")
   }
-  # data conversion
-  nx <- to_dts(x)
-  ix <- nx$ix
-  vals <- nx$vals
-  if (length(vals) > max(10, 0.05 * length(x))) {
+  if (length(vals) > max(10, 0.05 * length(ix))) {
     warning(paste0("x as numerous unique values (", length(vals), ")"))
   }
   ## covariate preparation
@@ -681,7 +719,7 @@ covlmc <- function(x, covariate, alpha = 0.05, min_size = 5L, max_depth = 100L, 
     covsize = desc$cov_size, keep_match = TRUE, all_children = TRUE
   )
   if (length(vals) > 2) {
-    x <- nx$fx
+    x <- fx
   } else {
     x <- ix
   }

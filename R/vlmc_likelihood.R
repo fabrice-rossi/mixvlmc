@@ -95,16 +95,18 @@ logLik.vlmc <- function(object, initial = c("truncated", "specific", "extended")
 
 #' Log-Likelihood of a VLMC
 #'
-#' This function evaluates the log-likelihood of a VLMC fitted on a discrete time series.
-#' When the optional argument `newdata` is provided, the function evaluates instead the
-#' log-likelihood for this (new) discrete time series.
+#' This function evaluates the log-likelihood of a VLMC fitted on a discrete
+#' time series. When the optional argument `newdata` is provided, the function
+#' evaluates instead the log-likelihood for this (new) discrete time series.
 #'
 #' The definition of the likelihood function depends on the value of the
 #' `initial` parameters, see the section below as well as the dedicated
 #' vignette: `vignette("likelihood", package = "mixvlmc")`.
 #'
-#' For VLMC objects, the method `loglikelihood.vlmc` will be used. For VLMC with covariables, `loglikelihood.covlmc`
-#' will instead be called. For more informations on `loglikelihood` methods, use `methods(loglikelihood)` and their associated documentation.
+#' For VLMC objects, the method `loglikelihood.vlmc` will be used. For VLMC with
+#' covariables, `loglikelihood.covlmc` will instead be called. For more
+#' informations on `loglikelihood` methods, use `methods(loglikelihood)` and
+#' their associated documentation.
 #'
 #' @section likelihood calculation:
 #'
@@ -139,7 +141,8 @@ logLik.vlmc <- function(object, initial = c("truncated", "specific", "extended")
 #' `vignette("likelihood", package = "mixvlmc")`.
 #'
 #' @param vlmc the vlmc representation.
-#' @param newdata an optional discrete time series.
+#' @param newdata an optional object that can be interpreted as a discrete time
+#'  series (for instance a `dts` object).
 #' @param initial specifies the likelihood function, more precisely the way the
 #'   first few observations for which contexts cannot be calculated are integrated
 #'   in the likelihood. Defaults to `"truncated"`. See below for details.
@@ -185,13 +188,17 @@ logLik.vlmc <- function(object, initial = c("truncated", "specific", "extended")
 #' attributes(ll_new_extended)
 #'
 #' @export
-loglikelihood <- function(vlmc, newdata, initial = c("truncated", "specific", "extended"), ignore, ...) {
+loglikelihood <- function(vlmc, newdata,
+                          initial = c("truncated", "specific", "extended"),
+                          ignore, ...) {
   UseMethod("loglikelihood")
 }
 
 #' @rdname loglikelihood
 #' @export
-loglikelihood.vlmc <- function(vlmc, newdata, initial = c("truncated", "specific", "extended"), ignore, ...) {
+loglikelihood.vlmc <- function(vlmc, newdata,
+                               initial = c("truncated", "specific", "extended"),
+                               ignore, ...) {
   initial <- match.arg(initial)
   if (missing(ignore)) {
     if (initial == "truncated") {
@@ -224,21 +231,18 @@ loglikelihood.vlmc <- function(vlmc, newdata, initial = c("truncated", "specific
     }
     attr(pre_res, "nobs") <- max(0, vlmc$data_size - ignore)
   } else {
-    assertthat::assert_that((typeof(newdata) == typeof(vlmc$vals)) && methods::is(newdata, class(vlmc$vals)),
-      msg = "newdata is not compatible with the model state space"
-    )
+    newdata <- convert_with_check(newdata, vlmc$vals, "newdata")
     if (ignore >= length(newdata)) {
       stop("Cannot ignore more data than the available ones")
     }
-    nx <- to_dts(newdata, vlmc$vals)
-    nvlmc <- match_ctx(vlmc, nx$ix)
+    nvlmc <- match_ctx(vlmc, newdata$ix)
     pre_res <- rec_loglikelihood_vlmc(nvlmc, TRUE)
     ignore_counts <- ignore
     if (initial == "specific" && ignore < depth(vlmc)) {
       ignore <- depth(vlmc)
     }
     if (ignore > 0) {
-      ivlmc <- match_ctx(vlmc, nx$ix[1:min(ignore, length(newdata))])
+      ivlmc <- match_ctx(vlmc, newdata$ix[1:min(ignore, length(newdata))])
       delta_res <- rec_loglikelihood_vlmc(ivlmc, TRUE)
       pre_res <- pre_res - delta_res
     }
