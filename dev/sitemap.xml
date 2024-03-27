@@ -91,10 +91,22 @@
     <loc>https://fabrice-rossi.github.io/mixvlmc/dev/reference/covariate_memory.html</loc>
   </url>
   <url>
+    <loc>https://fabrice-rossi.github.io/mixvlmc/dev/reference/covlmc.default.html</loc>
+  </url>
+  <url>
+    <loc>https://fabrice-rossi.github.io/mixvlmc/dev/reference/covlmc.dts.html</loc>
+  </url>
+  <url>
     <loc>https://fabrice-rossi.github.io/mixvlmc/dev/reference/covlmc.html</loc>
   </url>
   <url>
     <loc>https://fabrice-rossi.github.io/mixvlmc/dev/reference/covlmc_control.html</loc>
+  </url>
+  <url>
+    <loc>https://fabrice-rossi.github.io/mixvlmc/dev/reference/ctx_tree.default.html</loc>
+  </url>
+  <url>
+    <loc>https://fabrice-rossi.github.io/mixvlmc/dev/reference/ctx_tree.dts.html</loc>
   </url>
   <url>
     <loc>https://fabrice-rossi.github.io/mixvlmc/dev/reference/ctx_tree.html</loc>
@@ -130,6 +142,12 @@
     <loc>https://fabrice-rossi.github.io/mixvlmc/dev/reference/draw_control.html</loc>
   </url>
   <url>
+    <loc>https://fabrice-rossi.github.io/mixvlmc/dev/reference/dts.html</loc>
+  </url>
+  <url>
+    <loc>https://fabrice-rossi.github.io/mixvlmc/dev/reference/dts_data.html</loc>
+  </url>
+  <url>
     <loc>https://fabrice-rossi.github.io/mixvlmc/dev/reference/find_sequence.covlmc.html</loc>
   </url>
   <url>
@@ -149,6 +167,9 @@
   </url>
   <url>
     <loc>https://fabrice-rossi.github.io/mixvlmc/dev/reference/is_ctx_tree.html</loc>
+  </url>
+  <url>
+    <loc>https://fabrice-rossi.github.io/mixvlmc/dev/reference/is_dts.html</loc>
   </url>
   <url>
     <loc>https://fabrice-rossi.github.io/mixvlmc/dev/reference/is_merged.html</loc>
@@ -217,6 +238,9 @@
     <loc>https://fabrice-rossi.github.io/mixvlmc/dev/reference/print.contexts.html</loc>
   </url>
   <url>
+    <loc>https://fabrice-rossi.github.io/mixvlmc/dev/reference/print.dts.html</loc>
+  </url>
+  <url>
     <loc>https://fabrice-rossi.github.io/mixvlmc/dev/reference/prune.covlmc.html</loc>
   </url>
   <url>
@@ -254,6 +278,12 @@
   </url>
   <url>
     <loc>https://fabrice-rossi.github.io/mixvlmc/dev/reference/tune_vlmc.html</loc>
+  </url>
+  <url>
+    <loc>https://fabrice-rossi.github.io/mixvlmc/dev/reference/vlmc.default.html</loc>
+  </url>
+  <url>
+    <loc>https://fabrice-rossi.github.io/mixvlmc/dev/reference/vlmc.dts.html</loc>
   </url>
   <url>
     <loc>https://fabrice-rossi.github.io/mixvlmc/dev/reference/vlmc.html</loc>

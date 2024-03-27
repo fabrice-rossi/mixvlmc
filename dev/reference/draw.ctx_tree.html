@@ -148,85 +148,83 @@ special characters in the names of the states of the context tree.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">dts_c</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A"</span>, <span class="st">"B"</span>, <span class="st">"CD"</span><span class="op">)</span>, <span class="fl">100</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">ctree_c</span> <span class="op">&lt;-</span> <span class="fu"><a href="ctx_tree.html">ctx_tree</a></span><span class="op">(</span><span class="va">dts_c</span>, min_size <span class="op">=</span> <span class="fl">10</span>, max_depth <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">rdts_c</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A"</span>, <span class="st">"B"</span>, <span class="st">"CD"</span><span class="op">)</span>, <span class="fl">100</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">ctree_c</span> <span class="op">&lt;-</span> <span class="fu"><a href="ctx_tree.html">ctx_tree</a></span><span class="op">(</span><span class="va">rdts_c</span>, min_size <span class="op">=</span> <span class="fl">10</span>, max_depth <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="draw.html">draw</a></span><span class="op">(</span><span class="va">ctree_c</span>, frequency <span class="op">=</span> <span class="st">"total"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ▪ (100)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ├─ A (28)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> │  └─ B (12)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ├─ B (37)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> │  ├─ A (11)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> │  ├─ B (10)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> │  └─ CD (15)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> └─ CD (34)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    ├─ B (15)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    └─ CD (10)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ├─ A (38)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> │  ├─ A (17)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> │  └─ B (14)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ├─ B (29)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> │  └─ CD (13)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> └─ CD (32)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    ├─ A (12)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    └─ CD (12)</span>
 <span class="r-in"><span><span class="fu"><a href="draw.html">draw</a></span><span class="op">(</span><span class="va">ctree_c</span>, frequency <span class="op">=</span> <span class="st">"detailed"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ▪ (28,38,34)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ├─ A (7,12,9)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> │  └─ B (3,5,4)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ├─ B (12,10,15)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> │  ├─ A (2,4,5)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> │  ├─ B (5,2,3)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> │  └─ CD (5,4,6)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> └─ CD (9,15,10)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    ├─ B (5,6,4)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    └─ CD (2,5,3)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ▪ (39,29,32)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ├─ A (17,9,12)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> │  ├─ A (7,4,6)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> │  └─ B (6,4,4)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ├─ B (14,7,8)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> │  └─ CD (6,4,3)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> └─ CD (7,13,12)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    ├─ A (2,6,4)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    └─ CD (4,4,4)</span>
 <span class="r-in"><span><span class="co">## LaTeX output</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="draw.html">draw</a></span><span class="op">(</span><span class="va">ctree_c</span>, <span class="st">"latex"</span>, frequency <span class="op">=</span> <span class="st">"detailed"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> \begin{forest}</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [\multicolumn{3}{c}{\textbf{$\epsilon$}}\\\hline</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> {\small 28}&amp;{\small 38}&amp;{\small 34}, align=ccc</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> {\small 39}&amp;{\small 29}&amp;{\small 32}, align=ccc</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [\multicolumn{3}{c}{\textbf{A}}\\\hline</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> {\small 7}&amp;{\small 12}&amp;{\small 9}, align=ccc</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> {\small 17}&amp;{\small 9}&amp;{\small 12}, align=ccc</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [\multicolumn{3}{c}{\textbf{A}}\\\hline</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> {\small 7}&amp;{\small 4}&amp;{\small 6}, align=ccc]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [\multicolumn{3}{c}{\textbf{B}}\\\hline</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> {\small 3}&amp;{\small 5}&amp;{\small 4}, align=ccc]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> {\small 6}&amp;{\small 4}&amp;{\small 4}, align=ccc]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [\multicolumn{3}{c}{\textbf{B}}\\\hline</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> {\small 12}&amp;{\small 10}&amp;{\small 15}, align=ccc</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [\multicolumn{3}{c}{\textbf{A}}\\\hline</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> {\small 2}&amp;{\small 4}&amp;{\small 5}, align=ccc]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [\multicolumn{3}{c}{\textbf{B}}\\\hline</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> {\small 5}&amp;{\small 2}&amp;{\small 3}, align=ccc]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> {\small 14}&amp;{\small 7}&amp;{\small 8}, align=ccc</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [\multicolumn{3}{c}{\textbf{CD}}\\\hline</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> {\small 5}&amp;{\small 4}&amp;{\small 6}, align=ccc]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> {\small 6}&amp;{\small 4}&amp;{\small 3}, align=ccc]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [\multicolumn{3}{c}{\textbf{CD}}\\\hline</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> {\small 9}&amp;{\small 15}&amp;{\small 10}, align=ccc</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [\multicolumn{3}{c}{\textbf{B}}\\\hline</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> {\small 5}&amp;{\small 6}&amp;{\small 4}, align=ccc]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> {\small 7}&amp;{\small 13}&amp;{\small 12}, align=ccc</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [\multicolumn{3}{c}{\textbf{A}}\\\hline</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> {\small 2}&amp;{\small 6}&amp;{\small 4}, align=ccc]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [\multicolumn{3}{c}{\textbf{CD}}\\\hline</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> {\small 2}&amp;{\small 5}&amp;{\small 3}, align=ccc]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> {\small 4}&amp;{\small 4}&amp;{\small 4}, align=ccc]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> \end{forest}</span>
-<span class="r-in"><span><span class="va">dts_c</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A$"</span>, <span class="st">"_{B"</span>, <span class="st">"{C}_{D}"</span><span class="op">)</span>, <span class="fl">100</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">ctree_c</span> <span class="op">&lt;-</span> <span class="fu"><a href="ctx_tree.html">ctx_tree</a></span><span class="op">(</span><span class="va">dts_c</span>, min_size <span class="op">=</span> <span class="fl">10</span>, max_depth <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">rdts_c</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A$"</span>, <span class="st">"_{B"</span>, <span class="st">"{C}_{D}"</span><span class="op">)</span>, <span class="fl">100</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">ctree_c</span> <span class="op">&lt;-</span> <span class="fu"><a href="ctx_tree.html">ctx_tree</a></span><span class="op">(</span><span class="va">rdts_c</span>, min_size <span class="op">=</span> <span class="fl">10</span>, max_depth <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co">## the LaTeX output is sanitized</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="draw.html">draw</a></span><span class="op">(</span><span class="va">ctree_c</span>, <span class="st">"latex"</span>, frequency <span class="op">=</span> <span class="st">"detailed"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> \begin{forest}</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [\multicolumn{3}{c}{\textbf{$\epsilon$}}\\\hline</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> {\small 43}&amp;{\small 29}&amp;{\small 28}, align=ccc</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> {\small 32}&amp;{\small 30}&amp;{\small 38}, align=ccc</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [\multicolumn{3}{c}{\textbf{A\$}}\\\hline</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> {\small 18}&amp;{\small 13}&amp;{\small 12}, align=ccc</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> {\small 10}&amp;{\small 6}&amp;{\small 16}, align=ccc</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [\multicolumn{3}{c}{\textbf{A\$}}\\\hline</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> {\small 7}&amp;{\small 5}&amp;{\small 6}, align=ccc]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> {\small 3}&amp;{\small 1}&amp;{\small 6}, align=ccc]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [\multicolumn{3}{c}{\textbf{\_\{B}}\\\hline</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> {\small 1}&amp;{\small 2}&amp;{\small 8}, align=ccc]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [\multicolumn{3}{c}{\textbf{\{C\}\_\{D\}}}\\\hline</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> {\small 6}&amp;{\small 2}&amp;{\small 2}, align=ccc]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [\multicolumn{3}{c}{\textbf{\_\{B}}\\\hline</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> {\small 11}&amp;{\small 10}&amp;{\small 8}, align=ccc</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [\multicolumn{3}{c}{\textbf{\_\{B}}\\\hline</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> {\small 3}&amp;{\small 5}&amp;{\small 2}, align=ccc]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [\multicolumn{3}{c}{\textbf{\{C\}\_\{D\}}}\\\hline</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> {\small 7}&amp;{\small 3}&amp;{\small 4}, align=ccc]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [\multicolumn{3}{c}{\textbf{\_\{B}}\\\hline</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> {\small 10}&amp;{\small 11}&amp;{\small 8}, align=ccc</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [\multicolumn{3}{c}{\textbf{A\$}}\\\hline</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> {\small 4}&amp;{\small 6}&amp;{\small 3}, align=ccc]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [\multicolumn{3}{c}{\textbf{\_\{B}}\\\hline</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> {\small 5}&amp;{\small 3}&amp;{\small 3}, align=ccc]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> {\small 6}&amp;{\small 5}&amp;{\small 2}, align=ccc]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [\multicolumn{3}{c}{\textbf{\{C\}\_\{D\}}}\\\hline</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> {\small 14}&amp;{\small 5}&amp;{\small 8}, align=ccc</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> {\small 10}&amp;{\small 14}&amp;{\small 14}, align=ccc</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [\multicolumn{3}{c}{\textbf{A\$}}\\\hline</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> {\small 4}&amp;{\small 3}&amp;{\small 5}, align=ccc]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> {\small 4}&amp;{\small 6}&amp;{\small 6}, align=ccc]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [\multicolumn{3}{c}{\textbf{\{C\}\_\{D\}}}\\\hline</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> {\small 3}&amp;{\small 6}&amp;{\small 5}, align=ccc]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> \end{forest}</span>

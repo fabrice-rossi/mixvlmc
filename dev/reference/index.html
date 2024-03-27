@@ -67,6 +67,42 @@
     </div>
 
     <div class="section level2">
+      <h2 id="discrete-time-series">Discrete time series<a class="anchor" aria-label="anchor" href="#discrete-time-series"></a></h2>
+      
+      <p class="section-desc"></p><p>Build specialized representation of discrete time series.</p>
+
+      
+    </div><div id="" class="section level2">
+      
+      
+      
+
+      <dl><dt>
+          
+          <code><a href="dts.html">dts()</a></code> 
+        </dt>
+        <dd>Convert a vector to a discrete time series.</dd>
+      </dl><dl><dt>
+          
+          <code><a href="is_dts.html">is_dts()</a></code> 
+        </dt>
+        <dd>Test if the object is a discrete time series</dd>
+      </dl><dl><dt>
+          
+          <code><a href="dts_data.html">dts_data()</a></code> 
+        </dt>
+        <dd>Extract the plain discrete time series from a dts object</dd>
+      </dl><dl><dt>
+          
+          <code><a href="print.dts.html">print(<i>&lt;dts&gt;</i>)</a></code> 
+        </dt>
+        <dd>Print a discrete time series</dd>
+      </dl><dl><dt>
+          
+          <code><a href="states.html">states()</a></code> 
+        </dt>
+        <dd>State space of an object</dd>
+      </dl></div><div class="section level2">
       <h2 id="context-trees">Context trees<a class="anchor" aria-label="anchor" href="#context-trees"></a></h2>
       
       <p class="section-desc"></p><p>Build context trees and extract information from them.</p>
@@ -79,7 +115,12 @@
 
       <dl><dt>
           
-          <code><a href="ctx_tree.html">ctx_tree()</a></code> 
+          <code><a href="ctx_tree.default.html">ctx_tree(<i>&lt;default&gt;</i>)</a></code> 
+        </dt>
+        <dd>Build a context tree for a discrete time series</dd>
+      </dl><dl><dt>
+          
+          <code><a href="ctx_tree.dts.html">ctx_tree(<i>&lt;dts&gt;</i>)</a></code> 
         </dt>
         <dd>Build a context tree for a discrete time series</dd>
       </dl><dl><dt>
@@ -121,7 +162,7 @@
           
           <code><a href="states.html">states()</a></code> 
         </dt>
-        <dd>State space of a context tree</dd>
+        <dd>State space of an object</dd>
       </dl></div><div class="section level2">
       <h2 id="context-tree-nodes">Context tree nodes<a class="anchor" aria-label="anchor" href="#context-tree-nodes"></a></h2>
       
@@ -231,7 +272,12 @@
 
       <dl><dt>
           
-          <code><a href="vlmc.html">vlmc()</a></code> 
+          <code><a href="vlmc.default.html">vlmc(<i>&lt;default&gt;</i>)</a></code> 
+        </dt>
+        <dd>Fit a Variable Length Markov Chain (VLMC)</dd>
+      </dl><dl><dt>
+          
+          <code><a href="vlmc.dts.html">vlmc(<i>&lt;dts&gt;</i>)</a></code> 
         </dt>
         <dd>Fit a Variable Length Markov Chain (VLMC)</dd>
       </dl><dl><dt>
@@ -283,7 +329,7 @@
           
           <code><a href="states.html">states()</a></code> 
         </dt>
-        <dd>State space of a context tree</dd>
+        <dd>State space of an object</dd>
       </dl></div><div class="section level2">
       <h2 id="variable-length-markov-chain-with-covariates-covlmc-">Variable Length Markov Chain with covariates (COVLMC)<a class="anchor" aria-label="anchor" href="#variable-length-markov-chain-with-covariates-covlmc-"></a></h2>
       
@@ -297,7 +343,12 @@
 
       <dl><dt>
           
-          <code><a href="covlmc.html">covlmc()</a></code> 
+          <code><a href="covlmc.default.html">covlmc(<i>&lt;default&gt;</i>)</a></code> 
+        </dt>
+        <dd>Fit a Variable Length Markov Chain with Covariates (coVLMC)</dd>
+      </dl><dl><dt>
+          
+          <code><a href="covlmc.dts.html">covlmc(<i>&lt;dts&gt;</i>)</a></code> 
         </dt>
         <dd>Fit a Variable Length Markov Chain with Covariates (coVLMC)</dd>
       </dl><dl><dt>
@@ -359,7 +410,7 @@
           
           <code><a href="states.html">states()</a></code> 
         </dt>
-        <dd>State space of a context tree</dd>
+        <dd>State space of an object</dd>
       </dl></div><div class="section level2">
       <h2 id="model-selection-for-co-vlmc">Model selection for (CO)VLMC<a class="anchor" aria-label="anchor" href="#model-selection-for-co-vlmc"></a></h2>
       
@@ -551,6 +602,11 @@ selection</dd>
         <dd>Test if the object is a context tree</dd>
       </dl><dl><dt>
           
+          <code><a href="is_dts.html">is_dts()</a></code> 
+        </dt>
+        <dd>Test if the object is a discrete time series</dd>
+      </dl><dl><dt>
+          
           <code><a href="is_merged.html">is_merged()</a></code> 
         </dt>
         <dd>Merging status of a COVLMC context</dd>
@@ -620,6 +676,16 @@ removed.</dd>
 
       <dl><dt>
           
+          <code><a href="covlmc.html">covlmc()</a></code> 
+        </dt>
+        <dd>Fit a Variable Length Markov Chain with Covariates (coVLMC)</dd>
+      </dl><dl><dt>
+          
+          <code><a href="ctx_tree.html">ctx_tree()</a></code> 
+        </dt>
+        <dd>Build a context tree for a discrete time series</dd>
+      </dl><dl><dt>
+          
           <code><a href="cutoff.html">cutoff()</a></code> 
         </dt>
         <dd>Cut off values for VLMC like model</dd>
@@ -633,6 +699,16 @@ removed.</dd>
           <code><a href="metrics.html">metrics()</a></code> 
         </dt>
         <dd>Predictive quality metrics for context based models</dd>
+      </dl><dl><dt>
+          
+          <code><a href="states.html">states()</a></code> 
+        </dt>
+        <dd>State space of an object</dd>
+      </dl><dl><dt>
+          
+          <code><a href="vlmc.html">vlmc()</a></code> 
+        </dt>
+        <dd>Fit a Variable Length Markov Chain (VLMC)</dd>
       </dl></div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>

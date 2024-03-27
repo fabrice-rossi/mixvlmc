@@ -93,6 +93,10 @@
 <div class="section level3">
 <h3 id="new-features-development-version">New features<a class="anchor" aria-label="anchor" href="#new-features-development-version"></a></h3>
 <div class="section level4">
+<h4 id="discrete-time-series-class-dts-development-version">Discrete time series class (<code>dts</code>)<a class="anchor" aria-label="anchor" href="#discrete-time-series-class-dts-development-version"></a></h4>
+<p>In order to ease the introduction of multiple time series support, a single discrete time series can now be represented by the <code>dts</code> class, via the <code><a href="../reference/dts.html">dts()</a></code> function (see issue <a href="https://github.com/fabrice-rossi/mixvlmc/issues/76" class="external-link">#76</a>). All functions that use discrete time series now accept objects of this class in addition to simple vectors of a supported type (<code>integer</code>, <code>factor</code>, <code>character</code> and <code>logical</code>). This applies to model estimation functions such as <code><a href="../reference/vlmc.html">vlmc()</a></code> or <code><a href="../reference/covlmc.html">covlmc()</a></code>, to model selection functions (e.g. <code>tune_vlmc</code>) but also to functions that use new data such <code><a href="../reference/loglikelihood.html">loglikelihood()</a></code> and <code><a href="../reference/predict.vlmc.html">predict.vlmc()</a></code>.</p>
+</div>
+<div class="section level4">
 <h4 id="model-representation-with-draw-development-version">Model representation (with <code>draw()</code>)<a class="anchor" aria-label="anchor" href="#model-representation-with-draw-development-version"></a></h4>
 <p>A major change of <code><a href="../reference/draw.html">draw()</a></code> is the support of multiple output formats. This is done via a <code>format</code> parameter. It supports currently:</p>
 <ul><li>the format of previous versions of <code>mixvlmc</code> with <code>format="text"</code>. This is the default text based representation.</li>

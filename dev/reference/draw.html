@@ -136,8 +136,8 @@ special characters in the names of the states of the context tree.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">dts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>, <span class="fl">100</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">ctree</span> <span class="op">&lt;-</span> <span class="fu"><a href="ctx_tree.html">ctx_tree</a></span><span class="op">(</span><span class="va">dts</span>, min_size <span class="op">=</span> <span class="fl">10</span>, max_depth <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">rdts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>, <span class="fl">100</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">ctree</span> <span class="op">&lt;-</span> <span class="fu"><a href="ctx_tree.html">ctx_tree</a></span><span class="op">(</span><span class="va">rdts</span>, min_size <span class="op">=</span> <span class="fl">10</span>, max_depth <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">draw</span><span class="op">(</span><span class="va">ctree</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ▪</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ├─ 0</span>
@@ -146,23 +146,26 @@ special characters in the names of the states of the context tree.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> └─ 1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    ├─ 0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    └─ 1</span>
-<span class="r-in"><span><span class="va">dts_c</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A"</span>, <span class="st">"B"</span>, <span class="st">"CD"</span><span class="op">)</span>, <span class="fl">100</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">ctree_c</span> <span class="op">&lt;-</span> <span class="fu"><a href="ctx_tree.html">ctx_tree</a></span><span class="op">(</span><span class="va">dts_c</span>, min_size <span class="op">=</span> <span class="fl">10</span>, max_depth <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">rdts_c</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A"</span>, <span class="st">"B"</span>, <span class="st">"CD"</span><span class="op">)</span>, <span class="fl">100</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">ctree_c</span> <span class="op">&lt;-</span> <span class="fu"><a href="ctx_tree.html">ctx_tree</a></span><span class="op">(</span><span class="va">rdts_c</span>, min_size <span class="op">=</span> <span class="fl">10</span>, max_depth <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">draw</span><span class="op">(</span><span class="va">ctree_c</span>, control <span class="op">=</span> <span class="fu"><a href="draw_control.html">draw_control</a></span><span class="op">(</span>digits <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ▪</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ├─ A</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> │  ├─ A</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> │  ├─ B</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> │  └─ CD</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ├─ B</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> │  ├─ B</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> │  └─ CD</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> └─ CD</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    └─ A</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    ├─ A</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    └─ B</span>
 <span class="r-in"><span><span class="co">## LaTeX output</span></span></span>
 <span class="r-in"><span><span class="fu">draw</span><span class="op">(</span><span class="va">ctree_c</span>, <span class="st">"latex"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> \begin{forest}</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [\textbf{$\epsilon$}</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [\textbf{A}</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [\textbf{A}]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [\textbf{B}]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [\textbf{CD}]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ]</span>
@@ -172,6 +175,7 @@ special characters in the names of the states of the context tree.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [\textbf{CD}</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [\textbf{A}]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [\textbf{B}]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> \end{forest}</span>
