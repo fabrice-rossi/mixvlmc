@@ -63,8 +63,8 @@
 #' @seealso [vlmc()], [cutoff()] and [prune()]
 #'
 #' @examples
-#' dts <- sample(as.factor(c("A", "B", "C")), 100, replace = TRUE)
-#' tune_result <- tune_vlmc(dts)
+#' rdts <- sample(as.factor(c("A", "B", "C")), 100, replace = TRUE)
+#' tune_result <- tune_vlmc(rdts)
 #' draw(tune_result$best_model)
 tune_vlmc <- function(x, criterion = c("BIC", "AIC"),
                       initial = c("truncated", "specific", "extended"),

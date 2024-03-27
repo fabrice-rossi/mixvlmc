@@ -21,8 +21,8 @@ the sequence represented by the \code{node} object, a vector
 This function returns the sequence represented by the \code{node} object.
 }
 \examples{
-dts <- c("A", "B", "C", "A", "A", "B", "B", "C", "C", "A")
-dts_tree <- ctx_tree(dts, max_depth = 3)
-res <- find_sequence(dts_tree, "A")
+rdts <- c("A", "B", "C", "A", "A", "B", "B", "C", "C", "A")
+rdts_tree <- ctx_tree(rdts, max_depth = 3)
+res <- find_sequence(rdts_tree, "A")
 as_sequence(res)
 }

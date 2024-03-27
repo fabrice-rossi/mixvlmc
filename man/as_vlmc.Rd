@@ -36,18 +36,18 @@ a direct call to \code{\link[=vlmc]{vlmc()}} (\code{\link[=prune]{prune()}}).
 }
 \examples{
 ## conversion from a context tree
-dts <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 0)
-dts_ctree <- ctx_tree(dts, min_size = 1, max_depth = 3)
-draw(dts_ctree)
-dts_vlmc <- as_vlmc(dts_ctree)
-class(dts_vlmc)
-draw(dts_vlmc)
+rdts <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 0)
+rdts_ctree <- ctx_tree(rdts, min_size = 1, max_depth = 3)
+draw(rdts_ctree)
+rdts_vlmc <- as_vlmc(rdts_ctree)
+class(rdts_vlmc)
+draw(rdts_vlmc)
 ## conversion from the result of tune_vlmc
-dts <- sample(as.factor(c("A", "B", "C")), 100, replace = TRUE)
-tune_result <- tune_vlmc(dts)
+rdts <- sample(as.factor(c("A", "B", "C")), 100, replace = TRUE)
+tune_result <- tune_vlmc(rdts)
 tune_result
-dts_best_vlmc <- as_vlmc(tune_result)
-draw(dts_best_vlmc)
+rdts_best_vlmc <- as_vlmc(tune_result)
+draw(rdts_best_vlmc)
 }
 \seealso{
 \code{\link[=ctx_tree]{ctx_tree()}}

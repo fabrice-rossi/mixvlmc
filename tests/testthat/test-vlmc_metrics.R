@@ -14,8 +14,8 @@ test_that("generate_fake_data works as expected", {
 
 test_that("metrics.vlmc obey its contract", {
   pc <- powerconsumption[powerconsumption$week == 5, ]
-  dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.25, 0.5, 0.75, 1))))
-  model <- vlmc(dts, alpha = 0.1)
+  rdts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.25, 0.5, 0.75, 1))))
+  model <- vlmc(rdts, alpha = 0.1)
   m_metrics <- metrics(model)
   ## class
   expect_s3_class(m_metrics, "metrics.vlmc")
@@ -26,25 +26,25 @@ test_that("metrics.vlmc obey its contract", {
   expect_equal(dim(m_metrics$conf_mat), c(length(states(model)), length(states(model))))
   expect_equal(colnames(m_metrics$conf_mat), as.character(states(model)))
   expect_equal(rownames(m_metrics$conf_mat), as.character(states(model)))
-  expect_lte(sum(m_metrics$conf_mat), length(dts))
-  expect_true(all(colSums(m_metrics$conf_mat) <= table(dts)))
+  expect_lte(sum(m_metrics$conf_mat), length(rdts))
+  expect_true(all(colSums(m_metrics$conf_mat) <= table(rdts)))
 })
 
 test_that("metrics.vlmc objects print as expected", {
   pc <- powerconsumption[powerconsumption$week == 5, ]
-  dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.25, 0.5, 0.75, 1))))
-  model <- vlmc(dts, alpha = 0.1)
+  rdts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.25, 0.5, 0.75, 1))))
+  model <- vlmc(rdts, alpha = 0.1)
   m_metrics <- metrics(model)
   expect_snapshot(print(m_metrics))
 })
 
 test_that("metrics.vlmc and predict.vlmc return consistent results", {
   pc <- powerconsumption[powerconsumption$week == 5, ]
-  dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.25, 0.5, 0.75, 1))))
-  model <- vlmc(dts, alpha = 0.1)
+  rdts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.25, 0.5, 0.75, 1))))
+  model <- vlmc(rdts, alpha = 0.1)
   m_metrics <- metrics(model)
-  m_predict <- predict(model, dts, final_pred = FALSE)
-  predict_table <- table(m_predict, dts)
+  m_predict <- predict(model, rdts, final_pred = FALSE)
+  predict_table <- table(m_predict, rdts)
   names(dimnames(predict_table)) <- c("predicted value", "true value")
   expect_identical(m_metrics$conf_mat, predict_table)
   for (k in 2:4) {

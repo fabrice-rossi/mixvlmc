@@ -44,11 +44,11 @@
 #' @export
 #' @examples
 #' pc <- powerconsumption[powerconsumption$week == 10, ]
-#' dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.2, 0.7, 1))))
-#' dts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
-#' m_cov <- covlmc(dts, dts_cov, min_size = 5, alpha = 0.5)
-#' dts_probs <- predict(m_cov, dts[1:144], dts_cov[1:144, , drop = FALSE], type = "probs")
-#' dts_preds <- predict(m_cov, dts[1:144], dts_cov[1:144, , drop = FALSE],
+#' rdts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.2, 0.7, 1))))
+#' rdts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
+#' m_cov <- covlmc(rdts, rdts_cov, min_size = 5, alpha = 0.5)
+#' rdts_probs <- predict(m_cov, rdts[1:144], rdts_cov[1:144, , drop = FALSE], type = "probs")
+#' rdts_preds <- predict(m_cov, rdts[1:144], rdts_cov[1:144, , drop = FALSE],
 #'   type = "raw", final_pred = FALSE
 #' )
 predict.covlmc <- function(object, newdata, newcov, type = c("raw", "probs"),

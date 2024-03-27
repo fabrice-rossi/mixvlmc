@@ -87,14 +87,14 @@ frequency_context_extractor <-
 #'   standard state order), then the position of `ctx` in `x` is 3.
 #'
 #' @examples
-#' dts <- sample(as.factor(c("A", "B", "C")), 100, replace = TRUE)
-#' dts_tree <- ctx_tree(dts, max_depth = 3, min_size = 5)
+#' rdts <- sample(as.factor(c("A", "B", "C")), 100, replace = TRUE)
+#' rdts_tree <- ctx_tree(rdts, max_depth = 3, min_size = 5)
 #' ## direct representation with ctx_node objects
-#' contexts(dts_tree)
+#' contexts(rdts_tree)
 #' ## data.frame format
-#' contexts(dts_tree, sequence = TRUE)
-#' contexts(dts_tree, frequency = "total")
-#' contexts(dts_tree, frequency = "detailed")
+#' contexts(rdts_tree, sequence = TRUE)
+#' contexts(rdts_tree, frequency = "total")
+#' contexts(rdts_tree, frequency = "detailed")
 #' @export
 contexts.ctx_tree <- function(ct, sequence = FALSE,
                               reverse = FALSE, frequency = NULL,

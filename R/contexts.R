@@ -147,10 +147,10 @@ contexts_extractor <- function(ct, reverse, extractor, control, summarize = no_s
 #' @returns A list of class `contexts` containing the contexts represented in
 #'   this tree (as `ctx_node`) or a data.frame.
 #' @examples
-#' dts <- sample(as.factor(c("A", "B", "C")), 100, replace = TRUE)
-#' dts_tree <- ctx_tree(dts, max_depth = 3, min_size = 5)
-#' contexts(dts_tree)
-#' contexts(dts_tree, TRUE, TRUE)
+#' rdts <- sample(as.factor(c("A", "B", "C")), 100, replace = TRUE)
+#' rdts_tree <- ctx_tree(rdts, max_depth = 3, min_size = 5)
+#' contexts(rdts_tree)
+#' contexts(rdts_tree, TRUE, TRUE)
 #' @seealso [find_sequence()] and [find_sequence.covlmc()] for direct access to
 #'   a specific context, and [contexts.ctx_tree()], [contexts.vlmc()] and
 #'   [contexts.covlmc()] for concrete implementations of `contexts()`.
@@ -178,9 +178,9 @@ new_context_list <- function(ctx_list, ..., class = character()) {
 #' @seealso [contexts()]
 #' @export
 #' @examples
-#' dts <- c("A", "B", "C", "A", "A", "B", "B", "C", "C", "A")
-#' dts_tree <- ctx_tree(dts, max_depth = 3)
-#' print(contexts(dts_tree))
+#' rdts <- c("A", "B", "C", "A", "A", "B", "B", "C", "C", "A")
+#' rdts_tree <- ctx_tree(rdts, max_depth = 3)
+#' print(contexts(rdts_tree))
 print.contexts <- function(x, reverse = TRUE, ...) {
   cat("Contexts:\n")
   if (missing(reverse)) {

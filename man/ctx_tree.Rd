@@ -60,8 +60,8 @@ completely the context tree.
 }
 
 \examples{
-dts <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 0)
+rdts <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 0)
 ## get all contexts of length 2
-dts_ctree <- ctx_tree(dts, min_size = 1, max_depth = 2)
-draw(dts_ctree)
+rdts_ctree <- ctx_tree(rdts, min_size = 1, max_depth = 2)
+draw(rdts_ctree)
 }

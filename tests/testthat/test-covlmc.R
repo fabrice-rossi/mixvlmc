@@ -40,9 +40,9 @@ test_that("covlmc reports p-values correctly", {
 
 test_that("covlmc prune preserves p-values", {
   pc <- powerconsumption[powerconsumption$week == 5, ]
-  dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1))))
-  dts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
-  m_cov <- covlmc(dts, dts_cov, min_size = 5, keep_data = TRUE)
+  rdts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1))))
+  rdts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
+  m_cov <- covlmc(rdts, rdts_cov, min_size = 5, keep_data = TRUE)
   p_values_m <- extract_p_value(m_cov)
   m_cov_cuts <- cutoff(m_cov)
   alpha <- m_cov_cuts[1] - 2 * .Machine$double.eps
@@ -69,9 +69,9 @@ test_that("covlmc prune works with more that 2 states", {
 
 test_that("covlmc sequential pruning does not produce NAs", {
   pc <- powerconsumption[powerconsumption$week == 5, ]
-  dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1))))
-  dts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
-  m_cov <- covlmc(dts, dts_cov, min_size = 3, max_depth = 6, alpha = 0.5, keep_data = TRUE)
+  rdts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1))))
+  rdts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
+  m_cov <- covlmc(rdts, rdts_cov, min_size = 3, max_depth = 6, alpha = 0.5, keep_data = TRUE)
   m_cov_cuts <- cutoff(m_cov)
   m_current <- m_cov
   for (k in seq_along(m_cov_cuts)) {
@@ -106,9 +106,9 @@ test_that("covlmc sequential pruning does not produce NAs with more than 3 state
 test_that("covlmc handles defficient rank covariates", {
   pc_week_5 <- powerconsumption[powerconsumption$week == 5, ]
   elec <- pc_week_5$active_power
-  elec_dts <- cut(elec, breaks = c(0, 0.4, 2, 8), labels = c("low", "typical", "high"))
+  elec_rdts <- cut(elec, breaks = c(0, 0.4, 2, 8), labels = c("low", "typical", "high"))
   elec_cov <- data.frame(day = (pc_week_5$hour >= 7 & pc_week_5$hour <= 17))
-  expect_error(covlmc(elec_dts, elec_cov, min_size = 10), regexp = NA)
+  expect_error(covlmc(elec_rdts, elec_cov, min_size = 10), regexp = NA)
 })
 
 test_that("covlmc handles tibble correctly", {

@@ -564,12 +564,12 @@ count_covlmc_local_context <- function(node) {
 #' @returns a list.
 #' @export
 #' @examples
-#' dts <- rep(c(0, 1), 100)
-#' dts_cov <- data.frame(y = rep(0, length(dts)))
-#' default_model <- covlmc(dts, dts_cov)
+#' rdts <- rep(c(0, 1), 100)
+#' rdts_cov <- data.frame(y = rep(0, length(rdts)))
+#' default_model <- covlmc(rdts, rdts_cov)
 #' contexts(default_model, type = "data.frame", model = "coef")$coef
 #' control <- covlmc_control(pseudo_obs = 10)
-#' model <- covlmc(dts, dts_cov, control = control)
+#' model <- covlmc(rdts, rdts_cov, control = control)
 #' contexts(model, type = "data.frame", model = "coef")$coef
 covlmc_control <- function(pseudo_obs = 1) {
   list(pseudo_obs = pseudo_obs)
@@ -645,13 +645,13 @@ covlmc_control <- function(pseudo_obs = 1) {
 #' @export
 #' @examples
 #' pc <- powerconsumption[powerconsumption$week == 5, ]
-#' dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(1 / 3, 2 / 3, 1))))
-#' dts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
-#' m_cov <- covlmc(dts, dts_cov, min_size = 15)
+#' rdts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(1 / 3, 2 / 3, 1))))
+#' rdts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
+#' m_cov <- covlmc(rdts, rdts_cov, min_size = 15)
 #' draw(m_cov)
 #' withr::with_options(
 #'   list(mixvlmc.predictive = "multinom"),
-#'   m_cov_nnet <- covlmc(dts, dts_cov, min_size = 15)
+#'   m_cov_nnet <- covlmc(rdts, rdts_cov, min_size = 15)
 #' )
 #' draw(m_cov_nnet)
 #' @seealso [cutoff.covlmc()] and [prune.covlmc()] for post-pruning.
@@ -727,9 +727,9 @@ covlmc <- function(x, covariate, alpha = 0.05, min_size = 5L, max_depth = 100L, 
 #' @export
 #' @examples
 #' pc <- powerconsumption[powerconsumption$week == 5, ]
-#' dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1))))
-#' dts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
-#' m_cov <- covlmc(dts, dts_cov, min_size = 5)
+#' rdts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1))))
+#' rdts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
+#' m_cov <- covlmc(rdts, rdts_cov, min_size = 5)
 #' # should be true
 #' is_ctx_tree(m_cov)
 #' # should be true
@@ -790,11 +790,11 @@ assertthat::on_failure(is_covlmc) <- function(call, env) {
 #'
 #' @examples
 #' pc <- powerconsumption[powerconsumption$week == 5, ]
-#' dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1))))
-#' m_nocovariate <- vlmc(dts)
+#' rdts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1))))
+#' m_nocovariate <- vlmc(rdts)
 #' draw(m_nocovariate)
-#' dts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
-#' m_cov <- covlmc(dts, dts_cov, min_size = 5)
+#' rdts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
+#' m_cov <- covlmc(rdts, rdts_cov, min_size = 5)
 #' draw(m_cov)
 #' cutoff(m_cov)
 #' @export
@@ -874,9 +874,9 @@ cutoff.covlmc <- function(model, raw = FALSE,
 #' @returns a pruned covlmc.
 #' @examples
 #' pc <- powerconsumption[powerconsumption$week == 5, ]
-#' dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1))))
-#' dts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
-#' m_cov <- covlmc(dts, dts_cov, min_size = 5, keep_data = TRUE)
+#' rdts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1))))
+#' rdts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
+#' m_cov <- covlmc(rdts, rdts_cov, min_size = 5, keep_data = TRUE)
 #' draw(m_cov)
 #' m_cov_cuts <- cutoff(m_cov)
 #' p_cov <- prune(m_cov, m_cov_cuts[1])
@@ -970,10 +970,10 @@ rec_cov_depth <- function(ct) {
 #' @export
 #' @examples
 #' pc <- powerconsumption[powerconsumption$week == 5, ]
-#' dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1))))
-#' m_nocovariate <- vlmc(dts)
-#' dts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
-#' m_cov <- covlmc(dts, dts_cov, min_size = 10)
+#' rdts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1))))
+#' m_nocovariate <- vlmc(rdts)
+#' rdts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
+#' m_cov <- covlmc(rdts, rdts_cov, min_size = 10)
 #' covariate_depth(m_cov)
 covariate_depth <- function(model) {
   assertthat::assert_that(is_covlmc(model))

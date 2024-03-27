@@ -37,8 +37,8 @@
 #'   max(powerconsumption$active_power, na.rm = TRUE)
 #' )
 #' labels <- c(0, 1)
-#' dts <- cut(pc$active_power, breaks = breaks, labels = labels)
-#' model <- vlmc(dts)
+#' rdts <- cut(pc$active_power, breaks = breaks, labels = labels)
+#' model <- vlmc(rdts)
 #' metrics(model)
 #'
 #' @export

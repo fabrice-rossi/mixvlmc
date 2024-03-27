@@ -63,14 +63,14 @@ special characters in the names of the states of the context tree.
 }
 
 \examples{
-dts_c <- sample(c("A", "B", "CD"), 100, replace = TRUE)
-ctree_c <- ctx_tree(dts_c, min_size = 10, max_depth = 2)
+rdts_c <- sample(c("A", "B", "CD"), 100, replace = TRUE)
+ctree_c <- ctx_tree(rdts_c, min_size = 10, max_depth = 2)
 draw(ctree_c, frequency = "total")
 draw(ctree_c, frequency = "detailed")
 ## LaTeX output
 draw(ctree_c, "latex", frequency = "detailed")
-dts_c <- sample(c("A$", "_{B", "{C}_{D}"), 100, replace = TRUE)
-ctree_c <- ctx_tree(dts_c, min_size = 10, max_depth = 2)
+rdts_c <- sample(c("A$", "_{B", "{C}_{D}"), 100, replace = TRUE)
+ctree_c <- ctx_tree(rdts_c, min_size = 10, max_depth = 2)
 ## the LaTeX output is sanitized
 draw(ctree_c, "latex", frequency = "detailed")
 }

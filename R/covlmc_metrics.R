@@ -36,9 +36,9 @@ covlmc_predictive_extractor <- function(tree, path, ct, vals, control, is_leaf, 
 #'   max(powerconsumption$active_power, na.rm = TRUE)
 #' )
 #' labels <- c(0, 1)
-#' dts <- cut(pc$active_power, breaks = breaks, labels = labels)
-#' dts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
-#' m_cov <- covlmc(dts, dts_cov, min_size = 5)
+#' rdts <- cut(pc$active_power, breaks = breaks, labels = labels)
+#' rdts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
+#' m_cov <- covlmc(rdts, rdts_cov, min_size = 5)
 #' metrics(m_cov)
 #'
 #' @inheritSection predict.covlmc Extended contexts

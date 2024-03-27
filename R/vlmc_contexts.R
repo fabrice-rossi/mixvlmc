@@ -88,8 +88,8 @@ vlmc_context_extractor <-
 #'   behaviour of [cutoff.vlmc()]
 #'
 #' @examples
-#' dts <- sample(as.factor(c("A", "B", "C")), 100, replace = TRUE)
-#' model <- vlmc(dts, alpha = 0.5)
+#' rdts <- sample(as.factor(c("A", "B", "C")), 100, replace = TRUE)
+#' model <- vlmc(rdts, alpha = 0.5)
 #' ## direct representation with ctx_node objects
 #' model_ctxs <- contexts(model)
 #' model_ctxs

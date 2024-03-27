@@ -90,14 +90,14 @@ are represented by \code{\link[=draw]{draw()}} (i.e. recent values at the top th
 }
 
 \examples{
-dts <- sample(as.factor(c("A", "B", "C")), 100, replace = TRUE)
-dts_tree <- ctx_tree(dts, max_depth = 3, min_size = 5)
+rdts <- sample(as.factor(c("A", "B", "C")), 100, replace = TRUE)
+rdts_tree <- ctx_tree(rdts, max_depth = 3, min_size = 5)
 ## direct representation with ctx_node objects
-contexts(dts_tree)
+contexts(rdts_tree)
 ## data.frame format
-contexts(dts_tree, sequence = TRUE)
-contexts(dts_tree, frequency = "total")
-contexts(dts_tree, frequency = "detailed")
+contexts(rdts_tree, sequence = TRUE)
+contexts(rdts_tree, frequency = "total")
+contexts(rdts_tree, frequency = "detailed")
 }
 \seealso{
 \code{\link[=find_sequence]{find_sequence()}} and \code{\link[=find_sequence.covlmc]{find_sequence.covlmc()}} for direct access to

@@ -2,7 +2,7 @@ test_that("prepare_covariate is called with the proper parameters", {
   skip_on_ci()
   skip_on_cran()
   d_model <- create_demo_covlmc()
-  nx <- to_dts(d_model$dts, d_model$model$vals)
+  nx <- to_dts(d_model$rdts, d_model$model$vals)
   x <- nx$ix + 1
   ctx <- c()
   all_true <- TRUE
@@ -46,10 +46,10 @@ test_that("prepare_covariate is called with the proper parameters (real data)", 
   skip_on_ci()
   skip_on_cran()
   pc <- powerconsumption[powerconsumption$week == 5, ]
-  dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1))))
-  dts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
-  m_cov <- covlmc(dts, dts_cov, min_size = 5, alpha = 0.1)
-  nx <- to_dts(dts, m_cov$vals)
+  rdts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1))))
+  rdts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
+  m_cov <- covlmc(rdts, rdts_cov, min_size = 5, alpha = 0.1)
+  nx <- to_dts(rdts, m_cov$vals)
   x <- nx$ix + 1
   ctx <- c()
   all_true <- TRUE
@@ -62,7 +62,7 @@ test_that("prepare_covariate is called with the proper parameters (real data)", 
     } else {
       local_model <- subtree$tree$model
     }
-    mm <- prepare_covariate(dts_cov, i - subtree$depth - 1,
+    mm <- prepare_covariate(rdts_cov, i - subtree$depth - 1,
       d = local_model$hsize,
       from = subtree$depth - local_model$hsize
     )
@@ -72,7 +72,7 @@ test_that("prepare_covariate is called with the proper parameters (real data)", 
     if (local_model$hsize == 0) {
       all_true <- ncol(mm) == 0L
     } else {
-      expected_cov <- dts_cov[(i - local_model$hsize):(i - 1), , drop = FALSE]
+      expected_cov <- rdts_cov[(i - local_model$hsize):(i - 1), , drop = FALSE]
       expected_cov <- rev(expected_cov[[1]])
       the_mm <- unlist(mm)
       names(the_mm) <- NULL

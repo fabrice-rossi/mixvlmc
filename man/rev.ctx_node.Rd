@@ -19,9 +19,9 @@ This function reverses the order in which the sequence represented by the
 \code{\link[=as_sequence]{as_sequence()}}.
 }
 \examples{
-dts <- c("A", "B", "C", "A", "A", "B", "B", "C", "C", "A")
-dts_tree <- ctx_tree(dts, max_depth = 3)
-res <- find_sequence(dts_tree, c("A", "B"))
+rdts <- c("A", "B", "C", "A", "A", "B", "B", "C", "C", "A")
+rdts_tree <- ctx_tree(rdts, max_depth = 3)
+res <- find_sequence(rdts_tree, c("A", "B"))
 print(res)
 r_res <- rev(res)
 print(r_res)

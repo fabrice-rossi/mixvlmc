@@ -62,14 +62,22 @@ the same approach.
 
 \examples{
 pc <- powerconsumption[powerconsumption$week == 5, ]
-dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.25, 0.5, 0.75, 1))))
-model <- vlmc(dts, min_size = 5)
-predict(model, dts[1:5])
-predict(model, dts[1:5], "probs")
+rdts <- cut(pc$active_power,
+  breaks = c(0, quantile(pc$active_power,
+    probs = c(0.25, 0.5, 0.75, 1)
+  ))
+)
+model <- vlmc(rdts, min_size = 5)
+predict(model, rdts[1:5])
+predict(model, rdts[1:5], "probs")
 ## C++ backend
 pc <- powerconsumption[powerconsumption$week == 5, ]
-dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.25, 0.5, 0.75, 1))))
-model <- vlmc(dts, min_size = 5, backend = "C++")
-predict(model, dts[1:5])
-predict(model, dts[1:5], "probs")
+rdts <- cut(pc$active_power,
+  breaks = c(0, quantile(pc$active_power,
+    probs = c(0.25, 0.5, 0.75, 1)
+  ))
+)
+model <- vlmc(rdts, min_size = 5, backend = "C++")
+predict(model, rdts[1:5])
+predict(model, rdts[1:5], "probs")
 }

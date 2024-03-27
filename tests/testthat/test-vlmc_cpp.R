@@ -10,32 +10,32 @@ test_that("the C++ context algorithm selects the same PST as the R implementatio
 
 test_that("post pruning is equivalent to direct pruning (alpha, C++)", {
   pc <- powerconsumption[powerconsumption$week == 5, ]
-  dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.25, 0.5, 0.75, 1))))
-  model <- vlmc(dts, alpha = 0.1, backend = "C++")
+  rdts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.25, 0.5, 0.75, 1))))
+  model <- vlmc(rdts, alpha = 0.1, backend = "C++")
   cut_off <- cutoff(model)
   for (k in seq_along(cut_off)) {
     pruned_model <- prune(model, alpha = cut_off[k])
-    direct_model <- vlmc(dts, alpha = cut_off[k], backend = "C++")
+    direct_model <- vlmc(rdts, alpha = cut_off[k], backend = "C++")
     expect_true(compare_vlmc_cpp(pruned_model, direct_model))
   }
 })
 
 test_that("post pruning is equivalent to direct pruning (cutoff, C++)", {
   pc <- powerconsumption[powerconsumption$week == 5, ]
-  dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.25, 0.5, 0.75, 1))))
-  model <- vlmc(dts, alpha = 0.1, backend = "C++")
+  rdts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.25, 0.5, 0.75, 1))))
+  model <- vlmc(rdts, alpha = 0.1, backend = "C++")
   cut_off <- cutoff(model, scale = "native")
   for (k in seq_along(cut_off)) {
     pruned_model <- prune(model, cutoff = cut_off[k])
-    direct_model <- vlmc(dts, cutoff = cut_off[k], backend = "C++")
+    direct_model <- vlmc(rdts, cutoff = cut_off[k], backend = "C++")
     expect_true(compare_vlmc_cpp(pruned_model, direct_model))
   }
 })
 
 test_that("alpha pruning is equivalent to cutoff pruning (C++)", {
   pc <- powerconsumption[powerconsumption$week == 5, ]
-  dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.25, 0.5, 0.75, 1))))
-  model <- vlmc(dts, alpha = 0.1, backend = "C++")
+  rdts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.25, 0.5, 0.75, 1))))
+  model <- vlmc(rdts, alpha = 0.1, backend = "C++")
   c_cut_off <- cutoff(model, scale = "native")
   a_cut_off <- cutoff(model, scale = "quantile")
   expect_length(a_cut_off, length(c_cut_off))

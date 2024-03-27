@@ -4,9 +4,9 @@ test_that("trimming removes only what it should remove", {
     for (k in 2:3) {
       pc <- powerconsumption[powerconsumption$week %in% 5:7, ]
       probs <- (1:k) / k
-      dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = probs)))
-      dts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
-      m_cov <- covlmc(dts, dts_cov, min_size = 10, keep_data = TRUE)
+      rdts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = probs)))
+      rdts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
+      m_cov <- covlmc(rdts, rdts_cov, min_size = 10, keep_data = TRUE)
       t_m_cov_model <- trim(m_cov, keep_model = TRUE)
       t_m_cov <- trim(m_cov)
       ## size reduction
@@ -35,16 +35,16 @@ test_that("trimming removes only what it should remove", {
       )
       ## still usable with keep_mode==TRUE
       expect_equal(
-        loglikelihood(m_cov, newdata = dts, newcov = dts_cov),
-        loglikelihood(t_m_cov_model, newdata = dts, newcov = dts_cov)
+        loglikelihood(m_cov, newdata = rdts, newcov = rdts_cov),
+        loglikelihood(t_m_cov_model, newdata = rdts, newcov = rdts_cov)
       )
       expect_no_error(contexts(t_m_cov_model,
         type = "data.frame", hsize = TRUE,
         model = "full"
       ))
       expect_equal(
-        simulate(m_cov, nsim = 50, seed = 0, dts_cov),
-        simulate(t_m_cov_model, nsim = 50, seed = 0, dts_cov)
+        simulate(m_cov, nsim = 50, seed = 0, rdts_cov),
+        simulate(t_m_cov_model, nsim = 50, seed = 0, rdts_cov)
       )
       ## errors
       expect_error(
@@ -52,11 +52,11 @@ test_that("trimming removes only what it should remove", {
         "Full model extraction is not supported by fully trimmed covlmc"
       )
       expect_error(
-        loglikelihood(t_m_cov, newdata = dts, newcov = dts_cov),
+        loglikelihood(t_m_cov, newdata = rdts, newcov = rdts_cov),
         "loglikelihood calculation for new data is not supported by fully trimmed covlmc"
       )
       expect_error(
-        simulate(t_m_cov, nsim = 50, seed = 0, dts_cov),
+        simulate(t_m_cov, nsim = 50, seed = 0, rdts_cov),
         "simulate is not supported by fully trimmed covlmc"
       )
       expect_error(
@@ -85,9 +85,9 @@ test_that("trimmed model can be drawn", {
     pc <- powerconsumption[powerconsumption$week %in% 5:7, ]
     for (k in 2:3) {
       probs <- (1:k) / k
-      dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = probs)))
-      dts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
-      m_cov <- covlmc(dts, dts_cov, min_size = 10, keep_data = TRUE)
+      rdts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = probs)))
+      rdts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
+      m_cov <- covlmc(rdts, rdts_cov, min_size = 10, keep_data = TRUE)
       t_m_cov_model <- trim(m_cov, keep_model = TRUE)
       t_m_cov <- trim(m_cov)
       for (charset in c("ascii", "utf8")) {

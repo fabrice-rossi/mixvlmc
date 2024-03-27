@@ -87,17 +87,17 @@ completely the context tree.
 
 \examples{
 pc <- powerconsumption[powerconsumption$week == 5, ]
-dts <- cut(pc$active_power,
+rdts <- cut(pc$active_power,
   breaks = c(0, quantile(pc$active_power, probs = c(0.25, 0.5, 0.75, 1)))
 )
-model <- vlmc(dts)
+model <- vlmc(rdts)
 draw(model)
 depth(model)
 ## reduce the detph of the model
-shallow_model <- vlmc(dts, max_depth = 3)
+shallow_model <- vlmc(rdts, max_depth = 3)
 draw(shallow_model, prob = FALSE)
 ## improve probability estimates
-robust_model <- vlmc(dts, min_size = 25)
+robust_model <- vlmc(rdts, min_size = 25)
 draw(robust_model, prob = FALSE) ## show the frequencies
 draw(robust_model)
 }

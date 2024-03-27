@@ -1,10 +1,10 @@
 test_that("context format is consistent", {
   withr::local_seed(0)
-  dts <- sample(c("A", "B", "C"), 500, replace = TRUE)
-  y <- ifelse(runif(length(dts)) > 0.5, c(dts[-1], sample(c("A", "B", "C"), 1)), c(dts[-c(1, 2)], sample(c("A", "B", "C"), 2, replace = TRUE)))
-  y <- as.factor(ifelse(runif(length(dts)) > 0.2, y, sample(c("A", "B", "C"), length(dts), replace = TRUE)))
+  rdts <- sample(c("A", "B", "C"), 500, replace = TRUE)
+  y <- ifelse(runif(length(rdts)) > 0.5, c(rdts[-1], sample(c("A", "B", "C"), 1)), c(rdts[-c(1, 2)], sample(c("A", "B", "C"), 2, replace = TRUE)))
+  y <- as.factor(ifelse(runif(length(rdts)) > 0.2, y, sample(c("A", "B", "C"), length(rdts), replace = TRUE)))
   df_y <- data.frame(y = y)
-  model <- covlmc(dts, df_y, alpha = 0.75)
+  model <- covlmc(rdts, df_y, alpha = 0.75)
   raw_ctx <- contexts(model, sequence = TRUE)
   expect_named(raw_ctx, c("context"))
   freq_ctx <- contexts(model, frequency = "total")
@@ -36,25 +36,25 @@ test_that("models are consistent", {
     }
   }
   pc <- powerconsumption[powerconsumption$week == 5, ]
-  dts <- cut(pc$active_power, breaks = c(0, 0.4, 2, 8), labels = c("low", "typical", "high"))
-  dts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
+  rdts <- cut(pc$active_power, breaks = c(0, 0.4, 2, 8), labels = c("low", "typical", "high"))
+  rdts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
   for (engine in c("glm", "multinom")) {
     withr::local_options(mixvlmc.predictive = engine)
-    m_cov <- covlmc(dts, dts_cov, min_size = 4, keep_data = TRUE, alpha = 0.5)
+    m_cov <- covlmc(rdts, rdts_cov, min_size = 4, keep_data = TRUE, alpha = 0.5)
     ctx_m_cov_m <- contexts(m_cov, model = "full")
     ctx_m_cov_c <- contexts(m_cov, model = "coef", hsize = TRUE)
-    expect_equal(ctx_m_cov_c$coef, lapply(contexts(m_cov, model = "full")$model, glm_coef, dts_cov), ignore_attr = TRUE)
+    expect_equal(ctx_m_cov_c$coef, lapply(contexts(m_cov, model = "full")$model, glm_coef, rdts_cov), ignore_attr = TRUE)
     expect_equal(sapply(ctx_m_cov_c$coef, my_ncol), ctx_m_cov_c$hsize + 1)
   }
 })
 
 test_that("context reporting is consistent", {
   withr::local_seed(0)
-  dts <- sample(c("A", "B", "C"), 500, replace = TRUE)
-  y <- ifelse(runif(length(dts)) > 0.5, c(dts[-1], sample(c("A", "B", "C"), 1)), c(dts[-c(1, 2)], sample(c("A", "B", "C"), 2, replace = TRUE)))
-  y <- as.factor(ifelse(runif(length(dts)) > 0.2, y, sample(c("A", "B", "C"), length(dts), replace = TRUE)))
+  rdts <- sample(c("A", "B", "C"), 500, replace = TRUE)
+  y <- ifelse(runif(length(rdts)) > 0.5, c(rdts[-1], sample(c("A", "B", "C"), 1)), c(rdts[-c(1, 2)], sample(c("A", "B", "C"), 2, replace = TRUE)))
+  y <- as.factor(ifelse(runif(length(rdts)) > 0.2, y, sample(c("A", "B", "C"), length(rdts), replace = TRUE)))
   df_y <- data.frame(y = y)
-  model <- covlmc(dts, df_y, alpha = 0.75)
+  model <- covlmc(rdts, df_y, alpha = 0.75)
   ctx_m_cov <- contexts(model, sequence = TRUE)
   expect_equal(nrow(ctx_m_cov), context_number(model))
   expect_equal(length(contexts(model)), context_number(model))
@@ -62,11 +62,11 @@ test_that("context reporting is consistent", {
 
 test_that("contexts do not depend on the format", {
   withr::local_seed(0)
-  dts <- sample(c("A", "B", "C"), 500, replace = TRUE)
-  y <- ifelse(runif(length(dts)) > 0.5, c(dts[-1], sample(c("A", "B", "C"), 1)), c(dts[-c(1, 2)], sample(c("A", "B", "C"), 2, replace = TRUE)))
-  y <- as.factor(ifelse(runif(length(dts)) > 0.2, y, sample(c("A", "B", "C"), length(dts), replace = TRUE)))
+  rdts <- sample(c("A", "B", "C"), 500, replace = TRUE)
+  y <- ifelse(runif(length(rdts)) > 0.5, c(rdts[-1], sample(c("A", "B", "C"), 1)), c(rdts[-c(1, 2)], sample(c("A", "B", "C"), 2, replace = TRUE)))
+  y <- as.factor(ifelse(runif(length(rdts)) > 0.2, y, sample(c("A", "B", "C"), length(rdts), replace = TRUE)))
   df_y <- data.frame(y = y)
-  model <- covlmc(dts, df_y, alpha = 0.75)
+  model <- covlmc(rdts, df_y, alpha = 0.75)
   ctx_m_cov <- contexts(model, sequence = TRUE)
   expect_equal(unclass(ctx_m_cov$context), lapply(contexts(model), as_sequence))
 })
@@ -74,11 +74,11 @@ test_that("contexts do not depend on the format", {
 test_that("covariate depth is reported consistently", {
   withr::local_seed(0)
   for (k in 1:5) {
-    dts <- sample(c("A", "B", "C"), 500, replace = TRUE)
-    y <- ifelse(runif(length(dts)) > 0.5, c(dts[-1], sample(c("A", "B", "C"), 1)), c(dts[-c(1, 2)], sample(c("A", "B", "C"), 2, replace = TRUE)))
-    y <- as.factor(ifelse(runif(length(dts)) > 0.2, y, sample(c("A", "B", "C"), length(dts), replace = TRUE)))
+    rdts <- sample(c("A", "B", "C"), 500, replace = TRUE)
+    y <- ifelse(runif(length(rdts)) > 0.5, c(rdts[-1], sample(c("A", "B", "C"), 1)), c(rdts[-c(1, 2)], sample(c("A", "B", "C"), 2, replace = TRUE)))
+    y <- as.factor(ifelse(runif(length(rdts)) > 0.2, y, sample(c("A", "B", "C"), length(rdts), replace = TRUE)))
     df_y <- data.frame(y = y)
-    model <- covlmc(dts, df_y, alpha = 0.9, min_size = 3)
+    model <- covlmc(rdts, df_y, alpha = 0.9, min_size = 3)
     ctx_m_cov <- contexts(model, hsize = TRUE)
     expect_equal(covariate_depth(model), max(ctx_m_cov$hsize))
   }

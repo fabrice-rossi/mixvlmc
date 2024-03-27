@@ -1,8 +1,8 @@
 test_that("context format is consistent", {
-  dts <- sample(c("A", "B", "C"), 100, replace = TRUE)
+  rdts <- sample(c("A", "B", "C"), 100, replace = TRUE)
   for (backend in c("R", "C++")) {
     withr::local_options("mixvlmc.backend" = backend)
-    model <- vlmc(dts, alpha = 0.5, keep_match = TRUE)
+    model <- vlmc(rdts, alpha = 0.5, keep_match = TRUE)
     raw_ctx <- contexts(model, sequence = TRUE)
     expect_named(raw_ctx, c("context"))
     freq_ctx <- contexts(model, frequency = "total")
@@ -21,10 +21,10 @@ test_that("context format is consistent", {
 })
 
 test_that("context cut off are consistent", {
-  dts <- sample(c("A", "B", "C"), 100, replace = TRUE)
+  rdts <- sample(c("A", "B", "C"), 100, replace = TRUE)
   for (backend in c("R", "C++")) {
     withr::local_options("mixvlmc.backend" = backend)
-    model <- vlmc(dts, alpha = 0.5)
+    model <- vlmc(rdts, alpha = 0.5)
     ctx_co_native <- contexts(model, frequency = "detailed", cutoff = "native")
     ctx_co_quantile <- contexts(model, cutoff = "quantile")
     expect_equal(ctx_co_quantile$cutoff, stats::pchisq(2 * ctx_co_native$cutoff, df = 2, lower.tail = FALSE))

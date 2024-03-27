@@ -1,9 +1,9 @@
 test_that("cutoff.ctx_node works in degenerate cases", {
   pc <- powerconsumption[powerconsumption$week == 5, ]
-  dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.25, 0.5, 0.75, 1))))
+  rdts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.25, 0.5, 0.75, 1))))
   for (backend in c("R", "C++")) {
     withr::local_options("mixvlmc.backend" = backend)
-    model <- vlmc(dts)
+    model <- vlmc(rdts)
     ctx <- find_sequence(model, model$vals[1])
     expect_equal(cutoff(parent(ctx)), 1)
   }
@@ -11,10 +11,10 @@ test_that("cutoff.ctx_node works in degenerate cases", {
 
 test_that("ctx_node based cut off reporting is consistent with direct reporting", {
   pc <- powerconsumption[powerconsumption$week == 5, ]
-  dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.25, 0.5, 0.75, 1))))
+  rdts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.25, 0.5, 0.75, 1))))
   for (backend in c("R", "C++")) {
     withr::local_options("mixvlmc.backend" = backend)
-    model <- vlmc(dts)
+    model <- vlmc(rdts)
     model_ctxs <- contexts(model)
     model_ctx_df <- contexts(model, type = "data.frame", cutoff = "native")
     model_ctx_df_q <- contexts(model, type = "data.frame", cutoff = "quantile")
@@ -33,10 +33,10 @@ test_that("ctx_node based cut off reporting is consistent with direct reporting"
 
 test_that("ctx_node based metrics reporting is consistent with direct reporting", {
   pc <- powerconsumption[powerconsumption$week == 5, ]
-  dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.25, 0.5, 0.75, 1))))
+  rdts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.25, 0.5, 0.75, 1))))
   for (backend in c("R", "C++")) {
     withr::local_options("mixvlmc.backend" = backend)
-    model <- vlmc(dts)
+    model <- vlmc(rdts)
     model_ctxs <- contexts(model)
     model_ctx_df <- contexts(model, type = "data.frame", metrics = TRUE)
     for (k in seq_along(model_ctxs)) {

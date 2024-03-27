@@ -16,8 +16,8 @@ the state space of the context tree.
 This function returns the state space of a context tree.
 }
 \examples{
-dts <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 0)
-dts_ctree <- ctx_tree(dts, min_size = 1, max_depth = 2)
+rdts <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 0)
+rdts_ctree <- ctx_tree(rdts, min_size = 1, max_depth = 2)
 ## should be c(0, 1)
-states(dts_ctree)
+states(rdts_ctree)
 }

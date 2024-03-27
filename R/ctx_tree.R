@@ -142,10 +142,10 @@ grow_ctx_tree <- function(x, vals, min_size, max_depth, covsize = 0L, keep_match
 #' @export
 #'
 #' @examples
-#' dts <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 0)
+#' rdts <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 0)
 #' ## get all contexts of length 2
-#' dts_ctree <- ctx_tree(dts, min_size = 1, max_depth = 2)
-#' draw(dts_ctree)
+#' rdts_ctree <- ctx_tree(rdts, min_size = 1, max_depth = 2)
+#' draw(rdts_ctree)
 ctx_tree <- function(x, min_size = 2L, max_depth = 100L, keep_position = TRUE,
                      backend = getOption("mixvlmc.backend", "R")) {
   backend <- match.arg(backend, c("R", "C++"))
@@ -188,10 +188,10 @@ ctx_tree <- function(x, min_size = 2L, max_depth = 100L, keep_position = TRUE,
 #' @returns `TRUE` for context trees.
 #' @export
 #' @examples
-#' dts <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 0)
-#' dts_ctree <- ctx_tree(dts, min_size = 1, max_depth = 2)
-#' is_ctx_tree(dts_ctree)
-#' is_ctx_tree(dts)
+#' rdts <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 0)
+#' rdts_ctree <- ctx_tree(rdts, min_size = 1, max_depth = 2)
+#' is_ctx_tree(rdts_ctree)
+#' is_ctx_tree(rdts)
 is_ctx_tree <- function(x) {
   inherits(x, "ctx_tree")
 }
@@ -224,10 +224,10 @@ print.ctx_tree <- function(x, ...) {
 #'
 #' @export
 #' @examples
-#' dts <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 0)
-#' dts_ctree <- ctx_tree(dts, min_size = 1, max_depth = 2)
+#' rdts <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 0)
+#' rdts_ctree <- ctx_tree(rdts, min_size = 1, max_depth = 2)
 #' ## should be c(0, 1)
-#' states(dts_ctree)
+#' states(rdts_ctree)
 states <- function(ct) {
   assertthat::assert_that(is_ctx_tree(ct))
   ct$vals
@@ -251,10 +251,10 @@ rec_depth <- function(ct) {
 #'
 #' @export
 #' @examples
-#' dts <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 0)
-#' dts_ctree <- ctx_tree(dts, min_size = 1, max_depth = 3)
+#' rdts <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 0)
+#' rdts_ctree <- ctx_tree(rdts, min_size = 1, max_depth = 3)
 #' ## should be 3
-#' depth(dts_ctree)
+#' depth(rdts_ctree)
 depth <- function(ct) {
   assertthat::assert_that(is_ctx_tree(ct))
   if (!is.null(ct$depth)) {
@@ -281,10 +281,10 @@ rec_context_number <- function(ct, count_context = count_local_context) {
 #' @returns the number of contexts of the tree.
 #' @export
 #' @examples
-#' dts <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 0)
-#' dts_ctree <- ctx_tree(dts, min_size = 1, max_depth = 3)
+#' rdts <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 0)
+#' rdts_ctree <- ctx_tree(rdts, min_size = 1, max_depth = 3)
 #' # should be 8
-#' context_number(dts_ctree)
+#' context_number(rdts_ctree)
 context_number <- function(ct) {
   UseMethod("context_number")
 }

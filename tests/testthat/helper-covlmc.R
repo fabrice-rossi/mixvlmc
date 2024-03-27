@@ -18,7 +18,7 @@ build_data_set_2 <- function(seed = 0) {
   withr::local_seed(seed)
   y <- as.factor(rep(rep(1:4, each = 50), 2))
   z <- runif(length(y))
-  dts_cov <- data.frame(y = y, z = z)
+  rdts_cov <- data.frame(y = y, z = z)
   cov_dep <- matrix(runif(length(levels(y)) * 4, min = -1, max = 1), nrow = length(levels(y)))
   cov_dep[cov_dep > 0.5] <- 1
   cov_dep[cov_dep < -0.5] <- -1
@@ -31,7 +31,7 @@ build_data_set_2 <- function(seed = 0) {
     x[k] <- ifelse(runif(1) <= probs[k], 1, 0)
   }
   x <- as.factor(x)
-  list(x = x, covariate = dts_cov)
+  list(x = x, covariate = rdts_cov)
 }
 
 build_data_set_3_model <- function(n, seed = 0, alpha = 0.1) {
@@ -47,7 +47,7 @@ build_data_set_3_model <- function(n, seed = 0, alpha = 0.1) {
   z3 <- c(0, z3)
   df_full <- data.frame(y = y3, z = z3)
   model <- covlmc(x3, df_full, max_depth = 5, min_size = 5, alpha = alpha)
-  list(model = model, dts = x3, cov = df_full)
+  list(model = model, rdts = x3, cov = df_full)
 }
 
 extract_p_value <- function(tree) {
@@ -164,17 +164,17 @@ compare_covlmc <- function(m1, m2) {
 build_degenerate_elec_model <- function(with_new_data = FALSE) {
   pc_week_15_16 <- powerconsumption[powerconsumption$week %in% c(15, 16), ]
   elec <- pc_week_15_16$active_power
-  elec_dts <- cut(elec, breaks = c(0, 0.4, 2, 8), labels = c("low", "typical", "high"))
+  elec_rdts <- cut(elec, breaks = c(0, 0.4, 2, 8), labels = c("low", "typical", "high"))
   elec_cov <- data.frame(day = (pc_week_15_16$hour >= 7 & pc_week_15_16$hour <= 18))
-  elec_tune <- tune_covlmc(elec_dts, elec_cov, min_size = 5)
+  elec_tune <- tune_covlmc(elec_rdts, elec_cov, min_size = 5)
   elec_model <- prune(as_covlmc(elec_tune), alpha = 3.961e-10)
-  result <- list(model = elec_model, dts = elec_dts, cov = elec_cov)
+  result <- list(model = elec_model, rdts = elec_rdts, cov = elec_cov)
   if (with_new_data) {
     pc_week_17_18 <- powerconsumption[powerconsumption$week %in% c(17, 18), ]
-    elec_new_dts <- cut(pc_week_17_18$active_power, breaks = c(0, 0.4, 2, 8), labels = c("low", "typical", "high"))
+    elec_new_rdts <- cut(pc_week_17_18$active_power, breaks = c(0, 0.4, 2, 8), labels = c("low", "typical", "high"))
     elec_new_cov <- data.frame(day = (pc_week_17_18$hour >= 7 & pc_week_17_18$hour <= 18))
     result$new_cov <- elec_new_cov
-    result$new_dts <- elec_new_dts
+    result$new_rdts <- elec_new_rdts
   }
   result
 }
@@ -305,7 +305,7 @@ create_demo_covlmc <- function() {
   for (k in seq_along(m_cuts[1:4])) {
     m_current <- prune(m_current, m_cuts[k])
   }
-  list(model = m_current, dts = x3, cov = df_y3, full_model = x3_covlmc)
+  list(model = m_current, rdts = x3, cov = df_y3, full_model = x3_covlmc)
 }
 
 create_merged_dataset <- function(n = 1000, seed = 0) {
@@ -326,5 +326,5 @@ create_merged_dataset <- function(n = 1000, seed = 0) {
       res[k] <- sample(1:3, 1, prob = prob_2[k - 1, ])
     }
   }
-  list(dts = x, cov = cov)
+  list(rdts = x, cov = cov)
 }

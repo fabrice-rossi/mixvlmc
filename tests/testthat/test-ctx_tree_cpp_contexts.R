@@ -24,10 +24,10 @@ test_that("the C++ backend find the same detailed contexts as the R one (up to o
 
 test_that("the C++ and R backend agree", {
   withr::local_seed(2)
-  dts <- sample(letters[1:4], 100, replace = TRUE)
-  dts_ctree <- ctx_tree(dts, min_size = 1, max_depth = 5, backend = "C++")
-  dts_rtree <- ctx_tree(dts, min_size = 1, max_depth = 5, backend = "R")
-  cpp_ctxs <- contexts(dts_ctree, frequency = "detailed", position = FALSE)
-  r_ctxs <- contexts(dts_rtree, frequency = "detailed", position = FALSE)
+  rdts <- sample(letters[1:4], 100, replace = TRUE)
+  rdts_ctree <- ctx_tree(rdts, min_size = 1, max_depth = 5, backend = "C++")
+  rdts_rtree <- ctx_tree(rdts, min_size = 1, max_depth = 5, backend = "R")
+  cpp_ctxs <- contexts(rdts_ctree, frequency = "detailed", position = FALSE)
+  r_ctxs <- contexts(rdts_rtree, frequency = "detailed", position = FALSE)
   expect_true(compare_ctx(r_ctxs, cpp_ctxs))
 })

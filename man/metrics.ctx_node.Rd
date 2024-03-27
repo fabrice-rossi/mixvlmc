@@ -32,8 +32,12 @@ other contexts. Apart from this limited scope, the function operates as
 }
 \examples{
 pc <- powerconsumption[powerconsumption$week == 5, ]
-dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.25, 0.5, 0.75, 1))))
-model <- vlmc(dts)
+rdts <- cut(pc$active_power,
+  breaks = c(0, quantile(pc$active_power,
+    probs = c(0.25, 0.5, 0.75, 1)
+  ))
+)
+model <- vlmc(rdts)
 model_ctxs <- contexts(model)
 metrics(model_ctxs[[4]])
 }

@@ -97,9 +97,9 @@ breaks <- c(
   max(powerconsumption$active_power, na.rm = TRUE)
 )
 labels <- c(0, 1)
-dts <- cut(pc$active_power, breaks = breaks, labels = labels)
-dts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
-m_cov <- covlmc(dts, dts_cov, min_size = 5)
+rdts <- cut(pc$active_power, breaks = breaks, labels = labels)
+rdts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
+m_cov <- covlmc(rdts, rdts_cov, min_size = 5)
 ll <- loglikelihood(m_cov)
 ll
 attr(ll, "nobs")
@@ -107,9 +107,9 @@ attr(ll, "nobs")
 ## Likelihood for new time series and covariates with previously
 ## fitted VLMC with covariates
 pc_new <- powerconsumption[powerconsumption$week == 11, ]
-dts_new <- cut(pc_new$active_power, breaks = breaks, labels = labels)
-dts_cov_new <- data.frame(day_night = (pc_new$hour >= 7 & pc_new$hour <= 17))
-ll_new <- loglikelihood(m_cov, newdata = dts_new, newcov = dts_cov_new)
+rdts_new <- cut(pc_new$active_power, breaks = breaks, labels = labels)
+rdts_cov_new <- data.frame(day_night = (pc_new$hour >= 7 & pc_new$hour <= 17))
+ll_new <- loglikelihood(m_cov, newdata = rdts_new, newcov = rdts_cov_new)
 ll_new
 attributes(ll_new)
 

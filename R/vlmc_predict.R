@@ -43,10 +43,14 @@
 #' @export
 #' @examples
 #' pc <- powerconsumption[powerconsumption$week == 5, ]
-#' dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.25, 0.5, 0.75, 1))))
-#' model <- vlmc(dts, min_size = 5)
-#' predict(model, dts[1:5])
-#' predict(model, dts[1:5], "probs")
+#' rdts <- cut(pc$active_power,
+#'   breaks = c(0, quantile(pc$active_power,
+#'     probs = c(0.25, 0.5, 0.75, 1)
+#'   ))
+#' )
+#' model <- vlmc(rdts, min_size = 5)
+#' predict(model, rdts[1:5])
+#' predict(model, rdts[1:5], "probs")
 predict.vlmc <- function(object, newdata, type = c("raw", "probs"),
                          final_pred = TRUE, ...) {
   type <- match.arg(type)
@@ -56,8 +60,8 @@ predict.vlmc <- function(object, newdata, type = c("raw", "probs"),
     assertthat::assert_that((typeof(newdata) == typeof(object$vals)) && methods::is(newdata, class(object$vals)),
       msg = "newdata is not compatible with the model state space"
     )
-    dts <- to_dts(newdata, object$vals)
-    ctx <- rev(dts$ix) + 1
+    nd_dts <- to_dts(newdata, object$vals)
+    ctx <- rev(nd_dts$ix) + 1
   } else {
     stop("newdata must be provided.")
   }

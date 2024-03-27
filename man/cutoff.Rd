@@ -26,8 +26,12 @@ is documented in concrete implementation of the function.
 }
 \examples{
 pc <- powerconsumption[powerconsumption$week == 5, ]
-dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.25, 0.5, 0.75, 1))))
-model <- vlmc(dts)
+rdts <- cut(pc$active_power,
+  breaks = c(0, quantile(pc$active_power,
+    probs = c(0.25, 0.5, 0.75, 1)
+  ))
+)
+model <- vlmc(rdts)
 draw(model)
 model_cuts <- cutoff(model)
 model_2 <- prune(model, model_cuts[2])

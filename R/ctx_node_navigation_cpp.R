@@ -2,12 +2,12 @@
 #' @rdname parent
 #' @examples
 #' ## C++ backend
-#' dts <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 0)
-#' dts_ctree <- ctx_tree(dts, min_size = 1, max_depth = 3, backend = "C++")
-#' ctx_00 <- find_sequence(dts_ctree, c(0, 0))
+#' rdts <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 0)
+#' rdts_ctree <- ctx_tree(rdts, min_size = 1, max_depth = 3, backend = "C++")
+#' ctx_00 <- find_sequence(rdts_ctree, c(0, 0))
 #' ## the parent sequence/node corresponds to the 0 context
 #' parent(ctx_00)
-#' identical(parent(ctx_00), find_sequence(dts_ctree, c(0)))
+#' identical(parent(ctx_00), find_sequence(rdts_ctree, c(0)))
 parent.ctx_node_cpp <- function(node) {
   restore_ctx_node_cpp(node)
   if (length(node$sequence) >= 1) {
@@ -22,12 +22,12 @@ parent.ctx_node_cpp <- function(node) {
 #' @rdname children
 #' @examples
 #' ## C++ backend
-#' dts <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 0)
-#' dts_ctree <- ctx_tree(dts, min_size = 1, max_depth = 3, backend = "C++")
-#' ctx_00 <- find_sequence(dts_ctree, c(0, 0))
+#' rdts <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 0)
+#' rdts_ctree <- ctx_tree(rdts, min_size = 1, max_depth = 3, backend = "C++")
+#' ctx_00 <- find_sequence(rdts_ctree, c(0, 0))
 #' ## this context can only be extended in the past by 1:
 #' children(ctx_00)
-#' ctx_10 <- find_sequence(dts_ctree, c(1, 0))
+#' ctx_10 <- find_sequence(rdts_ctree, c(1, 0))
 #' ## this context can be extended by both states
 #' children(ctx_10)
 children.ctx_node_cpp <- function(node) {

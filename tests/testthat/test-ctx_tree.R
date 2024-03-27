@@ -20,20 +20,20 @@ test_that("the context number is calculted correctly", {
 })
 
 test_that("the context tree has the correct class", {
-  dts <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 0)
-  dts_ctree <- ctx_tree(dts, min_size = 1, max_depth = 2)
-  expect_s3_class(dts_ctree, "ctx_tree", exact = TRUE)
+  rdts <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 0)
+  rdts_ctree <- ctx_tree(rdts, min_size = 1, max_depth = 2)
+  expect_s3_class(rdts_ctree, "ctx_tree", exact = TRUE)
 })
 
 test_that("a warning is given when the state space is large", {
-  dts <- rep(1:20, 2)
+  rdts <- rep(1:20, 2)
   expect_warning({
-    dts_ctree <- ctx_tree(dts, min_size = 1, max_depth = 2)
+    rdts_ctree <- ctx_tree(rdts, min_size = 1, max_depth = 2)
   })
 })
 
 test_that("printing", {
-  dts <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 0)
-  dts_ctree <- ctx_tree(dts, min_size = 1, max_depth = 2)
-  expect_snapshot_output(print(dts_ctree))
+  rdts <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 0)
+  rdts_ctree <- ctx_tree(rdts, min_size = 1, max_depth = 2)
+  expect_snapshot_output(print(rdts_ctree))
 })

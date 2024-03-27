@@ -87,11 +87,11 @@ test_that("covlmc simulate handles missing factors in subsets", {
   y[xl2_1$positions[[2]] + 1] <- sample(1:3, length(xl2_1$positions[[2]]), replace = TRUE)
   y <- as.factor(y)
   z <- runif(length(x)) + c(x[-1], 0) / 4
-  dts_cov <- data.frame(y = y, z = z)
+  rdts_cov <- data.frame(y = y, z = z)
   for (engine in c("glm", "multinom")) {
     withr::local_options(mixvlmc.predictive = engine)
-    m_cov <- covlmc(x = x, covariate = dts_cov, min_size = 5, alpha = 0.5)
-    expect_error(simulate(m_cov, 100, seed = 0, covariate = dts_cov), regexp = NA)
+    m_cov <- covlmc(x = x, covariate = rdts_cov, min_size = 5, alpha = 0.5)
+    expect_error(simulate(m_cov, 100, seed = 0, covariate = rdts_cov), regexp = NA)
   }
 })
 

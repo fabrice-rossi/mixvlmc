@@ -1,7 +1,7 @@
 # contexts print as expected
 
     Code
-      contexts(dts_tree)
+      contexts(rdts_tree)
     Output
       Contexts:
        A, A, A, A

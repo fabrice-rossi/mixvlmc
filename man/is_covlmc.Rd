@@ -17,9 +17,9 @@ This function returns \code{TRUE} for VLMC models with covariates and \code{FALS
 }
 \examples{
 pc <- powerconsumption[powerconsumption$week == 5, ]
-dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1))))
-dts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
-m_cov <- covlmc(dts, dts_cov, min_size = 5)
+rdts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1))))
+rdts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
+m_cov <- covlmc(rdts, rdts_cov, min_size = 5)
 # should be true
 is_ctx_tree(m_cov)
 # should be true

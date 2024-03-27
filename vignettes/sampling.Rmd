@@ -61,11 +61,11 @@ distributions given its contexts and also the distributions of the initial value
 
 Let us consider a simple example with an independent sample:
 ```{r}
-dts <- sample(0:1, 500, replace = TRUE)
+rdts <- sample(0:1, 500, replace = TRUE)
 ```
 The optimal VLMC according to the BIC has no memory:
 ```{r}
-best_vlmc <- tune_vlmc(dts)
+best_vlmc <- tune_vlmc(rdts)
 draw(as_vlmc(best_vlmc))
 ```
 
@@ -158,8 +158,8 @@ patterns used in the statistics must be of fixed lengths to be covered by the
 consistency theorems mentioned above. We implement the statistics as follows:
 
 ```{r}
-long_sequence <- function(dts) {
-  dts_int <- as.integer(dts)
+long_sequence <- function(rdts) {
+  dts_int <- as.integer(rdts)
   ## RLE cannot be used directly as we need to account for overlapping
   ## patterns
   dts_freq <- frollapply(dts_int, 10, \(x) max(rle(x)$length) >= 5)

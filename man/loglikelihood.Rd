@@ -112,8 +112,8 @@ breaks <- c(
   max(powerconsumption$active_power, na.rm = TRUE)
 )
 labels <- c(0, 1)
-dts <- cut(pc$active_power, breaks = breaks, labels = labels)
-m_nocovariate <- vlmc(dts)
+rdts <- cut(pc$active_power, breaks = breaks, labels = labels)
+m_nocovariate <- vlmc(rdts)
 ll <- loglikelihood(m_nocovariate)
 ll
 attr(ll, "nobs")
@@ -121,14 +121,14 @@ attr(ll, "df")
 
 ## Likelihood for a new time series with previously fitted VLMC.
 pc_new <- powerconsumption[powerconsumption$week == 11, ]
-dts_new <- cut(pc_new$active_power, breaks = breaks, labels = labels)
-ll_new <- loglikelihood(m_nocovariate, newdata = dts_new)
+rdts_new <- cut(pc_new$active_power, breaks = breaks, labels = labels)
+ll_new <- loglikelihood(m_nocovariate, newdata = rdts_new)
 ll_new
 attributes(ll_new)
-ll_new_specific <- loglikelihood(m_nocovariate, initial = "specific", newdata = dts_new)
+ll_new_specific <- loglikelihood(m_nocovariate, initial = "specific", newdata = rdts_new)
 ll_new_specific
 attributes(ll_new_specific)
-ll_new_extended <- loglikelihood(m_nocovariate, initial = "extended", newdata = dts_new)
+ll_new_extended <- loglikelihood(m_nocovariate, initial = "extended", newdata = rdts_new)
 ll_new_extended
 attributes(ll_new_extended)
 

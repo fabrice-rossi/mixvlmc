@@ -16,12 +16,12 @@ test_that("the suffix tree contains all the suffixes", {
 
 test_that("the suffix tree contains all the suffixes (more tests)", {
   withr::local_seed(2)
-  dts <- sample(letters[1:4], 100, replace = TRUE)
-  dts_tr <- to_dts(dts)
-  tree <- build_suffix_tree(dts_tr$ix, 4)
+  rdts <- sample(letters[1:4], 100, replace = TRUE)
+  rdts_tr <- to_dts(rdts)
+  tree <- build_suffix_tree(rdts_tr$ix, 4)
   all_suffixes <- TRUE
-  for (i in seq_along(dts_tr$ix)) {
-    if (!tree$is_suffix(dts_tr$ix[i:length(dts_tr$ix)])) {
+  for (i in seq_along(rdts_tr$ix)) {
+    if (!tree$is_suffix(rdts_tr$ix[i:length(rdts_tr$ix)])) {
       all_suffixes <- FALSE
       break
     }

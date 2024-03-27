@@ -59,10 +59,10 @@ assertthat::on_failure(is_ctx_node) <- function(call, env) {
 #' @returns `TRUE` if the node `node` use a reverse temporal ordering, `FALSE`
 #'   when this is not the case
 #' @examples
-#' dts <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 0)
-#' dts_ctree <- ctx_tree(dts, min_size = 1, max_depth = 3)
-#' is_reversed(find_sequence(dts_ctree, c(0, 0)))
-#' is_reversed(find_sequence(dts_ctree, c(1, 0), reverse = TRUE))
+#' rdts <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 0)
+#' rdts_ctree <- ctx_tree(rdts, min_size = 1, max_depth = 3)
+#' is_reversed(find_sequence(rdts_ctree, c(0, 0)))
+#' is_reversed(find_sequence(rdts_ctree, c(1, 0), reverse = TRUE))
 #' @export
 #' @seealso [rev.ctx_node()]
 is_reversed <- function(node) {
@@ -81,9 +81,9 @@ is_reversed <- function(node) {
 #'   of the function
 #' @export
 #' @examples
-#' dts <- c("A", "B", "C", "A", "A", "B", "B", "C", "C", "A")
-#' dts_tree <- ctx_tree(dts, max_depth = 3)
-#' res <- find_sequence(dts_tree, c("A", "B"))
+#' rdts <- c("A", "B", "C", "A", "A", "B", "B", "C", "C", "A")
+#' rdts_tree <- ctx_tree(rdts, max_depth = 3)
+#' res <- find_sequence(rdts_tree, c("A", "B"))
 #' print(res)
 #' r_res <- rev(res)
 #' print(r_res)
@@ -108,9 +108,9 @@ rev.ctx_node <- function(x) {
 #' @export
 #'
 #' @examples
-#' dts <- c("A", "B", "C", "A", "A", "B", "B", "C", "C", "A")
-#' dts_tree <- ctx_tree(dts, max_depth = 3)
-#' res <- find_sequence(dts_tree, "A")
+#' rdts <- c("A", "B", "C", "A", "A", "B", "B", "C", "C", "A")
+#' rdts_tree <- ctx_tree(rdts, max_depth = 3)
+#' res <- find_sequence(rdts_tree, "A")
 #' as_sequence(res)
 as_sequence <- function(node, reverse) {
   assertthat::assert_that(is_ctx_node(node))
@@ -150,11 +150,11 @@ as_sequence <- function(node, reverse) {
 #'   used to build the context tree. In the present function, `reverse` refers
 #'   both to the order used for the `ctx` parameter and for the default order used by the resulting `ctx_node` object.
 #' @examples
-#' dts <- c("A", "B", "C", "A", "A", "B", "B", "C", "C", "A")
-#' dts_tree <- ctx_tree(dts, max_depth = 3)
-#' find_sequence(dts_tree, "A")
-#' ## returns NULL as "A" "C" does not appear in dts
-#' find_sequence(dts_tree, c("A", "C"))
+#' rdts <- c("A", "B", "C", "A", "A", "B", "B", "C", "C", "A")
+#' rdts_tree <- ctx_tree(rdts, max_depth = 3)
+#' find_sequence(rdts_tree, "A")
+#' ## returns NULL as "A" "C" does not appear in rdts
+#' find_sequence(rdts_tree, c("A", "C"))
 #' @export
 find_sequence <- function(ct, ctx, reverse = FALSE, ...) {
   UseMethod("find_sequence")
@@ -200,12 +200,12 @@ find_sequence.ctx_tree <- function(ct, ctx, reverse = FALSE, ...) {
 #' @returns `TRUE` if the node `node` is a proper context,
 #'   `FALSE` when this is not the case
 #' @examples
-#' dts <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 0)
-#' dts_ctree <- ctx_tree(dts, min_size = 1, max_depth = 3)
-#' draw(dts_ctree)
+#' rdts <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 0)
+#' rdts_ctree <- ctx_tree(rdts, min_size = 1, max_depth = 3)
+#' draw(rdts_ctree)
 #' ## 0, 0 is a context but 1, 0 is not
-#' is_context(find_sequence(dts_ctree, c(0, 0)))
-#' is_context(find_sequence(dts_ctree, c(1, 0)))
+#' is_context(find_sequence(rdts_ctree, c(0, 0)))
+#' is_context(find_sequence(rdts_ctree, c(1, 0)))
 #' @export
 is_context <- function(node) {
   assertthat::assert_that(is_ctx_node(node))
@@ -232,9 +232,9 @@ is_context <- function(node) {
 #' @export
 #'
 #' @examples
-#' dts <- sample(as.factor(c("A", "B", "C")), 100, replace = TRUE)
-#' dts_tree <- ctx_tree(dts, max_depth = 3, min_size = 5)
-#' subseq <- find_sequence(dts_tree, factor(c("B", "A"), levels = c("A", "B", "C")))
+#' rdts <- sample(as.factor(c("A", "B", "C")), 100, replace = TRUE)
+#' rdts_tree <- ctx_tree(rdts, max_depth = 3, min_size = 5)
+#' subseq <- find_sequence(rdts_tree, factor(c("B", "A"), levels = c("A", "B", "C")))
 #' if (!is.null(subseq)) {
 #'   positions(subseq)
 #' }
@@ -278,9 +278,9 @@ positions.ctx_node <- function(node) {
 #' @export
 #' @seealso [contexts()] and [contexts.ctx_tree()]
 #' @examples
-#' dts <- sample(as.factor(c("A", "B", "C")), 100, replace = TRUE)
-#' dts_tree <- ctx_tree(dts, max_depth = 3, min_size = 5)
-#' subseq <- find_sequence(dts_tree, factor(c("A", "A"), levels = c("A", "B", "C")))
+#' rdts <- sample(as.factor(c("A", "B", "C")), 100, replace = TRUE)
+#' rdts_tree <- ctx_tree(rdts, max_depth = 3, min_size = 5)
+#' subseq <- find_sequence(rdts_tree, factor(c("A", "A"), levels = c("A", "B", "C")))
 #' if (!is.null(subseq)) {
 #'   counts(subseq)
 #' }

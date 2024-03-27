@@ -19,9 +19,9 @@ assertthat::on_failure(is_ctx_node_covlmc) <- function(call, env) {
 #'   in the context tree, `NULL` when this is not the case
 #' @examples
 #' pc <- powerconsumption[powerconsumption$week == 5, ]
-#' dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1))))
-#' dts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
-#' m_cov <- covlmc(dts, dts_cov, min_size = 10)
+#' rdts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1))))
+#' rdts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
+#' m_cov <- covlmc(rdts, rdts_cov, min_size = 10)
 #'
 #' ## not in the tree
 #' vals <- states(m_cov)
@@ -112,9 +112,9 @@ find_sequence.covlmc <- function(ct, ctx, reverse = FALSE, ...) {
 #'   model as a R object. If `node` is not a context, `NULL`.
 #' @examples
 #' pc <- powerconsumption[powerconsumption$week == 5, ]
-#' dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1))))
-#' dts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
-#' m_cov <- covlmc(dts, dts_cov, min_size = 10)
+#' rdts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1))))
+#' rdts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
+#' m_cov <- covlmc(rdts, rdts_cov, min_size = 10)
 #' vals <- states(m_cov)
 #' node <- find_sequence(m_cov, c(vals[1], vals[1]))
 #' node
@@ -157,9 +157,9 @@ model <- function(node, type = c("coef", "full")) {
 #' @export
 #' @examples
 #' pc <- powerconsumption[powerconsumption$week == 15, ]
-#' dts <- cut(pc$active_power, breaks = c(0, 1, 2, 3, 8))
-#' dts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
-#' m_cov <- covlmc(dts, dts_cov, min_size = 5, alpha = 0.1)
+#' rdts <- cut(pc$active_power, breaks = c(0, 1, 2, 3, 8))
+#' rdts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
+#' m_cov <- covlmc(rdts, rdts_cov, min_size = 5, alpha = 0.1)
 #' ctxs <- contexts(m_cov)
 #' ## no merging
 #' sapply(ctxs, is_merged)
@@ -193,9 +193,9 @@ is_merged <- function(node) {
 #' @examples
 #' pc_week_15_16 <- powerconsumption[powerconsumption$week %in% c(15, 16), ]
 #' elec <- pc_week_15_16$active_power
-#' elec_dts <- cut(elec, breaks = c(0, 0.4, 2, 8), labels = c("low", "typical", "high"))
+#' elec_rdts <- cut(elec, breaks = c(0, 0.4, 2, 8), labels = c("low", "typical", "high"))
 #' elec_cov <- data.frame(day = (pc_week_15_16$hour >= 7 & pc_week_15_16$hour <= 18))
-#' elec_tune <- tune_covlmc(elec_dts, elec_cov, min_size = 5)
+#' elec_tune <- tune_covlmc(elec_rdts, elec_cov, min_size = 5)
 #' elec_model <- prune(as_covlmc(elec_tune), alpha = 3.961e-10)
 #' ctxs <- contexts(elec_model)
 #' for (ctx in ctxs) {
@@ -242,9 +242,9 @@ merged_with <- function(node) {
 #' @returns the memory length, an integer
 #' @examples
 #' pc <- powerconsumption[powerconsumption$week == 5, ]
-#' dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1))))
-#' dts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
-#' m_cov <- covlmc(dts, dts_cov, min_size = 10)
+#' rdts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1))))
+#' rdts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
+#' m_cov <- covlmc(rdts, rdts_cov, min_size = 10)
 #' ctxs <- contexts(m_cov)
 #' ## get all the memory lengths
 #' sapply(ctxs, covariate_memory)
@@ -274,9 +274,9 @@ covariate_memory <- function(node) {
 #'   max(powerconsumption$active_power, na.rm = TRUE)
 #' )
 #' labels <- c(0, 1)
-#' dts <- cut(pc$active_power, breaks = breaks, labels = labels)
-#' dts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
-#' m_cov <- covlmc(dts, dts_cov, min_size = 5)
+#' rdts <- cut(pc$active_power, breaks = breaks, labels = labels)
+#' rdts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
+#' m_cov <- covlmc(rdts, rdts_cov, min_size = 5)
 #' m_ctxs <- contexts(m_cov)
 #' ## get the predictive metrics for each context
 #' lapply(m_ctxs, metrics)

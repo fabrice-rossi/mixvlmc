@@ -16,12 +16,12 @@
 #' @returns a `ctx_node` object if `node` does correspond to the empty
 #'   sequence or `NULL` when this is not the case
 #' @examples
-#' dts <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 0)
-#' dts_ctree <- ctx_tree(dts, min_size = 1, max_depth = 3)
-#' ctx_00 <- find_sequence(dts_ctree, c(0, 0))
+#' rdts <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 0)
+#' rdts_ctree <- ctx_tree(rdts, min_size = 1, max_depth = 3)
+#' ctx_00 <- find_sequence(rdts_ctree, c(0, 0))
 #' ## the parent sequence/node corresponds to the 0 context
 #' parent(ctx_00)
-#' identical(parent(ctx_00), find_sequence(dts_ctree, c(0)))
+#' identical(parent(ctx_00), find_sequence(rdts_ctree, c(0)))
 #' @export
 parent <- function(node) {
   UseMethod("parent")
@@ -62,12 +62,12 @@ parent.ctx_node <- function(node) {
 #' @param node a `ctx_node` object as returned by [find_sequence()]
 #' @returns a list of `ctx_node` objects, see details.
 #' @examples
-#' dts <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 0)
-#' dts_ctree <- ctx_tree(dts, min_size = 1, max_depth = 3)
-#' ctx_00 <- find_sequence(dts_ctree, c(0, 0))
+#' rdts <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 0)
+#' rdts_ctree <- ctx_tree(rdts, min_size = 1, max_depth = 3)
+#' ctx_00 <- find_sequence(rdts_ctree, c(0, 0))
 #' ## this context can only be extended in the past by 1:
 #' children(ctx_00)
-#' ctx_10 <- find_sequence(dts_ctree, c(1, 0))
+#' ctx_10 <- find_sequence(rdts_ctree, c(1, 0))
 #' ## this context can be extended by both states
 #' children(ctx_10)
 #' @export

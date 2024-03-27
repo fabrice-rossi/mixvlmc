@@ -11,11 +11,11 @@
 #'
 #' @examples
 #' ## context tree trimming
-#' dts <- sample(as.factor(c("A", "B", "C")), 1000, replace = TRUE)
-#' dts_tree <- ctx_tree(dts, max_depth = 10, min_size = 5, keep_position = TRUE)
-#' print(object.size(dts_tree))
-#' dts_tree <- trim(dts_tree)
-#' print(object.size(dts_tree))
+#' rdts <- sample(as.factor(c("A", "B", "C")), 1000, replace = TRUE)
+#' rdts_tree <- ctx_tree(rdts, max_depth = 10, min_size = 5, keep_position = TRUE)
+#' print(object.size(rdts_tree))
+#' rdts_tree <- trim(rdts_tree)
+#' print(object.size(rdts_tree))
 trim <- function(ct, ...) {
   UseMethod("trim")
 }

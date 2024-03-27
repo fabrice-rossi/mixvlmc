@@ -24,9 +24,9 @@ This function prints a list of contexts i.e. a \code{contexts} object listing
 \code{ctx_node} objects.
 }
 \examples{
-dts <- c("A", "B", "C", "A", "A", "B", "B", "C", "C", "A")
-dts_tree <- ctx_tree(dts, max_depth = 3)
-print(contexts(dts_tree))
+rdts <- c("A", "B", "C", "A", "A", "B", "B", "C", "C", "A")
+rdts_tree <- ctx_tree(rdts, max_depth = 3)
+print(contexts(rdts_tree))
 }
 \seealso{
 \code{\link[=contexts]{contexts()}}

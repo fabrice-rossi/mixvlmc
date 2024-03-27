@@ -40,8 +40,8 @@ breaks <- c(
   max(powerconsumption$active_power, na.rm = TRUE)
 )
 labels <- c(0, 1)
-dts <- cut(pc$active_power, breaks = breaks, labels = labels)
-m_nocovariate <- vlmc(dts)
+rdts <- cut(pc$active_power, breaks = breaks, labels = labels)
+m_nocovariate <- vlmc(rdts)
 ll <- logLik(m_nocovariate)
 ll
 attributes(ll)

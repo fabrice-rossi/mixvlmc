@@ -35,17 +35,17 @@ associated to the sequence obtained by removing the oldest value from the
 original sequence.
 }
 \examples{
-dts <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 0)
-dts_ctree <- ctx_tree(dts, min_size = 1, max_depth = 3)
-ctx_00 <- find_sequence(dts_ctree, c(0, 0))
+rdts <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 0)
+rdts_ctree <- ctx_tree(rdts, min_size = 1, max_depth = 3)
+ctx_00 <- find_sequence(rdts_ctree, c(0, 0))
 ## the parent sequence/node corresponds to the 0 context
 parent(ctx_00)
-identical(parent(ctx_00), find_sequence(dts_ctree, c(0)))
+identical(parent(ctx_00), find_sequence(rdts_ctree, c(0)))
 ## C++ backend
-dts <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 0)
-dts_ctree <- ctx_tree(dts, min_size = 1, max_depth = 3, backend = "C++")
-ctx_00 <- find_sequence(dts_ctree, c(0, 0))
+rdts <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 0)
+rdts_ctree <- ctx_tree(rdts, min_size = 1, max_depth = 3, backend = "C++")
+ctx_00 <- find_sequence(rdts_ctree, c(0, 0))
 ## the parent sequence/node corresponds to the 0 context
 parent(ctx_00)
-identical(parent(ctx_00), find_sequence(dts_ctree, c(0)))
+identical(parent(ctx_00), find_sequence(rdts_ctree, c(0)))
 }

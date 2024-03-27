@@ -17,9 +17,9 @@ test_that("C++ based vlmc draw produces identical results as the R one", {
   skip_on_ci()
   skip_on_cran()
   for (k in 1:5) {
-    dts <- sample(0:k, 100, replace = TRUE)
-    r_vlmc <- vlmc(dts, min_size = 1, max_depth = 8, alpha = 0.5)
-    cpp_vlmc <- vlmc(dts, min_size = 1, max_depth = 8, alpha = 0.5, backend = "C++")
+    rdts <- sample(0:k, 100, replace = TRUE)
+    r_vlmc <- vlmc(rdts, min_size = 1, max_depth = 8, alpha = 0.5)
+    cpp_vlmc <- vlmc(rdts, min_size = 1, max_depth = 8, alpha = 0.5, backend = "C++")
     expect_true(compare_output(
       {
         draw(r_vlmc)
@@ -54,9 +54,9 @@ test_that("C++ based vlmc draw produces identical results as the R one (latex)",
   skip_on_ci()
   skip_on_cran()
   for (k in 1:5) {
-    dts <- sample(0:k, 100, replace = TRUE)
-    r_vlmc <- vlmc(dts, min_size = 1, max_depth = 8, alpha = 0.5)
-    cpp_vlmc <- vlmc(dts, min_size = 1, max_depth = 8, alpha = 0.5, backend = "C++")
+    rdts <- sample(0:k, 100, replace = TRUE)
+    r_vlmc <- vlmc(rdts, min_size = 1, max_depth = 8, alpha = 0.5)
+    cpp_vlmc <- vlmc(rdts, min_size = 1, max_depth = 8, alpha = 0.5, backend = "C++")
     expect_true(compare_output(
       {
         draw(r_vlmc, format = "latex")

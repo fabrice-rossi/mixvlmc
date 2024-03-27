@@ -48,10 +48,10 @@ are represented by \code{\link[=draw]{draw()}} (i.e. recent values at the top th
 }
 
 \examples{
-dts <- sample(as.factor(c("A", "B", "C")), 100, replace = TRUE)
-dts_tree <- ctx_tree(dts, max_depth = 3, min_size = 5)
-contexts(dts_tree)
-contexts(dts_tree, TRUE, TRUE)
+rdts <- sample(as.factor(c("A", "B", "C")), 100, replace = TRUE)
+rdts_tree <- ctx_tree(rdts, max_depth = 3, min_size = 5)
+contexts(rdts_tree)
+contexts(rdts_tree, TRUE, TRUE)
 }
 \seealso{
 \code{\link[=find_sequence]{find_sequence()}} and \code{\link[=find_sequence.covlmc]{find_sequence.covlmc()}} for direct access to

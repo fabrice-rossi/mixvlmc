@@ -32,9 +32,9 @@ of the cut off expressed in quantile or native scale.
 }
 \examples{
 pc <- powerconsumption[powerconsumption$week \%in\% 10:11, ]
-dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1))))
-dts_best_model_tune <- tune_vlmc(dts, criterion = "BIC")
-vlmc_plot <- ggplot2::autoplot(dts_best_model_tune)
+rdts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1))))
+rdts_best_model_tune <- tune_vlmc(rdts, criterion = "BIC")
+vlmc_plot <- ggplot2::autoplot(rdts_best_model_tune)
 print(vlmc_plot)
 ## simple post customisation
 print(vlmc_plot + ggplot2::geom_point())

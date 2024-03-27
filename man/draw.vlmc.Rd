@@ -64,8 +64,8 @@ special characters in the names of the states of the context tree.
 }
 
 \examples{
-dts <- sample(c("A", "B", "C"), 500, replace = TRUE)
-model <- vlmc(dts, alpha = 0.05)
+rdts <- sample(c("A", "B", "C"), 500, replace = TRUE)
+model <- vlmc(rdts, alpha = 0.05)
 draw(model)
 draw(model, prob = FALSE)
 draw(model, prob = NULL)

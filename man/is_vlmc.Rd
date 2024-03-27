@@ -17,8 +17,12 @@ This function returns \code{TRUE} for VLMC models and \code{FALSE} for other obj
 }
 \examples{
 pc <- powerconsumption[powerconsumption$week == 5, ]
-dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.25, 0.5, 0.75, 1))))
-model <- vlmc(dts)
+rdts <- cut(pc$active_power,
+  breaks = c(0, quantile(pc$active_power,
+    probs = c(0.25, 0.5, 0.75, 1)
+  ))
+)
+model <- vlmc(rdts)
 # should be true
 is_ctx_tree(model)
 # should be true

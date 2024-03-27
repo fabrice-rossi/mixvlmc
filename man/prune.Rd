@@ -45,12 +45,16 @@ are not provided by \code{\link[=tune_vlmc]{tune_vlmc()}}.
 }
 \examples{
 pc <- powerconsumption[powerconsumption$week == 5, ]
-dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.25, 0.5, 0.75, 1))))
-base_model <- vlmc(dts, alpha = 0.1)
+rdts <- cut(pc$active_power,
+  breaks = c(0, quantile(pc$active_power,
+    probs = c(0.25, 0.5, 0.75, 1)
+  ))
+)
+base_model <- vlmc(rdts, alpha = 0.1)
 model_cuts <- cutoff(base_model)
 pruned_model <- prune(base_model, model_cuts[3])
 draw(pruned_model)
-direct_simple <- vlmc(dts, alpha = model_cuts[3])
+direct_simple <- vlmc(rdts, alpha = model_cuts[3])
 draw(direct_simple)
 # pruned_model and direct_simple should be identical
 all.equal(pruned_model, direct_simple)

@@ -91,8 +91,8 @@ collection, including the initial complex tree, as the one that minimizes the
 chosen information criterion.
 }
 \examples{
-dts <- sample(as.factor(c("A", "B", "C")), 100, replace = TRUE)
-tune_result <- tune_vlmc(dts)
+rdts <- sample(as.factor(c("A", "B", "C")), 100, replace = TRUE)
+tune_result <- tune_vlmc(rdts)
 draw(tune_result$best_model)
 }
 \seealso{

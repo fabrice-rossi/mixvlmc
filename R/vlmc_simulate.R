@@ -65,18 +65,22 @@
 #'
 #' @returns a simulated discrete time series of the same type as the one used to
 #'   build the vlmc with a `seed` attribute (see the Random seed section). The
-#'   results has also the `dts` class to hide the `seed` attribute when using
+#'   results has also the `dts_simulated` class to hide the `seed` attribute when using
 #'   `print` or similar function.
 #' @export
 #' @seealso [stats::simulate()] for details and examples on the random number
 #'   generator setting
 #' @examples
 #' pc <- powerconsumption[powerconsumption$week == 5, ]
-#' dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.25, 0.5, 0.75, 1))))
-#' model <- vlmc(dts, min_size = 5)
-#' new_dts <- simulate(model, 500, seed = 0)
-#' new_dts_2 <- simulate(model, 500, seed = 0, init = dts[1:5])
-#' new_dts_3 <- simulate(model, 500, seed = 0, burnin = 500)
+#' rdts <- cut(pc$active_power,
+#'   breaks = c(0, quantile(pc$active_power,
+#'     probs = c(0.25, 0.5, 0.75, 1)
+#'   ))
+#' )
+#' model <- vlmc(rdts, min_size = 5)
+#' new_rdts <- simulate(model, 500, seed = 0)
+#' new_rdts_2 <- simulate(model, 500, seed = 0, init = rdts[1:5])
+#' new_rdts_3 <- simulate(model, 500, seed = 0, burnin = 500)
 simulate.vlmc <- function(object, nsim = 1L, seed = NULL, init = NULL, burnin = 0L, ...) {
   max_depth <- depth(object)
   if (!is.null(seed)) {

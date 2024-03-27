@@ -42,9 +42,9 @@ the function reports the frequencies of each of the possible value of the
 time series when they appear just after the sequence.
 }
 \examples{
-dts <- sample(as.factor(c("A", "B", "C")), 100, replace = TRUE)
-dts_tree <- ctx_tree(dts, max_depth = 3, min_size = 5)
-subseq <- find_sequence(dts_tree, factor(c("A", "A"), levels = c("A", "B", "C")))
+rdts <- sample(as.factor(c("A", "B", "C")), 100, replace = TRUE)
+rdts_tree <- ctx_tree(rdts, max_depth = 3, min_size = 5)
+subseq <- find_sequence(rdts_tree, factor(c("A", "A"), levels = c("A", "B", "C")))
 if (!is.null(subseq)) {
   counts(subseq)
 }

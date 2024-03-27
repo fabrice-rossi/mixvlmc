@@ -33,9 +33,9 @@ For instance if \code{x=c(0, 0, 1, 1)} and \code{ctx=c(0, 1)} (in standard state
 order), then the position of \code{ctx} in \code{x} is 3.
 }
 \examples{
-dts <- sample(as.factor(c("A", "B", "C")), 100, replace = TRUE)
-dts_tree <- ctx_tree(dts, max_depth = 3, min_size = 5)
-subseq <- find_sequence(dts_tree, factor(c("B", "A"), levels = c("A", "B", "C")))
+rdts <- sample(as.factor(c("A", "B", "C")), 100, replace = TRUE)
+rdts_tree <- ctx_tree(rdts, max_depth = 3, min_size = 5)
+subseq <- find_sequence(rdts_tree, factor(c("B", "A"), levels = c("A", "B", "C")))
 if (!is.null(subseq)) {
   positions(subseq)
 }

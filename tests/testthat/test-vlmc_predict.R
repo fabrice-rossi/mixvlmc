@@ -31,22 +31,22 @@ test_that("vlmc predict returns deterministic results", {
 
 test_that("vlmc predict handles correctly edge cases", {
   pc <- powerconsumption[powerconsumption$week == 5, ]
-  dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.25, 0.5, 0.75, 1))))
+  rdts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.25, 0.5, 0.75, 1))))
   for (backend in c("R", "C++")) {
     withr::local_options("mixvlmc.backend" = backend)
-    model <- vlmc(dts, min_size = 5)
+    model <- vlmc(rdts, min_size = 5)
     for (fp in c(TRUE, FALSE)) {
-      ec_predict <- predict(model, dts[0], final_pred = fp)
+      ec_predict <- predict(model, rdts[0], final_pred = fp)
       expect_length(ec_predict, as.integer(fp))
-      expect_type(ec_predict, typeof(dts))
-      expect_s3_class(ec_predict, class(dts))
-      expect_identical(levels(ec_predict), levels(dts))
-      prob_ec_predict <- predict(model, dts[0], final_pred = fp, type = "probs")
+      expect_type(ec_predict, typeof(rdts))
+      expect_s3_class(ec_predict, class(rdts))
+      expect_identical(levels(ec_predict), levels(rdts))
+      prob_ec_predict <- predict(model, rdts[0], final_pred = fp, type = "probs")
       expect_equal(nrow(prob_ec_predict), as.integer(fp))
-      expect_equal(ncol(prob_ec_predict), length(levels(dts)))
+      expect_equal(ncol(prob_ec_predict), length(levels(rdts)))
       expect_type(prob_ec_predict, "double")
       expect_identical(class(prob_ec_predict), c("matrix", "array"))
-      expect_equal(colnames(prob_ec_predict), as.character(levels(dts)))
+      expect_equal(colnames(prob_ec_predict), as.character(levels(rdts)))
     }
   }
 })
@@ -103,33 +103,33 @@ test_that("the semantics of final_pred is respected", {
     withr::local_options("mixvlmc.backend" = backend)
     d_vlmc <- vlmc(data_set, alpha = 0.1)
     for (k in 1:10) {
-      new_dts <- sample(c("A", "B", "C"),
+      new_rdts <- sample(c("A", "B", "C"),
         100 + sample(50:100, 1),
         replace = TRUE
       )
-      pred_w_final <- predict(d_vlmc, new_dts, final_pred = TRUE)
-      pred_wo_final <- predict(d_vlmc, new_dts, final_pred = FALSE)
+      pred_w_final <- predict(d_vlmc, new_rdts, final_pred = TRUE)
+      pred_wo_final <- predict(d_vlmc, new_rdts, final_pred = FALSE)
       expect_length(
         pred_w_final,
-        length(new_dts) + 1
+        length(new_rdts) + 1
       )
       expect_length(
         pred_wo_final,
-        length(new_dts)
+        length(new_rdts)
       )
       expect_identical(
         pred_wo_final,
         pred_w_final[-length(pred_w_final)]
       )
-      probs_pred_w_final <- predict(d_vlmc, new_dts, type = "probs", final_pred = TRUE)
-      probs_pred_wo_final <- predict(d_vlmc, new_dts, type = "probs", final_pred = FALSE)
+      probs_pred_w_final <- predict(d_vlmc, new_rdts, type = "probs", final_pred = TRUE)
+      probs_pred_wo_final <- predict(d_vlmc, new_rdts, type = "probs", final_pred = FALSE)
       expect_equal(
         nrow(probs_pred_w_final),
-        length(new_dts) + 1
+        length(new_rdts) + 1
       )
       expect_equal(
         nrow(probs_pred_wo_final),
-        length(new_dts)
+        length(new_rdts)
       )
       expect_identical(
         probs_pred_wo_final,

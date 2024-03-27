@@ -338,11 +338,11 @@ rec_draw <- function(label, prefix, ct, vals, control, node2txt) {
 #' @param ... additional arguments for draw.
 #' @returns the context tree (invisibly).
 #' @examples
-#' dts <- sample(c(0, 1), 100, replace = TRUE)
-#' ctree <- ctx_tree(dts, min_size = 10, max_depth = 2)
+#' rdts <- sample(c(0, 1), 100, replace = TRUE)
+#' ctree <- ctx_tree(rdts, min_size = 10, max_depth = 2)
 #' draw(ctree)
-#' dts_c <- sample(c("A", "B", "CD"), 100, replace = TRUE)
-#' ctree_c <- ctx_tree(dts_c, min_size = 10, max_depth = 2)
+#' rdts_c <- sample(c("A", "B", "CD"), 100, replace = TRUE)
+#' ctree_c <- ctx_tree(rdts_c, min_size = 10, max_depth = 2)
 #' draw(ctree_c, control = draw_control(digits = 2))
 #' ## LaTeX output
 #' draw(ctree_c, "latex")
@@ -392,14 +392,14 @@ ctx_tree_node2txt <- function(ct, control) {
 #'   (partial) context of the node, while `"detailed"` includes the frequency of
 #'   the states that follow the context (as in [contexts.ctx_tree()]).
 #' @examples
-#' dts_c <- sample(c("A", "B", "CD"), 100, replace = TRUE)
-#' ctree_c <- ctx_tree(dts_c, min_size = 10, max_depth = 2)
+#' rdts_c <- sample(c("A", "B", "CD"), 100, replace = TRUE)
+#' ctree_c <- ctx_tree(rdts_c, min_size = 10, max_depth = 2)
 #' draw(ctree_c, frequency = "total")
 #' draw(ctree_c, frequency = "detailed")
 #' ## LaTeX output
 #' draw(ctree_c, "latex", frequency = "detailed")
-#' dts_c <- sample(c("A$", "_{B", "{C}_{D}"), 100, replace = TRUE)
-#' ctree_c <- ctx_tree(dts_c, min_size = 10, max_depth = 2)
+#' rdts_c <- sample(c("A$", "_{B", "{C}_{D}"), 100, replace = TRUE)
+#' ctree_c <- ctx_tree(rdts_c, min_size = 10, max_depth = 2)
 #' ## the LaTeX output is sanitized
 #' draw(ctree_c, "latex", frequency = "detailed")
 #' @export

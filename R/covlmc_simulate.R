@@ -59,19 +59,19 @@ match_context_co <- function(tree, ctx) {
 #' @inheritSection simulate.vlmc Random seed
 #' @returns a simulated discrete time series of the same type as the one used to
 #'   build the covlmc with a `seed` attribute (see the Random seed section). The
-#'   results has also the `dts` class to hide the `seed` attribute when using
+#'   results has also the `dts_simulated` class to hide the `seed` attribute when using
 #'   `print` or similar function.
 #' @seealso [stats::simulate()] for details and examples on the random number generator setting
 #' @export
 #' @examples
 #' pc <- powerconsumption[powerconsumption$week == 5, ]
-#' dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1))))
-#' dts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
-#' m_cov <- covlmc(dts, dts_cov, min_size = 5)
+#' rdts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1))))
+#' rdts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
+#' m_cov <- covlmc(rdts, rdts_cov, min_size = 5)
 #' # new week with day light from 6:00 to 18:00
 #' new_cov <- data.frame(day_night = rep(c(rep(FALSE, 59), rep(TRUE, 121), rep(FALSE, 60)), times = 7))
-#' new_dts <- simulate(m_cov, nrow(new_cov), seed = 0, covariate = new_cov)
-#' new_dts_2 <- simulate(m_cov, nrow(new_cov), seed = 0, covariate = new_cov, init = dts[1:10])
+#' new_rdts <- simulate(m_cov, nrow(new_cov), seed = 0, covariate = new_cov)
+#' new_rdts_2 <- simulate(m_cov, nrow(new_cov), seed = 0, covariate = new_cov, init = rdts[1:10])
 simulate.covlmc <- function(object, nsim = 1, seed = NULL, covariate, init = NULL, ...) {
   if (isTRUE(object$trimmed == "full")) {
     stop("simulate is not supported by fully trimmed covlmc")

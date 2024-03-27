@@ -22,13 +22,13 @@ have been removed.
 \examples{
 ## VLMC trimming is generally useless unless match positions were kept
 pc <- powerconsumption[powerconsumption$week \%in\% 5:6, ]
-dts <- cut(pc$active_power, breaks = 4)
-model <- vlmc(dts, keep_match = TRUE)
+rdts <- cut(pc$active_power, breaks = 4)
+model <- vlmc(rdts, keep_match = TRUE)
 print(object.size(model))
 model <- trim(model)
 ## memory use should be reduced
 print(object.size(model))
-nm_model <- vlmc(dts)
+nm_model <- vlmc(rdts)
 print(object.size(nm_model))
 nm_model <- trim(nm_model)
 ## no effect when match positions are not kept

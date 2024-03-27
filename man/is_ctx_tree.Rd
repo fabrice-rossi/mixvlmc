@@ -16,8 +16,8 @@ is_ctx_tree(x)
 This function returns \code{TRUE} for context trees and \code{FALSE} for other objects.
 }
 \examples{
-dts <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 0)
-dts_ctree <- ctx_tree(dts, min_size = 1, max_depth = 2)
-is_ctx_tree(dts_ctree)
-is_ctx_tree(dts)
+rdts <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 0)
+rdts_ctree <- ctx_tree(rdts, min_size = 1, max_depth = 2)
+is_ctx_tree(rdts_ctree)
+is_ctx_tree(rdts)
 }

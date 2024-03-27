@@ -59,8 +59,8 @@ the function. All parameters specified in addition to \code{x}, \code{value} and
 }
 
 \examples{
-dts <- sample(as.factor(c("A", "B", "C")), 100, replace = TRUE)
-tune_result <- tune_vlmc(dts)
+rdts <- sample(as.factor(c("A", "B", "C")), 100, replace = TRUE)
+tune_result <- tune_vlmc(rdts)
 ## default plot
 plot(tune_result)
 ## likelihood
@@ -71,10 +71,10 @@ plot(tune_result,
   xlab = "Cut off", type = "b"
 )
 pc <- powerconsumption[powerconsumption$week \%in\% 10:12, ]
-dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1))))
-dts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
-dts_best_model_tune <- tune_covlmc(dts, dts_cov, criterion = "AIC")
-plot(dts_best_model_tune)
-plot(dts_best_model_tune, value = "likelihood")
+rdts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1))))
+rdts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
+rdts_best_model_tune <- tune_covlmc(rdts, rdts_cov, criterion = "AIC")
+plot(rdts_best_model_tune)
+plot(rdts_best_model_tune, value = "likelihood")
 
 }

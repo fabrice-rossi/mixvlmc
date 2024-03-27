@@ -185,11 +185,11 @@ form \code{t-1}, \code{t-2}, etc.
 
 \examples{
 pc <- powerconsumption[powerconsumption$week == 5, ]
-dts <- cut(pc$active_power,
+rdts <- cut(pc$active_power,
   breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1)))
 )
-dts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
-m_cov <- covlmc(dts, dts_cov, min_size = 5)
+rdts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
+m_cov <- covlmc(rdts, rdts_cov, min_size = 5)
 draw(m_cov, control = draw_control(digits = 3))
 draw(m_cov, model = NULL)
 draw(m_cov, p_value = TRUE)

@@ -1,15 +1,15 @@
 test_that("parent navigation works", {
   withr::local_seed(1)
-  dts <- sample(1:5, 100, replace = TRUE)
+  rdts <- sample(1:5, 100, replace = TRUE)
   for (backend in c("R", "C++")) {
     withr::local_options("mixvlmc.backend" = backend)
-    dts_ctree <- ctx_tree(dts, min_size = 1, max_depth = 4)
+    rdts_ctree <- ctx_tree(rdts, min_size = 1, max_depth = 4)
     all_ok <- TRUE
-    for (k in 1:(length(dts) - 2)) {
-      for (l in 1:(min(3, length(dts) - 1 - k))) {
-        the_ctx <- dts[k:(k + l)]
-        the_match <- find_sequence(dts_ctree, the_ctx)
-        the_pmatch <- find_sequence(dts_ctree, the_ctx[-1])
+    for (k in 1:(length(rdts) - 2)) {
+      for (l in 1:(min(3, length(rdts) - 1 - k))) {
+        the_ctx <- rdts[k:(k + l)]
+        the_match <- find_sequence(rdts_ctree, the_ctx)
+        the_pmatch <- find_sequence(rdts_ctree, the_ctx[-1])
         if (!compare_ctx_node(parent(the_match), the_pmatch)) {
           all_ok <- FALSE
           break
@@ -25,19 +25,19 @@ test_that("parent navigation works", {
 
 test_that("children navigation works", {
   withr::local_seed(2)
-  dts <- sample(1:5, 100, replace = TRUE)
+  rdts <- sample(1:5, 100, replace = TRUE)
   for (backend in c("R", "C++")) {
     withr::local_options("mixvlmc.backend" = backend)
-    dts_ctree <- ctx_tree(dts, min_size = 1, max_depth = 4)
+    rdts_ctree <- ctx_tree(rdts, min_size = 1, max_depth = 4)
     all_ok <- TRUE
-    for (k in 1:(length(dts) - 2)) {
-      for (l in 1:(min(3, length(dts) - 1 - k))) {
-        the_ctx <- dts[(k + 1):(k + l)]
-        the_match <- find_sequence(dts_ctree, the_ctx)
-        the_cmatch <- find_sequence(dts_ctree, dts[k:(k + l)])
+    for (k in 1:(length(rdts) - 2)) {
+      for (l in 1:(min(3, length(rdts) - 1 - k))) {
+        the_ctx <- rdts[(k + 1):(k + l)]
+        the_match <- find_sequence(rdts_ctree, the_ctx)
+        the_cmatch <- find_sequence(rdts_ctree, rdts[k:(k + l)])
         the_children <- children(the_match)
         if (!length(the_children) == 5 ||
-          !compare_ctx_node(the_children[[dts[k]]], the_cmatch)) {
+          !compare_ctx_node(the_children[[rdts[k]]], the_cmatch)) {
           all_ok <- FALSE
           break
         }

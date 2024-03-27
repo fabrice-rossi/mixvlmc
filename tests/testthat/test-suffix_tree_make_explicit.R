@@ -2,16 +2,16 @@ test_that("making nodes explicit does not break anything", {
   withr::local_seed(1)
   for (val in 0:4) {
     if (val == 0) {
-      dts <- as.integer(c(1, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 0, 0, 1, 1, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0))
-      tree <- build_suffix_tree(dts, 2)
+      rdts <- as.integer(c(1, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 0, 0, 1, 1, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0))
+      tree <- build_suffix_tree(rdts, 2)
       tree$compute_counts(val, TRUE)
     } else {
-      dts <- sample(0:val, 30, replace = TRUE)
-      tree <- build_suffix_tree(dts, val + 1)
+      rdts <- sample(0:val, 30, replace = TRUE)
+      tree <- build_suffix_tree(rdts, val + 1)
       tree$compute_counts(val, TRUE)
     }
-    #    dts <- rep(0:3, 4)
-    #  tree <- build_suffix_tree(dts, 4)
+    #    rdts <- rep(0:3, 4)
+    #  tree <- build_suffix_tree(rdts, 4)
     #  tree$compute_counts(3, TRUE)
     ## save values before the call to make_explicit
     b_ctx <- tree$contexts(1, -1)

@@ -48,9 +48,9 @@ both to the order used for the \code{ctx} parameter and for the default order us
 }
 
 \examples{
-dts <- c("A", "B", "C", "A", "A", "B", "B", "C", "C", "A")
-dts_tree <- ctx_tree(dts, max_depth = 3)
-find_sequence(dts_tree, "A")
-## returns NULL as "A" "C" does not appear in dts
-find_sequence(dts_tree, c("A", "C"))
+rdts <- c("A", "B", "C", "A", "A", "B", "B", "C", "C", "A")
+rdts_tree <- ctx_tree(rdts, max_depth = 3)
+find_sequence(rdts_tree, "A")
+## returns NULL as "A" "C" does not appear in rdts
+find_sequence(rdts_tree, c("A", "C"))
 }

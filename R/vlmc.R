@@ -7,8 +7,12 @@
 #' @export
 #' @examples
 #' pc <- powerconsumption[powerconsumption$week == 5, ]
-#' dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.25, 0.5, 0.75, 1))))
-#' model <- vlmc(dts)
+#' rdts <- cut(pc$active_power,
+#'   breaks = c(0, quantile(pc$active_power,
+#'     probs = c(0.25, 0.5, 0.75, 1)
+#'   ))
+#' )
+#' model <- vlmc(rdts)
 #' # should be true
 #' is_ctx_tree(model)
 #' # should be true
@@ -72,8 +76,12 @@ kl_div <- function(p, q) {
 #' @returns a vector of cut off values.
 #' @examples
 #' pc <- powerconsumption[powerconsumption$week == 5, ]
-#' dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.25, 0.5, 0.75, 1))))
-#' model <- vlmc(dts)
+#' rdts <- cut(pc$active_power,
+#'   breaks = c(0, quantile(pc$active_power,
+#'     probs = c(0.25, 0.5, 0.75, 1)
+#'   ))
+#' )
+#' model <- vlmc(rdts)
 #' draw(model)
 #' model_cuts <- cutoff(model)
 #' model_2 <- prune(model, model_cuts[2])
@@ -193,12 +201,16 @@ prune_ctx_tree <- function(tree, alpha = 0.05, cutoff = NULL, verbose = FALSE) {
 #' @export
 #' @examples
 #' pc <- powerconsumption[powerconsumption$week == 5, ]
-#' dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.25, 0.5, 0.75, 1))))
-#' base_model <- vlmc(dts, alpha = 0.1)
+#' rdts <- cut(pc$active_power,
+#'   breaks = c(0, quantile(pc$active_power,
+#'     probs = c(0.25, 0.5, 0.75, 1)
+#'   ))
+#' )
+#' base_model <- vlmc(rdts, alpha = 0.1)
 #' model_cuts <- cutoff(base_model)
 #' pruned_model <- prune(base_model, model_cuts[3])
 #' draw(pruned_model)
-#' direct_simple <- vlmc(dts, alpha = model_cuts[3])
+#' direct_simple <- vlmc(rdts, alpha = model_cuts[3])
 #' draw(direct_simple)
 #' # pruned_model and direct_simple should be identical
 #' all.equal(pruned_model, direct_simple)
@@ -292,17 +304,17 @@ prune.vlmc <- function(vlmc, alpha = 0.05, cutoff = NULL, ...) {
 #' @returns a fitted vlmc model.
 #' @examples
 #' pc <- powerconsumption[powerconsumption$week == 5, ]
-#' dts <- cut(pc$active_power,
+#' rdts <- cut(pc$active_power,
 #'   breaks = c(0, quantile(pc$active_power, probs = c(0.25, 0.5, 0.75, 1)))
 #' )
-#' model <- vlmc(dts)
+#' model <- vlmc(rdts)
 #' draw(model)
 #' depth(model)
 #' ## reduce the detph of the model
-#' shallow_model <- vlmc(dts, max_depth = 3)
+#' shallow_model <- vlmc(rdts, max_depth = 3)
 #' draw(shallow_model, prob = FALSE)
 #' ## improve probability estimates
-#' robust_model <- vlmc(dts, min_size = 25)
+#' robust_model <- vlmc(rdts, min_size = 25)
 #' draw(robust_model, prob = FALSE) ## show the frequencies
 #' draw(robust_model)
 #' @export
