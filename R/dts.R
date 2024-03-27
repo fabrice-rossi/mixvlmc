@@ -17,11 +17,11 @@ validate_dts <- function(x, vals) {
     assertthat::assert_that(assertthat::noNA(fx), msg = "x contains unknown states")
     vals <- factor(levels(fx), levels(fx))
   }
-  list(ix = as.integer(fx) - 1L, vals = vals)
+  list(ix = as.integer(fx) - 1L, vals = vals, fx = fx)
 }
 
-new_dts <- function(ix, vals, ..., class = character()) {
-  structure(list(ix = ix, vals = vals),
+new_dts <- function(ix, vals, fx, ..., class = character()) {
+  structure(list(ix = ix, vals = vals, fx = fx),
     class = c(class, "dts")
   )
 }
@@ -55,7 +55,7 @@ new_dts <- function(ix, vals, ..., class = character()) {
 #' x_dts
 dts <- function(x, vals = NULL) {
   pre_res <- validate_dts(x, vals)
-  new_dts(pre_res$ix, pre_res$vals)
+  new_dts(pre_res$ix, pre_res$vals, pre_res$fx)
 }
 
 as_dts <- function(x) {
@@ -84,7 +84,7 @@ assertthat::on_failure(is_dts) <- function(call, env) {
 
 #' @export
 `[.dts` <- function(x, i, ...) {
-  new_dts(x$ix[i, ...], x$vals)
+  new_dts(x$ix[i, ...], x$vals, x$fx[i, ...])
 }
 
 #' @export
