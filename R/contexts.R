@@ -1,19 +1,3 @@
-path_list_extractor <- function(tree, path, ct, vals, control, is_leaf, p_summary) {
-  if (is_leaf) {
-    if (is.null(ct[["f_by"]])) {
-      NULL
-    } else {
-      list(path)
-    }
-  } else {
-    if (nb_sub_tree(ct) < length(vals)) {
-      list(path)
-    } else {
-      NULL
-    }
-  }
-}
-
 no_summary <- function(ct) {
   NULL
 }
