@@ -59,7 +59,11 @@ dts <- function(x, vals = NULL) {
 }
 
 as_dts <- function(x) {
-  dts(x)
+  if (is_dts(x)) {
+    x
+  } else {
+    dts(x)
+  }
 }
 
 #' Test if the object is a discrete time series
