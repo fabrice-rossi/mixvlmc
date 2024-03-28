@@ -231,7 +231,7 @@ loglikelihood.covlmc <- function(vlmc, newdata,
       }
       if (ignore > 0) {
         ## remove the ignored data
-        icovlmc <- match_ctx(vlmc, vlmc$ix[1:min(ignore, length(vlmc$ix))])
+        icovlmc <- match_ctx(vlmc, vlmc$iix[1:min(ignore, length(vlmc$ix))])
         delta_res <- rec_loglikelihood_covlmc_newdata(
           icovlmc, 0, length(vlmc$vals),
           vlmc$ix[1:min(ignore, length(vlmc$ix))],
