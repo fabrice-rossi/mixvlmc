@@ -33,7 +33,11 @@ print.ctx_node <- function(x, ...) {
     cat(" [T]: ")
     x_seq <- rev(x$sequence)
   }
-  cat(paste(x_seq, collapse = ", "), "\n")
+  if (is_dts(x_seq)) {
+    cat(paste(dts_data(x_seq), collapse = ", "), "\n")
+  } else {
+    cat(paste(x_seq, collapse = ", "), "\n")
+  }
   cat(" followed by ", paste(paste(x$tree$vals, x$node$f_by, sep = " ("), collapse = "), "), ")\n", sep = "")
 }
 
