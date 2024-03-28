@@ -33,10 +33,34 @@ test_that("dts conversion works", {
   expect_identical(as.factor(c("U", "V", "Z")), states(x_dts))
 })
 
+test_that("errors are detected", {
+  expect_error(dts(list()))
+  expect_error(dts("W", vals = c("U", "V")))
+})
+
 test_that("dts printing works", {
   withr::local_seed(0)
   x <- sample(letters, 500, replace = TRUE)
   x_dts <- dts(x)
   expect_snapshot(print(x_dts))
   expect_snapshot(print(x_dts, n = 200))
+  expect_snapshot(print(x_dts[1:5]))
+})
+
+test_that("reversing works", {
+  x <- sample(as.factor(c("U", "V", "Z")), 200, replace = TRUE)
+  x_dts <- dts(x)
+  rev_x <- rev(x_dts)
+  rev_x_direct <- dts(rev(x))
+  expect_identical(rev_x, rev_x_direct)
+})
+
+test_that("indexing works", {
+  x <- sample(as.factor(c("U", "V", "Z")), 200, replace = TRUE)
+  x_dts <- dts(x)
+  start <- sample(1:50, 20)
+  end <- start + sample(1:50, length(start))
+  for (k in seq_along(start)) {
+    expect_equal(dts_data(x_dts[start[k]:end[k]]), x[start[k]:end[k]])
+  }
 })

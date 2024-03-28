@@ -1,3 +1,28 @@
+test_that("basic find_sequences works", {
+  withr::local_seed(0)
+  raw_x <- sample(c("A", "B", "C"), 250, replace = TRUE)
+  y <- ifelse(runif(length(raw_x)) > 0.5, c(
+    raw_x[-1],
+    sample(c("A", "B", "C"), 1)
+  ),
+  c(raw_x[-c(1, 2)], sample(c("A", "B", "C"), 2, replace = TRUE))
+  )
+  y <- as.factor(ifelse(runif(length(raw_x)) > 0.2, y,
+    sample(c("A", "B", "C"), length(raw_x), replace = TRUE)
+  ))
+  df_y <- data.frame(y = y)
+  x <- dts(raw_x)
+  model <- covlmc(x, df_y, alpha = 0.05, min_size = 3 / 2)
+  expect_null(parent(find_sequence(model, character())))
+  expect_null(parent(find_sequence(model, x[0])))
+  expect_equal(positions(find_sequence(model, character())), 1:length(x))
+  expect_equal(positions(find_sequence(model, x[0])), 1:length(x))
+  expect_null(find_sequence(model, x[1:(depth(model) + 1)]))
+  expect_no_error(find_sequence(model, "A"))
+  expect_no_error(find_sequence(model, "B"))
+  expect_no_error(find_sequence(model, "C"))
+})
+
 test_that("models are correctly reported", {
   withr::local_seed(0)
   rdts <- sample(c("A", "B", "C"), 1000, replace = TRUE)

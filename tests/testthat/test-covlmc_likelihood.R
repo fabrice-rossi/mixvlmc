@@ -21,6 +21,27 @@ test_that("loglikelihood computes the expected values", {
   }
 })
 
+test_that("loglikelihood handles constant models", {
+  x <- rep(c(0, 1), 1000)
+  y <- data.frame(y = rep(0, length(x)))
+  for (engine in c("glm", "multinom")) {
+    withr::local_options(mixvlmc.predictive = engine)
+    x_covlmc <- covlmc(x, y)
+    for (initial in c("truncated", "specific", "extended")) {
+      fll <- loglikelihood(x_covlmc, initial = initial, newdata = x, newcov = y)
+      sll <- co_slow_loglikelihood(x_covlmc, x, initial = initial, newcov = y)
+      dll <- loglikelihood(x_covlmc, initial = initial)
+      expect_equal(as.numeric(fll), as.numeric(sll))
+      expect_equal(attr(fll, "df"), attr(sll, "df"))
+      expect_equal(attr(fll, "nobs"), attr(sll, "nobs"))
+      expect_equal(as.numeric(dll), as.numeric(sll))
+      expect_equal(attr(dll, "df"), attr(sll, "df"))
+      expect_equal(attr(dll, "nobs"), attr(sll, "nobs"))
+    }
+  }
+})
+
+
 test_that("loglikelihood computes the expected values with ignore", {
   withr::local_seed(42)
   x <- sample(c("A", "B", "C"), 1000, replace = TRUE)
@@ -37,6 +58,14 @@ test_that("loglikelihood computes the expected values with ignore", {
       expect_equal(as.numeric(fll), as.numeric(sll))
       expect_equal(attr(fll, "df"), attr(sll, "df"))
       expect_equal(attr(fll, "nobs"), attr(sll, "nobs"))
+      expect_error(loglikelihood(x_covlmc, initial = initial, ignore = to_ignore))
+      if (initial != "truncated") {
+        fll <- loglikelihood(x_covlmc, initial = initial, ignore = 1)
+        sll <- co_slow_loglikelihood(x_covlmc, x, initial = initial, newcov = df_y, ignore = 1)
+        expect_equal(as.numeric(fll), as.numeric(sll))
+        expect_equal(attr(fll, "df"), attr(sll, "df"))
+        expect_equal(attr(fll, "nobs"), attr(sll, "nobs"))
+      }
     }
   }
 })

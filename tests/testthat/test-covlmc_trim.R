@@ -42,6 +42,7 @@ test_that("trimming removes only what it should remove", {
         type = "data.frame", hsize = TRUE,
         model = "full"
       ))
+      expect_no_error(lapply(contexts(t_m_cov_model), model, type = "full"))
       expect_equal(
         simulate(m_cov, nsim = 50, seed = 0, rdts_cov),
         simulate(t_m_cov_model, nsim = 50, seed = 0, rdts_cov)
@@ -49,6 +50,10 @@ test_that("trimming removes only what it should remove", {
       ## errors
       expect_error(
         contexts(t_m_cov, type = "data.frame", hsize = TRUE, model = "full"),
+        "Full model extraction is not supported by fully trimmed covlmc"
+      )
+      expect_error(
+        lapply(contexts(t_m_cov), model, type = "full"),
         "Full model extraction is not supported by fully trimmed covlmc"
       )
       expect_error(

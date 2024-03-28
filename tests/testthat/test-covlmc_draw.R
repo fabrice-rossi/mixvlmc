@@ -193,3 +193,16 @@ test_that("draw handles degenerate cases", {
     ))
   }
 })
+
+test_that("draw handles constant models", {
+  x <- rep(c(0, 1), 1000)
+  y <- data.frame(y = rep(0, length(x)))
+  for (engine in c("glm", "multinom")) {
+    withr::local_options(mixvlmc.predictive = engine)
+    x_covlmc <- covlmc(x, y)
+    for (format in c("text", "latex")) {
+      expect_snapshot_output(draw(x_covlmc, format = format, model = "coef"))
+      expect_snapshot_output(draw(x_covlmc, format = format, model = "full"))
+    }
+  }
+})

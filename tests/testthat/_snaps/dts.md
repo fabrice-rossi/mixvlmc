@@ -19,3 +19,11 @@
         r w o g o t y x s u p s d b p a l g i z m z b b s q b k c c n s m k p h i r z 
         x j o c e ...
 
+---
+
+    Code
+      print(x_dts[1:5])
+    Output
+      Discrete time series of length 5 with state space a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z
+       n y d g a
+
