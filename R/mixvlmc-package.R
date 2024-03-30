@@ -39,7 +39,6 @@
 #' @importFrom Rcpp evalCpp
 #' @importFrom stats simulate
 #' @importFrom stats predict
-#' @importFrom ggplot2 autoplot
 #' @importFrom rlang .data
 #' @useDynLib mixvlmc
 ## usethis namespace: end

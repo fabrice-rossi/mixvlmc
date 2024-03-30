@@ -24,7 +24,7 @@
 #' print(vlmc_plot)
 #' ## simple post customisation
 #' print(vlmc_plot + ggplot2::geom_point())
-#' @export
+#' @exportS3Method ggplot2::autoplot
 autoplot.tune_vlmc <- function(object, cutoff = c("quantile", "native"), ...) {
   cutoff <- match.arg(cutoff)
   if (cutoff == "quantile") {
@@ -75,7 +75,7 @@ autoplot.tune_vlmc <- function(object, cutoff = c("quantile", "native"), ...) {
 #' @param object a `tune_covlmc` object
 #' @param ... additional parameters (not used currently)
 #' @returns a ggplot object
-#' @export
+#' @exportS3Method ggplot2::autoplot
 #' @examples
 #' pc <- powerconsumption[powerconsumption$week %in% 10:12, ]
 #' rdts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1))))

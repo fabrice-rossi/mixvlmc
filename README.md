@@ -71,7 +71,7 @@ The package is loaded in a standard way.
 
 ``` r
 library(mixvlmc)
-library(ggplot2)
+library(ggplot2) ## we load ggplot2 for the autoplot examples
 ```
 
 The main function of VLMC is `vlmc()` which can be called on a time
