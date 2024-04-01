@@ -9,7 +9,7 @@ articles:
   prediction: prediction.html
   sampling: sampling.html
   variable-length-markov-chains: variable-length-markov-chains.html
-last_built: 2024-03-27T16:48Z
+last_built: 2024-04-01T13:36Z
 urls:
   reference: https://fabrice-rossi.github.io/mixvlmc/reference
   article: https://fabrice-rossi.github.io/mixvlmc/articles
