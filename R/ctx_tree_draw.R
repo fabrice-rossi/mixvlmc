@@ -253,31 +253,61 @@ draw_control <- function(digits = 4,
   )
 }
 
-cat_with_prefix <- function(label, prefix, node_txt, control) {
-  node_txt_lines <- unlist(stringr::str_split(node_txt, "\n"))
-  cat(" ", control$open_ct, node_txt_lines[1], sep = "")
-  if (length(node_txt_lines) > 1) {
-    local_prefix <- utf8_pad(
-      prefix,
-      cli::utf8_nchar(stringr::str_c(label, " ", control$open_ct), "width"),
-      "right"
-    )
-    for (k in seq_along(node_txt_lines)[-1]) {
-      cat("\n", local_prefix, node_txt_lines[k], sep = "")
+#' Format the content of a node
+#'
+#' @param label the label of the node with its prefix
+#' @param prefix the prefix to use for subsequent lines
+#' @param node_txt the text of the node with one or several lines (as a character vector)
+#' @param control list of control parameters
+#'
+#' @return the formatted content, a character vector (each string is a line)
+#' @noRd
+format_node <- function(label, prefix, node_txt, control) {
+  if (is.null(node_txt) || length(node_txt) == 0) {
+    label
+  } else {
+    first_prefix <- stringr::str_c(prefix, label, " ", control$open_ct, sep = "")
+    result <- rep("", length(node_txt))
+    result[1] <- stringr::str_c(label, " ", control$open_ct, node_txt[1])
+    if (length(node_txt) > 1) {
+      local_prefix <- utf8_pad(
+        prefix,
+        cli::utf8_nchar(stringr::str_c(label, " ", control$open_ct), "width"), "right"
+      )
+      result[2:length(node_txt)] <- stringr::str_c(local_prefix, node_txt[2:length(node_txt)])
     }
+    result[length(node_txt)] <- stringr::str_c(
+      result[length(node_txt)],
+      control$close_ct
+    )
+    result
   }
-  cat(control$close_ct)
 }
 
-rec_draw <- function(label, prefix, ct, vals, control, node2txt) {
-  cat(label)
+#' Format a context tree
+#'
+#' This is a recursive function
+#'
+#' @param label the label of the current node (initialy set to the root)
+#' @param prefix the current prefix that should be added to all the lines
+#'   produced for the current node
+#' @param ct the current node
+#' @param vals printable values for the states
+#' @param control list of control parameters
+#' @param node2txt a function that maps the content of a node to a string
+#'   representation possibly made of multiple lines (as character vector). The
+#'   lines should be aligned but do not have to care about the prefix
+#'
+#' @return the formatted context tree as a list of character vectors (one per
+#'   line)
+#' @noRd
+format_ctx_tree <- function(label, prefix, ct, vals, control, node2txt) {
   if (!is.null(node2txt)) {
     node_txt <- node2txt(ct, control)
-    if (!is.null(node_txt)) {
-      cat_with_prefix(label, prefix, node_txt, control)
-    }
+  } else {
+    node_txt <- NULL
   }
-  cat("\n")
+  full_node <- format_node(label, prefix, node_txt, control)
   if (!is.null(ct$children)) {
     nst <- nb_sub_tree(ct)
     if (nst > 1) {
@@ -287,6 +317,7 @@ rec_draw <- function(label, prefix, ct, vals, control, node2txt) {
     }
     idx <- 1
     nb_nodes <- sum(sapply(ct$children, \(x) length(x) > 0))
+    result <- full_node
     for (v in seq_along(ct$children)) {
       child <- ct$children[[v]]
       if (length(child) > 0) {
@@ -298,10 +329,12 @@ rec_draw <- function(label, prefix, ct, vals, control, node2txt) {
         }
         c_prefix <- utf8_pad(c_prefix, cli::utf8_nchar(c_prelabel, "width"), "right")
         ## recursive call
-        rec_draw(
-          stringr::str_c(prefix, c_prelabel, vals[v]),
-          stringr::str_c(prefix, c_prefix), child, vals, control, node2txt
-        )
+        sub_tree <-
+          format_ctx_tree(
+            stringr::str_c(prefix, c_prelabel, vals[v]),
+            stringr::str_c(prefix, c_prefix), child, vals, control, node2txt
+          )
+        result <- c(result, sub_tree)
         ## prepare for next child
         idx <- idx + 1
         if (idx == nb_nodes) {
@@ -311,8 +344,12 @@ rec_draw <- function(label, prefix, ct, vals, control, node2txt) {
         }
       }
     }
+    result
+  } else {
+    full_node
   }
 }
+
 
 #' Text based representation of a context tree
 #'
@@ -432,20 +469,25 @@ draw.ctx_tree <- function(ct, format, control = draw_control(),
   control <- format_control$control
   if (format == "text") {
     if (is.null(frequency)) {
-      rec_draw(control$root, "", ct, ct$vals, c(control, list(...)), NULL)
+      res <- format_ctx_tree(
+        control$root, "", ct, ct$vals, c(control, list(...)),
+        NULL
+      )
     } else {
       frequency <- match.arg(frequency, c("total", "detailed"))
-      rec_draw(
+      res <- format_ctx_tree(
         control$root, "", ct, ct$vals,
-        c(control, list(frequency = frequency), list(...)), ctx_tree_node2txt
+        c(control, list(frequency = frequency), list(...)),
+        ctx_tree_node2txt
       )
     }
   } else if (format == "latex") {
-    draw_latex_ctx_tree(
+    res <- format_latex_ctx_tree(
       ct, xtable::sanitize(ct$vals, "latex"),
       c(control, list(...), list(frequency = frequency)),
       ctx_tree_node2latex
     )
   }
+  writeLines(res)
   invisible(ct)
 }

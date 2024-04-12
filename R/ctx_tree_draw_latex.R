@@ -36,23 +36,23 @@ ctx_tree_node2latex <- function(label, ct, control) {
   the_node
 }
 
-draw_latex_ctx_tree <- function(ct, vals, control, node2latex) {
+format_latex_ctx_tree <- function(ct, vals, control, node2latex) {
   rec_draw_latex <- function(node, label) {
-    cat("[", node2latex(label, node, control),
-      sep = ""
-    )
+    res <- stringr::str_c("[", node2latex(label, node, control))
     if (!is.null(node$children)) {
-      cat("\n")
       for (v in seq_along(node$children)) {
         child <- node$children[[v]]
         if (length(child) > 0) {
-          rec_draw_latex(child, vals[v])
+          res <- c(res, rec_draw_latex(child, vals[v]))
         }
       }
     }
-    cat("]\n")
+    res[length(res)] <- stringr::str_c(res[length(res)], "]")
+    res
   }
-  start_forest(control)
-  rec_draw_latex(ct, "$\\epsilon$")
-  end_forest(control)
+  c(
+    start_forest(control),
+    rec_draw_latex(ct, "$\\epsilon$"),
+    end_forest(control)
+  )
 }

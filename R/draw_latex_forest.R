@@ -51,16 +51,18 @@ global_forest_option <- function(control) {
 }
 
 start_forest <- function(control) {
+  res <- NULL
   if (control$fontsize != "normalsize") {
-    cat("\\begin{", control$fontsize, "}\n", sep = "")
+    res <- stringr::str_c("\\begin{", control$fontsize, "}", sep = "")
   }
-  cat("\\begin{forest}\n")
-  cat(global_forest_option(control))
+  res <- c(res, "\\begin{forest}")
+  c(res, global_forest_option(control))
 }
 
 end_forest <- function(control) {
-  cat("\\end{forest}\n")
+  res <- "\\end{forest}"
   if (control$fontsize != "normalsize") {
-    cat("\\end{", control$fontsize, "}\n", sep = "")
+    res <- c(res, stringr::str_c("\\end{", control$fontsize, "}", sep = ""))
   }
+  res
 }

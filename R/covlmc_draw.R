@@ -100,73 +100,6 @@ draw_covlmc_model <- function(coefficients, p_value, hsize, names, vals, lev,
   }
 }
 
-rec_draw_covlmc <- function(label, prefix, ct, vals, control, node2txt) {
-  cat(label)
-  if (!is.null(node2txt)) {
-    node_txt <- node2txt(ct, vals, control)
-    if (!is.null(node_txt)) {
-      cat_with_prefix(label, prefix, node_txt, control)
-    }
-  }
-  cat("\n")
-  if (!is.null(ct$children)) {
-    c_symbol <- control$first_node
-    idx <- 1
-    nst <- nb_sub_tree(ct)
-    nb_nodes <- sum(sapply(ct$children, \(x) length(x) > 0))
-    if (is.null(ct[["merged_model"]])) {
-      active_children <- seq_along(ct$children)
-    } else {
-      active_children <- setdiff(seq_along(ct$children), ct$merged)
-      nb_nodes <- nb_nodes + 1
-    }
-    for (v in active_children) {
-      child <- ct$children[[v]]
-      if (length(child) > 0) {
-        c_prelabel <- stringr::str_c(c_symbol, control$hbranch, " ")
-        if (idx < nst) {
-          c_prefix <- control$vbranch
-        } else {
-          c_prefix <- stringr::str_pad("", cli::utf8_nchar(control$vbranch, "width"))
-        }
-        c_prefix <- utf8_pad(c_prefix, cli::utf8_nchar(c_prelabel, "width"), "right")
-        ## recursive call
-        rec_draw_covlmc(
-          stringr::str_c(prefix, c_prelabel, vals[v]),
-          stringr::str_c(prefix, c_prefix), child, vals, control, node2txt
-        )
-        ## prepare for next child
-        idx <- idx + 1
-        if (idx == nb_nodes) {
-          c_symbol <- control$final_node
-        } else {
-          c_symbol <- control$next_node
-        }
-      }
-    }
-    if (!is.null(ct[["merged_model"]])) {
-      the_merged_vals <- stringr::str_c(vals[ct$merged], collapse = ", ")
-      c_prelabel <- stringr::str_c(control$final_node, control$hbranch, " ")
-      c_prefix <- stringr::str_pad("", cli::utf8_nchar(control$vbranch, "width"))
-      c_prefix <- utf8_pad(c_prefix, cli::utf8_nchar(c_prelabel, "width"), "right")
-      c_label <- stringr::str_c(prefix, c_prelabel, the_merged_vals)
-      c_prefix <- stringr::str_c(prefix, c_prefix)
-      cat(c_label)
-      if (!is.null(node2txt)) {
-        mm <- ct[["merged_model"]]
-        node_txt <- node2txt(list(
-          model = mm, model_probs = mm$model_probs,
-          model_levels = mm$model_levels
-        ), vals, control)
-        if (!is.null(node_txt)) {
-          cat_with_prefix(c_label, c_prefix, node_txt, control)
-        }
-      }
-      cat("\n")
-    }
-  }
-}
-
 covlmc_node2txt <- function(node, vals, control) {
   if (!is.null(node[["model"]])) {
     if (!is.null(node$model[["model"]])) {
@@ -196,6 +129,98 @@ covlmc_node2txt <- function(node, vals, control) {
     )
   } else {
     NULL
+  }
+}
+
+#' Format a covlmc tree
+#'
+#' This is a recursive function
+#'
+#' @param label the label of the current node (initialy set to the root)
+#' @param prefix the current prefix that should be added to all the lines
+#'   produced for the current node
+#' @param ct the current node
+#' @param vals printable values for the states
+#' @param control list of control parameters
+#' @param node2txt a function that maps the content of a node to a string
+#'   representation possibly made of multiple lines (as a character vector). The
+#'   lines should be aligned but do not have to care about the prefix
+#'
+#' @return the formatted context tree as a list of character vectors (one per
+#'   line)
+#' @noRd
+format_covlmc <- function(label, prefix, ct, vals, control, node2txt) {
+  if (!is.null(node2txt)) {
+    node_txt <- node2txt(ct, vals, control)
+  } else {
+    node_txt <- NULL
+  }
+  full_node <- format_node(label, prefix, node_txt, control)
+  if (!is.null(ct$children)) {
+    nst <- nb_sub_tree(ct)
+    idx <- 1
+    nb_nodes <- sum(sapply(ct$children, \(x) length(x) > 0))
+    if (is.null(ct[["merged_model"]])) {
+      active_children <- seq_along(ct$children)
+    } else {
+      active_children <- setdiff(seq_along(ct$children), ct$merged)
+      nb_nodes <- nb_nodes + 1
+    }
+    if (nb_nodes > 1) {
+      c_symbol <- control$first_node
+    } else {
+      c_symbol <- control$final_node
+    }
+    result <- full_node
+    for (v in active_children) {
+      child <- ct$children[[v]]
+      if (length(child) > 0) {
+        c_prelabel <- stringr::str_c(c_symbol, control$hbranch, " ")
+        if (idx < nst) {
+          c_prefix <- control$vbranch
+        } else {
+          c_prefix <- stringr::str_pad("", cli::utf8_nchar(control$vbranch, "width"))
+        }
+        c_prefix <- utf8_pad(c_prefix, cli::utf8_nchar(c_prelabel, "width"), "right")
+        ## recursive call
+        sub_tree <-
+          format_covlmc(
+            stringr::str_c(prefix, c_prelabel, vals[v]),
+            stringr::str_c(prefix, c_prefix), child, vals, control, node2txt
+          )
+        result <- c(result, sub_tree)
+        ## prepare for next child
+        idx <- idx + 1
+        if (idx == nb_nodes) {
+          c_symbol <- control$final_node
+        } else {
+          c_symbol <- control$next_node
+        }
+      }
+    }
+    if (!is.null(ct[["merged_model"]])) {
+      the_merged_vals <- stringr::str_c(vals[ct$merged], collapse = ", ")
+      c_prelabel <- stringr::str_c(control$final_node, control$hbranch, " ")
+      c_prefix <- stringr::str_pad("", cli::utf8_nchar(control$vbranch, "width"))
+      c_prefix <- utf8_pad(c_prefix, cli::utf8_nchar(c_prelabel, "width"), "right")
+      c_label <- stringr::str_c(prefix, c_prelabel, the_merged_vals)
+      c_prefix <- stringr::str_c(prefix, c_prefix)
+      if (!is.null(node2txt)) {
+        mm <- ct[["merged_model"]]
+        node_txt <- node2txt(list(
+          model = mm, model_probs = mm$model_probs,
+          model_levels = mm$model_levels,
+          f_by = rowSums(sapply(ct$children[ct$merged], \(x) x$f_by))
+        ), vals, control)
+      } else {
+        node_txt <- NULL
+      }
+      pre_result <- format_node(c_label, c_prefix, node_txt, control)
+      result <- c(result, pre_result)
+    }
+    result
+  } else {
+    full_node
   }
 }
 
@@ -393,7 +418,7 @@ draw.covlmc <- function(ct, format,
   }
   dot_params$with_state <- with_state
   if (format == "text") {
-    rec_draw_covlmc(
+    res <- format_covlmc(
       control$root, "", ct, ct$vals,
       c(control, list(
         model = model, p_value = p_value,
@@ -401,7 +426,7 @@ draw.covlmc <- function(ct, format,
       ), dot_params), covlmc_node2txt
     )
   } else if (format == "latex") {
-    draw_latex_covlmc(
+    res <- format_latex_covlmc(
       ct, xtable::sanitize(ct$vals, "latex"),
       c(control, list(
         model = model, p_value = p_value,
@@ -410,5 +435,6 @@ draw.covlmc <- function(ct, format,
       covlmc_node2latex
     )
   }
+  writeLines(res)
   invisible(ct)
 }

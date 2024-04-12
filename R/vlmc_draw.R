@@ -35,9 +35,12 @@ draw.vlmc <- function(ct, format, control = draw_control(), prob = TRUE, ...) {
   control <- format_control$control
   if (format == "text") {
     if (is.null(prob)) {
-      rec_draw(control$root, "", ct, ct$vals, c(control, list(...)), NULL)
+      res <- format_ctx_tree(
+        control$root, "", ct, ct$vals, c(control, list(...)),
+        NULL
+      )
     } else {
-      rec_draw(
+      res <- format_ctx_tree(
         control$root, "", ct, ct$vals,
         c(control, list(prob = prob, list(...))),
         vlmc_node2txt
@@ -45,18 +48,19 @@ draw.vlmc <- function(ct, format, control = draw_control(), prob = TRUE, ...) {
     }
   } else if (format == "latex") {
     if (is.null(prob)) {
-      draw_latex_ctx_tree(
+      res <- format_latex_ctx_tree(
         ct, xtable::sanitize(ct$vals, "latex"),
         c(control, list(...)),
         ctx_tree_node2latex
       )
     } else {
-      draw_latex_ctx_tree(
+      res <- format_latex_ctx_tree(
         ct, xtable::sanitize(ct$vals, "latex"),
         c(control, list(prob = prob), list(...)),
         vlmc_node2latex
       )
     }
   }
+  writeLines(res)
   invisible(ct)
 }

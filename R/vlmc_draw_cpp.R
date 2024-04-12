@@ -8,12 +8,12 @@ draw.vlmc_cpp <- function(ct, format, control = draw_control(), prob = TRUE, ...
   ct_r <- ct$root$representation()
   if (format == "text") {
     if (is.null(prob)) {
-      rec_draw_cpp(
+      res <- format_ctx_tree_cpp(
         control$root, "", ct_r, ct_r[[1]], ct$vals,
         c(control, list(...)), NULL
       )
     } else {
-      rec_draw_cpp(
+      res <- format_ctx_tree_cpp(
         control$root, "", ct_r, ct_r[[1]], ct$vals,
         c(control, list(prob = prob), list(...)),
         vlmc_node2txt
@@ -21,16 +21,17 @@ draw.vlmc_cpp <- function(ct, format, control = draw_control(), prob = TRUE, ...
     }
   } else if (format == "latex") {
     if (is.null(prob)) {
-      draw_latex_ctx_tree_cpp(
+      res <- format_latex_ctx_tree_cpp(
         ct_r, ct_r[[1]], xtable::sanitize(ct$vals, "latex"),
         c(control, list(...)), ctx_tree_node2latex
       )
     } else {
-      draw_latex_ctx_tree_cpp(
+      res <- format_latex_ctx_tree_cpp(
         ct_r, ct_r[[1]], xtable::sanitize(ct$vals, "latex"),
         c(control, list(prob = prob), list(...)), vlmc_node2latex
       )
     }
   }
+  writeLines(res)
   invisible(ct)
 }
