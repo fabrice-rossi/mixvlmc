@@ -1,4 +1,4 @@
-vlmc_node2txt <- function(ct, control) {
+vlmc_node2txt <- function(ct, vals, control) {
   if (is.null(ct[["f_by"]])) {
     NULL
   } else {
@@ -35,11 +35,13 @@ draw.vlmc <- function(ct, format, control = draw_control(), prob = TRUE, ...) {
   control <- format_control$control
   if (format == "text") {
     if (is.null(prob)) {
-      res <- format_ctx_tree(ct, c(control, list(...)),
+      res <- format_ctx_tree(
+        ct, c(control, list(...)),
         NULL
       )
     } else {
-      res <- format_ctx_tree(ct,
+      res <- format_ctx_tree(
+        ct,
         c(control, list(prob = prob, list(...))),
         vlmc_node2txt
       )

@@ -310,22 +310,28 @@ format_ctx_tree <- function(ct, control, node2txt) {
 #' @noRd
 rec_format_ctx_tree <- function(label, prefix, ct, vals, control, node2txt) {
   if (!is.null(node2txt)) {
-    node_txt <- node2txt(ct, control)
+    node_txt <- node2txt(ct, vals, control)
   } else {
     node_txt <- NULL
   }
   full_node <- format_node(label, prefix, node_txt, control)
   if (!is.null(ct$children)) {
     nst <- nb_sub_tree(ct)
-    if (nst > 1) {
+    idx <- 1
+    nb_nodes <- sum(sapply(ct$children, \(x) length(x) > 0))
+    if (is.null(ct[["merged_model"]])) {
+      active_children <- seq_along(ct$children)
+    } else {
+      active_children <- setdiff(seq_along(ct$children), ct$merged)
+      nb_nodes <- nb_nodes + 1
+    }
+    if (nb_nodes > 1) {
       c_symbol <- control$first_node
     } else {
       c_symbol <- control$final_node
     }
-    idx <- 1
-    nb_nodes <- sum(sapply(ct$children, \(x) length(x) > 0))
     result <- full_node
-    for (v in seq_along(ct$children)) {
+    for (v in active_children) {
       child <- ct$children[[v]]
       if (length(child) > 0) {
         c_prelabel <- stringr::str_c(c_symbol, control$hbranch, " ")
@@ -350,6 +356,26 @@ rec_format_ctx_tree <- function(label, prefix, ct, vals, control, node2txt) {
           c_symbol <- control$next_node
         }
       }
+    }
+    if (!is.null(ct[["merged_model"]])) {
+      the_merged_vals <- stringr::str_c(vals[ct$merged], collapse = ", ")
+      c_prelabel <- stringr::str_c(control$final_node, control$hbranch, " ")
+      c_prefix <- stringr::str_pad("", cli::utf8_nchar(control$vbranch, "width"))
+      c_prefix <- utf8_pad(c_prefix, cli::utf8_nchar(c_prelabel, "width"), "right")
+      c_label <- stringr::str_c(prefix, c_prelabel, the_merged_vals)
+      c_prefix <- stringr::str_c(prefix, c_prefix)
+      if (!is.null(node2txt)) {
+        mm <- ct[["merged_model"]]
+        node_txt <- node2txt(list(
+          model = mm, model_probs = mm$model_probs,
+          model_levels = mm$model_levels,
+          f_by = rowSums(sapply(ct$children[ct$merged], \(x) x$f_by))
+        ), vals, control)
+      } else {
+        node_txt <- NULL
+      }
+      pre_result <- format_node(c_label, c_prefix, node_txt, control)
+      result <- c(result, pre_result)
     }
     result
   } else {
@@ -411,7 +437,7 @@ draw <- function(ct, format, control = draw_control(), ...) {
   invisible(ct)
 }
 
-ctx_tree_node2txt <- function(ct, control) {
+ctx_tree_node2txt <- function(ct, vals, control) {
   if (is.null(ct[["f_by"]])) {
     NULL
   } else {

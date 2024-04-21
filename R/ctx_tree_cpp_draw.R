@@ -18,7 +18,7 @@
 #' @noRd
 format_ctx_tree_cpp <- function(label, prefix, tree, ct, vals, control, node2txt) {
   if (!is.null(node2txt)) {
-    node_txt <- node2txt(ct, control)
+    node_txt <- node2txt(ct, vals, control)
   } else {
     node_txt <- NULL
   }
