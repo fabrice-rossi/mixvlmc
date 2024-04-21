@@ -257,7 +257,8 @@ draw_control <- function(digits = 4,
 #'
 #' @param label the label of the node with its prefix
 #' @param prefix the prefix to use for subsequent lines
-#' @param node_txt the text of the node with one or several lines (as a character vector)
+#' @param node_txt the text of the node with one or several lines (as a
+#'   character vector)
 #' @param control list of control parameters
 #'
 #' @return the formatted content, a character vector (each string is a line)
@@ -285,6 +286,12 @@ format_node <- function(label, prefix, node_txt, control) {
 }
 
 #' Format a context tree
+#' @noRd
+format_ctx_tree <- function(ct, control, node2txt) {
+  rec_format_ctx_tree(control$root, "", ct, ct$vals, control, node2txt)
+}
+
+#' Format a context tree
 #'
 #' This is a recursive function
 #'
@@ -301,7 +308,7 @@ format_node <- function(label, prefix, node_txt, control) {
 #' @return the formatted context tree as a list of character vectors (one per
 #'   line)
 #' @noRd
-format_ctx_tree <- function(label, prefix, ct, vals, control, node2txt) {
+rec_format_ctx_tree <- function(label, prefix, ct, vals, control, node2txt) {
   if (!is.null(node2txt)) {
     node_txt <- node2txt(ct, control)
   } else {
@@ -330,7 +337,7 @@ format_ctx_tree <- function(label, prefix, ct, vals, control, node2txt) {
         c_prefix <- utf8_pad(c_prefix, cli::utf8_nchar(c_prelabel, "width"), "right")
         ## recursive call
         sub_tree <-
-          format_ctx_tree(
+          rec_format_ctx_tree(
             stringr::str_c(prefix, c_prelabel, vals[v]),
             stringr::str_c(prefix, c_prefix), child, vals, control, node2txt
           )
@@ -469,15 +476,12 @@ draw.ctx_tree <- function(ct, format, control = draw_control(),
   control <- format_control$control
   if (format == "text") {
     if (is.null(frequency)) {
-      res <- format_ctx_tree(
-        control$root, "", ct, ct$vals, c(control, list(...)),
-        NULL
-      )
+      res <- format_ctx_tree(ct, c(control, list(...)), NULL)
     } else {
       frequency <- match.arg(frequency, c("total", "detailed"))
       res <- format_ctx_tree(
-        control$root, "", ct, ct$vals,
-        c(control, list(frequency = frequency), list(...)),
+        ct,
+        c(control, list(...), list(frequency = frequency)),
         ctx_tree_node2txt
       )
     }
