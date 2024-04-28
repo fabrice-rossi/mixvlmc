@@ -28,14 +28,14 @@ new_dts <- function(ix, vals, fx, ..., class = character()) {
 
 #' Convert a vector to a discrete time series.
 #'
-#' This function creates a  representation of a discrete time series that
+#' This function creates a representation of a discrete time series that
 #' can be further processed by model estimation functions.
 #'
 #' The discrete time series `x` can be a vector of numeric, character, factor or
 #' logical type. If the state space of the series is not specified, that is when
 #' `vals` is `NULL`, it is computed in a way that depends on the type of `x`:
 #'
-#' - for a factor, `vals` is set to the `levels()` of `x`;
+#' - for a factor, `vals` is set to the `[levels()]` of `x`;
 #' - for a logical vector, `vals` is set to `c(FALSE, TRUE)`;
 #' - for other types, `vals` is set to all the unique values taken by the time
 #'   series (as returned by `sort(unique(x))`).
@@ -136,8 +136,6 @@ dts_data <- function(x) {
 #' x_dts <- dts(sample(c("A", "B"), 20, replace = TRUE))
 #' print(x_dts, n = 10)
 print.dts <- function(x, n = 5, ...) {
-  #  attr(x, "seed") <- NULL
-  #  NextMethod()
   cwidth <- options("width")$width
   cat(
     "Discrete time series of length", length(x$ix),

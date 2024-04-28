@@ -17,7 +17,7 @@ state space, see details (defaults to \code{NULL})}
 a discrete time series (of class that inherits from \code{dts}).
 }
 \description{
-This function creates a  representation of a discrete time series that
+This function creates a representation of a discrete time series that
 can be further processed by model estimation functions.
 }
 \details{
@@ -25,7 +25,7 @@ The discrete time series \code{x} can be a vector of numeric, character, factor 
 logical type. If the state space of the series is not specified, that is when
 \code{vals} is \code{NULL}, it is computed in a way that depends on the type of \code{x}:
 \itemize{
-\item for a factor, \code{vals} is set to the \code{levels()} of \code{x};
+\item for a factor, \code{vals} is set to the \verb{[levels()]} of \code{x};
 \item for a logical vector, \code{vals} is set to \code{c(FALSE, TRUE)};
 \item for other types, \code{vals} is set to all the unique values taken by the time
 series (as returned by \code{sort(unique(x))}).

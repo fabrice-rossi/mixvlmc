@@ -274,7 +274,7 @@ print.ctx_tree <- function(x, ...) {
 #' meaningful such as a discrete time series or a context tree.
 #'
 #' @param x an object with a state space.
-#' @returns the state space of the context tree.
+#' @returns the state space of the object (as vector of states).
 #'
 #' @export
 #' @examples
