@@ -56,7 +56,7 @@ loglikelihood.multi_vlmc <- function(vlmc, newdata,
     attr(pre_res, "nobs") <- max(0, vlmc$data_size - ignored_data)
   } else {
     if (!is.list(newdata)) {
-      NextMethod()
+      return(NextMethod())
     } else {
       if (any(ignore >= lengths(newdata))) {
         stop("Cannot ignore more data than the available ones")

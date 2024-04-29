@@ -49,8 +49,10 @@ The definition of the likelihood function depends on the value of the
 \code{initial} parameters, see the section below as well as the dedicated
 vignette: \code{vignette("likelihood", package = "mixvlmc")}.
 
-For VLMC objects, the method \code{loglikelihood.vlmc} will be used. For VLMC with covariables, \code{loglikelihood.covlmc}
-will instead be called. For more informations on \code{loglikelihood} methods, use \code{methods(loglikelihood)} and their associated documentation.
+For VLMC objects, the method \code{loglikelihood.vlmc} will be used. For VLMC with
+covariables, \code{loglikelihood.covlmc} will instead be called. For more
+informations on \code{loglikelihood} methods, use \code{methods(loglikelihood)} and
+their associated documentation.
 }
 \section{Weights}{
 
