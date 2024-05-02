@@ -968,3 +968,75 @@
                 '-- (1.28,7.54] ([ ((0,1.28])  ~ (I)
                                    (1.28,7.54] ~ 2.8 ])
 
+# draw handles constant models
+
+    ▪
+    ├─ 0 (0.999, 0.000998)
+    └─ 1 (0.000999, 0.999)
+
+---
+
+    ▪
+    ├─ 0 ([ (I)  
+    │       6.909 ])
+    └─ 1 ([ (I)   
+            -6.908 ])
+
+---
+
+    \begin{forest}
+    [\textbf{$\epsilon$}
+    [\multicolumn{2}{c}{\textbf{0}}\\\hline
+    {\small 0.999}&{\small 0.000998}, align=cc]
+    [\multicolumn{2}{c}{\textbf{1}}\\\hline
+    {\small 0.000999}&{\small 0.999}, align=cc]
+    ]
+    \end{forest}
+
+---
+
+    \begin{forest}
+    [\textbf{$\epsilon$}
+    [\multicolumn{2}{c}{\textbf{0}}\\\hline
+    {\small 0.999}&{\small 0.000998}, align=cc]
+    [\multicolumn{2}{c}{\textbf{1}}\\\hline
+    {\small 0.000999}&{\small 0.999}, align=cc]
+    ]
+    \end{forest}
+
+---
+
+    ▪
+    ├─ 0 (0.999, 0.000998)
+    └─ 1 (0.000999, 0.999)
+
+---
+
+    ▪
+    ├─ 0 ([ (I)  
+    │       6.909 ])
+    └─ 1 ([ (I)   
+            -6.908 ])
+
+---
+
+    \begin{forest}
+    [\textbf{$\epsilon$}
+    [\multicolumn{2}{c}{\textbf{0}}\\\hline
+    {\small 0.999}&{\small 0.000998}, align=cc]
+    [\multicolumn{2}{c}{\textbf{1}}\\\hline
+    {\small 0.000999}&{\small 0.999}, align=cc]
+    ]
+    \end{forest}
+
+---
+
+    \begin{forest}
+    [\textbf{$\epsilon$}
+    [\multicolumn{2}{c}{\textbf{0}}\\\hline
+    {\small 0.999}&{\small 0.000998}, align=cc]
+    [\multicolumn{2}{c}{\textbf{1}}\\\hline
+    {\small 0.000999}&{\small 0.999}, align=cc]
+    ]
+    \end{forest}
+
