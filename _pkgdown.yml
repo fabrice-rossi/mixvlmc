@@ -30,8 +30,10 @@ reference:
   desc: Build specialized representation of discrete time series.
 - contents:
   - dts
-  - is_dts
+  - dts_list
   - dts_data
+  - is_dts
+  - is_dts_list
   - print.dts
   - states
 - title: Context trees

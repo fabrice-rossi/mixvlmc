@@ -24,15 +24,21 @@
   by `draw()` to display a model
 
 ## New features
-### Discrete time series class (`dts`)
+### Discrete time series classes (`dts` and `dts_list`)
 In order to ease the introduction of multiple time series support, a single
 discrete time series can now be represented by the `dts` class, via the `dts()`
 function (see issue #76). All functions that use discrete time series now accept
 objects of this class in addition to simple vectors of a supported type
 (`integer`, `factor`, `character` and `logical`). This applies to model
 estimation functions such as `vlmc()` or `covlmc()`, to model selection functions
-(e.g. `tune_vlmc`) but also to functions that use new data such
+(e.g. `tune_vlmc()`) but also to functions that use new data such
 `loglikelihood()` and `predict.vlmc()`.
+
+A collection of discrete time series built on the same state set can be 
+represented by a `dts_list` object, via the `dts_list()` function (see 
+issue #76). A `dts_list` object provides a list like interface with standard
+functions such as `length()` and extraction operations. It is created from a 
+`list` of objects that can be interpreted as discrete time series. 
 
 ### Model representation (with `draw()`)
 A major change of `draw()` is the support of multiple output formats. This is
