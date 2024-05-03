@@ -15,7 +15,6 @@ validate_dts <- function(x, vals) {
   } else {
     fx <- factor(x, levels = vals)
     assertthat::assert_that(assertthat::noNA(fx), msg = "x contains unknown states")
-    vals <- factor(levels(fx), levels(fx))
   }
   list(ix = as.integer(fx) - 1L, vals = vals, fx = fx)
 }
