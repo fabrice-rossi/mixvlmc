@@ -1,3 +1,51 @@
+multi_vlmc_internal <- function(ixs, vals, alpha = 0.05, cutoff = NULL, min_size = 2L,
+                                max_depth = 100L,
+                                prune = TRUE, keep_match = FALSE, weights = NULL) {
+  ## keep_match=TRUE is currently not supported
+  assertthat::assert_that(!keep_match)
+  ctx_tree <- multi_ctx_tree_internal(ixs,
+    vals,
+    min_size = min_size, max_depth = max_depth,
+    keep_position = keep_match,
+    weights = weights
+  )
+  if (is.null(cutoff)) {
+    if (is.null(alpha) || !is.numeric(alpha) || alpha <= 0 || alpha > 1) {
+      stop("the alpha parameter must be in (0, 1]")
+    }
+    cutoff <- to_native(alpha, length(vals))
+  } else {
+    ## cutoff takes precedence
+    if (!is.numeric(cutoff) || cutoff < 0) {
+      stop("the cutoff parameter must be a non negative number")
+    }
+    alpha <- to_quantile(cutoff, length(vals))
+  }
+  if (prune) {
+    result <- prune_ctx_tree(ctx_tree, alpha = alpha, cutoff = cutoff)
+    class(result) <- c("multi_vlmc", class(result))
+  } else {
+    result <- new_ctx_tree(vals, ctx_tree, class = c("multi_vlmc", "vlmc"))
+  }
+  result$alpha <- alpha
+  result$cutoff <- cutoff
+  ## prepare for loglikelihood calculation
+  if (depth(result) > 0) {
+    d <- depth(result)
+    if (prune) {
+      result$ix <- lapply(result$ix, \(x) x[1:min(d, length(x))])
+    }
+    ivlmc <- match_multi_ctx(result, result$ix)
+    result$extended_ll <- rec_loglikelihood_vlmc(ivlmc, TRUE)
+  } else {
+    result$extended_ll <- 0
+  }
+  result$keep_match <- keep_match
+  result$data_size <- sum(lengths(ixs, use.names = FALSE))
+  result$pruned <- prune
+  result
+}
+
 ## VLMC for multiple series
 
 #' Fit a Variable Length Markov Chain (VLMC) to a collection of time series
@@ -5,7 +53,8 @@
 #' This function fits a  Variable Length Markov Chain (VLMC) to a collection of
 #' discrete time series.
 #'
-#' @param xs list of discrete times series
+#' @param xs an object than can be interpreted as a collection of discrete time
+#'  series such as `dts_list` object or a list of discrete times series
 #' @param alpha number in (0,1] (default: 0.05) cut off value in quantile scale
 #'   in the pruning phase.
 #' @param cutoff non negative number: cut off value in native (likelihood ratio)
@@ -20,6 +69,7 @@
 #' @param keep_match logical: specify whether to keep the context matches
 #'   (default to FALSE)
 #' @param weights optional weights for the time series, see details.
+#' @param ... additional parameters
 #'
 #' @section Weights:
 #'
@@ -40,52 +90,39 @@
 #' draw(model)
 #' depth(model)
 #' @export
-#' @seealso [multi_ctx_tree()], [vlmc()]
+#' @seealso [multi_ctx_tree()], [vlmc()], [dts_list()]
 multi_vlmc <- function(xs, alpha = 0.05, cutoff = NULL, min_size = 2L, max_depth = 100L,
-                       prune = TRUE, keep_match = FALSE, weights = NULL) {
-  ## keep_match=TRUE is currently not supported
-  assertthat::assert_that(!keep_match)
+                       prune = TRUE, keep_match = FALSE, weights = NULL, ...) {
+  UseMethod("multi_vlmc")
+}
+
+#' @export
+#' @param xs a list of discrete times series
+#' @inherit multi_vlmc
+multi_vlmc.default <- function(xs, alpha = 0.05, cutoff = NULL, min_size = 2L, max_depth = 100L,
+                               prune = TRUE, keep_match = FALSE, weights = NULL, ...) {
   assertthat::assert_that(is.list(xs))
-  ctx_tree <- multi_ctx_tree(xs,
-    min_size = min_size, max_depth = max_depth,
-    keep_position = keep_match,
-    weights = weights
+  assertthat::assert_that(length(xs) >= 1)
+  assertthat::assert_that(min_size > 0)
+  xs_dts <- dts_list(xs)
+  multi_vlmc_internal(
+    xs_dts$ixs, xs_dts$val, alpha, cutoff, min_size, max_depth, prune,
+    keep_match,
+    weights
   )
-  if (is.null(cutoff)) {
-    if (is.null(alpha) || !is.numeric(alpha) || alpha <= 0 || alpha > 1) {
-      stop("the alpha parameter must be in (0, 1]")
-    }
-    cutoff <- to_native(alpha, length(ctx_tree$vals))
-  } else {
-    ## cutoff takes precedence
-    if (!is.numeric(cutoff) || cutoff < 0) {
-      stop("the cutoff parameter must be a non negative number")
-    }
-    alpha <- to_quantile(cutoff, length(ctx_tree$vals))
-  }
-  if (prune) {
-    result <- prune_ctx_tree(ctx_tree, alpha = alpha, cutoff = cutoff)
-    class(result) <- c("multi_vlmc", class(result))
-  } else {
-    result <- new_ctx_tree(ctx_tree$vals, ctx_tree, class = c("multi_vlmc", "vlmc"))
-  }
-  result$alpha <- alpha
-  result$cutoff <- cutoff
-  ## prepare for loglikelihood calculation
-  if (depth(result) > 0) {
-    d <- depth(result)
-    if (prune) {
-      result$ix <- lapply(result$ix, \(x) x[1:min(d, length(x))])
-    }
-    ivlmc <- match_multi_ctx(result, result$ix)
-    result$extended_ll <- rec_loglikelihood_vlmc(ivlmc, TRUE)
-  } else {
-    result$extended_ll <- 0
-  }
-  result$keep_match <- keep_match
-  result$data_size <- sum(lengths(xs, use.names = FALSE))
-  result$pruned <- prune
-  result
+}
+
+#' @export
+#' @param xs a list of discrete times series represented by a `dts_list` object
+#'   created by [dts_list()]
+#' @inherit multi_vlmc
+multi_vlmc.dts_list <- function(xs, alpha = 0.05, cutoff = NULL, min_size = 2L, max_depth = 100L,
+                                prune = TRUE, keep_match = FALSE, weights = NULL, ...) {
+  multi_vlmc_internal(
+    xs$ixs, xs$val, alpha, cutoff, min_size, max_depth, prune,
+    keep_match,
+    weights
+  )
 }
 
 #' @rdname prune

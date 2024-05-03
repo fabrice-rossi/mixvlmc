@@ -11,11 +11,12 @@
 #' the time series can be weighted using the `weights` parameter.
 #'
 #' @inheritParams tune_vlmc
-#' @param xs a list of discrete times series
+#' @param xs a list of discrete times series, preferably a `dts_list` as created
+#'   by [dts_list()]
 #' @param weights optional weights for the time series, see details
 #' @inheritSection multi_vlmc Weights
 #' @inherit tune_vlmc return
-#' @seealso [multi_vlmc()]
+#' @seealso [multi_vlmc()], [dts_list()]
 #' @export
 #' @examples
 #' pc <- powerconsumption[powerconsumption$week %in% 5:7, ]
@@ -39,6 +40,9 @@ tune_multi_vlmc <- function(xs, criterion = c("BIC", "AIC"),
   criterion <- match.arg(criterion)
   initial <- match.arg(initial)
   save <- match.arg(save)
+  if(!is_dts_list(xs)) {
+    xs <- dts_list(xs)
+  }
   data_sizes <- lengths(xs)
   if (is.null(alpha_init) && is.null(cutoff_init)) {
     if (criterion == "BIC") {
@@ -53,9 +57,7 @@ tune_multi_vlmc <- function(xs, criterion = c("BIC", "AIC"),
       if (is.null(alpha_init) || !is.numeric(alpha_init) || alpha_init <= 0 || alpha_init > 1) {
         stop("the alpha_init parameter must be in (0, 1]")
       }
-      ## we need to compute the state model
-      nx <- to_dts(xs[[1]])
-      cutoff <- to_native(alpha_init, length(nx$vals))
+      cutoff <- to_native(alpha_init, length(states(xs)))
     } else {
       ## cutoff takes precedence
       if (!is.numeric(cutoff_init) || cutoff_init < 0) {

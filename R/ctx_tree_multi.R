@@ -55,6 +55,29 @@ grow_multi_ctx_tree <- function(xs, vals, min_size, max_depth, covsize = 0L,
   new_ctx_tree(vals, pre_res, compute_stats = compute_stats)
 }
 
+multi_ctx_tree_internal <- function(ixs, vals, min_size = 2L, max_depth = 100L,
+                                    keep_position = FALSE, weights = NULL) {
+  if (!is.null(weights)) {
+    assertthat::assert_that(is.numeric(weights))
+    assertthat::assert_that(assertthat::are_equal(length(ixs), length(weights)))
+    assertthat::assert_that(all(weights >= 0))
+  }
+  pre_result <- grow_multi_ctx_tree(ixs, vals,
+    min_size = min_size, max_depth = max_depth,
+    keep_match = keep_position,
+    compute_stats = FALSE, weights = weights
+  )
+  result <- new_ctx_tree(vals, pre_result, compute_stats = TRUE, class = "multi_ctx_tree")
+  result$keep_match <- keep_position
+  result$data_size <- sum(lengths(ixs))
+  if (depth(result) > 0) {
+    d <- depth(result)
+    result$ixs <- lapply(ixs, \(x) x[1:min(d, length(x))])
+  }
+  result
+}
+
+
 #' Build a context tree for a collection of discrete time series
 #'
 #' This function builds a context tree for a collection of time series.
@@ -73,7 +96,8 @@ grow_multi_ctx_tree <- function(xs, vals, min_size, max_depth, covsize = 0L,
 #' the weights of the series in which it appears is larger than the `min_size`
 #' threshold.
 #'
-#' @param xs a list of discrete times series
+#' @param xs an object than can be interpreted as a collection of discrete time
+#'  series such as `dts_list` object or a list of discrete times series
 #' @param min_size positive numerical value (default: 2). Minimum number of observations for
 #'   a context to be included in the tree (counted over the full collection of
 #'   time series, see details for the case with `weights`)
@@ -82,41 +106,49 @@ grow_multi_ctx_tree <- function(xs, vals, min_size, max_depth, covsize = 0L,
 #' @param keep_position  logical (default: FALSE). Should the context tree keep
 #'   the position of the contexts.
 #' @param weights optional weights for the time series, see details.
+#' @param ... additional parameters
 #'
 #' @return a context tree (of class that inherits from `multi_ctx_tree`).
 #' @export
-#' @seealso [ctx_tree()]
+#' @seealso [ctx_tree()], [dts_list()]
 #' @examples
 #' dts <- c(0, 1, 0, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 0)
 #' dts2 <- c(0, 1, 1, 0, 0, 0, 1, 0, 0, 1, 0, 1, 1, 0)
 #' mdts <- list(dts, dts2)
 #' mctx <- multi_ctx_tree(mdts, max_depth = 4)
 multi_ctx_tree <- function(xs, min_size = 2L, max_depth = 100L,
-                           keep_position = FALSE, weights = NULL) {
+                           keep_position = FALSE, weights = NULL, ...) {
+  UseMethod("multi_ctx_tree")
+}
+
+#' @export
+#' @param xs a list of discrete times series
+#' @inherit multi_ctx_tree
+multi_ctx_tree.default <- function(xs, min_size = 2L, max_depth = 100L,
+                                   keep_position = FALSE, weights = NULL, ...) {
   assertthat::assert_that(is.list(xs))
   assertthat::assert_that(length(xs) >= 1)
   assertthat::assert_that(min_size > 0)
-  if (!is.null(weights)) {
-    assertthat::assert_that(is.numeric(weights))
-    assertthat::assert_that(assertthat::are_equal(length(xs), length(weights)))
-    assertthat::assert_that(all(weights >= 0))
-  }
-  ixs <- to_multi_dts(xs)
-  vals <- ixs$vals
-  if (length(vals) > max(10, 0.05 * length(xs[[1]]))) {
-    warning(paste0("xs[[1]] as numerous unique values (", length(vals), ")"))
-  }
-  pre_result <- grow_multi_ctx_tree(ixs$ixs, vals,
-    min_size = min_size, max_depth = max_depth,
-    keep_match = keep_position,
-    compute_stats = FALSE, weights = weights
+  xs_dts <- dts_list(xs)
+  multi_ctx_tree_internal(
+    xs_dts$ixs, xs_dts$val, min_size, max_depth,
+    keep_position, weights
   )
-  result <- new_ctx_tree(vals, pre_result, compute_stats = TRUE, class = "multi_ctx_tree")
-  result$keep_match <- keep_position
-  result$data_size <- sum(lengths(xs))
-  if (depth(result) > 0) {
-    d <- depth(result)
-    result$ix <- lapply(ixs$ixs, \(x) x[1:min(d, length(x))])
-  }
-  result
+}
+
+#' @export
+#' @param xs a list of discrete times series represented by a `dts_list` object
+#'   created by [dts_list()]
+#' @inherit multi_ctx_tree
+#' @examples
+#' dts <- c(0, 1, 0, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 0)
+#' dts2 <- c(0, 1, 1, 0, 0, 0, 1, 0, 0, 1, 0, 1, 1, 0)
+#' mdts <- dts_list(list(dts, dts2))
+#' mctx <- multi_ctx_tree(mdts, max_depth = 4)
+multi_ctx_tree.dts_list <- function(xs, min_size = 2L, max_depth = 100L,
+                                    keep_position = FALSE, weights = NULL, ...) {
+  multi_ctx_tree_internal(
+    xs$ixs, xs$val, min_size, max_depth, keep_position,
+    weights
+  )
 }

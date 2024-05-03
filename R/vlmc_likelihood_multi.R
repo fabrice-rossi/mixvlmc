@@ -61,15 +61,19 @@ loglikelihood.multi_vlmc <- function(vlmc, newdata,
       if (any(ignore >= lengths(newdata))) {
         stop("Cannot ignore more data than the available ones")
       }
-      ixs <- to_multi_dts(newdata, vlmc$vals)
-      nvlmc <- match_multi_ctx(vlmc, ixs$ix, FALSE, weights)
+      if (is_dts_list(newdata)) {
+        ixs <- validate_multi_dts(newdata, vlmc$vals)
+      } else {
+        ixs <- validate_multi_vector(newdata, vlmc$vals)
+      }
+      nvlmc <- match_multi_ctx(vlmc, ixs$ixs, FALSE, weights)
       pre_res <- rec_loglikelihood_vlmc(nvlmc, TRUE)
       ignore_counts <- ignore
       if (initial == "specific" && ignore < depth(vlmc)) {
         ignore <- depth(vlmc)
       }
       if (ignore > 0) {
-        ivlmc <- match_multi_ctx(vlmc, lapply(ixs$ix, \(x) x[1:ignore]))
+        ivlmc <- match_multi_ctx(vlmc, lapply(ixs$ixs, \(x) x[1:ignore]))
         delta_res <- rec_loglikelihood_vlmc(ivlmc, TRUE)
         pre_res <- pre_res - delta_res
       }

@@ -122,10 +122,10 @@ reference:
 - contents:
   - starts_with("simulate")
 - title: Model estimation on a collection of time series
-  desc: Functions used to estimate a (CO)VLMC model on a collection of time series rather than on a single one
+  desc: Functions used to estimate a (CO)VLMC model on a collection of time series rather than on a single one.
 - contents:
-  - multi_ctx_tree
-  - multi_vlmc
+  - starts_with("multi_ctx_tree")
+  - starts_with("multi_vlmc")
   - loglikelihood.multi_vlmc
   - tune_multi_vlmc
 - title: Global options
@@ -151,6 +151,8 @@ reference:
   - cutoff
   - draw
   - metrics
+  - multi_ctx_tree
+  - multi_vlmc
   - states
   - vlmc
 
