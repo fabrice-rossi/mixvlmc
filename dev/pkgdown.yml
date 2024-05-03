@@ -1,15 +1,15 @@
 pandoc: 3.1.11
-pkgdown: 2.0.7
+pkgdown: 2.0.9
 pkgdown_sha: ~
 articles:
-  implementation: implementation.html
   context-trees: context-trees.html
   covlmc: covlmc.html
+  implementation: implementation.html
   likelihood: likelihood.html
   prediction: prediction.html
   sampling: sampling.html
   variable-length-markov-chains: variable-length-markov-chains.html
-last_built: 2024-04-01T13:36Z
+last_built: 2024-05-03T15:24Z
 urls:
   reference: https://fabrice-rossi.github.io/mixvlmc/reference
   article: https://fabrice-rossi.github.io/mixvlmc/articles
