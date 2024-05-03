@@ -93,7 +93,7 @@ assertthat::on_failure(is_dts) <- function(call, env) {
 
 #' @export
 `[[.dts` <- function(x, i, ...) {
-  x$vals[x$ix[[i, ...]]]
+  x$vals[x$ix[[i, ...]] + 1]
 }
 
 #' @export

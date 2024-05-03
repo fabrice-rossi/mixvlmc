@@ -63,4 +63,12 @@ test_that("indexing works", {
   for (k in seq_along(start)) {
     expect_equal(dts_data(x_dts[start[k]:end[k]]), x[start[k]:end[k]])
   }
+  all_equal <- TRUE
+  for (k in seq_along(x)) {
+    if (x[k] != x_dts[[k]]) {
+      all_equal <- FALSE
+      break
+    }
+  }
+  expect_true(all_equal)
 })
