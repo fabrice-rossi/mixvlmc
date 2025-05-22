@@ -3,6 +3,8 @@ This is a bug fix release:
 
 * fix a bug in the C++ suffix tree implementation (subscript out of bounds in
   rare cases)
+* avoid NaN production in `loglikelihood()` and related functions for the 
+  `multinom` predictive engine
 
 # mixvlmc 0.2.1
 This release has no visible changes and fixes internal issues:
