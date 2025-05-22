@@ -47,7 +47,7 @@ rec_loglikelihood_covlmc_newdata <- function(tree, d, nb_vals, y, cov, verbose =
       print(stats::logLik(tree$model$model))
       print(paste(res, tree$model$likelihood))
       if (tree$model$hsize > 0) {
-        print(utils::head(tree$model$data))
+        print(utils::head(tree$model$data$local_mm))
         print(utils::head(glmdata$local_mm))
       }
       if (!isTRUE(all.equal(res, tree$model$likelihood))) {
