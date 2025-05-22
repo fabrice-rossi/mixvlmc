@@ -28,7 +28,7 @@ glm_likelihood.vglm <- function(model, mm, target) {
     }
     sum(log(probs) * smm[, which(!is.na(mapper)), drop = FALSE])
   } else {
-    sum(log(probs) * smm)
+    sum_log_prob(as.vector(probs), as.vector(smm))
   }
 }
 
@@ -66,10 +66,10 @@ glm_likelihood.multinom <- function(model, mm, target) {
           }
         }
       } else {
-        sum(log(probs) * tm)
+        sum_log_prob(as.vector(probs), as.vector(tm))
       }
     } else {
-      sum(log(probs) * tm)
+      sum_log_prob(as.vector(probs), as.vector(tm))
     }
   }
 }
