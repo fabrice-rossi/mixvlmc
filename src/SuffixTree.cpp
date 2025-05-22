@@ -244,7 +244,8 @@ Position SuffixTree::find_subsequence(const IntegerVector& y) const {
     if(child != current->children.end()) {
       current = child->second;
       int el = current->edge_length();
-      int move = std::min(el, (int)(y.length() - y_pos));
+      int move = std::min(std::min(el, (int)(y.length() - y_pos)),
+                          (int)(x.length() - current->start));
       for(int k = 1; k < move; k++) {
         if(y[y_pos + k] != x[current->start + k]) {
           // not found!
