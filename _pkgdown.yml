@@ -1,6 +1,7 @@
 url: https://fabrice-rossi.github.io/mixvlmc/
 template:
   bootstrap: 5
+  math-rendering: mathjax
 development:
   mode: auto
 authors:
