@@ -97,6 +97,9 @@ node_fit_glm_with_data <- function(local_mm, d, target, dim_cov, alpha, nb_vals,
         stats::pchisq(as.numeric(lambda), df = df, lower.tail = FALSE)
       if (is.na(p_value)) {
         print(paste(p_value, lambda))
+        print(full_rank_model$likelihood)
+        print(H0_full_rank_model$likelihood)
+        print(H0_full_rank_model)
       }
       if (return_all) {
         list(
