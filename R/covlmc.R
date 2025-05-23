@@ -420,11 +420,23 @@ ctx_tree_fit_glm <- function(tree, y, covariate, alpha, control, assume_model = 
           if (verbose) { # nocov start
             print(paste("# of parameters", local_df, sub_df))
           } # nocov end
-          lambda <- 2 * (ll_H0 - ll_model_H0)
-          p_value <- stats::pchisq(as.numeric(lambda),
-            df = sub_df - local_df,
-            lower.tail = FALSE
-          )
+          ## in general, we expect the local model to have less parameters than
+          ## the model(s) is it compared to, but this may not be the case
+          if (local_df <= sub_df) {
+            ## normal case, we perform a test
+            lambda <- 2 * (ll_H0 - ll_model_H0)
+            p_value <- stats::pchisq(as.numeric(lambda),
+              df = sub_df - local_df,
+              lower.tail = FALSE
+            )
+          } else {
+            ## the local model is more complex
+            ## we "reverse" the test
+            lambda <- 2 * (ll_model_H0 - ll_H0)
+            p_value <- stats::pchisq(as.numeric(lambda),
+              df = local_df - sub_df
+            )
+          }
           if (is.na(p_value)) {
             print(paste(ll_H0, ll_model_H0, lambda, sub_df, local_df, max_hsize, d))
             print(local_model$H1_model$model)
