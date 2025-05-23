@@ -1,5 +1,5 @@
 # mixvlmc 0.2.2
-This is a bug fix release:
+This is a bug fix release (see issue #79 for the main bugs):
 
 * fix a bug in the C++ suffix tree implementation (subscript out of bounds in
   rare cases)
