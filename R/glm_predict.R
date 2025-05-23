@@ -42,12 +42,7 @@ glm_predict.default <- function(model, newdata = NULL, lev) {
 #' @exportS3Method
 glm_predict.vglm <- function(model, newdata = NULL, lev) {
   if (!is.null(newdata)) {
-    if (ncol(newdata) == 0) {
-      one_prob <- VGAM::predictvglm(model, type = "response")[1, ]
-      probs <- matrix(one_prob, nrow = nrow(newdata), ncol = length(one_prob), byrow = TRUE)
-    } else {
-      probs <- VGAM::predictvglm(model, newdata, type = "response")
-    }
+    probs <- vglm_predict_no_warning(model, newdata)
   } else {
     probs <- VGAM::predictvglm(model, type = "response")
   }
