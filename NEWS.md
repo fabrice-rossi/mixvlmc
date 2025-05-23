@@ -7,6 +7,8 @@ This is a bug fix release:
   `multinom` predictive engine
 * handle situations when a merged or local model has more degrees of freedom
   that the models it is supposed to replace (in `covlmc`)
+* improve the interaction with the `VGAM` package in corner cases with 
+  degenerate models
 
 # mixvlmc 0.2.1
 This release has no visible changes and fixes internal issues:
