@@ -1,4 +1,5 @@
 ## fit a glm guaranteed to be of full rank by removing older covariates if needed
+## we also make sure there is no degeneracy such as a 0 likelihood
 node_fit_glm_full_rank <- function(index, y, covariate, nb_vals, d, control, from = 0) {
   glmdata <- prepare_glm(covariate, index, d, y, from)
   node_fit_glm_full_rank_with_data(glmdata$local_mm, d, glmdata$target, ncol(covariate), nb_vals, control)
@@ -8,20 +9,33 @@ node_fit_glm_full_rank <- function(index, y, covariate, nb_vals, d, control, fro
 node_fit_glm_full_rank_with_data <- function(local_mm, d, target, dim_cov, nb_vals, control) {
   if (nrow(local_mm) > 0) {
     local_glm <- fit_glm(target, local_mm, nb_vals, control)
-    while (is_glm_low_rank(local_glm)) {
+    simplify <- is_glm_low_rank(local_glm)
+    if (!simplify) {
+      lld <- as.numeric(stats::logLik(local_glm))
+      ll <- glm_likelihood(local_glm, local_mm, target)
+      simplify <- is.nan(ll) | is.infinite(ll)
+    }
+    while (simplify) {
       d <- d - 1L
       local_mm <- local_mm[, -seq(ncol(local_mm), by = -1, length.out = dim_cov), drop = FALSE]
       local_glm <- fit_glm(target, local_mm, nb_vals, control)
+      simplify <- is_glm_low_rank(local_glm)
+      if (!simplify) {
+        lld <- as.numeric(stats::logLik(local_glm))
+        ll <- glm_likelihood(local_glm, local_mm, target)
+        simplify <- is.nan(ll) | is.infinite(ll)
+      }
     }
-    list(
+    res <- list(
       coefficients = glm_coef(local_glm, local_mm),
       var_names = glm_variable_names(local_glm, local_mm),
-      likelihood = as.numeric(stats::logLik(local_glm)),
+      likelihood = glm_likelihood(local_glm, local_mm, target),
       data = list(local_mm = local_mm, target = target),
       model = local_glm,
       hsize = d,
       metrics = glm_metrics(local_glm, local_mm, target)
     )
+    res
   } else {
     NULL
   }
