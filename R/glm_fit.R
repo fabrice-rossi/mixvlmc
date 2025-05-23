@@ -11,7 +11,7 @@ glm_warning_ignore <- function(w) {
     )
   )
   for (msg in to_ignore) {
-    if (stringr::str_detect(w$message, msg)) {
+    if (stringr::str_detect(conditionMessage(w), msg)) {
       rlang::cnd_muffle(w)
     }
   }
@@ -26,7 +26,7 @@ vgam_warning_ignore <- function(w) {
     stringr::fixed("iterations terminated because half-step sizes are very small")
   )
   for (msg in to_ignore) {
-    if (stringr::str_detect(w$message, msg)) {
+    if (stringr::str_detect(conditionMessage(w), msg)) {
       rlang::cnd_muffle(w)
     }
   }
@@ -46,7 +46,7 @@ multinom_warning_ignore_generator <- function(target, target_dist) {
       )
     )
     \(w) {
-      if (stringr::str_detect(w$message, the_msg)) {
+      if (stringr::str_detect(conditionMessage(w), the_msg)) {
         rlang::cnd_muffle(w)
       }
     }
