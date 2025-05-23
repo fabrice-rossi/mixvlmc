@@ -5,6 +5,8 @@ This is a bug fix release:
   rare cases)
 * avoid NaN production in `loglikelihood()` and related functions for the 
   `multinom` predictive engine
+* handle situations when a merged or local model has more degrees of freedom
+  that the models it is supposed to replace (in `covlmc`)
 
 # mixvlmc 0.2.1
 This release has no visible changes and fixes internal issues:
