@@ -102,7 +102,7 @@ contexts_extractor <- function(ct, reverse, extractor, control, summarize = no_s
     ## we have a list of ctx_node
     if (!reverse) {
       ## reverse each ctx node
-      preres <- lapply(preres, \(x) rev(x))
+      preres <- lapply(preres, function(x) {rev(x)})
     }
     if (is.null(preres[[length(preres)]])) {
       ## should never happen

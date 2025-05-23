@@ -309,5 +309,5 @@ is_full_node <- function(node) {
 }
 
 count_full_nodes <- function(ct) {
-  rec_context_number(ct, \(x) as.integer(is_full_node(x)))
+  rec_context_number(ct, function(x) {as.integer(is_full_node(x))})
 }

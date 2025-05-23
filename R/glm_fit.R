@@ -47,13 +47,13 @@ multinom_warning_ignore_generator <- function(target, target_dist) {
         paste(sQuote(missing), collapse = " ")
       )
     )
-    \(w) {
+    function(w) {
       if (stringr::str_detect(conditionMessage(w), the_msg)) {
         rlang::cnd_muffle(w)
       }
     }
   } else {
-    \(w) {}
+    function(w) { }
   }
 }
 
