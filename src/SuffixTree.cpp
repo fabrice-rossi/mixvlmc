@@ -244,7 +244,8 @@ Position SuffixTree::find_subsequence(const IntegerVector& y) const {
     if(child != current->children.end()) {
       current = child->second;
       int el = current->edge_length();
-      int move = std::min(el, (int)(y.length() - y_pos));
+      int move = std::min(std::min(el, (int)(y.length() - y_pos)),
+                          (int)(x.length() - current->start));
       for(int k = 1; k < move; k++) {
         if(y[y_pos + k] != x[current->start + k]) {
           // not found!
@@ -636,7 +637,8 @@ SuffixTree* SuffixTree::clone_prune(int min_counts, int max_length) const {
   int nb_ctx = 0;
   EdgeNode* new_root = root->clone_prune(min_counts, max_length, -1, max_x + 1,
                                          x.size(), n_max_depth, nb_ctx);
-  SuffixTree* result= clone_from_root(new_root, n_max_depth, nb_ctx, first_value);
+  SuffixTree* result =
+      clone_from_root(new_root, n_max_depth, nb_ctx, first_value);
   result->min_size = min_counts;
   result->max_length = max_length;
   return result;
@@ -655,7 +657,8 @@ SuffixTree* SuffixTree::clone_prune_context(int min_counts,
   int nb_ctx = 0;
   EdgeNode* new_root = root->clone_prune(min_counts, max_length, K, max_x + 1,
                                          x.size(), n_max_depth, nb_ctx);
-  SuffixTree* result = clone_from_root(new_root, n_max_depth, nb_ctx, first_value);
+  SuffixTree* result =
+      clone_from_root(new_root, n_max_depth, nb_ctx, first_value);
   result->compute_reverse();
   result->min_size = min_counts;
   result->max_length = max_length;
@@ -711,12 +714,10 @@ List SuffixTree::representation() {
 }
 
 List SuffixTree::restoration_info() {
-  return List::create(Named("rev_x") = x,
-                      Named("max_x") = max_x,
-                      Named("last_value") = first_value,
-                      Named("min_size") = min_size,
-                      Named("max_depth") = max_length,
-                      Named("cut_off") = cut_off);
+  return List::create(
+      Named("rev_x") = x, Named("max_x") = max_x,
+      Named("last_value") = first_value, Named("min_size") = min_size,
+      Named("max_depth") = max_length, Named("cut_off") = cut_off);
 }
 
 void SuffixTree::make_explicit() {
@@ -925,7 +926,8 @@ bool SuffixTree::get_has_positions() const {
 
 SuffixTree* SuffixTree::trim() const {
   EdgeNode* new_root = root->clone_trim();
-  SuffixTree* result = clone_from_root(new_root, max_depth, nb_ctx, first_value);
+  SuffixTree* result =
+      clone_from_root(new_root, max_depth, nb_ctx, first_value);
   result->min_size = min_size;
   result->max_length = max_length;
   result->has_positions = false;

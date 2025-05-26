@@ -10,12 +10,7 @@ glm_likelihood.glm <- function(model, mm, target) {
 
 #' @exportS3Method
 glm_likelihood.vglm <- function(model, mm, target) {
-  if (ncol(mm) == 0) {
-    one_prob <- VGAM::predictvglm(model, type = "response")[1, ]
-    probs <- matrix(one_prob, nrow = nrow(mm), ncol = length(one_prob), byrow = TRUE)
-  } else {
-    probs <- VGAM::predictvglm(model, mm, type = "response")
-  }
+  probs <- vglm_predict_no_warning(model, mm)
   smm <- stats::model.matrix(~ target - 1)
   if (ncol(smm) != ncol(probs)) {
     ## degenerate model
@@ -28,7 +23,7 @@ glm_likelihood.vglm <- function(model, mm, target) {
     }
     sum(log(probs) * smm[, which(!is.na(mapper)), drop = FALSE])
   } else {
-    sum(log(probs) * smm)
+    sum_log_prob(as.vector(probs), as.vector(smm))
   }
 }
 
@@ -66,10 +61,10 @@ glm_likelihood.multinom <- function(model, mm, target) {
           }
         }
       } else {
-        sum(log(probs) * tm)
+        sum_log_prob(as.vector(probs), as.vector(tm))
       }
     } else {
-      sum(log(probs) * tm)
+      sum_log_prob(as.vector(probs), as.vector(tm))
     }
   }
 }
@@ -86,12 +81,7 @@ glm_metrics.glm <- function(model, mm, target) {
 
 #' @exportS3Method
 glm_metrics.vglm <- function(model, mm, target) {
-  if (ncol(mm) == 0) {
-    one_prob <- VGAM::predictvglm(model, type = "response")[1, ]
-    probs <- matrix(one_prob, nrow = nrow(mm), ncol = length(one_prob), byrow = TRUE)
-  } else {
-    probs <- VGAM::predictvglm(model, mm, type = "response")
-  }
+  probs <- vglm_predict_no_warning(model, mm)
   colnames(probs) <- glm_levels(model)
   main_metrics(target, probs)
 }

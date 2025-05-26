@@ -75,3 +75,37 @@ glm_drop_level_correction <- function(model, newdata, xlevels) {
   }
   newdata
 }
+
+vglm_predict_warning_ignore <- function(w) {
+  if (stringr::str_detect(
+    conditionMessage(w),
+    stringr::coll("fitted probabilities numerically 0 or 1 occurred")
+  )) {
+    rlang::cnd_muffle(w)
+  }
+}
+
+vglm_predict <- function(model, mm) {
+  if (ncol(mm) == 0) {
+    one_prob <- VGAM::predictvglm(model, type = "response")[1, ]
+    probs <- matrix(one_prob, nrow = nrow(mm), ncol = length(one_prob), byrow = TRUE)
+  } else {
+    probs <- VGAM::predictvglm(model, mm, type = "response")
+  }
+  probs
+}
+
+vglm_predict_no_warning <- function(model, mm) {
+  try_vglm <- try(
+    withCallingHandlers(
+      warning = vglm_predict_warning_ignore,
+      probs <- vglm_predict(model, mm)
+    ),
+    silent = TRUE
+  )
+  if (inherits(try_vglm, "try-error")) {
+    stop(attr(try_vglm, "condition"))
+  }
+  probs
+}
+

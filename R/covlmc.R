@@ -1,4 +1,5 @@
 ## fit a glm guaranteed to be of full rank by removing older covariates if needed
+## we also make sure there is no degeneracy such as a 0 likelihood
 node_fit_glm_full_rank <- function(index, y, covariate, nb_vals, d, control, from = 0) {
   glmdata <- prepare_glm(covariate, index, d, y, from)
   node_fit_glm_full_rank_with_data(glmdata$local_mm, d, glmdata$target, ncol(covariate), nb_vals, control)
@@ -8,20 +9,33 @@ node_fit_glm_full_rank <- function(index, y, covariate, nb_vals, d, control, fro
 node_fit_glm_full_rank_with_data <- function(local_mm, d, target, dim_cov, nb_vals, control) {
   if (nrow(local_mm) > 0) {
     local_glm <- fit_glm(target, local_mm, nb_vals, control)
-    while (is_glm_low_rank(local_glm)) {
+    simplify <- is_glm_low_rank(local_glm)
+    if (!simplify) {
+      lld <- as.numeric(stats::logLik(local_glm))
+      ll <- glm_likelihood(local_glm, local_mm, target)
+      simplify <- is.nan(ll) | is.infinite(ll)
+    }
+    while (simplify) {
       d <- d - 1L
       local_mm <- local_mm[, -seq(ncol(local_mm), by = -1, length.out = dim_cov), drop = FALSE]
       local_glm <- fit_glm(target, local_mm, nb_vals, control)
+      simplify <- is_glm_low_rank(local_glm)
+      if (!simplify) {
+        lld <- as.numeric(stats::logLik(local_glm))
+        ll <- glm_likelihood(local_glm, local_mm, target)
+        simplify <- is.nan(ll) | is.infinite(ll)
+      }
     }
-    list(
+    res <- list(
       coefficients = glm_coef(local_glm, local_mm),
       var_names = glm_variable_names(local_glm, local_mm),
-      likelihood = as.numeric(stats::logLik(local_glm)),
+      likelihood = glm_likelihood(local_glm, local_mm, target),
       data = list(local_mm = local_mm, target = target),
       model = local_glm,
       hsize = d,
       metrics = glm_metrics(local_glm, local_mm, target)
     )
+    res
   } else {
     NULL
   }
@@ -83,6 +97,9 @@ node_fit_glm_with_data <- function(local_mm, d, target, dim_cov, alpha, nb_vals,
         stats::pchisq(as.numeric(lambda), df = df, lower.tail = FALSE)
       if (is.na(p_value)) {
         print(paste(p_value, lambda))
+        print(full_rank_model$likelihood)
+        print(H0_full_rank_model$likelihood)
+        print(H0_full_rank_model)
       }
       if (return_all) {
         list(
@@ -403,11 +420,23 @@ ctx_tree_fit_glm <- function(tree, y, covariate, alpha, control, assume_model = 
           if (verbose) { # nocov start
             print(paste("# of parameters", local_df, sub_df))
           } # nocov end
-          lambda <- 2 * (ll_H0 - ll_model_H0)
-          p_value <- stats::pchisq(as.numeric(lambda),
-            df = sub_df - local_df,
-            lower.tail = FALSE
-          )
+          ## in general, we expect the local model to have less parameters than
+          ## the model(s) is it compared to, but this may not be the case
+          if (local_df <= sub_df) {
+            ## normal case, we perform a test
+            lambda <- 2 * (ll_H0 - ll_model_H0)
+            p_value <- stats::pchisq(as.numeric(lambda),
+              df = sub_df - local_df,
+              lower.tail = FALSE
+            )
+          } else {
+            ## the local model is more complex
+            ## we "reverse" the test
+            lambda <- 2 * (ll_model_H0 - ll_H0)
+            p_value <- stats::pchisq(as.numeric(lambda),
+              df = local_df - sub_df
+            )
+          }
           if (is.na(p_value)) {
             print(paste(ll_H0, ll_model_H0, lambda, sub_df, local_df, max_hsize, d))
             print(local_model$H1_model$model)

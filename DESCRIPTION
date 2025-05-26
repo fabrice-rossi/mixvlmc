@@ -1,7 +1,7 @@
 Package: mixvlmc
 Type: Package
 Title: Variable Length Markov Chains with Covariates
-Version: 0.2.1.9000
+Version: 0.2.2
 Authors@R: 
     c(person(given = "Fabrice",
              family = "Rossi",
@@ -44,7 +44,7 @@ Imports:
     withr,
     xtable
 LinkingTo: Rcpp
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.2
 Suggests: 
     data.table,
     foreach,

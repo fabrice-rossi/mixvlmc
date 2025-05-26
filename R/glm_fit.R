@@ -11,22 +11,24 @@ glm_warning_ignore <- function(w) {
     )
   )
   for (msg in to_ignore) {
-    if (stringr::str_detect(w$message, msg)) {
+    if (stringr::str_detect(conditionMessage(w), msg)) {
       rlang::cnd_muffle(w)
     }
   }
 }
 
 vgam_warning_ignore <- function(w) {
-  to_ignore <- c(
+  to_ignore <- list(
     ".* diagonal elements of the working weights variable 'wz' have been replaced by",
-    stringr::fixed("fitted values close to 0 or 1"),
-    stringr::fixed("fitted probabilities numerically 0 or 1 occurred"),
-    stringr::fixed("some quantities such as z, residuals, SEs may be inaccurate due to convergence at a half-step"),
-    stringr::fixed("iterations terminated because half-step sizes are very small")
+    stringr::coll("fitted values close to 0 or 1"),
+    stringr::coll("fitted probabilities numerically 0 or 1 occurred"),
+    stringr::coll("some quantities such as z, residuals, SEs may be inaccurate due to convergence at a half-step"),
+    stringr::coll("iterations terminated because half-step sizes are very small"),
+    stringr::coll("there are NAs here in slot linkinv"),
+    stringr::coll("there are NAs in eta in slot inverse")
   )
   for (msg in to_ignore) {
-    if (stringr::str_detect(w$message, msg)) {
+    if (stringr::str_detect(conditionMessage(w), msg)) {
       rlang::cnd_muffle(w)
     }
   }
@@ -45,13 +47,13 @@ multinom_warning_ignore_generator <- function(target, target_dist) {
         paste(sQuote(missing), collapse = " ")
       )
     )
-    \(w) {
-      if (stringr::str_detect(w$message, the_msg)) {
+    function(w) {
+      if (stringr::str_detect(conditionMessage(w), the_msg)) {
         rlang::cnd_muffle(w)
       }
     }
   } else {
-    \(w) {}
+    function(w) { }
   }
 }
 
@@ -134,19 +136,39 @@ fit_glm <- function(target, mm, nb_vals, control) {
           )
           if (inherits(try_vglm, "try-error")) {
             err_cond <- as.character(attr(try_vglm, "condition"))
-            if (stringr::str_detect(err_cond, stringr::coll("vglm() only handles full-rank models (currently)"))) {
-              ## fake result, interpreted as a low rank result
-              result <- structure(list(coefficients = c(NA), ll = NA, rank = 0, target = NA, class = "constant_model"))
-            } else {
+            err_to_ignore <- list(
+              stringr::coll("vglm() only handles full-rank models (currently)"),
+              stringr::coll("Error in if (min(ans) == 0 || max(ans) == 1)"),
+              stringr::coll("there are NAs in eta in @inverse")
+            )
+            catched <- FALSE
+            for (msg in err_to_ignore) {
+              if (stringr::str_detect(err_cond, msg)) {
+                ## "fake" result, interpreted as a low rank result
+                result <- structure(list(coefficients = c(NA), ll = NA, rank = 0, target = NA, class = "constant_model"))
+                catched <- TRUE
+                break
+              }
+            }
+            if (!catched) {
               stop(attr(try_vglm, "condition"))
             }
           }
         } else {
-          result <-
-            VGAM::vglm(target ~ 1,
-              data = mm, family = VGAM::multinomial(refLevel = 1),
-              x.arg = FALSE, y.arg = FALSE, model = FALSE
-            )
+          try_vglm <- try(
+            withCallingHandlers(
+              warning = vgam_warning_ignore,
+              result <- VGAM::vglm(target ~ 1,
+                data = mm, family = VGAM::multinomial(refLevel = 1),
+                x.arg = FALSE, y.arg = FALSE, model = FALSE,
+                control = VGAM::vglm.control(maxit = options()[["mixvlmc.maxit"]])
+              )
+            ),
+            silent = TRUE
+          )
+          if (inherits(try_vglm, "try-error")) {
+            stop(attr(try_vglm, "condition"))
+          }
         }
         if (inherits(result, "vglm")) {
           if (is_glm_low_rank(result)) {

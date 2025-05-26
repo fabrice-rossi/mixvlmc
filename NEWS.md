@@ -59,6 +59,18 @@ issue #66) as follows:
   by `draw.covlmc()` as a VLMC node, that is with the probability distribution
   on the state space that it represents
 
+# mixvlmc 0.2.2
+This is a bug fix release (see issue #79 for the main bugs):
+
+* fix a bug in the C++ suffix tree implementation (subscript out of bounds in
+  rare cases)
+* avoid NaN production in `loglikelihood()` and related functions for the 
+  `multinom` predictive engine
+* handle situations when a merged or local model has more degrees of freedom
+  that the models it is supposed to replace (in `covlmc`)
+* improve the interaction with the `VGAM` package in corner cases with 
+  degenerate models
+
 # mixvlmc 0.2.1
 This release has no visible changes and fixes internal issues:
 
