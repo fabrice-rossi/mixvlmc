@@ -289,6 +289,9 @@ covariate_memory <- function(node) {
 #'
 #' @export
 metrics.ctx_node_covlmc <- function(model, ...) {
+  if (is.null(model$node[["model"]])) {
+    stop("the node is not a context, no metrics can be computed")
+  }
   res <- model$node$model$metrics
   rownames(res$conf_mat) <- model$tree$vals
   colnames(res$conf_mat) <- model$tree$vals

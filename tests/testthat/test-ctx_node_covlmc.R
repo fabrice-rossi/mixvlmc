@@ -83,3 +83,13 @@ test_that("find_sequence handles correctly contexts not merged", {
   expect_null(find_sequence(model, vals[c(1, 2)]))
   expect_true(is_merged(find_sequence(model, vals[c(3, 2)])))
 })
+
+test_that("metrics reports clearly that a node is not a context", {
+  pc <- powerconsumption[powerconsumption$week %in% 6:7, ]
+  dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1))))
+  dts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
+  m_cov <- covlmc(dts, dts_cov)
+  node <- find_sequence(m_cov, states(m_cov)[1])
+  expect_false(is_context(node))
+  expect_error(metrics(node), "not a context")
+})
