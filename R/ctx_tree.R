@@ -116,7 +116,7 @@ grow_ctx_tree <- function(x, vals, min_size, max_depth, covsize = 0L, keep_match
 #'   logical.
 #' @param min_size integer >= 1 (default: 2). Minimum number of observations for
 #'   a context to be included in the tree.
-#' @param max_depth integer >= 1 (default: 100). Maximum length of a context to
+#' @param max_depth integer >= 0 (default: 100). Maximum length of a context to
 #'   be included in the tree.
 #' @param keep_position logical (default: TRUE). Should the context tree keep
 #'   the position of the contexts.
@@ -149,6 +149,8 @@ grow_ctx_tree <- function(x, vals, min_size, max_depth, covsize = 0L, keep_match
 ctx_tree <- function(x, min_size = 2L, max_depth = 100L, keep_position = TRUE,
                      backend = getOption("mixvlmc.backend", "R")) {
   backend <- match.arg(backend, c("R", "C++"))
+  assert_min_size(min_size)
+  assert_max_depth(max_depth)
   nx <- to_dts(x)
   ix <- nx$ix
   vals <- nx$vals

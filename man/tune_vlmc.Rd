@@ -38,7 +38,7 @@ build the initial VLMC. Takes precedence over \code{alpha_init} if specified.}
 \item{min_size}{integer >= 1 (default: 2). Minimum number of observations for
 a context in the growing phase of the initial context tree.}
 
-\item{max_depth}{integer >= 1 (default: 100). Longest context considered in
+\item{max_depth}{integer >= 0 (default: 100). Longest context considered in
 growing phase of the initial context tree (see details).}
 
 \item{backend}{backend "R" or "C++" (default: as specified by the

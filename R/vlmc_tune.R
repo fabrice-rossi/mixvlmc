@@ -34,7 +34,7 @@
 #'   build the initial VLMC. Takes precedence over `alpha_init` if specified.
 #' @param min_size integer >= 1 (default: 2). Minimum number of observations for
 #'   a context in the growing phase of the initial context tree.
-#' @param max_depth integer >= 1 (default: 100). Longest context considered in
+#' @param max_depth integer >= 0 (default: 100). Longest context considered in
 #'   growing phase of the initial context tree (see details).
 #' @param backend backend "R" or "C++" (default: as specified by the
 #'   "mixvlmc.backend" option). Specifies the implementation used to represent
@@ -76,6 +76,8 @@ tune_vlmc <- function(x, criterion = c("BIC", "AIC"),
   criterion <- match.arg(criterion)
   initial <- match.arg(initial)
   backend <- match.arg(backend, c("R", "C++"))
+  assert_min_size(min_size)
+  assert_max_depth(max_depth)
   save <- match.arg(save)
   if (is.null(alpha_init) && is.null(cutoff_init)) {
     if (criterion == "BIC") {

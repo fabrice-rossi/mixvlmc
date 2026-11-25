@@ -19,7 +19,7 @@ logical.}
 \item{min_size}{integer >= 1 (default: 2). Minimum number of observations for
 a context to be included in the tree.}
 
-\item{max_depth}{integer >= 1 (default: 100). Maximum length of a context to
+\item{max_depth}{integer >= 0 (default: 100). Maximum length of a context to
 be included in the tree.}
 
 \item{keep_position}{logical (default: TRUE). Should the context tree keep

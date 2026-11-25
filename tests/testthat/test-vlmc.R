@@ -118,3 +118,19 @@ test_that("states that do not appear in the time series are supported", {
     expect_equal(context_number(m_lgl), 1)
   }
 })
+
+test_that("min_size and max_depth are validated", {
+  x <- rep(c(0, 1, 1), 10)
+  for (backend in c("R", "C++")) {
+    for (ms in list(0, -5, NA, c(2, 3), "2")) {
+      expect_error(ctx_tree(x, min_size = ms, max_depth = 3, backend = backend), "min_size")
+      expect_error(vlmc(x, min_size = ms, max_depth = 3, backend = backend), "min_size")
+    }
+    for (md in list(-1, 2.5, NA, c(2, 3), "2", Inf)) {
+      expect_error(ctx_tree(x, max_depth = md, backend = backend), "max_depth")
+      expect_error(vlmc(x, max_depth = md, backend = backend), "max_depth")
+    }
+  }
+  expect_error(tune_vlmc(x, min_size = 0, max_depth = 3), "min_size")
+  expect_error(tune_vlmc(x, max_depth = -1), "max_depth")
+})

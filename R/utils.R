@@ -27,6 +27,19 @@ to_dts <- function(x, vals = NULL) {
   list(ix = as.integer(fx) - 1L, fx = fx, vals = vals)
 }
 
+assert_min_size <- function(min_size) {
+  if (!is.numeric(min_size) || length(min_size) != 1 || is.na(min_size) || min_size < 1) {
+    stop("min_size must be a single number larger or equal to 1")
+  }
+}
+
+assert_max_depth <- function(max_depth) {
+  if (!is.numeric(max_depth) || length(max_depth) != 1 || !is.finite(max_depth) ||
+    max_depth < 0 || max_depth != round(max_depth)) {
+    stop("max_depth must be a single non negative integer")
+  }
+}
+
 signif_null <- function(x, digits) {
   if (is.null(x) || is.na(x)) {
     "NA"
