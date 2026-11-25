@@ -94,3 +94,19 @@ test_that("metrics for multinom work as expected", {
   expect_equal(mm$accuracy, sum(diag(cm)) / length(target))
   expect_equal(mm$auc, as.numeric(pROC::auc(pROC::multiclass.roc(target, m_probs))))
 })
+
+test_that("glm_likelihood handles degenerate models with a missing middle level", {
+  withr::local_seed(2)
+  n <- 200
+  mm <- data.frame(z = rnorm(n))
+  target <- factor(sample(c("a", "c", "d"), n, replace = TRUE, prob = c(.3, .3, .4)),
+    levels = c("a", "b", "c", "d")
+  )
+  for (engine in c("glm", "multinom")) {
+    withr::local_options(mixvlmc.predictive = engine)
+    model <- fit_glm(target, mm, 4, covlmc_control())
+    expect_equal(glm_likelihood(model, mm, target), as.numeric(stats::logLik(model)),
+      tolerance = 1e-6
+    )
+  }
+})

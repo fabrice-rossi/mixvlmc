@@ -117,3 +117,46 @@ test_that("covlmc handles tibble correctly", {
   model_tb <- covlmc(data_set$x, data_set$covariate, alpha = alpha, min_size = 3)
   expect_true(compare_covlmc(model_df, model_tb))
 })
+
+test_that("covlmc handles states missing in some contexts", {
+  withr::local_seed(1)
+  n <- 200
+  ## b never follows a
+  P <- matrix(c(
+    .4, 0, .3, .3,
+    .25, .25, .25, .25,
+    .3, .3, .2, .2,
+    .1, .4, .2, .3
+  ), 4, byrow = TRUE)
+  x <- integer(n)
+  x[1] <- 1
+  z <- rnorm(n)
+  for (i in 2:n) {
+    x[i] <- sample(1:4, 1, prob = P[x[i - 1], ])
+  }
+  x <- letters[x]
+  cv <- data.frame(z = z)
+  for (engine in c("glm", "multinom")) {
+    withr::local_options(mixvlmc.predictive = engine)
+    expect_no_error(x_covlmc <- suppressWarnings(covlmc(x, cv, min_size = 2, alpha = 0.5)))
+    x_ll <- loglikelihood(x_covlmc)
+    expect_true(is.finite(x_ll))
+    expect_equal(x_ll, loglikelihood(x_covlmc, newdata = x, newcov = cv), ignore_attr = TRUE)
+  }
+})
+
+test_that("node_fit_glm_full_rank_with_data discards models with a NA likelihood", {
+  withr::local_seed(0)
+  n <- 100
+  mm <- data.frame(z_1 = rnorm(n), z_2 = rnorm(n))
+  target <- sample(0:1, n, replace = TRUE)
+  local_mocked_bindings(glm_likelihood = function(model, mm, target) {
+    if (ncol(mm) > 0) {
+      NA_real_
+    } else {
+      -1
+    }
+  })
+  res <- node_fit_glm_full_rank_with_data(mm, 2L, target, 1, 2, covlmc_control())
+  expect_identical(res$hsize, 0L)
+})

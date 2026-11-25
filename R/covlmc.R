@@ -13,7 +13,7 @@ node_fit_glm_full_rank_with_data <- function(local_mm, d, target, dim_cov, nb_va
     if (!simplify) {
       lld <- as.numeric(stats::logLik(local_glm))
       ll <- glm_likelihood(local_glm, local_mm, target)
-      simplify <- is.nan(ll) | is.infinite(ll)
+      simplify <- !is.finite(ll)
     }
     while (simplify) {
       d <- d - 1L
@@ -23,7 +23,7 @@ node_fit_glm_full_rank_with_data <- function(local_mm, d, target, dim_cov, nb_va
       if (!simplify) {
         lld <- as.numeric(stats::logLik(local_glm))
         ll <- glm_likelihood(local_glm, local_mm, target)
-        simplify <- is.nan(ll) | is.infinite(ll)
+        simplify <- !is.finite(ll)
       }
     }
     res <- list(

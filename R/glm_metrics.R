@@ -61,7 +61,7 @@ glm_likelihood.multinom <- function(model, mm, target) {
           }
         }
       } else {
-        sum_log_prob(as.vector(probs), as.vector(tm))
+        sum_log_prob(as.vector(probs), as.vector(tm_tokeep))
       }
     } else {
       sum_log_prob(as.vector(probs), as.vector(tm))
