@@ -46,3 +46,18 @@ test_that("vlmc trimming works after serialization (C++)", {
     contexts(model, frequency = "detailed")
   ))
 })
+
+test_that("trimmed models do not regain positions after restoration (C++)", {
+  withr::local_seed(4)
+  x <- sample(c(0, 1, 2), 300, replace = TRUE)
+  model <- vlmc(x, min_size = 3, max_depth = 4, keep_match = TRUE, backend = "C++")
+  trimmed_model <- trim(model)
+  model_path <- withr::local_tempfile(fileext = ".Rds")
+  saveRDS(trimmed_model, model_path)
+  restored_model <- readRDS(model_path)
+  expect_true(compare_vlmc_cpp(trimmed_model, restored_model))
+  expect_error(
+    positions(find_sequence(restored_model, 0)),
+    "Cannot report positions if they were not saved"
+  )
+})

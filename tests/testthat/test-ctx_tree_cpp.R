@@ -82,3 +82,19 @@ test_that("trimming removes positions from C++ context trees", {
   ## the original tree is not modified
   expect_identical(positions(find_sequence(dts_ctree, 0)), orig_positions)
 })
+
+test_that("trimmed C++ context trees do not regain positions after restoration", {
+  dts <- c(0, 0, 1, 1, 0, 1)
+  trimmed_ctree <- trim(ctx_tree(dts, min_size = 1, max_depth = 2, backend = "C++"))
+  tree_path <- withr::local_tempfile(fileext = ".Rds")
+  saveRDS(trimmed_ctree, tree_path)
+  restored_tree <- readRDS(tree_path)
+  expect_true(compare_ctx(
+    contexts(trimmed_ctree, frequency = "detailed"),
+    contexts(restored_tree, frequency = "detailed")
+  ))
+  expect_error(
+    positions(find_sequence(restored_tree, 0)),
+    "Cannot report positions if they were not saved"
+  )
+})
