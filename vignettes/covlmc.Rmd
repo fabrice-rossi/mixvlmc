@@ -43,7 +43,7 @@ patterns.
 Let us focus again on the electrical usage data set used in the package
 introduction, using the following two weeks of data:
 
-```{r active_power_week_15_16, fig.height=5}
+```{r active_power_week_15_16, fig.height=5, fig.alt="Line plot of the active power in kW over two weeks of household electricity consumption. Daily cycles are clearly visible, with low plateaus at night and long periods of stable moderate use punctuated by sharp peaks during the day."}
 pc_week_15_16 <- powerconsumption[powerconsumption$week %in% c(15, 16), ]
 elec <- pc_week_15_16$active_power
 ggplot(pc_week_15_16, aes(x = date_time, y = active_power)) +
@@ -363,13 +363,13 @@ elec_tune
 ```
 
 The model selection process can be represented graphically as follows:
-```{r fig.height=4}
+```{r fig.height=4, fig.alt="Line plot with points of the BIC against the cut off alpha on the quantile scale for the models considered during the COVLMC model selection. The BIC reaches its minimum at a small value of alpha and increases for larger values."}
 ggplot(elec_tune$results, aes(x = alpha, y = BIC)) +
   geom_line() +
   geom_point()
 ```
 or automatically using e.g. `autoplot()` as follows:
-```{r}
+```{r fig.alt="Six panels plotting the AIC, the BIC, the number of contexts, the covariate depth, the depth and the log likelihood against the cut off on the quantile scale for the COVLMC model selection. The BIC is minimal at a small cut off and the AIC at a larger one, while the number of contexts and the depths quickly reach their maximal values."}
 print(autoplot(elec_tune))
 ```
 

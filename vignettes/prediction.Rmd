@@ -189,7 +189,7 @@ The Shannon entropies of those conditional distributions are generally relativel
 close to the maximum in this setting, i.e. `r signif(-log(1/3),6)`, as shown on 
 this graphical illustration
 
-```{r}
+```{r fig.alt="Density plot, with a rug, of the Shannon entropies of the conditional distributions given by the COVLMC on the CAC series, with a red vertical line at the maximal entropy log(3). Almost all entropies are concentrated just below this maximum."}
 entropies <- data.frame(entropy = apply(CAC_probs, 1, \(x) -sum(x * log(x))))
 ggplot(entropies, aes(x = entropy)) +
   geom_density() +
@@ -204,7 +204,7 @@ cases.
 For example, the case of the sun spots studied above for the VLMC has better
 predictive performances because of the presence of strongly peaked distributions 
 (some of them are even deterministic), as shown below:
-```{r}
+```{r fig.alt="Histogram, with a rug, of the Shannon entropies of the conditional distributions given by the VLMC on the sun spots series, with a red vertical line at the maximal entropy log(2). Many entropies are zero or small, revealing strongly peaked and sometimes deterministic distributions, and all stay below the maximum."}
 sun_probs <- predict(as_vlmc(sun_model_tune_aic), sun_activity,
   final_pred = FALSE,
   type = "probs"
@@ -239,7 +239,7 @@ sun_metrics
 ```
 The ROC curve is computed by `metrics()` (for state space of size 2) and can be
 plotted simply using:
-```{r fig.width=6, fig.height=6}
+```{r fig.width=6, fig.height=6, fig.alt="ROC curve of the VLMC predictions on the sun spots series, plotting sensitivity against specificity. The curve rises well above the diagonal, showing a good discrimination between the two states."}
 plot(sun_metrics$roc)
 ```
 

@@ -292,7 +292,7 @@ We used the saving options of `tune_vlmc()` to keep all the models considered
 during the model selection process in the California 
 earth quakes analysis. We can use them to illustrate non decreasing behaviour
 of the likelihoods. For the *extended* likelikood, we have:
-```{r fig.height=4}
+```{r fig.height=4, fig.alt="Line plot of the extended log likelihood of the models considered during the model selection on the California earthquake data, against the cut off on the native scale. The log likelihood decreases steadily as the cut off increases, that is as the models are pruned."}
 CA_models <- c(
   list(California_weeks_earth_quakes_model$saved_models$initial),
   California_weeks_earth_quakes_model$saved_models$all
@@ -312,7 +312,7 @@ ggplot(CA_extended, aes(cutoff, loglikelihood)) +
 
 For the *specific* likelihood we have:
 
-```{r fig.height=4}
+```{r fig.height=4, fig.alt="Line plot of the specific log likelihood of the models considered during the model selection on the California earthquake data, against the cut off on the native scale. The log likelihood decreases steadily as the cut off increases, that is as the models are pruned."}
 CA_specific <- data.frame(
   cutoff = sapply(CA_models, \(x) x$cutoff),
   loglikelihood = sapply(CA_models, loglikelihood,
@@ -329,7 +329,7 @@ Notice that the time series contains `r length(California_weeks)` observations a
 the maximum order considered by `tune_vlmc()` is `r max(California_weeks_earth_quakes_model$results$depth)`, thus we do not expect
 to observe large differences between the different log likelihoods. This is
 illustrated on the following figure:
-```{r fig.height=4}
+```{r fig.height=4, fig.alt="Line plot of the extended and specific log likelihoods against the cut off on the native scale, with one colour per likelihood function. The two curves are almost indistinguishable and both decrease as the cut off increases."}
 CW_combined <- rbind(
   CA_extended[c("cutoff", "loglikelihood")],
   CA_specific[c("cutoff", "loglikelihood")]

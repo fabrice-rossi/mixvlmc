@@ -123,7 +123,7 @@ sun_model_tune
 
 The results of the pruning process can be represented graphically:
 
-```{r sunspots_bic}
+```{r sunspots_bic, fig.alt="Five panels plotting the AIC, the BIC, the number of contexts, the depth and the log likelihood against the cut off on the quantile scale. Small cut offs give heavily pruned, simple models with high AIC and BIC; the BIC reaches its minimum at an intermediate cut off and increases again for the largest, most complex models."}
 print(autoplot(sun_model_tune) + geom_point())
 ```
 
@@ -138,7 +138,7 @@ draw(best_sun_model)
 
 To illustrate the use of covariates, we use the power consumption data set included in the package (see `vignette("covlmc")` for details). We consider a week of electricity usage as follows:
 
-```{r active_power_week_5}
+```{r active_power_week_5, fig.alt="Line plot of the active power in kW over one week of household electricity consumption. Low plateaus at night alternate with daytime periods of moderate use and sharp peaks of high consumption."}
 pc_week_5 <- powerconsumption[powerconsumption$week == 5, ]
 elec <- pc_week_5$active_power
 ggplot(pc_week_5, aes(x = date_time, y = active_power)) +
@@ -182,7 +182,7 @@ draw(elec_covlmc, model = "full")
 
 The model appears a bit complex. To get a more adapted model, we use a BIC based model selection as follows:
 
-```{r elec_tune_process}
+```{r elec_tune_process, fig.alt="Six panels plotting the AIC, the BIC, the number of contexts, the covariate depth, the depth and the log likelihood against the cut off on the quantile scale. Both criteria drop sharply after the smallest cut offs; the BIC is minimal at a small cut off where the covariate depth is still zero, and the covariate depth only grows for larger cut offs."}
 elec_covlmc_tune <- tune_covlmc(elec_dts, elec_cov)
 print(autoplot(elec_covlmc_tune))
 ```
@@ -257,7 +257,7 @@ The average longest time spent in *high* consecutively is
 
 The following figure shows the distributions of the times obtained by both models as well as the observed value. The VLMC model with covariate is able to generate longer sequences in the *high* active power state than the bare VLMC model as the consequence of the sensitivity to the day/night schedule.
 
-```{r longest_time_in_high}
+```{r longest_time_in_high, fig.alt="Density curves, with rugs, of the longest time in minutes spent consecutively in the high active power state in the series simulated from the VLMC and from the COVLMC, with a vertical line at the value of the observed series. The COVLMC distribution has a heavier right tail that covers the observed value, while the VLMC distribution is concentrated on shorter times."}
 lh <- data.frame(
   time = c(lh_vlmc, lh_covlmc),
   model = c(rep("VLMC", length(lh_vlmc)), rep("COVLMC", length(lh_covlmc)))
@@ -281,7 +281,7 @@ for (k in seq_along(covlmc_simul_ld)) {
 
 As expected the distribution of the longest time spend consecutively in *high* power usage is shifted to lower values when the day length is increased.
 
-```{r longest_time_in_high_ld}
+```{r longest_time_in_high_ld, fig.alt="Density curves, with rugs, of the longest time in minutes spent consecutively in the high active power state in series simulated from the COVLMC with the original short days and with longer days. The long days distribution is shifted towards shorter times."}
 lh_covlmc_ld <- sapply(covlmc_simul_ld, longuest_high)
 day_time_effect <- data.frame(
   time = c(lh_covlmc, lh_covlmc_ld),

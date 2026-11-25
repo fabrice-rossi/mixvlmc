@@ -181,7 +181,7 @@ The results of the pruning process can be represented graphically:
 print(autoplot(sun_model_tune) + geom_point())
 ```
 
-<img src="man/figures/README-sunspots_bic-1.png" alt="" width="100%" />
+<img src="man/figures/README-sunspots_bic-1.png" alt="Five panels plotting the AIC, the BIC, the number of contexts, the depth and the log likelihood against the cut off on the quantile scale. Small cut offs give heavily pruned, simple models with high AIC and BIC; the BIC reaches its minimum at an intermediate cut off and increases again for the largest, most complex models." width="100%" />
 
 The plot shows that simpler models are too simple as the BIC increases
 when pruning becomes strong enough. The best model remains rather
@@ -222,7 +222,7 @@ ggplot(pc_week_5, aes(x = date_time, y = active_power)) +
   ylab("Activer power (kW)")
 ```
 
-<img src="man/figures/README-active_power_week_5-1.png" alt="" width="100%" />
+<img src="man/figures/README-active_power_week_5-1.png" alt="Line plot of the active power in kW over one week of household electricity consumption. Low plateaus at night alternate with daytime periods of moderate use and sharp peaks of high consumption." width="100%" />
 
 The time series displays some typical patterns of electricity usage:
 
@@ -291,7 +291,7 @@ elec_covlmc_tune <- tune_covlmc(elec_dts, elec_cov)
 print(autoplot(elec_covlmc_tune))
 ```
 
-<img src="man/figures/README-elec_tune_process-1.png" alt="" width="100%" />
+<img src="man/figures/README-elec_tune_process-1.png" alt="Six panels plotting the AIC, the BIC, the number of contexts, the covariate depth, the depth and the log likelihood against the cut off on the quantile scale. Both criteria drop sharply after the smallest cut offs; the BIC is minimal at a small cut off where the covariate depth is still zero, and the covariate depth only grows for larger cut offs." width="100%" />
 
 ``` r
 best_elec_covlmc <- as_covlmc(elec_covlmc_tune)
@@ -440,7 +440,7 @@ ggplot(lh, aes(x = time, color = model)) +
   geom_vline(xintercept = longuest_high(elec_dts), color = 3)
 ```
 
-<img src="man/figures/README-longest_time_in_high-1.png" alt="" width="100%" />
+<img src="man/figures/README-longest_time_in_high-1.png" alt="Density curves, with rugs, of the longest time in minutes spent consecutively in the high active power state in the series simulated from the VLMC and from the COVLMC, with a vertical line at the value of the observed series. The COVLMC distribution has a heavier right tail that covers the observed value, while the VLMC distribution is concentrated on shorter times." width="100%" />
 
 The VLMC with covariate can be used to investigate the effects of
 changes in those covariates. For instance, if the day time is longer, we
@@ -472,4 +472,4 @@ ggplot(day_time_effect, aes(x = time, color = `day length`)) +
   geom_rug(alpha = 0.5)
 ```
 
-<img src="man/figures/README-longest_time_in_high_ld-1.png" alt="" width="100%" />
+<img src="man/figures/README-longest_time_in_high_ld-1.png" alt="Density curves, with rugs, of the longest time in minutes spent consecutively in the high active power state in series simulated from the COVLMC with the original short days and with longer days. The long days distribution is shifted towards shorter times." width="100%" />

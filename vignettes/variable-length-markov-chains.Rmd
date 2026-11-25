@@ -313,7 +313,7 @@ California_weeks <- rep(0, max(globalearthquake$nbweeks))
 California_weeks[California_earth_quakes$nbweeks] <- 1
 ```
 And finally we adjust automatically a VLMC.
-```{r}
+```{r fig.alt="Line plot of the BIC against the cut off on the quantile scale for the models considered by tune_vlmc() on the California earthquake data. The BIC is minimal for the smallest cut offs, which give the simplest models, and increases as the cut off grows."}
 California_weeks_earth_quakes_model <- tune_vlmc(California_weeks, initial = "truncated")
 plot(California_weeks_earth_quakes_model)
 ```
@@ -330,7 +330,7 @@ summary(California_weeks_earth_quakes_model)
 
 in addition, a summary data frame is accessible in the `results` component of the
 object. This can be used to build e.g. custom graphical representation of the model selection process (rather than using `plot.tune_vlmc()` or `autoplot.tune_vlmc()`). A typical simple ggplot2 representation can made as follows, for instance:
-```{r fig.height=4}
+```{r fig.height=4, fig.alt="Line plot with points of the BIC against the cut off alpha, built from the results component of the tuning object. As in the previous figure, the BIC is minimal for the smallest values of alpha and increases with alpha."}
 ggplot(California_weeks_earth_quakes_model$results, aes(x = alpha, y = BIC)) +
   geom_line() +
   geom_point()
