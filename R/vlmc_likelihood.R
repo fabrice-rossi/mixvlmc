@@ -114,7 +114,7 @@ logLik.vlmc <- function(object, initial = c("truncated", "specific", "extended")
 #' context of a given observation. As a consequence, in a time series `x`, the
 #' contexts of `x[1]` to `x[k]` are unknown. Depending on the value of `initial`
 #' different likelihood functions are used to tackle this difficulty:
-#' * `initial=="truncated"`: the likelihood is computed using only
+#' * `initial=="truncated"` (default): the likelihood is computed using only
 #'   `x[(k+1):length(x)]`
 #' * `initial=="specific"`: the likelihood is computed on the full time series
 #'   using a specific context for the initial values, `x[1]` to `x[k]`. Each of
@@ -122,7 +122,7 @@ logLik.vlmc <- function(object, initial = c("truncated", "specific", "extended")
 #'   log scale). Thus the numerical value of the likelihood is identical as the
 #'   one obtained with `initial=="truncated"` but it is computed on `length(x)`
 #'   with a model with more parameters than in this previous case.
-#' * `initial=="extended"` (default): the likelihood is computed on the full time series
+#' * `initial=="extended"`: the likelihood is computed on the full time series
 #'   using an extended context matching for the initial values, `x[1]` to `x[k]`.
 #'   This can be seen as a compromised between the two other possibilities:
 #'   the relaxed context matching needs in general to turn internal nodes
