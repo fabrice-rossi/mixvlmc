@@ -219,7 +219,7 @@ elec <- pc_week_5$active_power
 ggplot(pc_week_5, aes(x = date_time, y = active_power)) +
   geom_line() +
   xlab("Date") +
-  ylab("Activer power (kW)")
+  ylab("Active power (kW)")
 ```
 
 <img src="man/figures/README-active_power_week_5-1.png" alt="Line plot of the active power in kW over one week of household electricity consumption. Low plateaus at night alternate with daytime periods of moderate use and sharp peaks of high consumption." width="100%" />

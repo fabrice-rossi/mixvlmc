@@ -144,7 +144,7 @@ elec <- pc_week_5$active_power
 ggplot(pc_week_5, aes(x = date_time, y = active_power)) +
   geom_line() +
   xlab("Date") +
-  ylab("Activer power (kW)")
+  ylab("Active power (kW)")
 ```
 
 The time series displays some typical patterns of electricity usage:

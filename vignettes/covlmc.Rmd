@@ -49,7 +49,7 @@ elec <- pc_week_15_16$active_power
 ggplot(pc_week_15_16, aes(x = date_time, y = active_power)) +
   geom_line() +
   xlab("Date") +
-  ylab("Activer power (kW)")
+  ylab("Active power (kW)")
 ```
 
 We build again a discrete time series using the following thresholds:

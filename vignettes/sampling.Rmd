@@ -257,7 +257,7 @@ elec <- pc_week$active_power
 ggplot(pc_week, aes(x = date_time, y = active_power)) +
   geom_line() +
   xlab("Date") +
-  ylab("Activer power (kW)")
+  ylab("Active power (kW)")
 ```
 We build a discrete version by considering two states: the background base 
 active power below 0.4 kW and the active use of electric appliance above this limit.
