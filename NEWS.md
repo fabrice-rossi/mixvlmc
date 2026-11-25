@@ -1,10 +1,12 @@
-# mixvlmc (development version)
+# mixvlmc 0.3.0
+This release introduces a class for discrete time series, a new
+representation of context trees with a LaTeX output integrated with knitr, and
+fixes numerous bugs. Several changes break compatibility with previous versions,
+in particular some bug fixes change the models obtained with VLMC with
+covariates (see the breaking changes below).
+
 ## Breaking changes
-* methods that do not use their `...` argument now report an error when
-  additional arguments are given (issue #64). Misspelled arguments such as
-  `simulate(model, 100, burn_in = 10)` or `loglikelihood(model, new_data = x)`
-  were silently ignored. This applies also to the `type` argument of
-  `contexts()`, which was removed in mixvlmc 0.2.0 and ignored since then
+### Model representation (with `draw()`)
 * `draw()` returns a representation of the context tree (an object of class
   `mixvlmc_draw`) instead of the context tree itself. The representation is
   printed automatically, so that `draw(model)` displays the tree as before in
@@ -32,6 +34,41 @@
 * the interface of `draw_control()` has been significantly changed (issue #66)
   which should break most customisation code at the level of characters used
   by `draw()` to display a model
+
+### Estimation and use of models
+* the package now depends on R >= 4.1.0 (this was already implied by its
+  dependencies)
+* the degrees of freedom of the likelihood ratio tests used by `covlmc()` and
+  `prune.covlmc()` take into account the number of levels of factor covariates
+  (a factor with L levels has L-1 parameters per time step, not 1). This
+  changes the models obtained with factors with at least 3 levels
+* unused levels of factor covariates are ignored by `covlmc()` (they used to
+  change the fitted model)
+* the `multinom` engine of `covlmc()` detects rank deficient models (e.g. 
+  collinear covariates) consistently with the `glm` engine
+* the number of parameters of a `covlmc` (used by AIC and BIC, in particular in
+  `tune_covlmc()`) does not depend on the estimation engine anymore: levels
+  of factor covariates and states absent from the data of a context are
+  counted (the `glm` engine ignored them with three states or more)
+* the models associated to the root of the context tree of a `covlmc` (depth 0
+  models, extended model used for the first observation) use all the
+  observations (the first one was ignored)
+* `loglikelihood()` returns `-Inf` on new data containing a transition that has
+  a zero probability according to the model (the R backend of `vlmc()` ignored
+  such transitions)
+* `print()` and `summary()` of `tune_vlmc()` and `tune_covlmc()` results report
+  the log likelihood used for model selection
+* with the C++ backend, `tune_vlmc()` increases `max_depth` as documented 
+  (and as with the R backend) and `max_depth = 0` means a depth 0 model (it
+  meant no limit)
+* with the C++ backend, `simulate()` with `sample = "fast"` (the default) gives
+  results that do not depend on the platform anymore: for a given seed, they
+  differ from the ones of previous versions
+* methods that do not use their `...` argument now report an error when
+  additional arguments are given (issue #64). Misspelled arguments such as
+  `simulate(model, 100, burn_in = 10)` or `loglikelihood(model, new_data = x)`
+  were silently ignored. This applies also to the `type` argument of
+  `contexts()`, which was removed in mixvlmc 0.2.0 and ignored since then
 
 ## New features
 ### Discrete time series class (`dts`)
@@ -80,41 +117,6 @@ renders the tree and adds the `forest` package to the preamble of the document.
 * `covlmc()` and `tune_covlmc()` are faster (about 15%) and the models they
   return use much less memory (about a third), as the ROC curves of the logistic
   models are not computed and stored anymore (their AUC is computed directly)
-
-# mixvlmc 0.3.0
-This release fixes numerous bugs. Some of the fixes change the results
-obtained with previous versions, in particular for VLMC with covariates, hence
-the new minor version (see the breaking changes below).
-
-## Breaking changes
-* the package now depends on R >= 4.1.0 (this was already implied by its
-  dependencies)
-* the degrees of freedom of the likelihood ratio tests used by `covlmc()` and
-  `prune.covlmc()` take into account the number of levels of factor covariates
-  (a factor with L levels has L-1 parameters per time step, not 1). This
-  changes the models obtained with factors with at least 3 levels
-* unused levels of factor covariates are ignored by `covlmc()` (they used to
-  change the fitted model)
-* the `multinom` engine of `covlmc()` detects rank deficient models (e.g. 
-  collinear covariates) consistently with the `glm` engine
-* the number of parameters of a `covlmc` (used by AIC and BIC, in particular in
-  `tune_covlmc()`) does not depend on the estimation engine anymore: levels
-  of factor covariates and states absent from the data of a context are
-  counted (the `glm` engine ignored them with three states or more)
-* the models associated to the root of the context tree of a `covlmc` (depth 0
-  models, extended model used for the first observation) use all the
-  observations (the first one was ignored)
-* `loglikelihood()` returns `-Inf` on new data containing a transition that has
-  a zero probability according to the model (the R backend of `vlmc()` ignored
-  such transitions)
-* `print()` and `summary()` of `tune_vlmc()` and `tune_covlmc()` results report
-  the log likelihood used for model selection
-* with the C++ backend, `tune_vlmc()` increases `max_depth` as documented 
-  (and as with the R backend) and `max_depth = 0` means a depth 0 model (it
-  meant no limit)
-* with the C++ backend, `simulate()` with `sample = "fast"` (the default) gives
-  results that do not depend on the platform anymore: for a given seed, they
-  differ from the ones of previous versions
 
 ## Bug fixes
 ### Input validation
@@ -169,6 +171,10 @@ the new minor version (see the breaking changes below).
 * `trim()` removes positions from context trees
 * `simulate()` uses `base::sample.int()` even if another function with the same
   name is defined in the global environment
+
+### Documentation
+* the bootstrap example of `vignette("sampling")` used no burn in period, as
+  the `burnin` argument of `simulate()` was misspelled
 
 # mixvlmc 0.2.2
 This is a bug fix release (see issue #79 for the main bugs):

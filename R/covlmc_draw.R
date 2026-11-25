@@ -313,12 +313,12 @@ draw.covlmc <- function(ct, format,
   }
   dot_params <- list(...)
   if (!is.null(dot_params[["digits"]])) {
-    lifecycle::deprecate_soft("0.4.0", "draw.covlmc(digits)", "draw_control(digits)")
+    lifecycle::deprecate_soft("0.3.0", "draw.covlmc(digits)", "draw_control(digits)")
     control$digits <- dot_params[["digits"]]
     dot_params[["digits"]] <- NULL
   }
   if (!is.null(dot_params[["time_sep"]])) {
-    lifecycle::deprecate_soft("0.4.0", "draw.covlmc(time_sep)", "charset_ascii(time_sep)",
+    lifecycle::deprecate_soft("0.3.0", "draw.covlmc(time_sep)", "charset_ascii(time_sep)",
       details = "`charset_utf8()` has also a `time_sep` argument."
     )
     control$time_sep <- dot_params[["time_sep"]]

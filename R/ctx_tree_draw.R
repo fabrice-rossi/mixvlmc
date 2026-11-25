@@ -464,14 +464,14 @@ ctx_tree_node2txt <- function(ct, vals, control) {
   }
 }
 
-## Before mixvlmc 0.4.0, the second argument of draw() was the control list.
+## Before mixvlmc 0.3.0, the second argument of draw() was the control list.
 ## Such calls are still supported, with a deprecation warning.
 draw_format_control <- function(format, control, user_env = rlang::caller_env(2)) {
   if (rlang::is_missing(format)) {
     format <- "text"
   } else if (is.list(format)) {
     lifecycle::deprecate_soft(
-      "0.4.0", I("Passing the control list as the second argument of `draw()`"),
+      "0.3.0", I("Passing the control list as the second argument of `draw()`"),
       details = paste(
         "The second argument of `draw()` is now `format`:",
         "use `control = ` to specify the control list."
