@@ -1,4 +1,7 @@
 to_dts <- function(x, vals = NULL) {
+  if (anyNA(x)) {
+    stop("discrete time series cannot contain missing values")
+  }
   if (is.null(vals)) {
     if (is.character(x) || is.numeric(x)) {
       vals <- sort(unique(x))
