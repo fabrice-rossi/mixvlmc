@@ -179,7 +179,7 @@ burn_in_time <- 50 * depth(CAC_model)
 for (b in seq_along(bootstrap_samples)) {
   bootstrap_samples[[b]] <- simulate(CAC_model,
     length(CAC_dts),
-    burin = burn_in_time,
+    burnin = burn_in_time,
     seed = b
   )
 }
