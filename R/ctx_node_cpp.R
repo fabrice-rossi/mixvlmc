@@ -84,7 +84,7 @@ find_sequence.ctx_tree_cpp <- function(ct, ctx, reverse = FALSE, ...) {
 #' @rdname positions
 positions.ctx_node_cpp <- function(node) {
   restore_ctx_node_cpp(node)
-  if (!node$tree$root$has_positions) {
+  if (!node$tree$root$has_positions()) {
     stop("Cannot report positions if they were not saved")
   }
   node$tree$data_size - node$tree$root$node_positions(node$node_env$node) - 1L

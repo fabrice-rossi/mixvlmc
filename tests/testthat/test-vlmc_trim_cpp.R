@@ -32,3 +32,17 @@ test_that("vlmc trimming preserve core information when needed (C++)", {
     contexts(model, frequency = "detailed")
   ))
 })
+
+test_that("vlmc trimming works after serialization (C++)", {
+  withr::local_seed(4)
+  x <- sample(c(0, 1, 2), 300, replace = TRUE)
+  model <- vlmc(x, min_size = 3, max_depth = 4, keep_match = TRUE, backend = "C++")
+  model_path <- withr::local_tempfile(fileext = ".Rds")
+  saveRDS(model, model_path)
+  restored_model <- readRDS(model_path)
+  expect_no_error(trimmed_model <- trim(restored_model))
+  expect_true(compare_ctx(
+    contexts(trimmed_model, frequency = "detailed"),
+    contexts(model, frequency = "detailed")
+  ))
+})

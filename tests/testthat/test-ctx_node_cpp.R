@@ -57,3 +57,25 @@ test_that("children are computed correctly at the end of the time series", {
     }
   }
 })
+
+test_that("positions are reported after serialization", {
+  withr::local_seed(4)
+  dts <- sample(c(0, 1, 2), 300, replace = TRUE)
+  dts_ctree <- ctx_tree(dts, min_size = 3, max_depth = 4, backend = "C++")
+  ctx_path <- withr::local_tempfile(fileext = ".Rds")
+  saveRDS(dts_ctree, ctx_path)
+  restored_ctree <- readRDS(ctx_path)
+  expect_identical(
+    positions(find_sequence(restored_ctree, c(0, 1))),
+    positions(find_sequence(dts_ctree, c(0, 1)))
+  )
+  model <- vlmc(dts, min_size = 3, max_depth = 4, keep_match = TRUE, backend = "C++")
+  a_sequence <- find_sequence(model, c(0))
+  saveRDS(a_sequence, ctx_path)
+  restored_seq <- readRDS(ctx_path)
+  expect_identical(positions(restored_seq), positions(a_sequence))
+  expect_error(
+    positions(find_sequence(trim(model), c(0))),
+    "Cannot report positions if they were not saved"
+  )
+})
