@@ -70,6 +70,12 @@ The result of `ctx_tree()` is a `ctx_tree` object. It can be drawn using ascii a
 draw(x_ctx)
 ```
 
+`draw()` can also produce a LaTeX representation of the tree, based on the
+[forest](https://ctan.org/pkg/forest) package, with `draw(x_ctx, "latex")`. In
+an R Markdown or Quarto document that produces LaTeX (e.g. a PDF document), the
+tree is then rendered directly and the `forest` package is added automatically
+to the preamble of the document.
+
 The default extraction is done with `min_size=2` and `max_depth=100` which means that
 
 - contexts are included only if they appear at least twice in the time series;

@@ -43,7 +43,7 @@ for \code{format="text"} (defaults to \code{TRUE}, see details). Disregarded whe
 \item{...}{additional arguments for draw.}
 }
 \value{
-the covlmc model (invisibly).
+an object of class \code{mixvlmc_draw} (see \code{\link[=print.mixvlmc_draw]{print.mixvlmc_draw()}}).
 }
 \description{
 This function 'draws' a covlmc as a text.

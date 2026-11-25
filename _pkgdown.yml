@@ -134,6 +134,7 @@ reference:
 - contents:
   - charset_utf8
   - charset_ascii
+  - print.mixvlmc_draw
 - title: Generics
   desc: Generic S3 methods defined by the package
 - contents:

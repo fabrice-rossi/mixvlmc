@@ -2,6 +2,7 @@ Rcpp::loadModule("suffixtree", TRUE)
 .onLoad <- function(libname, pkgname) {
   s3_register("ggplot2::autoplot", "tune_vlmc")
   s3_register("ggplot2::autoplot", "tune_covlmc")
+  s3_register("knitr::knit_print", "mixvlmc_draw")
   current_op <- options()
   ## default options
   mixvlmc_options <- list(

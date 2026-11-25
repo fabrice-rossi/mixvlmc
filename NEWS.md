@@ -5,6 +5,11 @@
   `simulate(model, 100, burn_in = 10)` or `loglikelihood(model, new_data = x)`
   were silently ignored. This applies also to the `type` argument of
   `contexts()`, which was removed in mixvlmc 0.2.0 and ignored since then
+* `draw()` returns a representation of the context tree (an object of class
+  `mixvlmc_draw`) instead of the context tree itself. The representation is
+  printed automatically, so that `draw(model)` displays the tree as before in
+  the console, but not anymore when the result is not printed, for instance
+  inside a function or a loop (use `print(draw(model))`)
 * `draw()` has now a second parameter `format` with no default. Passing the
   `control` list as the second argument of `draw()` is deprecated (it is still
   supported with a warning)
@@ -63,6 +68,11 @@ issue #66) as follows:
 * when a logistic model does not use the covariates, it is now represented 
   by `draw.covlmc()` as a VLMC node, that is with the probability distribution
   on the state space that it represents
+
+The result of `draw()` integrates with knitr (issue #77): in an R Markdown or
+Quarto document that produces LaTeX (e.g. a PDF document), `draw(model, "latex")`
+renders the tree and adds the `forest` package to the preamble of the document.
+`format()` and `as.character()` give the representation as a character vector.
 
 ## Minor improvements
 * `vlmc()`, `cutoff()` and `prune()` are faster with the R backend (about 40%

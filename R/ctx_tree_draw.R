@@ -406,7 +406,9 @@ rec_format_ctx_tree <- function(label, prefix, ct, vals, control, node2txt) {
 #' @param control a list of low level control parameters of the text
 #'   representation. See details and [draw_control()].
 #' @param ... additional arguments for draw.
-#' @returns the context tree (invisibly).
+#' @returns an object of class `mixvlmc_draw` that contains the representation
+#'   of the context tree. It is printed automatically when it is not assigned
+#'   to a variable (see [print.mixvlmc_draw()]).
 #' @examples
 #' rdts <- sample(c(0, 1), 100, replace = TRUE)
 #' ctree <- ctx_tree(rdts, min_size = 10, max_depth = 2)
@@ -419,9 +421,11 @@ rec_format_ctx_tree <- function(label, prefix, ct, vals, control, node2txt) {
 #' @section Format:
 #'
 #'   The `format` parameter specifies the format used for the textual output.
-#'   With the default value `"text"` the output is produced in "ascii art" using
-#'   by default only ascii characters (notice that `draw_control()` can be used
-#'   to specified non ascii characters, but this is discouraged).
+#'   With the default value `"text"` the output is produced in "ascii art". The
+#'   characters used to represent the tree are given by the `charset` parameter
+#'   of [draw_control()]. By default, they are UTF-8 characters when the output
+#'   supports them and ASCII characters otherwise (see the `mixvlmc.charset`
+#'   option in [mixvlmc-package]).
 #'
 #'   With the `latex` value, the output is produced in LaTeX, leveraging the
 #'   [forest](https://ctan.org/pkg/forest) Latex package (see
@@ -431,10 +435,15 @@ rec_format_ctx_tree <- function(label, prefix, ct, vals, control, node2txt) {
 #'   The LaTeX output is sanitized to avoid potential problems induced by
 #'   special characters in the names of the states of the context tree.
 #'
+#'   In a knitr document (R Markdown, Quarto, ...) that produces LaTeX (e.g. a
+#'   PDF output), the LaTeX representation is included as is in the document
+#'   and the `forest` package is added automatically to its preamble: calling
+#'   `draw(model, "latex")` in a chunk is enough to render the tree (see
+#'   [print.mixvlmc_draw()]).
+#'
 #' @export
 draw <- function(ct, format, control = draw_control(), ...) {
   UseMethod("draw")
-  invisible(ct)
 }
 
 ctx_tree_node2txt <- function(ct, vals, control) {
@@ -518,6 +527,5 @@ draw.ctx_tree <- function(ct, format, control = draw_control(),
       ctx_tree_node2latex
     )
   }
-  writeLines(res)
-  invisible(ct)
+  new_mixvlmc_draw(res, format)
 }

@@ -27,7 +27,9 @@ the states that follow the context (as in \code{\link[=contexts.ctx_tree]{contex
 \item{...}{additional arguments for draw.}
 }
 \value{
-the context tree (invisibly).
+an object of class \code{mixvlmc_draw} that contains the representation
+of the context tree. It is printed automatically when it is not assigned
+to a variable (see \code{\link[=print.mixvlmc_draw]{print.mixvlmc_draw()}}).
 }
 \description{
 This function 'draws' a context tree as a text.
@@ -49,9 +51,11 @@ can be controlled via the \code{control} parameter and the associated
 
 
 The \code{format} parameter specifies the format used for the textual output.
-With the default value \code{"text"} the output is produced in "ascii art" using
-by default only ascii characters (notice that \code{draw_control()} can be used
-to specified non ascii characters, but this is discouraged).
+With the default value \code{"text"} the output is produced in "ascii art". The
+characters used to represent the tree are given by the \code{charset} parameter
+of \code{\link[=draw_control]{draw_control()}}. By default, they are UTF-8 characters when the output
+supports them and ASCII characters otherwise (see the \code{mixvlmc.charset}
+option in \link{mixvlmc-package}).
 
 With the \code{latex} value, the output is produced in LaTeX, leveraging the
 \href{https://ctan.org/pkg/forest}{forest} Latex package (see
@@ -60,6 +64,12 @@ With the \code{latex} value, the output is produced in LaTeX, leveraging the
 provided the \code{forest} package is loaded in the preamble of the document.
 The LaTeX output is sanitized to avoid potential problems induced by
 special characters in the names of the states of the context tree.
+
+In a knitr document (R Markdown, Quarto, ...) that produces LaTeX (e.g. a
+PDF output), the LaTeX representation is included as is in the document
+and the \code{forest} package is added automatically to its preamble: calling
+\code{draw(model, "latex")} in a chunk is enough to render the tree (see
+\code{\link[=print.mixvlmc_draw]{print.mixvlmc_draw()}}).
 }
 
 \examples{

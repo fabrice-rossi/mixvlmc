@@ -161,7 +161,7 @@ covlmc_node2txt <- function(node, vals, control) {
 #'   `format="latex"`.
 #'
 #' @inheritParams draw
-#' @returns the covlmc model (invisibly).
+#' @returns an object of class `mixvlmc_draw` (see [print.mixvlmc_draw()]).
 #' @section Format:
 #'
 #'   The `format` parameter specifies the format used for the textual output.
@@ -343,6 +343,5 @@ draw.covlmc <- function(ct, format,
       covlmc_node2latex
     )
   }
-  writeLines(res)
-  invisible(ct)
+  new_mixvlmc_draw(res, format)
 }

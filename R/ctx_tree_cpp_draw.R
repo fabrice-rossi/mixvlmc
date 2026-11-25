@@ -98,6 +98,5 @@ draw.ctx_tree_cpp <- function(ct, format, control = draw_control(),
       ctx_tree_node2latex
     )
   }
-  writeLines(res)
-  invisible(ct)
+  new_mixvlmc_draw(res, format)
 }

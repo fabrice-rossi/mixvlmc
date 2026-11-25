@@ -32,6 +32,5 @@ draw.vlmc_cpp <- function(ct, format, control = draw_control(), prob = TRUE, ...
       )
     }
   }
-  writeLines(res)
-  invisible(ct)
+  new_mixvlmc_draw(res, format)
 }
