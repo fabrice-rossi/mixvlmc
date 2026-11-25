@@ -84,3 +84,27 @@ test_that("dts rejects missing values and empty time series", {
       loglikelihood(newdata = c(1, NA, 2)), "missing values")
   }
 })
+
+test_that("dts with compatible state spaces are accepted as new data", {
+  x <- rep(c("B", "A", "C", "A", "D", "C", "B", "B", "A", "C"), 20)
+  model <- vlmc(x)
+  ref_ll <- loglikelihood(model, newdata = x)
+  ## explicit state space, as documented
+  expect_equal(loglikelihood(model, newdata = dts(x, vals = c("A", "B", "C", "D"))), ref_ll)
+  ## subset of the state space
+  y <- x[x != "D"]
+  expect_equal(
+    loglikelihood(model, newdata = dts(y)),
+    loglikelihood(model, newdata = y)
+  )
+  ## integer versus double states
+  withr::local_seed(0)
+  z <- sample(1:3, 100, replace = TRUE)
+  model_z <- vlmc(z)
+  expect_equal(
+    loglikelihood(model_z, newdata = dts(as.numeric(z))),
+    loglikelihood(model_z, newdata = z)
+  )
+  ## incompatible state spaces are still rejected
+  expect_error(loglikelihood(model, newdata = dts(c(x, "E"))), "newdata")
+})

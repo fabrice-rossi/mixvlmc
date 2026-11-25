@@ -22,7 +22,6 @@ validate_dts <- function(x, vals) {
   } else {
     fx <- factor(x, levels = vals)
     assertthat::assert_that(assertthat::noNA(fx), msg = "x contains unknown states")
-    vals <- factor(levels(fx), levels(fx))
   }
   list(ix = as.integer(fx) - 1L, vals = vals, fx = fx)
 }
@@ -179,9 +178,14 @@ states.dts <- function(x) {
 # in case of success return x as a dts
 convert_with_check <- function(x, vals, var_name = "x") {
   if (is_dts(x)) {
-    assertthat::assert_that(identical(x$vals, vals),
-      msg = stringr::str_c(var_name, " is not compatible with the model state space")
-    )
+    if (!identical(x$vals, vals)) {
+      ## the state spaces may differ only in their representation (e.g. integer
+      ## versus double) or x may use a subset of the states: x is recoded in
+      ## the state space of the model
+      x <- tryCatch(dts(dts_data(x), vals), error = function(e) {
+        stop(stringr::str_c(var_name, " is not compatible with the model state space"))
+      })
+    }
   } else {
     x <- dts(x, vals)
   }
