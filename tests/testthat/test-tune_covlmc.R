@@ -147,3 +147,17 @@ test_that("tune_covlmc selects the best model", {
   covlmc_alpha <- tune_covlmc(x, df_y, alpha_init = 0.1, initial = "extended", criterion = "BIC")
   expect_equal(covlmc_alpha$results$alpha[1], 0.1)
 })
+
+test_that("tune_covlmc reports the log likelihood used for model selection", {
+  pc <- powerconsumption[powerconsumption$week %in% 10:11, ]
+  dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(1 / 2, 1))))
+  dts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
+  for (initial in c("truncated", "extended")) {
+    t_res <- tune_covlmc(dts, dts_cov, initial = initial, min_size = 5)
+    crit <- t_res$results$BIC
+    sel_ll <- t_res$results$loglikelihood[max(which(crit == min(crit)))]
+    expected <- paste0("\"", initial, "\" (", format(sel_ll), ")")
+    expect_output(print(t_res), expected, fixed = TRUE)
+    expect_output(print(summary(t_res)), expected, fixed = TRUE)
+  }
+})

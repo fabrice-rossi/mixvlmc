@@ -146,3 +146,11 @@ flex_cbind <- function(ecur, enew) {
     cbind(ecur, enew)
   }
 }
+
+## log likelihood of the best model of a tune_vlmc/tune_covlmc result, as
+## computed during model selection (the best model is the last one that
+## reaches the minimal value of the criterion)
+tune_best_loglikelihood <- function(x) {
+  crit <- x$results[[x$criterion]]
+  x$results$loglikelihood[max(which(crit == min(crit)))]
+}

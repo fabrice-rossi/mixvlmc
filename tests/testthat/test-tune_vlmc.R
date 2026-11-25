@@ -86,3 +86,18 @@ test_that("tune_vlmc initial cutoff/alpha are respected", {
   vlmc_alpha <- tune_vlmc(data_set$x, alpha_init = 0.02)
   expect_equal(vlmc_alpha$results$alpha[1], 0.02)
 })
+
+test_that("tune_vlmc reports the log likelihood used for model selection", {
+  sun <- as.factor(ifelse(sunspot.year >= median(sunspot.year), "high", "low"))
+  for (initial in c("truncated", "specific", "extended")) {
+    for (criterion in c("BIC", "AIC")) {
+      t_res <- tune_vlmc(sun, initial = initial, criterion = criterion)
+      crit <- t_res$results[[criterion]]
+      ## the best model is the last one that reaches the minimum
+      sel_ll <- t_res$results$loglikelihood[max(which(crit == min(crit)))]
+      expected <- paste0("\"", initial, "\" (", format(sel_ll), ")")
+      expect_output(print(t_res), expected, fixed = TRUE)
+      expect_output(print(summary(t_res)), expected, fixed = TRUE)
+    }
+  }
+})

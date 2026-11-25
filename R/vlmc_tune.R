@@ -210,7 +210,7 @@ print.tune_vlmc <- function(x, ...) {
     cat(min(x$results$AIC))
   }
   cat(") with likelihood function \"", x$initial, "\" (", sep = "")
-  cat(loglikelihood(x$best_model))
+  cat(tune_best_loglikelihood(x))
   cat(")\n")
   invisible(x)
 }
