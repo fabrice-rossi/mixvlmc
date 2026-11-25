@@ -130,7 +130,7 @@ prune_ctx_tree <- function(tree, alpha = 0.05, cutoff = NULL, verbose = FALSE) {
           if (subtrees[[v]]$kl < K) {
             ## let's prune it
             if (verbose) { # nocov start
-              cat(paste("pruning", paste(c(ctx, v - 1), sep = "", collapse = ""), subtrees[[v]]$kl), "\n")
+              message(paste("pruning", paste(c(ctx, v - 1), sep = "", collapse = ""), subtrees[[v]]$kl))
             } # nocov end
             subtrees[[v]] <- list()
             nb_pruned <- nb_pruned + 1L

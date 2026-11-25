@@ -112,6 +112,9 @@ renders the tree and adds the `forest` package to the preamble of the document.
 `format()` and `as.character()` give the representation as a character vector.
 
 ## Minor improvements
+* the progress of `tune_vlmc()` and `tune_covlmc()` (with `verbose > 0`) is
+  reported with `message()` (instead of being printed), so that it can be
+  silenced with `suppressMessages()`
 * `vlmc()`, `cutoff()` and `prune()` are faster with the R backend (about 40%
   for `vlmc()`)
 * `covlmc()` and `tune_covlmc()` are faster (about 15%) and the models they

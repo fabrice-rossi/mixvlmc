@@ -47,7 +47,8 @@ growing phase of the initial context tree (see details).}
 the context tree and to built it. See \code{\link[=vlmc]{vlmc()}} for details.}
 
 \item{verbose}{integer >= 0 (default: 0). Verbosity level of the pruning
-process.}
+process. The progress is reported with \code{\link[=message]{message()}}, which can be silenced
+with \code{\link[=suppressMessages]{suppressMessages()}}.}
 
 \item{save}{specify which BIC models are saved during the pruning process.
 The default value \code{"best"} asks the function to keep only the best model

@@ -121,7 +121,7 @@ rec_loglikelihood_covlmc_newdata <- function(tree, d, nb_vals, y, cov, verbose =
         e_ll <- 0
       }
       if (verbose) { # nocov start
-        cat("root", e_ll, "\n")
+        message("root ", e_ll)
       } # nocov end
     } else {
       mm_match <- tree$match

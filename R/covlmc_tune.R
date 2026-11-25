@@ -38,7 +38,8 @@
 #' @param max_depth integer >= 0 (default: 100). Longest context considered in
 #'   growing phase of the initial context tree (see details).
 #' @param verbose integer >= 0 (default: 0). Verbosity level of the pruning
-#'   process.
+#'   process. The progress is reported with [message()], which can be silenced
+#'   with [suppressMessages()].
 #' @param save specify which BIC models are saved during the pruning process.
 #'   The default value `"best"` asks the function to keep only the best model
 #'   according to the `criterion`. When `save="initial"` the function keeps *in
@@ -123,7 +124,7 @@ tune_covlmc <- function(x, covariate, criterion = c("BIC", "AIC"),
     alpha <- alpha_init
   }
   if (verbose > 0) {
-    cat("Fitting a covlmc with max_depth=", max_depth, "and alpha=", alpha, "\n")
+    message("Fitting a covlmc with max_depth = ", max_depth, " and alpha = ", alpha)
   }
   saved_models <- list()
   base_model <- covlmc(x, covariate,
@@ -134,7 +135,7 @@ tune_covlmc <- function(x, covariate, criterion = c("BIC", "AIC"),
     n_max_depth <- min(2 * max_depth, length(x) - 1)
     if (n_max_depth > max_depth) {
       if (verbose > 0) {
-        cat("Max depth reached, increasing it to", n_max_depth, "\n")
+        message("Max depth reached, increasing it to ", n_max_depth)
       }
       max_depth <- n_max_depth
       base_model <- covlmc(x, covariate,
@@ -151,7 +152,7 @@ tune_covlmc <- function(x, covariate, criterion = c("BIC", "AIC"),
   max_order <- depth(model)
   best_crit <- Inf
   if (verbose > 0) {
-    cat("Initial criterion=", best_crit, "\n")
+    message("Initial criterion = ", best_crit)
   }
   if (save == "all") {
     all_models <- list()
@@ -170,7 +171,7 @@ tune_covlmc <- function(x, covariate, criterion = c("BIC", "AIC"),
       best_crit <- crit
       best_model <- model
       if (verbose > 0) {
-        cat("Improving criterion=", best_crit, "\n")
+        message("Improving criterion = ", best_crit)
       }
     }
     a_result <- data.frame(
@@ -196,7 +197,7 @@ tune_covlmc <- function(x, covariate, criterion = c("BIC", "AIC"),
         break
       }
       if (verbose > 0) {
-        cat("Pruning covlmc with alpha=", alpha, "\n")
+        message("Pruning covlmc with alpha = ", alpha)
       }
       model <- prune(model, alpha = alpha)
       if (save == "all") {
