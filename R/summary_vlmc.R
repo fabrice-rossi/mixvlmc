@@ -1,11 +1,15 @@
 #' @exportS3Method
 summary.vlmc <- function(object, ...) {
   rlang::check_dots_empty()
-  ctx <- contexts(object, frequency = "detailed")
-  all_length <- lengths(ctx$context)
+  ## the list of ctx_node is the fastest representation of the contexts
+  ## with the R backend
+  summary_vlmc_from_lengths(object, vapply(contexts(object), length, 1L))
+}
+
+summary_vlmc_from_lengths <- function(object, all_length) {
   res <- list(
     state_space = states(object),
-    nb = nrow(ctx),
+    nb = length(all_length),
     depth = max(all_length),
     avg_depth = mean(all_length),
     cutoff = object$cutoff,

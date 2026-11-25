@@ -114,6 +114,8 @@ renders the tree and adds the `forest` package to the preamble of the document.
 `format()` and `as.character()` give the representation as a character vector.
 
 ## Minor improvements
+* `summary()` of a VLMC is much faster with the R backend (about 13 times on
+  a model with 9,000 contexts)
 * the computations of the C++ backend (construction of the context trees and
   simulation) can be interrupted
 * `tune_covlmc()` has a `control` parameter to specify the control
