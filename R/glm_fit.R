@@ -185,11 +185,16 @@ fit_glm <- function(target, mm, nb_vals, control) {
       result
     } else if (engine == "multinom") {
       if (ncol(mm) > 0) {
+        ## upper bound of the number of weights (nnet limits it to 1000 by default)
+        max_weights <- (2L + sum(sapply(mm, function(v) if (is.factor(v)) nlevels(v) else 1L))) * nb_vals
         mm$target <- target
         try_nnet <- try(
           withCallingHandlers(
             warning = multinom_warning_ignore_generator(target, target_dist),
-            result <- nnet::multinom(target ~ ., data = mm, trace = FALSE, maxit = options()[["mixvlmc.maxit"]])
+            result <- nnet::multinom(target ~ .,
+              data = mm, trace = FALSE, maxit = options()[["mixvlmc.maxit"]],
+              MaxNWts = max_weights
+            )
           ),
           silent = TRUE
         )

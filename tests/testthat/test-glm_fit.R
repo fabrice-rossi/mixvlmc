@@ -29,3 +29,14 @@ test_that("vglm rank deficiency error is captured", {
   expect_equal(model$rank, 0)
   expect_true(is_glm_low_rank(model))
 })
+
+test_that("multinom handles models with many weights", {
+  withr::local_seed(0)
+  withr::local_options(mixvlmc.predictive = "multinom")
+  nb_data <- 300
+  ## (250 + 2) * 4 > 1000 weights (nnet default limit)
+  mm <- as.data.frame(matrix(rnorm(nb_data * 250), nb_data))
+  target <- factor(sample(letters[1:4], nb_data, replace = TRUE))
+  expect_no_error(model <- fit_glm(target, mm, 4, covlmc_control()))
+  expect_s3_class(model, "multinom")
+})
