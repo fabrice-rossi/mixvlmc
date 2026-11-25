@@ -101,3 +101,16 @@ test_that("tune_vlmc reports the log likelihood used for model selection", {
     }
   }
 })
+
+test_that("tune_vlmc increases a null max_depth without warning", {
+  withr::local_seed(0)
+  x <- sample(c("A", "B", "C"), 300, replace = TRUE)
+  x <- c(x[1], ifelse(x[-1] == "A", x[-length(x)], x[-1]))
+  for (backend in c("R", "C++")) {
+    expect_no_warning(model_tune <- tune_vlmc(x, max_depth = 0, backend = backend))
+    expect_identical(
+      depth(as_vlmc(model_tune)),
+      depth(as_vlmc(tune_vlmc(x, backend = backend)))
+    )
+  }
+})

@@ -161,3 +161,11 @@ test_that("tune_covlmc reports the log likelihood used for model selection", {
     expect_output(print(summary(t_res)), expected, fixed = TRUE)
   }
 })
+
+test_that("tune_covlmc increases a null max_depth without warning", {
+  withr::local_seed(0)
+  x <- sample(c("A", "B", "C"), 300, replace = TRUE)
+  x <- c(x[1], ifelse(x[-1] == "A", x[-length(x)], x[-1]))
+  y <- data.frame(y = rnorm(length(x)))
+  expect_no_warning(tune_covlmc(x, y, max_depth = 0))
+})

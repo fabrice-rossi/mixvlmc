@@ -132,7 +132,7 @@ tune_covlmc <- function(x, covariate, criterion = c("BIC", "AIC"),
     max_depth = max_depth
   )
   while (base_model$max_depth) {
-    n_max_depth <- min(2 * max_depth, length(x) - 1)
+    n_max_depth <- min(max(1, 2 * max_depth), length(x) - 1)
     if (n_max_depth > max_depth) {
       if (verbose > 0) {
         message("Max depth reached, increasing it to ", n_max_depth)

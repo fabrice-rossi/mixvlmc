@@ -134,6 +134,8 @@ renders the tree and adds the `forest` package to the preamble of the document.
   degenerate model with the R backend and to an error with the C++ backend)
 
 ### VLMC
+* `tune_vlmc()` and `tune_covlmc()` increase a null `max_depth` instead of
+  warning that they cannot find a suitable value
 * `contexts()` with `local = TRUE` reports correct positions and supports
   `metrics = TRUE` (R backend)
 * positions of the empty context are 0 based in all cases and are not 
