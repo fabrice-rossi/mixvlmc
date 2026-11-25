@@ -108,6 +108,11 @@ tune_vlmc <- function(x, criterion = c("BIC", "AIC"),
   } else {
     f_criterion <- stats::AIC
   }
+  if (backend == "C++") {
+    ## the C++ backend builds the complete suffix tree and uses max_depth only
+    ## during pruning: the automatic increase of max_depth is done at once
+    max_depth <- max(max_depth, length(x) - 1)
+  }
   if (verbose > 0) {
     cat("Fitting a vlmc with max_depth=", max_depth, "and cutoff=", cutoff, "\n")
   }
@@ -123,7 +128,10 @@ tune_vlmc <- function(x, criterion = c("BIC", "AIC"),
         cat("Max depth reached, increasing it to", n_max_depth, "\n")
       }
       max_depth <- n_max_depth
-      base_model <- vlmc(x, cutoff = cutoff, min_size = min_size, max_depth = max_depth)
+      base_model <- vlmc(x,
+        cutoff = cutoff, min_size = min_size,
+        max_depth = max_depth, backend = backend
+      )
     } else {
       warning("cannot find a suitable value for max_depth")
       break
