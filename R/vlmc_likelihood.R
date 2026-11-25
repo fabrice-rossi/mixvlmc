@@ -37,12 +37,12 @@ rec_loglikelihood_vlmc <- function(tree, node_as_ctx = FALSE, verbose = FALSE) {
     if (anyNA(all_ll) || node_as_ctx) {
       ## let us add the local contribution
       sub_trees <- sapply(tree$children, function(x) !is.null(x$f_by))
-      sub_counts <- rowSums(sapply(tree$children[sub_trees], function(x) x$f_by))
+      sub_counts <- Reduce("+", lapply(tree$children[sub_trees], function(x) x$f_by), 0)
       loc_counts <- tree$f_by - sub_counts
       if (is.null(tree$data_f_by)) {
         sub_ll <- sub_ll + local_loglikelihood_vlmc(tree$f_by, loc_counts)
       } else {
-        data_sub_counts <- rowSums(sapply(tree$children[sub_trees], function(x) x$data_f_by))
+        data_sub_counts <- Reduce("+", lapply(tree$children[sub_trees], function(x) x$data_f_by), 0)
         data_loc_counts <- tree$data_f_by - data_sub_counts
         sub_ll <- sub_ll + local_loglikelihood_vlmc(tree$f_by, data_loc_counts)
         if (verbose) { # nocov start
