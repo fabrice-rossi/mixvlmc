@@ -73,7 +73,7 @@ find_sequence.covlmc <- function(ct, ctx, reverse = FALSE, ...) {
       } else if (is.null(current[["merged_model"]])) {
         return(NULL)
       } else {
-        if (nx$ix[length(ctx)] + 1L %in% current$merged) {
+        if ((nx$ix[length(ctx)] + 1L) %in% current$merged) {
           l_res <- candidate
           l_res$merged <- current$merged
           l_res$model <- current$merged_model

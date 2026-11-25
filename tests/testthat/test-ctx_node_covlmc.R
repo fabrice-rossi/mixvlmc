@@ -65,3 +65,21 @@ test_that("sequences are properly extracted", {
     expect_identical(direct_seq, ctxs_obj[[k]])
   }
 })
+
+test_that("find_sequence handles correctly contexts not merged", {
+  d_model <- build_degenerate_elec_model(FALSE)
+  model <- d_model$model
+  vals <- states(model)
+  ## in this model, the contexts (low, typical) and (high, typical) are merged
+  expect_identical(model$children[[2]]$merged, c(1L, 3L))
+  expect_true(is_merged(find_sequence(model, vals[c(1, 2)])))
+  expect_true(is_merged(find_sequence(model, vals[c(3, 2)])))
+  ## we remove (high, typical) from the merged contexts
+  model$children[[2]]$merged <- 1L
+  expect_true(is_merged(find_sequence(model, vals[c(1, 2)])))
+  expect_null(find_sequence(model, vals[c(3, 2)]))
+  ## and then (low, typical)
+  model$children[[2]]$merged <- 3L
+  expect_null(find_sequence(model, vals[c(1, 2)]))
+  expect_true(is_merged(find_sequence(model, vals[c(3, 2)])))
+})
