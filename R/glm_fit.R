@@ -57,6 +57,25 @@ multinom_warning_ignore_generator <- function(target, target_dist) {
   }
 }
 
+## rank of a multinom model, consistent with the rank deficiency detection of
+## glm: unused levels of factors are dropped and a factor with a single level
+## makes the model rank deficient
+multinom_rank <- function(model, mm, nb_outputs) {
+  nb_coeffs <- length(stats::coef(model))
+  if (ncol(mm) == 0) {
+    nb_coeffs
+  } else {
+    mm <- droplevels(mm)
+    if (any(sapply(mm, function(v) is.factor(v) && nlevels(v) < 2L))) {
+      0
+    } else {
+      X <- stats::model.matrix(~., data = mm)
+      X_rank <- qr(X, tol = min(1e-07, stats::glm.control()$epsilon / 1000))$rank
+      nb_coeffs - (ncol(X) - X_rank) * nb_outputs
+    }
+  }
+}
+
 fit_glm <- function(target, mm, nb_vals, control) {
   assertthat::assert_that(nrow(mm) > 0)
   engine <- options()[["mixvlmc.predictive"]]
@@ -210,7 +229,7 @@ fit_glm <- function(target, mm, nb_vals, control) {
       if (inherits(try_nnet, "try-error")) {
         stop(attr(try_nnet, "condition"))
       }
-      result$rank <- length(stats::coef(result))
+      result$rank <- multinom_rank(result, mm[setdiff(names(mm), "target")], length(non_empty) - 1L)
       result
     } else {
       ## should not happen

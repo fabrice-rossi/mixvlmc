@@ -40,3 +40,39 @@ test_that("multinom handles models with many weights", {
   expect_no_error(model <- fit_glm(target, mm, 4, covlmc_control()))
   expect_s3_class(model, "multinom")
 })
+
+test_that("multinom rank deficiency is detected", {
+  withr::local_seed(0)
+  withr::local_options(mixvlmc.predictive = "multinom")
+  nb_data <- 200
+  z <- rnorm(nb_data)
+  ## collinear covariates
+  mm <- data.frame(a = z, b = 2 * z, c = rnorm(nb_data))
+  for (nb_vals in 2:3) {
+    target <- factor(sample(letters[1:nb_vals], nb_data, replace = TRUE))
+    model <- fit_glm(target, mm, nb_vals, covlmc_control())
+    expect_true(is_glm_low_rank(model))
+    model <- fit_glm(target, mm[, -1], nb_vals, covlmc_control())
+    expect_false(is_glm_low_rank(model))
+  }
+})
+
+test_that("multinom and glm detect rank deficiency consistently with factors", {
+  withr::local_seed(0)
+  nb_data <- 200
+  target <- sample(0:1, nb_data, replace = TRUE)
+  ## a factor with an unused level
+  f_unused <- factor(sample(c("a", "b"), nb_data, replace = TRUE), levels = c("a", "b", "c"))
+  ## a factor with a single used level
+  f_single <- factor(rep("a", nb_data), levels = c("a", "b"))
+  for (mm in list(
+    data.frame(f = f_unused, z = rnorm(nb_data)),
+    data.frame(f = f_single, z = rnorm(nb_data))
+  )) {
+    low_rank <- sapply(c("glm", "multinom"), function(engine) {
+      withr::local_options(mixvlmc.predictive = engine)
+      is_glm_low_rank(fit_glm(target, mm, 2, covlmc_control()))
+    })
+    expect_identical(low_rank[["multinom"]], low_rank[["glm"]])
+  }
+})

@@ -244,3 +244,17 @@ test_that("unused levels of factors do not change the model", {
   cov_3$dn[10] <- "unused"
   expect_error(predict(m_2, dts, cov_3), "new level")
 })
+
+test_that("covlmc handles rank deficiency similarly with both engines", {
+  data_set <- build_data_set(500, seed = 0)
+  ## collinear covariates
+  dts_cov <- data.frame(y = data_set$covariate$y, y2 = 2 * data_set$covariate$y)
+  models <- list()
+  for (engine in c("glm", "multinom")) {
+    withr::local_options(mixvlmc.predictive = engine)
+    models[[engine]] <- covlmc(data_set$x, dts_cov, min_size = 5)
+  }
+  expect_equal(covariate_depth(models$glm), 0)
+  expect_identical(covariate_depth(models$multinom), covariate_depth(models$glm))
+  expect_identical(context_number(models$multinom), context_number(models$glm))
+})
