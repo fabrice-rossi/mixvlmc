@@ -1,6 +1,7 @@
-# mixvlmc 0.2.3
-This is a bug fix release. Some fixes change the results obtained with
-previous versions, in particular for VLMC with covariates (see below).
+# mixvlmc 0.3.0
+This release fixes numerous bugs. Some of the fixes change the results
+obtained with previous versions, in particular for VLMC with covariates, hence
+the new minor version (see the breaking changes below).
 
 ## Breaking changes
 * the package now depends on R >= 4.1.0 (this was already implied by its
