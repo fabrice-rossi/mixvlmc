@@ -730,8 +730,8 @@
 # draw handles constant models
 
     ▪
-    ├─ 0 (0.999, 0.000998)
-    └─ 1 (0.000999, 0.999)
+    ├─ 0 (0.000998, 0.999)
+    └─ 1 (0.999, 0.000999)
 
 ---
 
@@ -746,9 +746,9 @@
     \begin{forest}
     [\textbf{$\epsilon$}
     [\multicolumn{2}{c}{\textbf{0}}\\\hline
-    {\small 0.999}&{\small 0.000998}, align=cc]
+    {\small 0.000998}&{\small 0.999}, align=cc]
     [\multicolumn{2}{c}{\textbf{1}}\\\hline
-    {\small 0.000999}&{\small 0.999}, align=cc]
+    {\small 0.999}&{\small 0.000999}, align=cc]
     ]
     \end{forest}
 
@@ -757,17 +757,17 @@
     \begin{forest}
     [\textbf{$\epsilon$}
     [\multicolumn{2}{c}{\textbf{0}}\\\hline
-    {\small 0.999}&{\small 0.000998}, align=cc]
+    {\small 0.000998}&{\small 0.999}, align=cc]
     [\multicolumn{2}{c}{\textbf{1}}\\\hline
-    {\small 0.000999}&{\small 0.999}, align=cc]
+    {\small 0.999}&{\small 0.000999}, align=cc]
     ]
     \end{forest}
 
 ---
 
     ▪
-    ├─ 0 (0.999, 0.000998)
-    └─ 1 (0.000999, 0.999)
+    ├─ 0 (0.000998, 0.999)
+    └─ 1 (0.999, 0.000999)
 
 ---
 
@@ -782,9 +782,9 @@
     \begin{forest}
     [\textbf{$\epsilon$}
     [\multicolumn{2}{c}{\textbf{0}}\\\hline
-    {\small 0.999}&{\small 0.000998}, align=cc]
+    {\small 0.000998}&{\small 0.999}, align=cc]
     [\multicolumn{2}{c}{\textbf{1}}\\\hline
-    {\small 0.000999}&{\small 0.999}, align=cc]
+    {\small 0.999}&{\small 0.000999}, align=cc]
     ]
     \end{forest}
 
@@ -793,9 +793,9 @@
     \begin{forest}
     [\textbf{$\epsilon$}
     [\multicolumn{2}{c}{\textbf{0}}\\\hline
-    {\small 0.999}&{\small 0.000998}, align=cc]
+    {\small 0.000998}&{\small 0.999}, align=cc]
     [\multicolumn{2}{c}{\textbf{1}}\\\hline
-    {\small 0.000999}&{\small 0.999}, align=cc]
+    {\small 0.999}&{\small 0.000999}, align=cc]
     ]
     \end{forest}
 

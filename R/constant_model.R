@@ -116,7 +116,7 @@ glm_is_constant.constant_model <- function(model) {
 glm_to_probs.constant_model <- function(model, lev) {
   if (model$rank == 1) {
     probs <- stats::binomial()$linkinv(model$coefficients[1])
-    c(probs, 1 - probs)
+    c(1 - probs, probs)
   } else {
     VGAM::multilogitlink(matrix(model$coefficients[1:model$rank], ncol = model$rank), inverse = TRUE)[1, ]
   }

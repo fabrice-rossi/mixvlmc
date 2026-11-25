@@ -75,3 +75,18 @@ test_that("constant model metrics works as expected", {
   dimnames(cm) <- cm_dm
   expect_equal(m_model$conf_mat, cm)
 })
+
+test_that("glm_to_probs gives the probabilities of the states in order", {
+  covariates <- data.frame(y = rnorm(100))
+  bin_target <- rep(1, 100)
+  bin_model <- constant_model(bin_target, covariates, 2)
+  bin_probs <- glm_to_probs(bin_model, c(0, 1))
+  expect_equal(bin_probs, c(1 - predict(bin_model)[1], predict(bin_model)[1]))
+  expect_gt(bin_probs[2], bin_probs[1])
+
+  target <- factor(rep("2", 100), levels = as.character(1:3))
+  model <- constant_model(target, covariates, 3)
+  probs <- glm_to_probs(model, as.character(1:3))
+  expect_equal(probs, predict(model)[1, ])
+  expect_equal(which.max(probs), 2L)
+})
