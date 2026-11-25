@@ -20,3 +20,18 @@ test_that("automatic C++ representation restoration works", {
   expect_true(identical(counts(a_sequence), counts(restored_seq)))
   expect_false(extptr_is_null(restored_seq$node_env$node))
 })
+
+test_that("find_sequence handles sequences longer than the end of the time series", {
+  ## regression test: subscript out of bounds in raw_find_sequence
+  dts <- c(0, 1, 1, 0, 1)
+  dts_ctree <- ctx_tree(dts, min_size = 1, backend = "C++")
+  dts_rtree <- ctx_tree(dts, min_size = 1, backend = "R")
+  for (l in 1:6) {
+    all_seqs <- as.matrix(expand.grid(rep(list(c(0, 1)), l)))
+    for (k in seq_len(nrow(all_seqs))) {
+      the_seq <- unname(all_seqs[k, ])
+      expect_no_warning(cpp_seq <- find_sequence(dts_ctree, the_seq))
+      expect_identical(is.null(cpp_seq), is.null(find_sequence(dts_rtree, the_seq)))
+    }
+  }
+})
