@@ -99,3 +99,24 @@ test_that("vlmc simulate handles correctly burnin with init values", {
     expect_equal(xs_full[1:25], xs_init)
   }
 })
+
+test_that("the burn in period discards the correct number of values", {
+  withr::local_seed(0)
+  x <- sample(c("a", "b", "c"), 100, replace = TRUE)
+  strip <- function(x) as.vector(unclass(x))
+  for (backend in c("R", "C++")) {
+    for (max_depth in c(0, 3)) {
+      model <- vlmc(x, max_depth = max_depth, alpha = 0.5, backend = backend)
+      for (burnin in c(1, 5, 20)) {
+        expect_identical(
+          strip(simulate(model, 10, seed = 1, burnin = burnin)),
+          strip(simulate(model, 10 + burnin, seed = 1))[-(1:burnin)]
+        )
+        expect_identical(
+          strip(simulate(model, 10, seed = 1, init = c("a", "b"), burnin = burnin)),
+          strip(simulate(model, 10 + burnin, seed = 1, init = c("a", "b")))[-(1:burnin)]
+        )
+      }
+    }
+  }
+})

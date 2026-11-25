@@ -121,8 +121,8 @@ simulate.vlmc <- function(object, nsim = 1L, seed = NULL, init = NULL, burnin = 
   if (istart <= nb_sim) {
     if (max_depth == 0) {
       ## burn in for the random generator
-      if (burnin > istart) {
-        sample(int_vals, burnin - istart, replace = TRUE, prob = object$f_by)
+      if (burnin >= istart) {
+        sample(int_vals, burnin - istart + 1L, replace = TRUE, prob = object$f_by)
       }
       pre_res[out_pos:nsim] <- sample(int_vals, nsim - out_pos + 1L, replace = TRUE, prob = object$f_by)
     } else {
