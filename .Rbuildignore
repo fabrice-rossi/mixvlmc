@@ -1,11 +1,11 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
-devutils
+^devutils$
 ^LICENSE\.md$
 ^\.github$
 ^data-raw$
 ^README\.Rmd$
-.README_cache
+^\.README_cache$
 ^doc$
 ^Meta$
 ^_pkgdown\.yml$

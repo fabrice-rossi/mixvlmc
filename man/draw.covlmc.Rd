@@ -42,6 +42,9 @@ for \code{format="text"} (defaults to \code{TRUE}, see details). Disregarded whe
 
 \item{...}{additional arguments for draw.}
 }
+\value{
+the covlmc model (invisibly).
+}
 \description{
 This function 'draws' a covlmc as a text.
 }

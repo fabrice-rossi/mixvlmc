@@ -30,7 +30,6 @@
 #'    At loading the option is set based on a call to [cli::is_utf8_output()].
 #'    It defaults to `"utf8"` is this encoding is supported.
 #'
-#' @docType package
 "_PACKAGE"
 
 #'

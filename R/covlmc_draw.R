@@ -228,6 +228,7 @@ covlmc_node2txt <- function(node, vals, control) {
 #'   `format="latex"`.
 #'
 #' @inheritParams draw
+#' @returns the covlmc model (invisibly).
 #' @section Format:
 #'
 #'   The `format` parameter specifies the format used for the textual output.
