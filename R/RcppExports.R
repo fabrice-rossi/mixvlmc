@@ -12,7 +12,7 @@
 #' @noRd
 #'
 after <- function(x) {
-    .Call('_mixvlmc_after', PACKAGE = 'mixvlmc', x)
+    .Call(`_mixvlmc_after`, x)
 }
 
 #' Find a double just before another one
@@ -26,7 +26,7 @@ after <- function(x) {
 #' @noRd
 #'
 before <- function(x) {
-    .Call('_mixvlmc_before', PACKAGE = 'mixvlmc', x)
+    .Call(`_mixvlmc_before`, x)
 }
 
 #' Find values in a vector
@@ -61,22 +61,22 @@ before <- function(x) {
 #' @return a list described above.
 #' @noRd
 forward_match_all_ctx_counts <- function(x, nb_vals, depth = 0L, nv_from = NULL) {
-    .Call('_mixvlmc_forward_match_all_ctx_counts', PACKAGE = 'mixvlmc', x, nb_vals, depth, nv_from)
+    .Call(`_mixvlmc_forward_match_all_ctx_counts`, x, nb_vals, depth, nv_from)
 }
 
 kl_crit <- function(p, q) {
-    .Call('_mixvlmc_kl_crit', PACKAGE = 'mixvlmc', p, q)
+    .Call(`_mixvlmc_kl_crit`, p, q)
 }
 
 mixvlmc_sample <- function(p, n) {
-    .Call('_mixvlmc_mixvlmc_sample', PACKAGE = 'mixvlmc', p, n)
+    .Call(`_mixvlmc_mixvlmc_sample`, p, n)
 }
 
 mixvlmc_sample2 <- function(p, n) {
-    .Call('_mixvlmc_mixvlmc_sample2', PACKAGE = 'mixvlmc', p, n)
+    .Call(`_mixvlmc_mixvlmc_sample2`, p, n)
 }
 
 extptr_is_null <- function(ptr) {
-    .Call('_mixvlmc_extptr_is_null', PACKAGE = 'mixvlmc', ptr)
+    .Call(`_mixvlmc_extptr_is_null`, ptr)
 }
 

@@ -40,7 +40,7 @@
 #' @importFrom stats simulate
 #' @importFrom stats predict
 #' @importFrom rlang .data
-#' @useDynLib mixvlmc
+#' @useDynLib mixvlmc, .registration = TRUE
 ## usethis namespace: end
 NULL
 #>
