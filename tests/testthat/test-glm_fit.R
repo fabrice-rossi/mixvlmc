@@ -14,3 +14,18 @@ test_that("glm contrast error is captured", {
   expect_s3_class(model, "constant_model")
   expect_equal(model$rank, 0)
 })
+
+test_that("vglm rank deficiency error is captured", {
+  withr::local_seed(0)
+  withr::local_options(mixvlmc.predictive = "glm")
+  nb_data <- 50
+  z <- rnorm(nb_data)
+  ## collinear covariates
+  mm <- data.frame(a = z, b = z)
+  target <- factor(sample(c("a", "b", "c"), nb_data, replace = TRUE))
+  expect_no_error(model <- fit_glm(target, mm, 3, covlmc_control()))
+  ## returns a constant model
+  expect_s3_class(model, "constant_model")
+  expect_equal(model$rank, 0)
+  expect_true(is_glm_low_rank(model))
+})

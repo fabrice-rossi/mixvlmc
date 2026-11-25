@@ -145,7 +145,7 @@ fit_glm <- function(target, mm, nb_vals, control) {
             for (msg in err_to_ignore) {
               if (stringr::str_detect(err_cond, msg)) {
                 ## "fake" result, interpreted as a low rank result
-                result <- structure(list(coefficients = c(NA), ll = NA, rank = 0, target = NA, class = "constant_model"))
+                result <- structure(list(coefficients = c(NA), ll = NA, rank = 0, target = NA), class = "constant_model")
                 catched <- TRUE
                 break
               }
