@@ -8,11 +8,14 @@
 #' @param tree a context tree.
 #' @param x a discrete time series in its low level representation.
 #' @param keep_match whether to keep the match position.
+#' @param start number of initial values of x which are not counted as
+#'   occurrences of symbols after a context (they are still used as contexts for
+#'   the following values). Not compatible with `keep_match = TRUE`.
 #'
 #' @return a context tree supplemented with the matching information.
 #'
 #' @noRd
-match_ctx <- function(tree, x, keep_match = FALSE) {
+match_ctx <- function(tree, x, keep_match = FALSE, start = 0L) {
   recurse_match_ctx <- function(tree, x, nb_vals, d, from, f_by) {
     result <- tree
     if (is.null(tree$children)) {
@@ -22,7 +25,7 @@ match_ctx <- function(tree, x, keep_match = FALSE) {
       }
       result
     } else {
-      if (d == 0) {
+      if (d == 0 && start == 0) {
         fmatch <- forward_match_all_ctx_counts(x, nb_vals, d, NULL)
       } else {
         fmatch <- forward_match_all_ctx_counts(x, nb_vals, d, from)
@@ -59,8 +62,17 @@ match_ctx <- function(tree, x, keep_match = FALSE) {
     }
   }
   init_from <- NULL
-  if (!is.null(tree$match)) {
-    init_from <- tree$match
+  if (start > 0) {
+    assertthat::assert_that(!keep_match, start < length(x))
+    ## positions (0-based) of the values counted as occurrences after the
+    ## (empty) context
+    init_from <- start:(length(x) - 1)
+    x_counted <- x[(start + 1):length(x)]
+  } else {
+    if (!is.null(tree$match)) {
+      init_from <- tree$match
+    }
+    x_counted <- x
   }
-  recurse_match_ctx(tree, x, length(tree$vals), 0, init_from, tabulate(x + 1, nbins = length(tree$vals)))
+  recurse_match_ctx(tree, x, length(tree$vals), 0, init_from, tabulate(x_counted + 1, nbins = length(tree$vals)))
 }

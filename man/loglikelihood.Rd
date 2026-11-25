@@ -99,6 +99,10 @@ is not specified, it is set to the minimal possible value, that is k for the
 \code{truncated} likelihood and 0 for the other ones. If it is specified, it must
 be larger or equal to k for \code{truncated}.
 
+When \code{newdata} contains a transition that has a zero probability according to
+the model (in a context or, for the \code{extended} likelihood, in an extended
+context), the log-likelihood is \code{-Inf}.
+
 See the dedicated vignette for a more mathematically oriented discussion:
 \code{vignette("likelihood", package = "mixvlmc")}.
 }

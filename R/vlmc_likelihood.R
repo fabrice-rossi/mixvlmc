@@ -4,8 +4,10 @@ local_loglikelihood_vlmc <- function(model_counts, data_counts = NULL) {
   }
   sc <- sum(model_counts)
   if (sc > 0) {
-    probs <- model_counts / sc
-    sum(data_counts * ifelse(probs > 0, log(probs), 0))
+    ## states absent from the data do not contribute, while states present in
+    ## the data with a zero probability in the model give a -Inf log likelihood
+    sel <- data_counts > 0
+    sum(data_counts[sel] * log(model_counts[sel] / sc))
   } else {
     ## should never happen when called from rec_loglikelihood_vlmc
     NA
@@ -135,6 +137,10 @@ logLik.vlmc <- function(object, initial = c("truncated", "specific", "extended")
 #' `truncated` likelihood and 0 for the other ones. If it is specified, it must
 #' be larger or equal to k for `truncated`.
 #'
+#' When `newdata` contains a transition that has a zero probability according to
+#' the model (in a context or, for the `extended` likelihood, in an extended
+#' context), the log-likelihood is `-Inf`.
+#'
 #' See the dedicated vignette for a more mathematically oriented discussion:
 #' `vignette("likelihood", package = "mixvlmc")`.
 #'
@@ -231,16 +237,17 @@ loglikelihood.vlmc <- function(vlmc, newdata, initial = c("truncated", "specific
       stop("Cannot ignore more data than the available ones")
     }
     nx <- to_dts(newdata, vlmc$vals)
-    nvlmc <- match_ctx(vlmc, nx$ix)
-    pre_res <- rec_loglikelihood_vlmc(nvlmc, TRUE)
     ignore_counts <- ignore
     if (initial == "specific" && ignore < depth(vlmc)) {
       ignore <- depth(vlmc)
     }
-    if (ignore > 0) {
-      ivlmc <- match_ctx(vlmc, nx$ix[1:min(ignore, length(newdata))])
-      delta_res <- rec_loglikelihood_vlmc(ivlmc, TRUE)
-      pre_res <- pre_res - delta_res
+    if (ignore >= length(newdata)) {
+      pre_res <- 0
+    } else {
+      ## the ignored values are excluded from the counts rather than by
+      ## subtracting their log likelihood, as the latter can be -Inf
+      nvlmc <- match_ctx(vlmc, nx$ix, start = ignore)
+      pre_res <- rec_loglikelihood_vlmc(nvlmc, TRUE)
     }
     attr(pre_res, "nobs") <- max(0, length(newdata) - ignore_counts)
   }
