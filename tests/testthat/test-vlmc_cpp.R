@@ -187,3 +187,18 @@ test_that("cut off values of a VLMC reduced to its root do not depend on the bac
     tune_vlmc(x, cutoff_init = 20, backend = "R")$results
   )
 })
+
+test_that("max_depth = 0 gives a VLMC reduced to its root", {
+  data_set <- build_markov_chain(500, 2, seed = 6)
+  for (prune in c(TRUE, FALSE)) {
+    model <- vlmc(data_set$x, max_depth = 0, prune = prune, backend = "C++")
+    r_model <- vlmc(data_set$x, max_depth = 0, prune = prune, backend = "R")
+    expect_equal(context_number(model), context_number(r_model))
+    expect_equal(depth(model), depth(r_model))
+    expect_equal(loglikelihood(model), loglikelihood(r_model))
+    model_path <- withr::local_tempfile(fileext = ".Rds")
+    saveRDS(model, model_path)
+    restored_model <- readRDS(model_path)
+    expect_true(compare_vlmc_cpp(model, restored_model))
+  }
+})

@@ -43,3 +43,23 @@ test_that("a context tree reduced to its root is built as in the R backend", {
     ))
   }
 })
+
+test_that("max_depth = 0 gives a context tree reduced to its root", {
+  withr::local_seed(0)
+  dts <- sample(0:1, 100, replace = TRUE)
+  dts_ctree <- ctx_tree(dts, max_depth = 0, backend = "C++")
+  dts_rtree <- ctx_tree(dts, max_depth = 0, backend = "R")
+  expect_equal(context_number(dts_ctree), context_number(dts_rtree))
+  expect_equal(depth(dts_ctree), depth(dts_rtree))
+  expect_true(compare_ctx(
+    contexts(dts_rtree, frequency = "detailed", positions = TRUE),
+    contexts(dts_ctree, frequency = "detailed", positions = TRUE)
+  ))
+  tree_path <- withr::local_tempfile(fileext = ".Rds")
+  saveRDS(dts_ctree, tree_path)
+  restored_tree <- readRDS(tree_path)
+  expect_true(compare_ctx(
+    contexts(dts_rtree, frequency = "detailed", positions = TRUE),
+    contexts(restored_tree, frequency = "detailed", positions = TRUE)
+  ))
+})

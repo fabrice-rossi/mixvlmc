@@ -259,19 +259,15 @@ bool EdgeNode::subsequences(const ExtractionConditions& when,
     } else {
       // non root
       size_t before = pre.size();
-      // if the edge length is larger than one, then we are sure to keep the
-      // subsequence as a context (single child)
-      if(edge_length() > 1) {
-        is_sub = true;
-      }
       // first progress on the edge if needed (we do not include the sentinel)
       int the_end = std::min((int)x.size(), end) - 1;
       bool ml_reached = false;
       for(int i = start; i < the_end; i++) {
         pre.push_back(x[i]);
         if(pre.size() <= (size_t)when.max_length) {
-          // always contexts
+          // always contexts (single child)
           subs.push_back(new SubSequence(pre, this, what));
+          is_sub = true;
         } else {
           ml_reached = true;
           break;

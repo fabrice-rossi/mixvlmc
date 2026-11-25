@@ -457,7 +457,7 @@ std::vector<SubSequence*>* SuffixTree::raw_subsequences(
   std::vector<SubSequence*>* ctxs = new std::vector<SubSequence*>{};
   std::vector<int> pre{};
   pre.reserve(x.size());
-  if(when.max_length <= 0) {
+  if(when.max_length < 0) {
     when.max_length = x.size();
   }
   root->subsequences(when, what, x, max_x + 1, pre, *ctxs);
@@ -611,7 +611,7 @@ void SuffixTree::prune(int min_counts, int max_length) {
   if(!has_counts) {
     stop("prune cannot be used if the counts have not been computed");
   }
-  if(max_length <= 0) {
+  if(max_length < 0) {
     max_length = x.size();
   }
   max_depth = 0;  // we need to recompute max_depth
@@ -628,7 +628,7 @@ void SuffixTree::prune_context(int min_counts, int max_length, double K) {
   if(!has_counts) {
     stop("prune cannot be used if the counts have not been computed");
   }
-  if(max_length <= 0) {
+  if(max_length < 0) {
     max_length = x.size();
   }
   max_depth = 0;  // we need to recompute max_depth
@@ -646,7 +646,7 @@ SuffixTree* SuffixTree::clone_prune(int min_counts, int max_length) const {
   if(!has_counts) {
     stop("prune cannot be used if the counts have not been computed");
   }
-  if(max_length <= 0) {
+  if(max_length < 0) {
     max_length = x.size();
   }
   int n_max_depth = 0;  // we need to recompute max_depth
@@ -672,7 +672,7 @@ SuffixTree* SuffixTree::clone_prune_context(int min_counts,
   if(!has_counts) {
     stop("prune cannot be used if the counts have not been computed");
   }
-  if(max_length <= 0) {
+  if(max_length < 0) {
     max_length = x.size();
   }
   int n_max_depth = 0;  // we need to recompute max_depth
