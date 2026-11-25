@@ -369,12 +369,12 @@ void SuffixTree::add_initial_match(int first) {
       int move = std::min(el, (int)(x.length() - x_pos));
       // progress along the edge
       for(int k = 1; k < move; k++) {
-        if(x[x_pos + k] != x[current->start + k]) {
+        if(x[x_pos + k] != x_at(current->start + k)) {
           // we need to break the edge to avoid introducing fake matches
           EdgeNode* start_of_edge =
               new EdgeNode(current->parent, current->start, current->start + k);
           start_of_edge->depth = current->parent->depth + k;
-          start_of_edge->children[x[current->start + k]] = current;
+          start_of_edge->children[x_at(current->start + k)] = current;
           start_of_edge->total_count = current->total_count;
           start_of_edge->counts = new std::unordered_map<int, int>(
               current->counts->begin(), current->counts->end());
