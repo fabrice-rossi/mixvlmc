@@ -11,21 +11,26 @@ ctx_tree_node2latex <- function(label, ct, control) {
         }
       }
     } else {
+      the_counts <- NULL
       if (!is.null(control[["frequency"]])) {
-        the_counts <- stringr::str_c(
-          "(",
-          stringr::str_flatten(ct[["f_by"]],
-            collapse = ","
-          ),
-          ")"
-        )
-      } else {
-        the_counts <- stringr::str_c("(", sum(ct[["f_by"]]), ")")
+        if (control$frequency == "detailed") {
+          the_counts <- stringr::str_c(
+            "(",
+            stringr::str_flatten(ct[["f_by"]],
+              collapse = ","
+            ),
+            ")"
+          )
+        } else if (control$frequency == "total") {
+          the_counts <- stringr::str_c("(", sum(ct[["f_by"]]), ")")
+        }
       }
-      the_node <- stringr::str_glue(
-        "{{{the_node} {content}}}",
-        content = add_fontsize(the_counts, control)
-      )
+      if (!is.null(the_counts)) {
+        the_node <- stringr::str_glue(
+          "{{{the_node} {content}}}",
+          content = add_fontsize(the_counts, control)
+        )
+      }
     }
   }
   the_node

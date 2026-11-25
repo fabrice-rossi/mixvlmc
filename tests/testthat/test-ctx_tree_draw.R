@@ -59,3 +59,19 @@ test_that("draw obeys its contract for LaTeX output", {
     )
   ))
 })
+
+test_that("LaTeX drawing without tabular respects the frequency parameter", {
+  x <- c(0, 0, 1, 1, 0, 1, 0, 0, 1, 1)
+  for (backend in c("R", "C++")) {
+    ct <- ctx_tree(x, min_size = 1, max_depth = 2, backend = backend)
+    ctrl <- draw_control(tabular = FALSE)
+    no_freq <- paste(capture.output(draw(ct, "latex", control = ctrl)), collapse = "\n")
+    expect_false(grepl("(10)", no_freq, fixed = TRUE))
+    expect_false(grepl("(5,5)", no_freq, fixed = TRUE))
+    total <- paste(capture.output(draw(ct, "latex", control = ctrl, frequency = "total")), collapse = "\n")
+    expect_true(grepl("(10)", total, fixed = TRUE))
+    expect_false(grepl("(5,5)", total, fixed = TRUE))
+    detailed <- paste(capture.output(draw(ct, "latex", control = ctrl, frequency = "detailed")), collapse = "\n")
+    expect_true(grepl("(5,5)", detailed, fixed = TRUE))
+  }
+})
