@@ -33,6 +33,7 @@ Imports:
     assertthat,
     butcher,
     cli,
+    lifecycle (>= 1.0.3),
     methods,
     nnet,
     pROC,

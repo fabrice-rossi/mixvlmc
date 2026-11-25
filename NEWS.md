@@ -5,10 +5,10 @@
   `simulate(model, 100, burn_in = 10)` or `loglikelihood(model, new_data = x)`
   were silently ignored. This applies also to the `type` argument of
   `contexts()`, which was removed in mixvlmc 0.2.0 and ignored since then
-* `draw()` has now a second parameter `format` with no default. This may break
-  codes that used the fact that the `control` parameter was previously the 
-  second one. 
-* the `digits` parameter of `draw.covlmc()` has been removed and replaced by a
+* `draw()` has now a second parameter `format` with no default. Passing the
+  `control` list as the second argument of `draw()` is deprecated (it is still
+  supported with a warning)
+* the `digits` parameter of `draw.covlmc()` is deprecated and replaced by a
   similar parameter in `draw_control()`
 * defaults for `draw.covlmc()` have changed (issue #66):
   * `p_value` is now `FALSE` by default
@@ -21,7 +21,7 @@
   * the characters used to separate levels from models is now `" ~ "`
   * temporal blocks are now separated by default by the `time_sep` member
     of the `control` list. The default value is set to `" | "` and the
-    `time_sep` parameter has been removed from `draw.covlmc()`
+    `time_sep` parameter of `draw.covlmc()` is deprecated
   * the new parameter `constant_as_prob` is set to `TRUE` which modifies also
     the default display
 * the interface of `draw_control()` has been significantly changed (issue #66)

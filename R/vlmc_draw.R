@@ -30,11 +30,9 @@ vlmc_node2txt <- function(ct, control) {
 #' draw(model, prob = NULL)
 #' @export
 draw.vlmc <- function(ct, format, control = draw_control(), prob = TRUE, ...) {
-  if (rlang::is_missing(format)) {
-    format <- "text"
-  } else {
-    format <- match.arg(format, c("text", "latex"))
-  }
+  format_control <- draw_format_control(format, control)
+  format <- format_control$format
+  control <- format_control$control
   if (format == "text") {
     if (is.null(prob)) {
       rec_draw(control$root, "", ct, ct$vals, c(control, list(...)), NULL)

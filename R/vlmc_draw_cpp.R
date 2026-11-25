@@ -1,11 +1,9 @@
 #' @export
 #' @rdname draw.vlmc
 draw.vlmc_cpp <- function(ct, format, control = draw_control(), prob = TRUE, ...) {
-  if (rlang::is_missing(format)) {
-    format <- "text"
-  } else {
-    format <- match.arg(format, c("text", "latex"))
-  }
+  format_control <- draw_format_control(format, control)
+  format <- format_control$format
+  control <- format_control$control
   restore_model(ct)
   ct_r <- ct$root$representation()
   if (format == "text") {

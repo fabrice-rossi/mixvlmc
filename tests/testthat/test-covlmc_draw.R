@@ -84,22 +84,24 @@ test_that("draw obeys its contract (with nnet)", {
     control = draw_control(digits = 1)
   ))
   expect_snapshot_output(draw(model,
-    model = "full", time_sep = " ^ ",
-    control = draw_control(digits = 1)
+    model = "full",
+    control = draw_control(digits = 1, charset = charset_utf8(time_sep = " ^ "))
   ))
   expect_snapshot_output(draw(model,
-    model = "full", time_sep = " ^ ",
-    control = draw_control(digits = 3),
+    model = "full",
+    control = draw_control(digits = 3, charset = charset_utf8(time_sep = " ^ ")),
     with_state = TRUE
   ))
   expect_snapshot_output(draw(model,
-    model = "coef", time_sep = " ^ ",
-    control = draw_control(digits = 3),
+    model = "coef",
+    control = draw_control(digits = 3, charset = charset_utf8(time_sep = " ^ ")),
     with_state = TRUE
   ))
   expect_snapshot_output(draw(model,
-    model = "coef", time_sep = " ^ ",
-    with_state = TRUE, control = draw_control(digits = 3, charset = charset_ascii(level_sep = " @ "))
+    model = "coef",
+    with_state = TRUE, control = draw_control(digits = 3, charset = charset_ascii(
+      level_sep = " @ ", time_sep = " ^ "
+    ))
   ))
 })
 
