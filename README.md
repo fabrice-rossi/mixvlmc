@@ -326,10 +326,44 @@ differs slightly from the one obtained with `tune_vlmc()`:
   previous states, while the vlmc only distinguishes a *low* previous
   state.
 
-The BIC is rather conservative. The AIC used below selects a model that
-keeps the day covariate in the *low* and *high* contexts. As expected,
-the probability of switching from *low* to *typical* is larger during
-the day in this model.
+The BIC is rather conservative. The AIC selects a model with the same
+context tree in which the *low* and *high* contexts use the day
+covariate:
+
+``` r
+best_elec_covlmc_aic <- as_covlmc(tune_covlmc(elec_dts, elec_cov, criterion = "AIC"))
+draw(best_elec_covlmc_aic, model = "full", time_sep = " | ", p_value = FALSE)
+#> *
+#> +-- low ([ (I)    | day_1TRUE
+#> |          -1.558 | 1.006     ])
+#> '-- typical
+#> |   +-- low ([ (I)   
+#> |   |          0.3365
+#> |   |          -1.609 ])
+#> |   '-- typical ([ (I)   
+#> |   |              2.937 
+#> |   |              0.3747 ])
+#> |   '-- high ([ (I)  
+#> |               2.773
+#> |               1.705 ])
+#> '-- high ([ (I)   | day_1TRUE
+#>             17.41 | -14.23   
+#>             19.38 | -14.88    ])
+```
+
+The coefficients of the logistic models are given with respect to the
+first state, *low*:
+
+- in the *low* context, the positive `day_1TRUE` coefficient means that,
+  as expected, the probability of switching from *low* to *typical* is
+  larger during the day (about 37% of the transitions against 17% at
+  night);
+- the large coefficients of the *high* context are the consequence of a
+  single transition from *high* to *low*, observed during the day. As
+  this transition is never observed at night, its estimated probability
+  at night is pushed towards zero. The meaningful effect lies between
+  *typical* and *high*: the chain leaves *high* for *typical* more often
+  during the day (about 21% of the transitions against 12% at night).
 
 ### Sampling
 
@@ -343,11 +377,11 @@ be computed directly from the model in the VLMC case, using classical
 results on Markov Chains. See `vignette("sampling")` for details on
 sampling.
 
-We first select two models based on the AIC.
+We compare the COVLMC selected above with the AIC to a VLMC also
+selected with the AIC.
 
 ``` r
 best_elec_vlmc_aic <- as_vlmc(tune_vlmc(elec_dts, criterion = "AIC"))
-best_elec_covlmc_aic <- as_covlmc(tune_covlmc(elec_dts, elec_cov, criterion = "AIC"))
 ```
 
 The we sample 100 new time series for each model, using the `simulate()`
