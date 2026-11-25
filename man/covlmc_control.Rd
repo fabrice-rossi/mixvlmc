@@ -8,7 +8,7 @@ covlmc_control(pseudo_obs = 1)
 }
 \arguments{
 \item{pseudo_obs}{number of fake observations of each state to add to the
-observed ones.}
+observed ones (a positive number, default: 1).}
 }
 \value{
 a list.

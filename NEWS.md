@@ -125,6 +125,8 @@ renders the tree and adds the `forest` package to the preamble of the document.
 
 ## Bug fixes
 ### Input validation
+* `covlmc_control()` and `covlmc()` check that `pseudo_obs` is a positive
+  number, and `covlmc()` rejects a covariate data frame without columns
 * missing values and empty time series are rejected (they crashed R with the R
   backend), as well as missing values in covariates
 * states that do not appear in the time series (e.g. unused levels of a 

@@ -310,3 +310,16 @@ test_that("covlmc reports missing p-values without printing debugging output", {
   local_mocked_bindings(pchisq = function(...) NA_real_, .package = "stats")
   expect_silent(expect_error(covlmc(x, cv, min_size = 5), "missing p-value"))
 })
+
+test_that("covlmc validates pseudo_obs and the covariates", {
+  withr::local_seed(0)
+  x <- sample(c("a", "b"), 100, replace = TRUE)
+  y <- data.frame(y = rnorm(100))
+  for (pseudo_obs in list(-1, 0, NA, Inf, c(1, 2), "a")) {
+    expect_error(covlmc_control(pseudo_obs = pseudo_obs), "pseudo_obs")
+    expect_error(covlmc(x, y, pseudo_obs = pseudo_obs), "pseudo_obs")
+    expect_error(covlmc(x, y, control = list(pseudo_obs = pseudo_obs)), "pseudo_obs")
+  }
+  expect_no_error(covlmc(x, y, pseudo_obs = 0.5))
+  expect_error(covlmc(x, data.frame(row.names = 1:100)), "at least one column")
+})

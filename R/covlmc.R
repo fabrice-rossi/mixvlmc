@@ -587,7 +587,7 @@ count_covlmc_local_context <- function(node) {
 #' Bayesian posterior mean estimation with a Dirichlet prior.
 #'
 #' @param pseudo_obs number of fake observations of each state to add to the
-#'   observed ones.
+#'   observed ones (a positive number, default: 1).
 #'
 #' @returns a list.
 #' @export
@@ -600,7 +600,15 @@ count_covlmc_local_context <- function(node) {
 #' model <- covlmc(rdts, rdts_cov, control = control)
 #' contexts(model, model = "coef")$coef
 covlmc_control <- function(pseudo_obs = 1) {
+  assert_pseudo_obs(pseudo_obs)
   list(pseudo_obs = pseudo_obs)
+}
+
+assert_pseudo_obs <- function(pseudo_obs) {
+  if (!is.numeric(pseudo_obs) || length(pseudo_obs) != 1L ||
+    !is.finite(pseudo_obs) || pseudo_obs <= 0) {
+    stop("the pseudo_obs parameter must be a positive number")
+  }
 }
 
 #' Fit a Variable Length Markov Chain with Covariates (coVLMC)
@@ -731,6 +739,10 @@ covlmc_internal <- function(ix, fx, vals, covariate, alpha, min_size, max_depth,
                             keep_data, control) {
   assertthat::assert_that(is.data.frame(covariate))
   assertthat::assert_that(nrow(covariate) == length(ix))
+  if (ncol(covariate) == 0L) {
+    stop("the covariate data frame must have at least one column")
+  }
+  assert_pseudo_obs(control$pseudo_obs)
   assert_min_size(min_size)
   assert_max_depth(max_depth)
   if (anyNA(covariate)) {
