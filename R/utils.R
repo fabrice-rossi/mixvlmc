@@ -3,6 +3,10 @@ to_dts <- function(x, vals = NULL) {
     stop("discrete time series cannot contain missing values")
   }
   if (is.null(vals)) {
+    ## x defines the state space: it must contain at least one value
+    if (length(x) == 0) {
+      stop("discrete time series cannot be empty")
+    }
     if (is.character(x) || is.numeric(x)) {
       vals <- sort(unique(x))
       fx <- factor(x, vals)
