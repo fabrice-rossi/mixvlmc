@@ -78,7 +78,7 @@ multinom_rank <- function(model, mm, nb_outputs) {
 
 fit_glm <- function(target, mm, nb_vals, control) {
   assertthat::assert_that(nrow(mm) > 0)
-  engine <- options()[["mixvlmc.predictive"]]
+  engine <- getOption("mixvlmc.predictive")
   assertthat::assert_that(engine %in% c("glm", "multinom"))
   target_dist <- table(target)
   non_empty <- target_dist[target_dist > 0]
@@ -97,7 +97,7 @@ fit_glm <- function(target, mm, nb_vals, control) {
                 stats::glm(target ~ .,
                   data = mm, family = stats::binomial(),
                   x = FALSE, y = FALSE,
-                  model = FALSE, control = stats::glm.control(maxit = options()[["mixvlmc.maxit"]])
+                  model = FALSE, control = stats::glm.control(maxit = getOption("mixvlmc.maxit"))
                 )
             ),
             silent = TRUE
@@ -119,12 +119,15 @@ fit_glm <- function(target, mm, nb_vals, control) {
             }
           }
         } else {
-          result <-
-            stats::glm(target ~ 1,
-              family = stats::binomial(),
-              x = FALSE, y = FALSE,
-              model = FALSE
-            )
+          withCallingHandlers(
+            warning = glm_warning_ignore,
+            result <-
+              stats::glm(target ~ 1,
+                family = stats::binomial(),
+                x = FALSE, y = FALSE,
+                model = FALSE, control = stats::glm.control(maxit = getOption("mixvlmc.maxit"))
+              )
+          )
         }
         if (inherits(result, "glm")) {
           if (!is_glm_low_rank(result)) {
@@ -148,7 +151,7 @@ fit_glm <- function(target, mm, nb_vals, control) {
               result <- VGAM::vglm(target ~ .,
                 data = mm, family = VGAM::multinomial(refLevel = 1),
                 x.arg = FALSE, y.arg = FALSE, model = FALSE,
-                control = VGAM::vglm.control(maxit = options()[["mixvlmc.maxit"]])
+                control = VGAM::vglm.control(maxit = getOption("mixvlmc.maxit"))
               )
             ),
             silent = TRUE
@@ -180,7 +183,7 @@ fit_glm <- function(target, mm, nb_vals, control) {
               result <- VGAM::vglm(target ~ 1,
                 data = mm, family = VGAM::multinomial(refLevel = 1),
                 x.arg = FALSE, y.arg = FALSE, model = FALSE,
-                control = VGAM::vglm.control(maxit = options()[["mixvlmc.maxit"]])
+                control = VGAM::vglm.control(maxit = getOption("mixvlmc.maxit"))
               )
             ),
             silent = TRUE
@@ -191,11 +194,11 @@ fit_glm <- function(target, mm, nb_vals, control) {
         }
         if (inherits(result, "vglm")) {
           if (is_glm_low_rank(result)) {
-            if (result@iter >= options()[["mixvlmc.maxit"]]) {
+            if (result@iter >= getOption("mixvlmc.maxit")) {
               message("vglm.fit did not converge for a discarded low rank model")
             }
           } else {
-            if (result@iter >= options()[["mixvlmc.maxit"]]) {
+            if (result@iter >= getOption("mixvlmc.maxit")) {
               warning("vglm.fit did not converge")
             }
           }
@@ -211,7 +214,7 @@ fit_glm <- function(target, mm, nb_vals, control) {
           withCallingHandlers(
             warning = multinom_warning_ignore_generator(target, target_dist),
             result <- nnet::multinom(target ~ .,
-              data = mm, trace = FALSE, maxit = options()[["mixvlmc.maxit"]],
+              data = mm, trace = FALSE, maxit = getOption("mixvlmc.maxit"),
               MaxNWts = max_weights
             )
           ),
@@ -221,7 +224,7 @@ fit_glm <- function(target, mm, nb_vals, control) {
         try_nnet <- try(
           withCallingHandlers(
             warning = multinom_warning_ignore_generator(target, target_dist),
-            result <- nnet::multinom(target ~ 1, trace = FALSE)
+            result <- nnet::multinom(target ~ 1, trace = FALSE, maxit = getOption("mixvlmc.maxit"))
           ),
           silent = TRUE
         )

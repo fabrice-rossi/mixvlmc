@@ -76,3 +76,17 @@ test_that("multinom and glm detect rank deficiency consistently with factors", {
     expect_identical(low_rank[["multinom"]], low_rank[["glm"]])
   }
 })
+
+test_that("intercept only models obey the mixvlmc.maxit option", {
+  withr::local_seed(0)
+  mm <- data.frame(row.names = 1:200)
+  target_2 <- sample(0:1, 200, replace = TRUE)
+  target_3 <- factor(sample(c("a", "b", "c"), 200, replace = TRUE))
+  withr::local_options(mixvlmc.maxit = 1, mixvlmc.predictive = "glm")
+  expect_warning(model <- fit_glm(target_2, mm, 2, covlmc_control()), "did not converge")
+  expect_identical(model$control$maxit, 1)
+  withr::local_options(mixvlmc.predictive = "multinom")
+  model <- fit_glm(target_3, mm, 3, covlmc_control())
+  ## convergence is 1 when the maximum number of iterations is reached
+  expect_identical(model$convergence, 1L)
+})

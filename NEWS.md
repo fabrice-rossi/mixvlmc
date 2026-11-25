@@ -156,6 +156,8 @@ renders the tree and adds the `forest` package to the preamble of the document.
   likelihood function is the truncated one
 
 ### VLMC with covariates
+* the logistic models without covariates (intercept only) obey the
+  `mixvlmc.maxit` option with the `glm` and `multinom` engines
 * the likelihood of degenerate `multinom` models is not NA anymore (which
   crashed `covlmc()`) and NaN likelihoods with zero probabilities are avoided,
   including in ignored observations
