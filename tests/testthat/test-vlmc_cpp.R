@@ -202,3 +202,20 @@ test_that("max_depth = 0 gives a VLMC reduced to its root", {
     expect_true(compare_vlmc_cpp(model, restored_model))
   }
 })
+
+test_that("the C++ backend handles long repeats", {
+  ## regression test: recursive functions overflowed the stack
+  withr::local_seed(1)
+  x <- sample(0:2, 1.2e5, replace = TRUE)
+  x[10001:110000] <- 0L
+  model <- vlmc(x, backend = "C++")
+  r_model <- vlmc(x, backend = "R")
+  expect_true(compare_ctx(
+    contexts(r_model, frequency = "detailed"),
+    contexts(model, frequency = "detailed")
+  ))
+  dts_ctree <- ctx_tree(x, keep_position = FALSE, backend = "C++")
+  dts_rtree <- ctx_tree(x, keep_position = FALSE, backend = "R")
+  expect_equal(context_number(dts_ctree), context_number(dts_rtree))
+  expect_equal(depth(dts_ctree), depth(dts_rtree))
+})
