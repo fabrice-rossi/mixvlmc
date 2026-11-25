@@ -202,7 +202,7 @@ co_slow_loglikelihood <- function(model, newdata, initial = c("truncated", "spec
   max_depth <- depth(model)
   if (max_depth == 0) {
     ## fixed model (and no covariate!)
-    glmdata <- prepare_glm(newcov, model$match, 0, newdata, 0)
+    glmdata <- prepare_glm(newcov, 0:(length(newdata) - 1), 0, newdata, 0)
     result <- glm_likelihood(model$model$model, glmdata$local_mm, glmdata$target)
   } else {
     result <- 0

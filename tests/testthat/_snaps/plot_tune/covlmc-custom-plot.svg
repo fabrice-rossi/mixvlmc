@@ -59,12 +59,12 @@
 <line x1='59.04' y1='439.69' x2='59.04' y2='72.64' style='stroke-width: 0.75;' />
 <line x1='59.04' y1='439.69' x2='51.84' y2='439.69' style='stroke-width: 0.75;' />
 <line x1='59.04' y1='347.93' x2='51.84' y2='347.93' style='stroke-width: 0.75;' />
-<line x1='59.04' y1='256.16' x2='51.84' y2='256.16' style='stroke-width: 0.75;' />
+<line x1='59.04' y1='256.17' x2='51.84' y2='256.17' style='stroke-width: 0.75;' />
 <line x1='59.04' y1='164.40' x2='51.84' y2='164.40' style='stroke-width: 0.75;' />
 <line x1='59.04' y1='72.64' x2='51.84' y2='72.64' style='stroke-width: 0.75;' />
 <text transform='translate(41.76,439.69) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: sans;' textLength='20.02px' lengthAdjust='spacingAndGlyphs'>600</text>
 <text transform='translate(41.76,347.93) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: sans;' textLength='20.02px' lengthAdjust='spacingAndGlyphs'>800</text>
-<text transform='translate(41.76,256.16) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: sans;' textLength='26.70px' lengthAdjust='spacingAndGlyphs'>1000</text>
+<text transform='translate(41.76,256.17) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: sans;' textLength='26.70px' lengthAdjust='spacingAndGlyphs'>1000</text>
 <text transform='translate(41.76,164.40) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: sans;' textLength='26.70px' lengthAdjust='spacingAndGlyphs'>1200</text>
 <text transform='translate(41.76,72.64) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: sans;' textLength='26.70px' lengthAdjust='spacingAndGlyphs'>1400</text>
 <polygon points='59.04,502.56 689.76,502.56 689.76,59.04 59.04,59.04 ' style='stroke-width: 0.75; fill: none;' />

@@ -717,7 +717,9 @@ covlmc <- function(x, covariate, alpha = 0.05, min_size = 5L, max_depth = 100L, 
   } else {
     x <- ix
   }
-  ctx_tree$match <- 1:length(x)
+  ## positions are 0 based (x[t + 1] follows position t): the root context is
+  ## followed by all the observations
+  ctx_tree$match <- 0:(length(x) - 1)
   pruned_tree <- ctx_tree_fit_glm(ctx_tree, x, covariate,
     alpha = alpha, control = control, assume_model = FALSE,
     keep_local_data = TRUE, keep_model = keep_data, verbose = FALSE
@@ -949,7 +951,7 @@ prune.covlmc <- function(vlmc, alpha = 0.05, cutoff = NULL, ...) {
     )
   } else {
     ## add match
-    pre_result$match <- 1:vlmc$data_size
+    pre_result$match <- 0:(vlmc$data_size - 1)
   }
   pre_result
 }

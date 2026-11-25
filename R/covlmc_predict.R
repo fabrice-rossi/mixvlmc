@@ -79,7 +79,7 @@ predict.covlmc <- function(object, newdata, newcov, type = c("raw", "probs"),
   with_final <- as.integer(final_pred)
   if (max_depth == 0) {
     ## the logistic model is a constant one
-    mm <- covariate[1, , drop = FALSE]
+    mm <- prepare_covariate(covariate, 0, d = 0, from = 0)
     prob <- glm_predict(object$model$model, mm, lev = object$vals)
     if (length(object$vals) == 2 && ncol(prob) == 1) {
       prob <- c(1 - prob, prob)

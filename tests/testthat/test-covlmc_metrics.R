@@ -100,3 +100,16 @@ test_that("metrics.covlmc works with constant models and more than 2 states", {
     expect_identical(m_metrics$conf_mat, predict_table)
   }
 })
+
+test_that("metrics.covlmc works on depth 0 models", {
+  pc <- powerconsumption[powerconsumption$week %in% 6:7, ]
+  dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1))))
+  dts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
+  m_cov <- covlmc(dts, dts_cov, min_size = 1e5)
+  expect_equal(depth(m_cov), 0)
+  expect_no_error(m_metrics <- metrics(m_cov))
+  m_predict <- predict(m_cov, dts, dts_cov, final_pred = FALSE)
+  predict_table <- table(m_predict, dts)
+  names(dimnames(predict_table)) <- c("predicted value", "true value")
+  expect_identical(m_metrics$conf_mat, predict_table)
+})

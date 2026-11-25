@@ -258,6 +258,8 @@ loglikelihood.covlmc <- function(vlmc, newdata, initial = c("truncated", "specif
     newcov <- validate_covariate(vlmc, newcov)
     nx <- to_dts(newdata, vlmc$vals)
     ncovlmc <- match_ctx(vlmc, nx$ix, keep_match = TRUE)
+    ## the root context is followed by all the new observations
+    ncovlmc$match <- 0:(length(nx$ix) - 1)
     if (length(vlmc$vals) > 2) {
       newdata <- nx$fx
     } else {
@@ -270,6 +272,7 @@ loglikelihood.covlmc <- function(vlmc, newdata, initial = c("truncated", "specif
     res <- rec_loglikelihood_covlmc_newdata(ncovlmc, 0, length(vlmc$vals), newdata, newcov)
     if (ignore > 0) {
       icovlmc <- match_ctx(vlmc, nx$ix[1:min(ignore, length(newdata))], keep_match = TRUE)
+      icovlmc$match <- 0:(min(ignore, length(newdata)) - 1)
       delta_res <- rec_loglikelihood_covlmc_newdata(
         icovlmc, 0, length(vlmc$vals),
         newdata[1:min(ignore, length(newdata))],

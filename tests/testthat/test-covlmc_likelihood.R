@@ -141,3 +141,33 @@ test_that("loglikelihood rejects missing values in new covariates", {
   new_cov$day_night[20] <- NA
   expect_error(loglikelihood(m_cov, newdata = dts[1:50], newcov = new_cov), "missing values")
 })
+
+test_that("the likelihood of a depth 0 covlmc uses all the observations", {
+  x <- c(1, rep(0, 9))
+  x_cov <- data.frame(z = seq_along(x))
+  x_vlmc <- vlmc(x, min_size = 100)
+  for (engine in c("glm", "multinom")) {
+    withr::local_options(mixvlmc.predictive = engine)
+    m_cov <- covlmc(x, x_cov, min_size = 100)
+    expect_equal(depth(m_cov), 0)
+    m_ll <- loglikelihood(m_cov)
+    expect_equal(as.numeric(m_ll), as.numeric(loglikelihood(x_vlmc)), tolerance = 1e-5)
+    expect_equal(attr(m_ll, "nobs"), length(x))
+    expect_equal(loglikelihood(m_cov, newdata = x, newcov = x_cov), m_ll)
+    ## shorter new data
+    m_ll_new <- loglikelihood(m_cov, newdata = x[1:5], newcov = x_cov[1:5, , drop = FALSE])
+    expect_equal(as.numeric(m_ll_new), as.numeric(loglikelihood(x_vlmc, newdata = x[1:5])),
+      tolerance = 1e-5
+    )
+    expect_equal(attr(m_ll_new, "nobs"), 5)
+    ## ignoring the first observation
+    m_ll_ign <- loglikelihood(m_cov,
+      newdata = x, newcov = x_cov,
+      initial = "specific", ignore = 1
+    )
+    expect_equal(as.numeric(m_ll_ign),
+      as.numeric(loglikelihood(x_vlmc, newdata = x, initial = "specific", ignore = 1)),
+      tolerance = 1e-5
+    )
+  }
+})

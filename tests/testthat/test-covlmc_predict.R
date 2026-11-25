@@ -146,3 +146,17 @@ test_that("covlmc predict rejects missing values in covariates", {
   new_cov$extra <- NA
   expect_no_error(predict(m_cov, dts[1:50], new_cov, type = "probs"))
 })
+
+test_that("covlmc predict works on depth 0 models with a constant model", {
+  withr::local_seed(0)
+  x <- factor(rep("a", 100), levels = c("a", "b"))
+  x_cov <- data.frame(z = rnorm(length(x)))
+  m_cov <- covlmc(x, x_cov)
+  expect_equal(depth(m_cov), 0)
+  expect_s3_class(m_cov$model$model, "constant_model")
+  expect_no_error(m_pred <- predict(m_cov, x[1:5], x_cov[1:5, , drop = FALSE]))
+  expect_identical(m_pred, x[1:6])
+  m_probs <- predict(m_cov, x[1:5], x_cov[1:5, , drop = FALSE], type = "probs")
+  ## one pseudo observation per state
+  expect_equal(unname(m_probs[1, ]), c(101, 1) / 102)
+})
