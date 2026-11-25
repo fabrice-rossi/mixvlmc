@@ -16,3 +16,4 @@ devutils
 ^vignettes/articles$
 ^codecov\.yml$
 ^CLAUDE\.md$
+^staging$
