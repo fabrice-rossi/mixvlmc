@@ -34,7 +34,7 @@
 #' @param min_size integer >= 1 (default: 5). Tune the minimum number of
 #'   observations for a context in the growing phase of the context tree (see
 #'   [covlmc()] for details).
-#' @param max_depth integer >= 1 (default: 100). Longest context considered in
+#' @param max_depth integer >= 0 (default: 100). Longest context considered in
 #'   growing phase of the initial context tree (see details).
 #' @param verbose integer >= 0 (default: 0). Verbosity level of the pruning
 #'   process.
@@ -97,6 +97,8 @@ tune_covlmc <- function(x, covariate, criterion = c("BIC", "AIC"),
                         trimming = c("full", "partial", "none"),
                         best_trimming = c("none", "partial", "full")) {
   criterion <- match.arg(criterion)
+  assert_min_size(min_size)
+  assert_max_depth(max_depth)
   initial <- match.arg(initial)
   best_trimming <- match.arg(best_trimming)
   save <- match.arg(save)

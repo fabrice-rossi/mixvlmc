@@ -27,7 +27,7 @@ phase (in quantile scale).}
 observations for a context in the growing phase of the context tree (see
 below for details).}
 
-\item{max_depth}{integer >= 1 (default: 100). Longest context considered in
+\item{max_depth}{integer >= 0 (default: 100). Longest context considered in
 growing phase of the context tree.}
 
 \item{keep_data}{logical (defaults to \code{TRUE}). If \code{TRUE}, the original data

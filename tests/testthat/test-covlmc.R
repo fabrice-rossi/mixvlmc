@@ -277,3 +277,17 @@ test_that("cutoff.covlmc ignores intercept only leaves with more than 2 states",
   expect_false(any(h0_p_values %in% m_cuts))
   expect_true(all(m_cuts <= m_cov$alpha))
 })
+
+test_that("covlmc validates min_size and max_depth", {
+  x <- rep(c(0, 1, 1), 30)
+  y <- data.frame(y = seq_along(x))
+  for (ms in list(0, -1, NA, c(2, 3), "2")) {
+    expect_error(covlmc(x, y, min_size = ms, max_depth = 3), "min_size")
+    expect_error(tune_covlmc(x, y, min_size = ms, max_depth = 3), "min_size")
+  }
+  for (md in list(-1, 2.5, NA, c(2, 3), "2", Inf)) {
+    expect_error(covlmc(x, y, max_depth = md), "max_depth")
+    expect_error(tune_covlmc(x, y, max_depth = md), "max_depth")
+  }
+  expect_equal(depth(covlmc(x, y, max_depth = 0)), 0)
+})

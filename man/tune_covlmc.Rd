@@ -38,7 +38,7 @@ quantile scale) to build the initial VLMC}
 observations for a context in the growing phase of the context tree (see
 \code{\link[=covlmc]{covlmc()}} for details).}
 
-\item{max_depth}{integer >= 1 (default: 100). Longest context considered in
+\item{max_depth}{integer >= 0 (default: 100). Longest context considered in
 growing phase of the initial context tree (see details).}
 
 \item{verbose}{integer >= 0 (default: 0). Verbosity level of the pruning

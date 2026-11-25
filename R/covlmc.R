@@ -621,7 +621,7 @@ covlmc_control <- function(pseudo_obs = 1) {
 #' @param min_size number >= 1 (default: 5). Tune the minimum number of
 #'   observations for a context in the growing phase of the context tree (see
 #'   below for details).
-#' @param max_depth integer >= 1 (default: 100). Longest context considered in
+#' @param max_depth integer >= 0 (default: 100). Longest context considered in
 #'   growing phase of the context tree.
 #' @param keep_data logical (defaults to `TRUE`). If `TRUE`, the original data
 #'   are stored in the resulting object to enable post pruning (see
@@ -694,6 +694,8 @@ covlmc_control <- function(pseudo_obs = 1) {
 covlmc <- function(x, covariate, alpha = 0.05, min_size = 5L, max_depth = 100L, keep_data = TRUE, control = covlmc_control(...), ...) {
   assertthat::assert_that(is.data.frame(covariate))
   assertthat::assert_that(nrow(covariate) == length(x))
+  assert_min_size(min_size)
+  assert_max_depth(max_depth)
   if (anyNA(covariate)) {
     stop("covariate cannot contain missing values")
   }
