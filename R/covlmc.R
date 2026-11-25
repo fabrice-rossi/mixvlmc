@@ -956,8 +956,10 @@ cutoff.covlmc <- function(model, raw = FALSE,
 #' initial model.
 #'
 #' @param vlmc a fitted VLMC model with covariates.
-#' @param alpha number in (0,1) (default: 0.05) cutoff value in quantile scale
-#'   for pruning.
+#' @param alpha number in (0,1] (default: 0.05) cutoff value in quantile scale
+#'   for pruning. A warning is issued if it is larger than the `alpha` of the
+#'   model, as the result may then differ from a model built directly with
+#'   this value.
 #' @param cutoff not supported by the vlmc with covariates.
 #' @param ... additional arguments for the prune function.
 #'
@@ -980,8 +982,16 @@ prune.covlmc <- function(vlmc, alpha = 0.05, cutoff = NULL, ...) {
   if (!is.null(cutoff)) {
     stop("covlmc does not support cutoff based pruning")
   }
-  if (is.null(alpha) || !is.numeric(alpha) || alpha <= 0) {
-    stop("the alpha parameter must be a strictly positive number")
+  if (is.null(alpha) || !is.numeric(alpha) || length(alpha) != 1L ||
+    is.na(alpha) || alpha <= 0 || alpha > 1) {
+    stop("the alpha parameter must be in (0, 1]")
+  }
+  if (alpha > vlmc$alpha) {
+    warning(
+      "the alpha parameter (", alpha, ") is larger than the one of the model (",
+      vlmc$alpha, "): the result may differ from a model built directly with ",
+      "this alpha"
+    )
   }
   pruned_tree <- ctx_tree_fit_glm(vlmc, vlmc$x, vlmc$covariate,
     alpha = alpha, control = vlmc$control, assume_model = TRUE,

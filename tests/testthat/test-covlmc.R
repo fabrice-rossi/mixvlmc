@@ -323,3 +323,16 @@ test_that("covlmc validates pseudo_obs and the covariates", {
   expect_no_error(covlmc(x, y, pseudo_obs = 0.5))
   expect_error(covlmc(x, data.frame(row.names = 1:100)), "at least one column")
 })
+
+test_that("prune.covlmc validates alpha and warns when it is larger than the model's", {
+  pc <- powerconsumption[powerconsumption$week == 5, ]
+  rdts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1))))
+  rdts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
+  m_cov <- covlmc(rdts, rdts_cov, min_size = 5, alpha = 0.1)
+  expect_no_warning(prune(m_cov, alpha = 0.05))
+  expect_no_warning(prune(m_cov, alpha = 0.1))
+  expect_warning(prune(m_cov, alpha = 0.2), "larger than the one of the model")
+  for (alpha in list(0, -1, 1.5, NA, c(0.01, 0.02))) {
+    expect_error(prune(m_cov, alpha = alpha), "alpha")
+  }
+})

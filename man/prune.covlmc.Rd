@@ -9,8 +9,10 @@
 \arguments{
 \item{vlmc}{a fitted VLMC model with covariates.}
 
-\item{alpha}{number in (0,1) (default: 0.05) cutoff value in quantile scale
-for pruning.}
+\item{alpha}{number in (0,1] (default: 0.05) cutoff value in quantile scale
+for pruning. A warning is issued if it is larger than the \code{alpha} of the
+model, as the result may then differ from a model built directly with
+this value.}
 
 \item{cutoff}{not supported by the vlmc with covariates.}
 

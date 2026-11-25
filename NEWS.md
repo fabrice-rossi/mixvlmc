@@ -125,6 +125,8 @@ renders the tree and adds the `forest` package to the preamble of the document.
 
 ## Bug fixes
 ### Input validation
+* `prune.covlmc()` checks that `alpha` is in (0, 1] and warns when it is
+  larger than the `alpha` of the model
 * `covlmc_control()` and `covlmc()` check that `pseudo_obs` is a positive
   number, and `covlmc()` rejects a covariate data frame without columns
 * missing values and empty time series are rejected (they crashed R with the R
