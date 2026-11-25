@@ -39,7 +39,7 @@ frequency_context_extractor <-
             if (!is.null(child[["f_by"]])) {
               res$freq <- res$freq - sum(child[["f_by"]])
               if (control$frequency == "detailed") {
-                res[, -(1:2)] <- res[, 3:(2 + length(vals)), drop = FALSE] - child[["f_by"]]
+                res[, 3:(2 + length(vals))] <- res[, 3:(2 + length(vals)), drop = FALSE] - child[["f_by"]]
               }
             }
           }
