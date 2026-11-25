@@ -38,7 +38,7 @@ assertthat::on_failure(is_ctx_node_covlmc) <- function(call, env) {
 find_sequence.covlmc <- function(ct, ctx, reverse = FALSE, ...) {
   if (length(ctx) == 0) {
     if (isTRUE(ct$keep_match) && is.null(ct$match)) {
-      ct$match <- 1:ct$data_size
+      ct$match <- 0:(ct$data_size - 1L)
     }
     new_ctx_node(ctx, ct, ct, reverse, merged = FALSE, class = "ctx_node_covlmc")
   } else {
@@ -70,7 +70,7 @@ find_sequence.covlmc <- function(ct, ctx, reverse = FALSE, ...) {
       } else if (is.null(current[["merged_model"]])) {
         return(NULL)
       } else {
-        if (nx$ix[length(ctx)] + 1L %in% current$merged) {
+        if ((nx$ix[length(ctx)] + 1L) %in% current$merged) {
           l_res <- candidate
           l_res$merged <- current$merged
           l_res$model <- current$merged_model
@@ -286,6 +286,9 @@ covariate_memory <- function(node) {
 #'
 #' @export
 metrics.ctx_node_covlmc <- function(model, ...) {
+  if (is.null(model$node[["model"]])) {
+    stop("the node is not a context, no metrics can be computed")
+  }
   res <- model$node$model$metrics
   rownames(res$conf_mat) <- model$tree$vals
   colnames(res$conf_mat) <- model$tree$vals

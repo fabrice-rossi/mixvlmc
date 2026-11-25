@@ -40,6 +40,7 @@ class SuffixTree {
                               int _nb_ctx,
                               int _first_value) const;
   void invalidate();
+  void prune_to_root();
   int x_at(int pos) const;
   Position find_subsequence(const Rcpp::IntegerVector& y) const;
   void add_initial_match(int first);
@@ -100,9 +101,10 @@ class SuffixTree {
   // ctx_node_cpp support
   Rcpp::XPtr<EdgeNode> raw_find_sequence(const Rcpp::IntegerVector& y) const;
   Rcpp::List raw_contexts() const;
-  bool node_is_context(const Rcpp::XPtr<EdgeNode>& node) const;
+  bool node_is_context(const Rcpp::XPtr<EdgeNode>& node, int length) const;
   Rcpp::IntegerVector node_counts(const Rcpp::XPtr<EdgeNode>& node) const;
-  Rcpp::IntegerVector node_local_counts(const Rcpp::XPtr<EdgeNode>& node) const;
+  Rcpp::IntegerVector node_local_counts(const Rcpp::XPtr<EdgeNode>& node,
+                                        int length) const;
   Rcpp::IntegerVector node_positions(const Rcpp::XPtr<EdgeNode>& node) const;
   Rcpp::XPtr<EdgeNode> node_parent(const Rcpp::XPtr<EdgeNode>& node,
                                    int length) const;

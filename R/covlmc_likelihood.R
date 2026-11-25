@@ -22,7 +22,15 @@ rec_loglikelihood_covlmc <- function(tree) {
   }
 }
 
-rec_loglikelihood_covlmc_newdata <- function(tree, d, nb_vals, y, cov, verbose = FALSE) {
+## positions of a node of depth d whose target y[t + d + 1] is not among the
+## first ignore observations
+not_ignored_positions <- function(positions, d, ignore) {
+  positions[positions + d >= ignore]
+}
+
+## the first ignore observations are excluded from the log likelihood (but
+## used as contexts and covariates)
+rec_loglikelihood_covlmc_newdata <- function(tree, d, nb_vals, y, cov, verbose = FALSE, ignore = 0) {
   if (is.null(tree)) {
     return(0)
   }
@@ -30,12 +38,14 @@ rec_loglikelihood_covlmc_newdata <- function(tree, d, nb_vals, y, cov, verbose =
   if (!is.null(tree$children)) {
     ## recursive part
     for (v in seq_along(tree$children)) {
-      sub_ll <- sub_ll + rec_loglikelihood_covlmc_newdata(tree$children[[v]], d + 1, nb_vals, y, cov, verbose)
+      sub_ll <- sub_ll + rec_loglikelihood_covlmc_newdata(tree$children[[v]], d + 1, nb_vals, y, cov, verbose, ignore)
     }
   }
   ## local model
   if (is.null(tree$children) && !is.null(tree$model)) {
-    glmdata <- prepare_glm(cov, tree$match, tree$model$hsize, y, from = d - tree$model$hsize)
+    glmdata <- prepare_glm(cov, not_ignored_positions(tree$match, d, ignore), tree$model$hsize, y,
+      from = d - tree$model$hsize
+    )
     if (length(glmdata$target) > 0) {
       res <- glm_likelihood(tree$model$model, glmdata$local_mm, glmdata$target)
     } else {
@@ -74,6 +84,7 @@ rec_loglikelihood_covlmc_newdata <- function(tree, d, nb_vals, y, cov, verbose =
     if (verbose) { # nocov start
       print(mm_match)
     } # nocov end
+    mm_match <- not_ignored_positions(mm_match, d, ignore)
     if (length(mm_match) > 0) {
       ## prepare the data
       glmdata <- prepare_glm(cov, mm_match, tree$merged_model$hsize, y, from = d - tree$merged_model$hsize)
@@ -103,8 +114,12 @@ rec_loglikelihood_covlmc_newdata <- function(tree, d, nb_vals, y, cov, verbose =
     if (d == 0) {
       ## root
       ## match only the first data point
-      glmdata <- prepare_glm(cov, 0, 0, y, from = 0)
-      e_ll <- glm_likelihood(tree$extended_model$model, glmdata$local_mm, glmdata$target)
+      if (ignore == 0) {
+        glmdata <- prepare_glm(cov, 0, 0, y, from = 0)
+        e_ll <- glm_likelihood(tree$extended_model$model, glmdata$local_mm, glmdata$target)
+      } else {
+        e_ll <- 0
+      }
       if (verbose) { # nocov start
         cat("root", e_ll, "\n")
       } # nocov end
@@ -114,6 +129,7 @@ rec_loglikelihood_covlmc_newdata <- function(tree, d, nb_vals, y, cov, verbose =
         sub_match <- tree$children[[v]]$match + 1
         mm_match <- setdiff(mm_match, sub_match)
       }
+      mm_match <- not_ignored_positions(mm_match, d, ignore)
       if (length(mm_match > 0)) {
         glmdata <- prepare_glm(cov, mm_match, tree$extended_model$hsize, y,
           from = d - tree$extended_model$hsize
@@ -256,6 +272,8 @@ loglikelihood.covlmc <- function(vlmc, newdata,
     data_size <- length(newdata)
     newcov <- validate_covariate(vlmc, newcov)
     ncovlmc <- match_ctx(vlmc, newdata$ix, keep_match = TRUE)
+    ## the root context is followed by all the new observations
+    ncovlmc$match <- 0:(length(newdata$ix) - 1)
     if (length(vlmc$vals) > 2) {
       nx <- newdata$fx
     } else {
@@ -265,16 +283,9 @@ loglikelihood.covlmc <- function(vlmc, newdata,
     if (initial == "specific" && ignore < depth(vlmc)) {
       ignore <- depth(vlmc)
     }
-    res <- rec_loglikelihood_covlmc_newdata(ncovlmc, 0, length(vlmc$vals), nx, newcov)
-    if (ignore > 0) {
-      icovlmc <- match_ctx(vlmc, newdata$ix[1:min(ignore, length(newdata))], keep_match = TRUE)
-      delta_res <- rec_loglikelihood_covlmc_newdata(
-        icovlmc, 0, length(vlmc$vals),
-        nx[1:min(ignore, length(newdata))],
-        newcov[1:min(ignore, length(newdata)), , drop = FALSE]
-      )
-      res <- res - delta_res
-    }
+    res <- rec_loglikelihood_covlmc_newdata(ncovlmc, 0, length(vlmc$vals), nx, newcov,
+      ignore = ignore
+    )
   }
   attr(res, "nobs") <- max(0, data_size - ignore_counts)
   max_depth <- depth(vlmc)

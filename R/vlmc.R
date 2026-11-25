@@ -290,7 +290,7 @@ prune.vlmc <- function(vlmc, alpha = 0.05, cutoff = NULL, ...) {
 #'   Takes precedence over `alpha` is specified.
 #' @param min_size integer >= 1 (default: 2). Minimum number of observations for
 #'   a context in the growing phase of the context tree.
-#' @param max_depth integer >= 1 (default: 100). Longest context considered in
+#' @param max_depth integer >= 0 (default: 100). Longest context considered in
 #'   growing phase of the context tree.
 #' @param prune logical: specify whether the context tree should be pruned
 #'   (default behaviour).
@@ -375,6 +375,8 @@ vlmc_internal <- function(ix, vals, alpha, cutoff, min_size, max_depth,
                           prune, keep_match,
                           backend) {
   backend <- match.arg(backend, c("R", "C++"))
+  assert_min_size(min_size)
+  assert_max_depth(max_depth)
   if (is.null(cutoff)) {
     if (is.null(alpha) || !is.numeric(alpha) || alpha <= 0 || alpha > 1) {
       stop("the alpha parameter must be in (0, 1]")

@@ -25,7 +25,7 @@ new_ctx_node_cpp <- function(ctx, tree, node, rev, ..., class = character()) {
   structure(
     list(
       sequence = ctx, node_env = node_env, tree = tree,
-      is_context = tree$root$node_is_context(node),
+      is_context = tree$root$node_is_context(node, length(ctx)),
       rev = rev, ...
     ),
     class = c(class, "ctx_node_cpp", "ctx_node")
@@ -81,7 +81,7 @@ find_sequence.ctx_tree_cpp <- function(ct, ctx, reverse = FALSE, ...) {
 #' @rdname positions
 positions.ctx_node_cpp <- function(node) {
   restore_ctx_node_cpp(node)
-  if (!node$tree$root$has_positions) {
+  if (!node$tree$root$has_positions()) {
     stop("Cannot report positions if they were not saved")
   }
   node$tree$data_size - node$tree$root$node_positions(node$node_env$node) - 1L
@@ -98,7 +98,10 @@ counts.ctx_node_cpp <- function(node,
   if (!local) {
     freqs <- node$tree$root$node_counts(node$node_env$node)
   } else {
-    freqs <- node$tree$root$node_local_counts(node$node_env$node)
+    freqs <- node$tree$root$node_local_counts(
+      node$node_env$node,
+      length(node$sequence)
+    )
   }
   if (frequency == "total") {
     sum(freqs)

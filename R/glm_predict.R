@@ -36,6 +36,11 @@ glm_predict.default <- function(model, newdata = NULL, lev) {
   if (!is.null(newdata) && nrow(newdata) == 1 && !is.matrix(probs)) {
     probs <- matrix(probs, nrow = 1)
   }
+  if (length(lev) > 2 && is.matrix(probs) && is.null(colnames(probs)) &&
+    ncol(probs) == length(lev)) {
+    ## constant models do not name their predictions
+    colnames(probs) <- lev
+  }
   glm_add_missing_prediction(probs, lev)
 }
 

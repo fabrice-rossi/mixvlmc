@@ -59,6 +59,85 @@ issue #66) as follows:
   by `draw.covlmc()` as a VLMC node, that is with the probability distribution
   on the state space that it represents
 
+# mixvlmc 0.2.3
+This is a bug fix release. Some fixes change the results obtained with
+previous versions, in particular for VLMC with covariates (see below).
+
+## Breaking changes
+* the package now depends on R >= 4.1.0 (this was already implied by its
+  dependencies)
+* the degrees of freedom of the likelihood ratio tests used by `covlmc()` and
+  `prune.covlmc()` take into account the number of levels of factor covariates
+  (a factor with L levels has L-1 parameters per time step, not 1). This
+  changes the models obtained with factors with at least 3 levels
+* unused levels of factor covariates are ignored by `covlmc()` (they used to
+  change the fitted model)
+* the `multinom` engine of `covlmc()` detects rank deficient models (e.g. 
+  collinear covariates) consistently with the `glm` engine
+* the models associated to the root of the context tree of a `covlmc` (depth 0
+  models, extended model used for the first observation) use all the
+  observations (the first one was ignored)
+* `loglikelihood()` returns `-Inf` on new data containing a transition that has
+  a zero probability according to the model (the R backend of `vlmc()` ignored
+  such transitions)
+* `print()` and `summary()` of `tune_vlmc()` and `tune_covlmc()` results report
+  the log likelihood used for model selection
+* with the C++ backend, `tune_vlmc()` increases `max_depth` as documented 
+  (and as with the R backend) and `max_depth = 0` means a depth 0 model (it
+  meant no limit)
+
+## Bug fixes
+### Input validation
+* missing values and empty time series are rejected (they crashed R with the R
+  backend), as well as missing values in covariates
+* states that do not appear in the time series (e.g. unused levels of a 
+  factor) are supported
+* `min_size`, `max_depth` and the `ignore` parameter of `loglikelihood()` are
+  validated (`min_size = 0` led to an exponential computation time)
+
+### VLMC
+* `vlmc()` works on time series with a single state (R backend)
+* `contexts()` with `local = TRUE` reports correct positions and supports
+  `metrics = TRUE` (R backend)
+* positions of the empty context are 0 based in all cases and are not 
+  reported anymore after `trim()`
+* `simulate()` discards the correct number of values during the burn in period
+  for depth 0 models (R backend)
+* `loglikelihood()` with `ignore` and without `newdata` works with the C++
+  backend
+* `contexts(frequency = "detailed")` names the frequencies by the states for
+  factors with the C++ backend
+* the documentation of `loglikelihood()` states correctly that the default
+  likelihood function is the truncated one
+
+### VLMC with covariates
+* the likelihood of degenerate `multinom` models is not NA anymore (which
+  crashed `covlmc()`) and NaN likelihoods with zero probabilities are avoided,
+  including in ignored observations
+* `metrics()` works with constant models and at least 3 states, and per context
+  metrics of degenerate `vglm` and `multinom` models are correct
+* `metrics()` and `predict()` work on depth 0 models
+* `multinom` models with many parameters are supported (`MaxNWts`)
+* `cutoff()` ignores correctly intercept only leaves with at least 3 states
+* `find_sequence()` handles correctly merged contexts
+* `metrics()` on a node which is not a context gives a clear error
+
+### C++ backend
+* out of bounds accesses (which led to fake contexts in `ctx_tree()` with
+  `min_size = 1` and to crashes in `draw()`) and memory leaks are fixed
+* long repeats in the time series do not overflow the stack anymore
+* pruned models are restored correctly after serialization (e.g. after 
+  `saveRDS()`/`readRDS()`), as well as positions and models obtained with 
+  `as_vlmc()` from a context tree. Notice that pruned models saved with
+  previous versions are still restored incorrectly
+* `is_context()` and local counts are correct for all nodes of a context tree
+* the depth of a context tree does not include the end of the time series
+* context trees of time series shorter than `min_size` are reduced to their
+  root (they caused an error), and `cutoff()` works on such models
+* `trim()` removes positions from context trees
+* `simulate()` uses `base::sample.int()` even if another function with the same
+  name is defined in the global environment
+
 # mixvlmc 0.2.2
 This is a bug fix release (see issue #79 for the main bugs):
 

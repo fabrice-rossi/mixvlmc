@@ -90,3 +90,45 @@ test_that("sequences are properly extracted", {
     expect_identical(direct_seq, ctxs_obj[[k]])
   }
 })
+
+test_that("find_sequence handles correctly contexts not merged", {
+  d_model <- build_degenerate_elec_model(FALSE)
+  model <- d_model$model
+  vals <- states(model)
+  ## in this model, the contexts (low, typical) and (high, typical) are merged
+  expect_identical(model$children[[2]]$merged, c(1L, 3L))
+  expect_true(is_merged(find_sequence(model, vals[c(1, 2)])))
+  expect_true(is_merged(find_sequence(model, vals[c(3, 2)])))
+  ## we remove (high, typical) from the merged contexts
+  model$children[[2]]$merged <- 1L
+  expect_true(is_merged(find_sequence(model, vals[c(1, 2)])))
+  expect_null(find_sequence(model, vals[c(3, 2)]))
+  ## and then (low, typical)
+  model$children[[2]]$merged <- 3L
+  expect_null(find_sequence(model, vals[c(1, 2)]))
+  expect_true(is_merged(find_sequence(model, vals[c(3, 2)])))
+})
+
+test_that("metrics reports clearly that a node is not a context", {
+  pc <- powerconsumption[powerconsumption$week %in% 6:7, ]
+  dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1))))
+  dts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
+  m_cov <- covlmc(dts, dts_cov)
+  node <- find_sequence(m_cov, states(m_cov)[1])
+  expect_false(is_context(node))
+  expect_error(metrics(node), "not a context")
+})
+
+test_that("positions of the empty sequence are 0 based", {
+  pc <- powerconsumption[powerconsumption$week == 5, ]
+  dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1))))
+  dts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
+  m_cov <- covlmc(dts, dts_cov, min_size = 5)
+  root <- find_sequence(m_cov, states(m_cov)[0])
+  expect_identical(positions(root), 0:(length(dts) - 1L))
+  ## positions rebuilt for the empty sequence
+  m_cov$match <- NULL
+  m_cov$keep_match <- TRUE
+  root <- find_sequence(m_cov, states(m_cov)[0])
+  expect_identical(positions(root), 0:(length(dts) - 1L))
+})

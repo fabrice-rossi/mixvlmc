@@ -94,3 +94,66 @@ test_that("metrics for multinom work as expected", {
   expect_equal(mm$accuracy, sum(diag(cm)) / length(target))
   expect_equal(mm$auc, as.numeric(pROC::auc(pROC::multiclass.roc(target, m_probs))))
 })
+
+test_that("glm_likelihood handles degenerate models with a missing middle level", {
+  withr::local_seed(2)
+  n <- 200
+  mm <- data.frame(z = rnorm(n))
+  target <- factor(sample(c("a", "c", "d"), n, replace = TRUE, prob = c(.3, .3, .4)),
+    levels = c("a", "b", "c", "d")
+  )
+  for (engine in c("glm", "multinom")) {
+    withr::local_options(mixvlmc.predictive = engine)
+    model <- fit_glm(target, mm, 4, covlmc_control())
+    expect_equal(glm_likelihood(model, mm, target), as.numeric(stats::logLik(model)),
+      tolerance = 1e-6
+    )
+  }
+})
+
+test_that("metrics for degenerate vglm and multinom models are correct", {
+  withr::local_seed(2)
+  n <- 200
+  mm <- data.frame(z = rnorm(n))
+  lab <- ifelse(mm$z > 0, "c", "d")
+  lab[sample(n, 30)] <- "a"
+  ## level b is never observed
+  target <- factor(lab, levels = c("a", "b", "c", "d"))
+  for (engine in c("glm", "multinom")) {
+    withr::local_options(mixvlmc.predictive = engine)
+    model <- fit_glm(target, mm, 4, covlmc_control())
+    m_metrics <- glm_metrics(model, mm, target)
+    m_probs <- glm_predict(model, mm, lev = levels(target))
+    pred <- factor(levels(target)[apply(m_probs, 1, which.max)], levels = levels(target))
+    cm <- metrics_fix_names(table(pred, target))
+    expect_identical(m_metrics$conf_mat, cm)
+    expect_equal(m_metrics$accuracy, mean(pred == target))
+  }
+})
+
+test_that("glm_likelihood handles zero probabilities in degenerate models", {
+  withr::local_seed(0)
+  n <- 200
+  mm <- data.frame(z = rnorm(n))
+  lab <- ifelse(mm$z > 0, "c", "d")
+  lab[sample(n, 30)] <- "a"
+  ## level b is never observed
+  target <- factor(lab, levels = c("a", "b", "c", "d"))
+  ## extreme values of the covariate lead to zero probabilities
+  new_mm <- data.frame(z = c(-1000, -100, 100, 1000))
+  new_target <- factor(c("d", "d", "c", "c"), levels = levels(target))
+  for (engine in c("glm", "multinom")) {
+    withr::local_options(mixvlmc.predictive = engine)
+    model <- fit_glm(target, mm, 4, covlmc_control())
+    probs <- glm_predict(model, new_mm, lev = levels(target))
+    expect_true(any(probs == 0))
+    true_ll <- log(probs[cbind(seq_along(new_target), as.integer(new_target))])
+    expect_equal(glm_likelihood(model, new_mm, new_target), sum(true_ll))
+    for (k in seq_along(new_target)) {
+      expect_equal(
+        glm_likelihood(model, new_mm[k, , drop = FALSE], new_target[k]),
+        true_ll[k]
+      )
+    }
+  }
+})

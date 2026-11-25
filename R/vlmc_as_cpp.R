@@ -10,6 +10,7 @@
 #'
 #' @export
 as_vlmc.ctx_tree_cpp <- function(x, alpha, cutoff, ...) {
+  restore_model(x)
   if (missing(alpha) && missing(cutoff)) {
     result <- new_ctx_tree_cpp(x$vals, x$root, class = c("vlmc_cpp", "vlmc"))
     result$root$make_explicit()
@@ -17,6 +18,8 @@ as_vlmc.ctx_tree_cpp <- function(x, alpha, cutoff, ...) {
     result$max_depth <- x$max_depth
     result$alpha <- 1
     result$cutoff <- 0
+    result$restoration <- x$restoration
+    result$pruned <- FALSE
   } else {
     if (missing(cutoff)) {
       ## cutoff takes precedence
@@ -37,6 +40,9 @@ as_vlmc.ctx_tree_cpp <- function(x, alpha, cutoff, ...) {
     result$max_depth <- x$max_depth
     result$alpha <- alpha
     result$cutoff <- cutoff
+    result$restoration <- x$restoration
+    result$restoration$cut_off <- cutoff
+    result$pruned <- TRUE
   }
   if (depth(result) > 0) {
     result$ix <- x$ix[1:min(depth(result), length(x$ix))]

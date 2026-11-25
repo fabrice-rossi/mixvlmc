@@ -4,6 +4,33 @@ test_that("conversion to discrete time series", {
   expect_error(to_dts(1:4, vals = 1:3))
 })
 
+test_that("missing values are rejected in discrete time series", {
+  expect_error(to_dts(c(1, 2, NA, 1)), "missing values")
+  expect_error(to_dts(c("a", NA, "b")), "missing values")
+  expect_error(to_dts(factor(c("a", NA, "b"))), "missing values")
+  expect_error(to_dts(c(TRUE, NA, FALSE)), "missing values")
+  expect_error(to_dts(c(1, 2, NA, 1), vals = c(1, 2)), "missing values")
+  x <- c(1, 2, NA, 1, 2, 1, 2, 2, 1)
+  expect_error(ctx_tree(x), "missing values")
+  expect_error(ctx_tree(x, backend = "C++"), "missing values")
+  expect_error(vlmc(x), "missing values")
+  expect_error(vlmc(x, backend = "C++"), "missing values")
+  expect_error(tune_vlmc(x), "missing values")
+  expect_error(covlmc(x, data.frame(y = seq_along(x))), "missing values")
+})
+
+test_that("empty time series are rejected", {
+  expect_error(to_dts(integer(0)), "empty")
+  expect_error(to_dts(character(0)), "empty")
+  expect_error(to_dts(factor(character(0), levels = c("a", "b"))), "empty")
+  expect_error(ctx_tree(integer(0)), "empty")
+  expect_error(ctx_tree(character(0), backend = "C++"), "empty")
+  expect_error(vlmc(integer(0)), "empty")
+  expect_error(vlmc(integer(0), backend = "C++"), "empty")
+  expect_error(tune_vlmc(integer(0)), "empty")
+  expect_error(covlmc(integer(0), data.frame(y = numeric(0))), "empty")
+})
+
 test_that("signif_null handles NULL and NA properly", {
   expect_equal(signif_null(NULL, 5), "NA")
   expect_equal(signif_null(NA, 3), "NA")

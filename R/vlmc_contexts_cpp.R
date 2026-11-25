@@ -44,7 +44,7 @@ contexts.vlmc_cpp <- function(ct, sequence = FALSE, reverse = FALSE, frequency =
         } else {
           res <- cbind(res, pre_res$counts)
         }
-        names(res)[3:(2 + length(ct$vals))] <- ct$vals
+        names(res)[3:(2 + length(ct$vals))] <- as.character(ct$vals)
       } else {
         if (local) {
           res$freq <- pre_res$local$freq

@@ -96,3 +96,55 @@ test_that("loglikelihood ignores the requested number of observation", {
     }
   }
 })
+
+test_that("impossible transitions in new data have a null likelihood", {
+  x <- rep(c("B", "A", "C", "A", "D", "C", "B", "B", "A", "C"), 50)
+  m <- vlmc(x)
+  m_cpp <- vlmc(x, backend = "C++")
+  expect_gte(depth(m), 2)
+  ## D is always followed by C in x: impossible transition at position 12
+  body_imp <- c(x[1:10], "D", "B", x[1:10])
+  ## A is never followed by A in x: impossible transition at position 2, among
+  ## the initial observations for which contexts are extended
+  init_imp <- c("A", "A", x[1:30])
+  for (model in list(m, m_cpp)) {
+    for (initial in c("truncated", "specific", "extended")) {
+      expect_identical(
+        as.numeric(loglikelihood(model, newdata = body_imp, initial = initial)),
+        -Inf
+      )
+    }
+    expect_identical(
+      as.numeric(loglikelihood(model, newdata = init_imp, initial = "extended")),
+      -Inf
+    )
+    ## ignored observations do not contribute to the likelihood (the impossible
+    ## transition also impacts the contexts of the following depth(m) values)
+    expect_true(is.finite(loglikelihood(model,
+      newdata = body_imp, initial = "extended",
+      ignore = 12 + depth(model)
+    )))
+  }
+  for (initial in c("truncated", "specific")) {
+    ll <- loglikelihood(m, newdata = init_imp, initial = initial)
+    expect_true(is.finite(ll))
+    expect_equal(ll, loglikelihood(m_cpp, newdata = init_imp, initial = initial))
+  }
+  for (ignore in 2:12) {
+    expect_equal(
+      loglikelihood(m, newdata = body_imp, initial = "extended", ignore = ignore),
+      loglikelihood(m_cpp, newdata = body_imp, initial = "extended", ignore = ignore)
+    )
+  }
+})
+
+test_that("the ignore parameter is validated", {
+  x <- rep(c(0, 1, 1), 100)
+  for (backend in c("R", "C++")) {
+    model <- vlmc(x, backend = backend)
+    for (ignore in list(-3, 2.5, c(1, 2), NA, "a")) {
+      expect_error(loglikelihood(model, initial = "extended", ignore = ignore), "ignore")
+      expect_error(loglikelihood(model, initial = "extended", ignore = ignore, newdata = x), "ignore")
+    }
+  }
+})

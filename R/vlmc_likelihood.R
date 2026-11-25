@@ -4,8 +4,10 @@ local_loglikelihood_vlmc <- function(model_counts, data_counts = NULL) {
   }
   sc <- sum(model_counts)
   if (sc > 0) {
-    probs <- model_counts / sc
-    sum(data_counts * ifelse(probs > 0, log(probs), 0))
+    ## states absent from the data do not contribute, while states present in
+    ## the data with a zero probability in the model give a -Inf log likelihood
+    sel <- data_counts > 0
+    sum(data_counts[sel] * log(model_counts[sel] / sc))
   } else {
     ## should never happen when called from rec_loglikelihood_vlmc
     NA
@@ -35,12 +37,12 @@ rec_loglikelihood_vlmc <- function(tree, node_as_ctx = FALSE, verbose = FALSE) {
     if (anyNA(all_ll) || node_as_ctx) {
       ## let us add the local contribution
       sub_trees <- sapply(tree$children, function(x) !is.null(x$f_by))
-      sub_counts <- rowSums(sapply(tree$children[sub_trees], function(x) x$f_by))
+      sub_counts <- Reduce("+", lapply(tree$children[sub_trees], function(x) x$f_by), 0)
       loc_counts <- tree$f_by - sub_counts
       if (is.null(tree$data_f_by)) {
         sub_ll <- sub_ll + local_loglikelihood_vlmc(tree$f_by, loc_counts)
       } else {
-        data_sub_counts <- rowSums(sapply(tree$children[sub_trees], function(x) x$data_f_by))
+        data_sub_counts <- Reduce("+", lapply(tree$children[sub_trees], function(x) x$data_f_by), 0)
         data_loc_counts <- tree$data_f_by - data_sub_counts
         sub_ll <- sub_ll + local_loglikelihood_vlmc(tree$f_by, data_loc_counts)
         if (verbose) { # nocov start
@@ -114,7 +116,7 @@ logLik.vlmc <- function(object, initial = c("truncated", "specific", "extended")
 #' context of a given observation. As a consequence, in a time series `x`, the
 #' contexts of `x[1]` to `x[k]` are unknown. Depending on the value of `initial`
 #' different likelihood functions are used to tackle this difficulty:
-#' * `initial=="truncated"`: the likelihood is computed using only
+#' * `initial=="truncated"` (default): the likelihood is computed using only
 #'   `x[(k+1):length(x)]`
 #' * `initial=="specific"`: the likelihood is computed on the full time series
 #'   using a specific context for the initial values, `x[1]` to `x[k]`. Each of
@@ -122,7 +124,7 @@ logLik.vlmc <- function(object, initial = c("truncated", "specific", "extended")
 #'   log scale). Thus the numerical value of the likelihood is identical as the
 #'   one obtained with `initial=="truncated"` but it is computed on `length(x)`
 #'   with a model with more parameters than in this previous case.
-#' * `initial=="extended"` (default): the likelihood is computed on the full time series
+#' * `initial=="extended"`: the likelihood is computed on the full time series
 #'   using an extended context matching for the initial values, `x[1]` to `x[k]`.
 #'   This can be seen as a compromised between the two other possibilities:
 #'   the relaxed context matching needs in general to turn internal nodes
@@ -136,6 +138,10 @@ logLik.vlmc <- function(object, initial = c("truncated", "specific", "extended")
 #' is not specified, it is set to the minimal possible value, that is k for the
 #' `truncated` likelihood and 0 for the other ones. If it is specified, it must
 #' be larger or equal to k for `truncated`.
+#'
+#' When `newdata` contains a transition that has a zero probability according to
+#' the model (in a context or, for the `extended` likelihood, in an extended
+#' context), the log-likelihood is `-Inf`.
 #'
 #' See the dedicated vignette for a more mathematically oriented discussion:
 #' `vignette("likelihood", package = "mixvlmc")`.
@@ -200,6 +206,9 @@ loglikelihood.vlmc <- function(vlmc, newdata,
                                initial = c("truncated", "specific", "extended"),
                                ignore, ...) {
   initial <- match.arg(initial)
+  if (!missing(ignore)) {
+    assert_ignore(ignore)
+  }
   if (missing(ignore)) {
     if (initial == "truncated") {
       ignore <- depth(vlmc)
@@ -235,16 +244,17 @@ loglikelihood.vlmc <- function(vlmc, newdata,
     if (ignore >= length(newdata)) {
       stop("Cannot ignore more data than the available ones")
     }
-    nvlmc <- match_ctx(vlmc, newdata$ix)
-    pre_res <- rec_loglikelihood_vlmc(nvlmc, TRUE)
     ignore_counts <- ignore
     if (initial == "specific" && ignore < depth(vlmc)) {
       ignore <- depth(vlmc)
     }
-    if (ignore > 0) {
-      ivlmc <- match_ctx(vlmc, newdata$ix[1:min(ignore, length(newdata))])
-      delta_res <- rec_loglikelihood_vlmc(ivlmc, TRUE)
-      pre_res <- pre_res - delta_res
+    if (ignore >= length(newdata)) {
+      pre_res <- 0
+    } else {
+      ## the ignored values are excluded from the counts rather than by
+      ## subtracting their log likelihood, as the latter can be -Inf
+      nvlmc <- match_ctx(vlmc, newdata$ix, start = ignore)
+      pre_res <- rec_loglikelihood_vlmc(nvlmc, TRUE)
     }
     attr(pre_res, "nobs") <- max(0, length(newdata) - ignore_counts)
   }

@@ -31,3 +31,26 @@ test_that("the C++ and R backend agree", {
   r_ctxs <- contexts(rdts_rtree, frequency = "detailed", position = FALSE)
   expect_true(compare_ctx(r_ctxs, cpp_ctxs))
 })
+
+test_that("the C++ and R backends agree with min_size = 1 and positions", {
+  ## regression test: the end of the time series was matched incorrectly
+  x <- c(0, 1, 1, 0, 1)
+  expect_no_warning(cpp_tree <- ctx_tree(x, min_size = 1, backend = "C++"))
+  r_tree <- ctx_tree(x, min_size = 1, backend = "R")
+  expect_equal(context_number(cpp_tree), context_number(r_tree))
+  expect_true(compare_ctx(
+    contexts(r_tree, frequency = "detailed", positions = TRUE),
+    contexts(cpp_tree, frequency = "detailed", positions = TRUE)
+  ))
+  withr::local_seed(0)
+  for (k in 1:20) {
+    x <- sample(0:2, sample(5:50, 1), replace = TRUE)
+    expect_no_warning(cpp_tree <- ctx_tree(x, min_size = 1, backend = "C++"))
+    r_tree <- ctx_tree(x, min_size = 1, backend = "R")
+    expect_equal(context_number(cpp_tree), context_number(r_tree))
+    expect_true(compare_ctx(
+      contexts(r_tree, frequency = "detailed", positions = TRUE),
+      contexts(cpp_tree, frequency = "detailed", positions = TRUE)
+    ))
+  }
+})

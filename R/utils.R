@@ -1,5 +1,12 @@
 to_dts <- function(x, vals = NULL) {
+  if (anyNA(x)) {
+    stop("discrete time series cannot contain missing values")
+  }
   if (is.null(vals)) {
+    ## x defines the state space: it must contain at least one value
+    if (length(x) == 0) {
+      stop("discrete time series cannot be empty")
+    }
     if (is.character(x) || is.numeric(x)) {
       vals <- sort(unique(x))
       fx <- factor(x, vals)
@@ -18,6 +25,26 @@ to_dts <- function(x, vals = NULL) {
     vals <- factor(levels(fx), levels(fx))
   }
   list(ix = as.integer(fx) - 1L, fx = fx, vals = vals)
+}
+
+assert_min_size <- function(min_size) {
+  if (!is.numeric(min_size) || length(min_size) != 1 || is.na(min_size) || min_size < 1) {
+    stop("min_size must be a single number larger or equal to 1")
+  }
+}
+
+assert_max_depth <- function(max_depth) {
+  if (!is.numeric(max_depth) || length(max_depth) != 1 || !is.finite(max_depth) ||
+    max_depth < 0 || max_depth != round(max_depth)) {
+    stop("max_depth must be a single non negative integer")
+  }
+}
+
+assert_ignore <- function(ignore) {
+  if (!is.numeric(ignore) || length(ignore) != 1 || !is.finite(ignore) ||
+    ignore < 0 || ignore != round(ignore)) {
+    stop("ignore must be a single non negative integer")
+  }
 }
 
 signif_null <- function(x, digits) {
@@ -160,4 +187,12 @@ flex_cbind <- function(ecur, enew) {
   } else {
     cbind(ecur, enew)
   }
+}
+
+## log likelihood of the best model of a tune_vlmc/tune_covlmc result, as
+## computed during model selection (the best model is the last one that
+## reaches the minimal value of the criterion)
+tune_best_loglikelihood <- function(x) {
+  crit <- x$results[[x$criterion]]
+  x$results$loglikelihood[max(which(crit == min(crit)))]
 }

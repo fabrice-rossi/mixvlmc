@@ -59,8 +59,8 @@ RCPP_MODULE(suffixtree) {
               "VLMC")
       .method("simulate", &SuffixTree::simulate,
               "Simulate a sequence using this VLMC as the generative model")
-      .property("has_positions", &SuffixTree::get_has_positions,
-                "Does this VLMC store positions?")
+      .method("has_positions", &SuffixTree::get_has_positions,
+              "Does this VLMC store positions?")
       .method("trim", &SuffixTree::trim,
               "Reduce the memory usage of the tree by removing positions")
       .method("predict_raw", &SuffixTree::predict_raw, "Predict values")

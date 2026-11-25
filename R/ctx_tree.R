@@ -96,7 +96,7 @@ grow_ctx_tree <- function(x, vals, min_size, max_depth, covsize = 0L, keep_match
       result
     }
   }
-  pre_res <- recurse_ctx_tree(x, length(vals), 0L, NULL, table(x))
+  pre_res <- recurse_ctx_tree(x, length(vals), 0L, NULL, tabulate(x + 1L, nbins = length(vals)))
   if (is.null(pre_res$max_depth)) {
     pre_res$max_depth <- FALSE
   }
@@ -116,7 +116,7 @@ grow_ctx_tree <- function(x, vals, min_size, max_depth, covsize = 0L, keep_match
 #'  as an integer vector or a `dts` object (see [dts()])
 #' @param min_size integer >= 1 (default: 2). Minimum number of observations for
 #'   a context to be included in the tree.
-#' @param max_depth integer >= 1 (default: 100). Maximum length of a context to
+#' @param max_depth integer >= 0 (default: 100). Maximum length of a context to
 #'   be included in the tree.
 #' @param keep_position logical (default: TRUE). Should the context tree keep
 #'   the position of the contexts.
@@ -192,6 +192,8 @@ ctx_tree_internal <- function(ix,
                               keep_position,
                               backend) {
   backend <- match.arg(backend, c("R", "C++"))
+  assert_min_size(min_size)
+  assert_max_depth(max_depth)
   if (length(vals) > max(10, 0.05 * length(ix))) {
     warning(paste0("x as numerous unique values (", length(vals), ")"))
   }

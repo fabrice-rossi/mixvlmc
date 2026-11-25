@@ -160,3 +160,82 @@ test_that("likelihood calculation artifical data with merged models", {
     }
   }
 })
+
+test_that("loglikelihood rejects missing values in new covariates", {
+  pc <- powerconsumption[powerconsumption$week == 5, ]
+  dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1))))
+  dts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
+  m_cov <- covlmc(dts, dts_cov, min_size = 5)
+  new_cov <- dts_cov[1:50, , drop = FALSE]
+  new_cov$day_night[20] <- NA
+  expect_error(loglikelihood(m_cov, newdata = dts[1:50], newcov = new_cov), "missing values")
+})
+
+test_that("the likelihood of a depth 0 covlmc uses all the observations", {
+  x <- c(1, rep(0, 9))
+  x_cov <- data.frame(z = seq_along(x))
+  x_vlmc <- vlmc(x, min_size = 100)
+  for (engine in c("glm", "multinom")) {
+    withr::local_options(mixvlmc.predictive = engine)
+    m_cov <- covlmc(x, x_cov, min_size = 100)
+    expect_equal(depth(m_cov), 0)
+    m_ll <- loglikelihood(m_cov)
+    expect_equal(as.numeric(m_ll), as.numeric(loglikelihood(x_vlmc)), tolerance = 1e-5)
+    expect_equal(attr(m_ll, "nobs"), length(x))
+    expect_equal(loglikelihood(m_cov, newdata = x, newcov = x_cov), m_ll)
+    ## shorter new data
+    m_ll_new <- loglikelihood(m_cov, newdata = x[1:5], newcov = x_cov[1:5, , drop = FALSE])
+    expect_equal(as.numeric(m_ll_new), as.numeric(loglikelihood(x_vlmc, newdata = x[1:5])),
+      tolerance = 1e-5
+    )
+    expect_equal(attr(m_ll_new, "nobs"), 5)
+    ## ignoring the first observation
+    m_ll_ign <- loglikelihood(m_cov,
+      newdata = x, newcov = x_cov,
+      initial = "specific", ignore = 1
+    )
+    expect_equal(as.numeric(m_ll_ign),
+      as.numeric(loglikelihood(x_vlmc, newdata = x, initial = "specific", ignore = 1)),
+      tolerance = 1e-5
+    )
+  }
+})
+
+test_that("loglikelihood ignores impossible transitions in the ignored observations", {
+  withr::local_seed(0)
+  n <- 500
+  ## a is never followed by a
+  x <- character(n)
+  x[1] <- "b"
+  for (i in 2:n) {
+    if (x[i - 1] == "a") {
+      x[i] <- sample(c("b", "c"), 1)
+    } else {
+      x[i] <- sample(c("a", "b", "c"), 1)
+    }
+  }
+  x_cov <- data.frame(z = rnorm(n))
+  new_x <- c("a", "a", "b", x[4:100])
+  new_cov <- x_cov[1:100, , drop = FALSE]
+  for (engine in c("glm", "multinom")) {
+    withr::local_options(mixvlmc.predictive = engine)
+    m_cov <- covlmc(x, x_cov, min_size = 5, alpha = 0.5)
+    for (initial in c("truncated", "specific", "extended")) {
+      m_ll <- loglikelihood(m_cov,
+        newdata = new_x, newcov = new_cov,
+        initial = initial, ignore = 2
+      )
+      expect_true(is.finite(m_ll))
+      expect_equal(
+        m_ll,
+        co_slow_loglikelihood(m_cov, new_x, initial = initial, ignore = 2, newcov = new_cov),
+        ignore_attr = TRUE
+      )
+    }
+    ## not ignored
+    expect_equal(
+      as.numeric(loglikelihood(m_cov, newdata = new_x, newcov = new_cov, initial = "extended")),
+      -Inf
+    )
+  }
+})

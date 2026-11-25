@@ -10,7 +10,7 @@ restore_model.vlmc_cpp <- function(tree) {
       cpp_tree$prune_context(
         tree$restoration$min_size,
         tree$restoration$max_depth,
-        tree$cutoff
+        tree$restoration$cut_off
       )
     } else {
       cpp_tree$prune(tree$restoration$min_size, tree$restoration$max_depth)
@@ -70,7 +70,11 @@ prune.vlmc_cpp <- function(vlmc, alpha = 0.05, cutoff = NULL, ...) {
   result <- new_ctx_tree_cpp(vlmc$vals, pre_result, class = c("vlmc_cpp", "vlmc"))
   ## preserve the construction information
   result$max_depth <- vlmc$max_depth
-  result$restoration <- result$root$restoration_info()
+  ## the restoration information must describe the construction of the model
+  ## from the original data: pruning with a cut off smaller than the one of the
+  ## model has no effect
+  result$restoration <- vlmc$restoration
+  result$restoration$cut_off <- max(vlmc$restoration$cut_off, cutoff)
   result$alpha <- alpha
   result$cutoff <- cutoff
   ## recompute the extended_ll

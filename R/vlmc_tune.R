@@ -34,7 +34,7 @@
 #'   build the initial VLMC. Takes precedence over `alpha_init` if specified.
 #' @param min_size integer >= 1 (default: 2). Minimum number of observations for
 #'   a context in the growing phase of the initial context tree.
-#' @param max_depth integer >= 1 (default: 100). Longest context considered in
+#' @param max_depth integer >= 0 (default: 100). Longest context considered in
 #'   growing phase of the initial context tree (see details).
 #' @param backend backend "R" or "C++" (default: as specified by the
 #'   "mixvlmc.backend" option). Specifies the implementation used to represent
@@ -76,6 +76,8 @@ tune_vlmc <- function(x, criterion = c("BIC", "AIC"),
   criterion <- match.arg(criterion)
   initial <- match.arg(initial)
   backend <- match.arg(backend, c("R", "C++"))
+  assert_min_size(min_size)
+  assert_max_depth(max_depth)
   save <- match.arg(save)
   ## make sure that x is a dts
   if (!is_dts(x)) {
@@ -109,6 +111,11 @@ tune_vlmc <- function(x, criterion = c("BIC", "AIC"),
   } else {
     f_criterion <- stats::AIC
   }
+  if (backend == "C++") {
+    ## the C++ backend builds the complete suffix tree and uses max_depth only
+    ## during pruning: the automatic increase of max_depth is done at once
+    max_depth <- max(max_depth, length(x) - 1)
+  }
   if (verbose > 0) {
     cat("Fitting a vlmc with max_depth=", max_depth, "and cutoff=", cutoff, "\n")
   }
@@ -124,7 +131,10 @@ tune_vlmc <- function(x, criterion = c("BIC", "AIC"),
         cat("Max depth reached, increasing it to", n_max_depth, "\n")
       }
       max_depth <- n_max_depth
-      base_model <- vlmc(x, cutoff = cutoff, min_size = min_size, max_depth = max_depth)
+      base_model <- vlmc(x,
+        cutoff = cutoff, min_size = min_size,
+        max_depth = max_depth, backend = backend
+      )
     } else {
       warning("cannot find a suitable value for max_depth")
       break
@@ -214,7 +224,7 @@ print.tune_vlmc <- function(x, ...) {
     cat(min(x$results$AIC))
   }
   cat(") with likelihood function \"", x$initial, "\" (", sep = "")
-  cat(loglikelihood(x$best_model))
+  cat(tune_best_loglikelihood(x))
   cat(")\n")
   invisible(x)
 }

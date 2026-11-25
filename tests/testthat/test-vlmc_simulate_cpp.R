@@ -119,3 +119,13 @@ test_that("vlmc simulate handles correctly burnin with init values (C++)", {
     expect_equal(xs_full[1:25], xs_init)
   }
 })
+
+test_that("vlmc simulation with sample = 'R' uses base::sample.int (C++)", {
+  data_set <- build_markov_chain(500, 3, seed = 3)
+  x_vlmc <- vlmc(data_set$x, backend = "C++")
+  xs <- simulate(x_vlmc, 50, seed = 4, sample = "R")
+  ## a function with the same name in the global environment must not be used
+  assign("sample.int", function(...) stop("wrong sample.int"), envir = globalenv())
+  withr::defer(rm("sample.int", envir = globalenv()))
+  expect_identical(simulate(x_vlmc, 50, seed = 4, sample = "R"), xs)
+})

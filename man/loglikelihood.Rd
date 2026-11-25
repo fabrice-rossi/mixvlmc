@@ -78,7 +78,7 @@ context of a given observation. As a consequence, in a time series \code{x}, the
 contexts of \code{x[1]} to \code{x[k]} are unknown. Depending on the value of \code{initial}
 different likelihood functions are used to tackle this difficulty:
 \itemize{
-\item \code{initial=="truncated"}: the likelihood is computed using only
+\item \code{initial=="truncated"} (default): the likelihood is computed using only
 \code{x[(k+1):length(x)]}
 \item \code{initial=="specific"}: the likelihood is computed on the full time series
 using a specific context for the initial values, \code{x[1]} to \code{x[k]}. Each of
@@ -86,7 +86,7 @@ the specific context is unique, leading to a perfect likelihood of 1 (0 in
 log scale). Thus the numerical value of the likelihood is identical as the
 one obtained with \code{initial=="truncated"} but it is computed on \code{length(x)}
 with a model with more parameters than in this previous case.
-\item \code{initial=="extended"} (default): the likelihood is computed on the full time series
+\item \code{initial=="extended"}: the likelihood is computed on the full time series
 using an extended context matching for the initial values, \code{x[1]} to \code{x[k]}.
 This can be seen as a compromised between the two other possibilities:
 the relaxed context matching needs in general to turn internal nodes
@@ -101,6 +101,10 @@ in the computed likelihood, but still used to compute contexts. If \code{ignore}
 is not specified, it is set to the minimal possible value, that is k for the
 \code{truncated} likelihood and 0 for the other ones. If it is specified, it must
 be larger or equal to k for \code{truncated}.
+
+When \code{newdata} contains a transition that has a zero probability according to
+the model (in a context or, for the \code{extended} likelihood, in an extended
+context), the log-likelihood is \code{-Inf}.
 
 See the dedicated vignette for a more mathematically oriented discussion:
 \code{vignette("likelihood", package = "mixvlmc")}.

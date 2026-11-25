@@ -37,3 +37,13 @@ test_that("the suffix tree extracts all contexts and only them (more tests)", {
   r_tree_ctxs <- unclass(contexts(r_tree, reverse = TRUE, sequence = TRUE)$context)
   expect_true(compare_ctx(r_tree_ctxs, ctxs))
 })
+
+test_that("the suffix tree extracts only the empty context with max_length = 0", {
+  withr::local_seed(3)
+  x <- sample(0:2, 100, replace = TRUE)
+  x_rev <- rev(x)
+  tree <- build_suffix_tree(x_rev[-1], 3)
+  tree$compute_counts(x_rev[1], FALSE)
+  expect_identical(tree$contexts(1, 0), list(integer()))
+  expect_identical(tree$subsequences(1, 0), list())
+})

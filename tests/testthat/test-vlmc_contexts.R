@@ -30,3 +30,28 @@ test_that("context cut off are consistent", {
     expect_equal(ctx_co_quantile$cutoff, stats::pchisq(2 * ctx_co_native$cutoff, df = 2, lower.tail = FALSE))
   }
 })
+
+test_that("local counts do not change positions", {
+  withr::local_seed(0)
+  x <- sample(c("a", "b", "c"), 300, replace = TRUE)
+  for (backend in c("R", "C++")) {
+    model <- vlmc(x, alpha = 0.5, keep_match = TRUE, backend = backend)
+    c_glob <- contexts(model, frequency = "detailed", positions = TRUE)
+    c_loc <- contexts(model, frequency = "detailed", positions = TRUE, local = TRUE)
+    ## some contexts are internal nodes
+    expect_true(any(c_loc$freq < c_glob$freq))
+    expect_equal(c_loc$freq, unname(rowSums(c_loc[, 3:5])))
+    expect_identical(c_loc$positions, c_glob$positions)
+  }
+})
+
+test_that("metrics can be computed with local counts", {
+  withr::local_seed(0)
+  x <- sample(c("a", "b", "c"), 300, replace = TRUE)
+  for (backend in c("R", "C++")) {
+    model <- vlmc(x, alpha = 0.5, backend = backend)
+    m_glob <- contexts(model, metrics = TRUE)
+    expect_no_error(m_loc <- contexts(model, metrics = TRUE, local = TRUE))
+    expect_equal(m_loc$accuracy, m_glob$accuracy)
+  }
+})

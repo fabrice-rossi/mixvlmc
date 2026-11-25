@@ -1,3 +1,4 @@
+#include <memory>
 #include <vector>
 #include "SuffixTree.h"
 using namespace Rcpp;
@@ -78,6 +79,17 @@ void SuffixTree::invalidate() {
   min_size = 1;
   max_length = -1;
   cut_off = 0;
+}
+
+// the root does not fulfil the count constraint: as in the R backend, we
+// keep a tree reduced to its root (which is the only context)
+void SuffixTree::prune_to_root() {
+  for(auto child : root->children) {
+    delete child.second;
+  }
+  root->children.clear();
+  max_depth = 0;
+  nb_ctx = 1;
 }
 
 int SuffixTree::x_at(int pos) const {
@@ -369,12 +381,12 @@ void SuffixTree::add_initial_match(int first) {
       int move = std::min(el, (int)(x.length() - x_pos));
       // progress along the edge
       for(int k = 1; k < move; k++) {
-        if(x[x_pos + k] != x[current->start + k]) {
+        if(x[x_pos + k] != x_at(current->start + k)) {
           // we need to break the edge to avoid introducing fake matches
           EdgeNode* start_of_edge =
               new EdgeNode(current->parent, current->start, current->start + k);
           start_of_edge->depth = current->parent->depth + k;
-          start_of_edge->children[x[current->start + k]] = current;
+          start_of_edge->children[x_at(current->start + k)] = current;
           start_of_edge->total_count = current->total_count;
           start_of_edge->counts = new std::unordered_map<int, int>(
               current->counts->begin(), current->counts->end());
@@ -445,7 +457,7 @@ std::vector<SubSequence*>* SuffixTree::raw_subsequences(
   std::vector<SubSequence*>* ctxs = new std::vector<SubSequence*>{};
   std::vector<int> pre{};
   pre.reserve(x.size());
-  if(when.max_length <= 0) {
+  if(when.max_length < 0) {
     when.max_length = x.size();
   }
   root->subsequences(when, what, x, max_x + 1, pre, *ctxs);
@@ -599,13 +611,15 @@ void SuffixTree::prune(int min_counts, int max_length) {
   if(!has_counts) {
     stop("prune cannot be used if the counts have not been computed");
   }
-  if(max_length <= 0) {
+  if(max_length < 0) {
     max_length = x.size();
   }
   max_depth = 0;  // we need to recompute max_depth
   nb_ctx = 0;
-  root->prune(min_counts, max_length, -1, max_x + 1, x.size(), max_depth,
-              nb_ctx);
+  if(root->prune(min_counts, max_length, -1, max_x + 1, x.size(), max_depth,
+                 nb_ctx)) {
+    prune_to_root();
+  }
   min_size = min_counts;
   this->max_length = max_length;
 }
@@ -614,13 +628,15 @@ void SuffixTree::prune_context(int min_counts, int max_length, double K) {
   if(!has_counts) {
     stop("prune cannot be used if the counts have not been computed");
   }
-  if(max_length <= 0) {
+  if(max_length < 0) {
     max_length = x.size();
   }
   max_depth = 0;  // we need to recompute max_depth
   nb_ctx = 0;
-  root->prune(min_counts, max_length, K, max_x + 1, x.size(), max_depth,
-              nb_ctx);
+  if(root->prune(min_counts, max_length, K, max_x + 1, x.size(), max_depth,
+                 nb_ctx)) {
+    prune_to_root();
+  }
   min_size = min_counts;
   this->max_length = max_length;
   cut_off = K;
@@ -630,13 +646,19 @@ SuffixTree* SuffixTree::clone_prune(int min_counts, int max_length) const {
   if(!has_counts) {
     stop("prune cannot be used if the counts have not been computed");
   }
-  if(max_length <= 0) {
+  if(max_length < 0) {
     max_length = x.size();
   }
   int n_max_depth = 0;  // we need to recompute max_depth
   int nb_ctx = 0;
   EdgeNode* new_root = root->clone_prune(min_counts, max_length, -1, max_x + 1,
                                          x.size(), n_max_depth, nb_ctx);
+  if(new_root == nullptr) {
+    // the root does not fulfil the count constraint: we keep only the root
+    new_root = root->clone_no_relatives();
+    n_max_depth = 0;
+    nb_ctx = 1;
+  }
   SuffixTree* result =
       clone_from_root(new_root, n_max_depth, nb_ctx, first_value);
   result->min_size = min_counts;
@@ -650,13 +672,19 @@ SuffixTree* SuffixTree::clone_prune_context(int min_counts,
   if(!has_counts) {
     stop("prune cannot be used if the counts have not been computed");
   }
-  if(max_length <= 0) {
+  if(max_length < 0) {
     max_length = x.size();
   }
   int n_max_depth = 0;  // we need to recompute max_depth
   int nb_ctx = 0;
   EdgeNode* new_root = root->clone_prune(min_counts, max_length, K, max_x + 1,
                                          x.size(), n_max_depth, nb_ctx);
+  if(new_root == nullptr) {
+    // the root does not fulfil the count constraint: we keep only the root
+    new_root = root->clone_no_relatives();
+    n_max_depth = 0;
+    nb_ctx = 1;
+  }
   SuffixTree* result =
       clone_from_root(new_root, n_max_depth, nb_ctx, first_value);
   result->compute_reverse();
@@ -685,6 +713,11 @@ int SuffixTree::nb_contexts() const {
 NumericVector SuffixTree::cutoff() const {
   std::set<double> values;
   root->cutoff(values);
+  if(values.empty()) {
+    // no positive cut off (e.g. tree reduced to its root): as in the R
+    // backend, we report the null cut off of the root
+    values.insert(0.0);
+  }
   NumericVector res(values.size());
   int i = 0;
   for(auto val : values) {
@@ -733,6 +766,10 @@ void SuffixTree::compute_reverse() {
     stop("reverse links calculation is limited to fully explicit trees");
   }
   // root case
+  if(root->reverse != nullptr) {
+    // the reverse links are recomputed
+    delete root->reverse;
+  }
   root->reverse = new std::unordered_map<int, EdgeNode*>{};
   for(int i = 0; i <= max_x; i++) {
     auto child = root->children.find(i);
@@ -851,7 +888,8 @@ IntegerVector SuffixTree::simulate(IntegerVector start,
   }
   Nullable<Function> r_sample = R_NilValue;
   if(method > 1) {
-    r_sample = Nullable<Function>(Function("sample.int"));
+    r_sample =
+        Nullable<Function>(Function("sample.int", Environment::base_env()));
   }
   RNGScope scope;
   // final result
@@ -931,7 +969,9 @@ SuffixTree* SuffixTree::trim() const {
   result->min_size = min_size;
   result->max_length = max_length;
   result->has_positions = false;
-  result->compute_reverse();
+  if(has_reverse) {
+    result->compute_reverse();
+  }
   return result;
 }
 
@@ -1022,7 +1062,8 @@ XPtr<EdgeNode> SuffixTree::raw_find_sequence(const IntegerVector& y) const {
     if(child != current->children.end()) {
       current = child->second;
       int el = current->edge_length();
-      int move = std::min(el, (int)(y.length() - y_pos));
+      int move = std::min(std::min(el, (int)(y.length() - y_pos)),
+                          (int)(x.length() - current->start));
       for(int k = 1; k < move; k++) {
         if(y[y_pos + k] != x[current->start + k]) {
           // not found!
@@ -1061,21 +1102,41 @@ List SuffixTree::raw_contexts() const {
   return List::create(Named("ctxs") = the_contexts, Named("ptrs") = the_ptrs);
 }
 
-bool SuffixTree::node_is_context(const XPtr<EdgeNode>& node) const {
-  return ((int)node->children.size()) <= max_x;
+bool SuffixTree::node_is_context(const XPtr<EdgeNode>& node,
+                                 int length) const {
+  if(node->depth == length) {
+    // explicit node or end of edge
+    return ((int)node->children.size()) <= max_x;
+  } else {
+    // middle of an edge: a single child, unless the next value is the
+    // sentinel
+    int pos = length - node->depth + node->end;
+    return pos >= x.size() || max_x >= 1;
+  }
 }
 
 IntegerVector SuffixTree::node_counts(const XPtr<EdgeNode>& node) const {
   return map_to_counts(node->counts, max_x);
 }
 
-IntegerVector SuffixTree::node_local_counts(const XPtr<EdgeNode>& node) const {
+IntegerVector SuffixTree::node_local_counts(const XPtr<EdgeNode>& node,
+                                            int length) const {
   Rcpp::IntegerVector result = map_to_counts(node->counts, max_x);
-  for(auto child : node->children) {
-    if(child.first >= 0) {
-      for(auto count : *(child.second->counts)) {
-        result[count.first] -= count.second;
+  if(node->depth == length) {
+    // explicit node or end of edge
+    for(auto child : node->children) {
+      if(child.first >= 0) {
+        for(auto count : *(child.second->counts)) {
+          result[count.first] -= count.second;
+        }
       }
+    }
+  } else {
+    // middle of an edge: the single child has the same counts, unless the
+    // next value is the sentinel
+    int pos = length - node->depth + node->end;
+    if(pos < x.size()) {
+      std::fill(result.begin(), result.end(), 0);
     }
   }
   return result;
@@ -1112,13 +1173,16 @@ List SuffixTree::node_children(const XPtr<EdgeNode>& node, int length) const {
   } else {
     // middle of an edge
     int pos = length - node->depth + node->end;
-    result[x[pos]] = node;
+    if(pos < x.size()) {
+      result[x[pos]] = node;
+    }  // else the next value is the sentinel: no children
   }
   return result;
 }
 
 SuffixTree* build_suffix_tree(const IntegerVector& x, int nb_vals) {
-  SuffixTree* tree = new SuffixTree();
+  // the tree is freed if insert throws an exception
+  std::unique_ptr<SuffixTree> tree(new SuffixTree());
   tree->insert(x, nb_vals);
-  return tree;
+  return tree.release();
 }

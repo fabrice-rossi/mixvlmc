@@ -39,11 +39,10 @@ build_data_set_3_model <- function(n, seed = 0, alpha = 0.1) {
   x3 <- sample(c("A", "B", "C"), n, replace = TRUE)
   y3 <- ifelse(runif(length(x3)) > 0.5, c(x3[-1], sample(c("A", "B", "C"), 1)), c(x3[-c(1, 2)], sample(c("A", "B", "C"), 2, replace = TRUE)))
   y3 <- as.factor(ifelse(runif(length(x3)) > 0.2, y3, sample(c("A", "B", "C"), n, replace = TRUE)))
-  z3 <- data.table::fcase(
-    x3[-1] == "A", runif(length(x3) - 1),
-    x3[-1] == "B", 0.5 + runif(length(x3) - 1),
-    x3[-1] == "C", -0.5 + runif(length(x3) - 1)
-  )
+  z3_a <- runif(length(x3) - 1)
+  z3_b <- 0.5 + runif(length(x3) - 1)
+  z3_c <- -0.5 + runif(length(x3) - 1)
+  z3 <- ifelse(x3[-1] == "A", z3_a, ifelse(x3[-1] == "B", z3_b, z3_c))
   z3 <- c(0, z3)
   df_full <- data.frame(y = y3, z = z3)
   model <- covlmc(x3, df_full, max_depth = 5, min_size = 5, alpha = alpha)
@@ -203,7 +202,7 @@ co_slow_loglikelihood <- function(model, newdata, initial = c("truncated", "spec
   max_depth <- depth(model)
   if (max_depth == 0) {
     ## fixed model (and no covariate!)
-    glmdata <- prepare_glm(newcov, model$match, 0, newdata, 0)
+    glmdata <- prepare_glm(newcov, 0:(length(newdata) - 1), 0, newdata, 0)
     result <- glm_likelihood(model$model$model, glmdata$local_mm, glmdata$target)
   } else {
     result <- 0
@@ -292,11 +291,10 @@ create_demo_covlmc <- function() {
   x3 <- sample(c("A", "B", "C"), 1000, replace = TRUE)
   y3 <- ifelse(runif(length(x3)) > 0.5, c(x3[-1], sample(c("A", "B", "C"), 1)), c(x3[-c(1, 2)], sample(c("A", "B", "C"), 2, replace = TRUE)))
   y3 <- as.factor(ifelse(runif(length(x3)) > 0.2, y3, sample(c("A", "B", "C"), 1000, replace = TRUE)))
-  z3 <- data.table::fcase(
-    x3[-1] == "A", runif(length(x3) - 1),
-    x3[-1] == "B", 0.5 + runif(length(x3) - 1),
-    x3[-1] == "C", -0.5 + runif(length(x3) - 1)
-  )
+  z3_a <- runif(length(x3) - 1)
+  z3_b <- 0.5 + runif(length(x3) - 1)
+  z3_c <- -0.5 + runif(length(x3) - 1)
+  z3 <- ifelse(x3[-1] == "A", z3_a, ifelse(x3[-1] == "B", z3_b, z3_c))
   z3 <- c(0, z3)
   df_y3 <- data.frame(y = y3)
   x3_covlmc <- covlmc(x3, df_y3, max_depth = 5, min_size = 5, alpha = 0.01)

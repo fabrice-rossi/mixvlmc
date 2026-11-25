@@ -21,7 +21,7 @@ glm_likelihood.vglm <- function(model, mm, target) {
         return(-Inf)
       }
     }
-    sum(log(probs) * smm[, which(!is.na(mapper)), drop = FALSE])
+    sum_log_prob(as.vector(probs), as.vector(smm[, which(!is.na(mapper)), drop = FALSE]))
   } else {
     sum_log_prob(as.vector(probs), as.vector(smm))
   }
@@ -55,13 +55,13 @@ glm_likelihood.multinom <- function(model, mm, target) {
         } else {
           ## single prediction
           if (length(probs) == ncol(tm_tokeep)) {
-            sum(log(probs) * tm_tokeep[1, ])
+            sum_log_prob(probs, tm_tokeep[1, ])
           } else {
             sum_log_prob(probs, tm_tokeep[, 2]) + sum_log_prob(1 - probs, 1 - tm_tokeep[, 2])
           }
         }
       } else {
-        sum_log_prob(as.vector(probs), as.vector(tm))
+        sum_log_prob(as.vector(probs), as.vector(tm_tokeep))
       }
     } else {
       sum_log_prob(as.vector(probs), as.vector(tm))
@@ -81,13 +81,14 @@ glm_metrics.glm <- function(model, mm, target) {
 
 #' @exportS3Method
 glm_metrics.vglm <- function(model, mm, target) {
-  probs <- vglm_predict_no_warning(model, mm)
-  colnames(probs) <- glm_levels(model)
+  ## glm_predict adds the levels missing in degenerate models
+  probs <- glm_predict(model, mm, lev = levels(target))
   main_metrics(target, probs)
 }
 
 #' @exportS3Method
 glm_metrics.multinom <- function(model, mm, target) {
-  probs <- stats::predict(model, mm, type = "probs")
+  ## glm_predict adds the levels missing in degenerate models
+  probs <- glm_predict(model, mm, lev = levels(target))
   main_metrics(target, probs)
 }

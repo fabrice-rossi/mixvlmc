@@ -1,4 +1,5 @@
 test_that("plot.tune_vlmc works as expected", {
+  skip_if_not_installed("vdiffr")
   pc <- powerconsumption[powerconsumption$week == 10, ]
   rdts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1))))
   tune_result <- tune_vlmc(rdts)
@@ -14,6 +15,7 @@ test_that("plot.tune_vlmc works as expected", {
 })
 
 test_that("plot.tune_covlmc works as expected", {
+  skip_if_not_installed("vdiffr")
   pc <- powerconsumption[powerconsumption$week == 10, ]
   rdts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1))))
   rdts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))

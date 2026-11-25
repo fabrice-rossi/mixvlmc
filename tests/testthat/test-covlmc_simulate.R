@@ -117,3 +117,13 @@ test_that("covlmc simulate works correctly with degenerate models", {
   ))
   expect_equal(length(result), nrow(d_model$new_cov))
 })
+
+test_that("covlmc simulate rejects missing values in covariates", {
+  pc <- powerconsumption[powerconsumption$week == 5, ]
+  dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1))))
+  dts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
+  m_cov <- covlmc(dts, dts_cov, min_size = 5)
+  new_cov <- dts_cov[1:50, , drop = FALSE]
+  new_cov$day_night[20] <- NA
+  expect_error(simulate(m_cov, 50, seed = 0, covariate = new_cov), "missing values")
+})

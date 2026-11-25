@@ -24,8 +24,22 @@ EdgeNode::EdgeNode(EdgeNode* _parent, int s, int e)
       depth(0) {}
 
 EdgeNode::~EdgeNode() {
+  // the subtree is deleted iteratively as it can be very deep (e.g. for long
+  // repeats): each node is deleted after removing its children, which avoids
+  // recursive calls to the destructor
+  std::vector<EdgeNode*> to_delete;
   for(auto child : children) {
-    delete child.second;
+    to_delete.push_back(child.second);
+  }
+  children.clear();
+  while(!to_delete.empty()) {
+    EdgeNode* node = to_delete.back();
+    to_delete.pop_back();
+    for(auto child : node->children) {
+      to_delete.push_back(child.second);
+    }
+    node->children.clear();
+    delete node;
   }
   if(reverse != nullptr) {
     delete reverse;
@@ -106,14 +120,32 @@ void EdgeNode::print_tree(std::string pre,
 }
 // # nocov end
 
+// The two following functions process the full suffix tree, whose depth can
+// be as large as the length of the longest repeat in the original sequence.
+// To avoid stack overflows, they use an explicit stack rather than recursive
+// calls: a node is first visited to process it locally and to schedule its
+// children, then visited a second time, after its children, to aggregate their
+// results.
+
 void EdgeNode::compute_total_count() {
-  if(children.size() == 0) {
-    total_count = 1;
-  } else {
-    total_count = 0;
-    for(auto child : children) {
-      child.second->compute_total_count();
-      total_count += child.second->total_count;
+  // pairs (node, children already processed)
+  std::vector<std::pair<EdgeNode*, bool>> to_visit{{this, false}};
+  while(!to_visit.empty()) {
+    EdgeNode* node = to_visit.back().first;
+    bool children_done = to_visit.back().second;
+    to_visit.pop_back();
+    if(node->children.size() == 0) {
+      node->total_count = 1;
+    } else if(!children_done) {
+      to_visit.push_back({node, true});
+      for(auto child : node->children) {
+        to_visit.push_back({child.second, false});
+      }
+    } else {
+      node->total_count = 0;
+      for(auto child : node->children) {
+        node->total_count += child.second->total_count;
+      }
     }
   }
 }
@@ -123,45 +155,67 @@ void EdgeNode::compute_counts(int first,
                               bool keep_position,
                               int cdepth,
                               int& mdepth) {
-  depth = cdepth + edge_length();
-  if(depth > mdepth) {
-    mdepth = depth;
-  }
-  counts = new std::unordered_map<int, int>{};
-  if(keep_position) {
-    positions = new std::vector<int>{};
-  }
-  if(children.size() == 0) {
-    // this is a leaf, therefore a suffix which has a single
-    // preceding character at position nx-depth
-    int pos = x.size() - depth;
-    if(keep_position) {
-      positions->push_back(pos + 1);
-    }
-    int val;
-    if(pos >= 0) {
-      val = x[pos];
-    } else {
-      val = first;
-    }
-    (*counts)[val] = 1;
-    total_count = 1;
-  } else {
-    total_count = 0;
-    for(auto child : children) {
-      child.second->compute_counts(first, x, keep_position, depth, mdepth);
-      total_count += child.second->total_count;
-      if(keep_position) {
-        positions->insert(positions->end(), child.second->positions->begin(),
-                          child.second->positions->end());
+  struct Visit {
+    EdgeNode* node;
+    // depth of the parent node
+    int pdepth;
+    // true if the children have already been processed
+    bool children_done;
+  };
+  std::vector<Visit> to_visit{{this, cdepth, false}};
+  while(!to_visit.empty()) {
+    Visit visit = to_visit.back();
+    to_visit.pop_back();
+    EdgeNode* node = visit.node;
+    if(!visit.children_done) {
+      node->depth = visit.pdepth + node->edge_length();
+      if(node->depth > mdepth) {
+        mdepth = node->depth;
       }
-      // update counts
-      for(auto count : *(child.second->counts)) {
-        auto current = counts->find(count.first);
-        if(current != counts->end()) {
-          current->second += count.second;
+      node->counts = new std::unordered_map<int, int>{};
+      if(keep_position) {
+        node->positions = new std::vector<int>{};
+      }
+      if(node->children.size() == 0) {
+        // this is a leaf, therefore a suffix which has a single
+        // preceding character at position nx-depth
+        int pos = x.size() - node->depth;
+        if(keep_position) {
+          node->positions->push_back(pos + 1);
+        }
+        int val;
+        if(pos >= 0) {
+          val = x[pos];
         } else {
-          (*counts)[count.first] = count.second;
+          val = first;
+        }
+        (*(node->counts))[val] = 1;
+        node->total_count = 1;
+      } else {
+        // the node will be finalised after its children
+        to_visit.push_back({node, visit.pdepth, true});
+        for(auto child : node->children) {
+          to_visit.push_back({child.second, node->depth, false});
+        }
+      }
+    } else {
+      // aggregation of the results of the children
+      node->total_count = 0;
+      for(auto child : node->children) {
+        node->total_count += child.second->total_count;
+        if(keep_position) {
+          node->positions->insert(node->positions->end(),
+                                  child.second->positions->begin(),
+                                  child.second->positions->end());
+        }
+        // update counts
+        for(auto count : *(child.second->counts)) {
+          auto current = node->counts->find(count.first);
+          if(current != node->counts->end()) {
+            current->second += count.second;
+          } else {
+            (*(node->counts))[count.first] = count.second;
+          }
         }
       }
     }
@@ -259,19 +313,15 @@ bool EdgeNode::subsequences(const ExtractionConditions& when,
     } else {
       // non root
       size_t before = pre.size();
-      // if the edge length is larger than one, then we are sure to keep the
-      // subsequence as a context (single child)
-      if(edge_length() > 1) {
-        is_sub = true;
-      }
       // first progress on the edge if needed (we do not include the sentinel)
       int the_end = std::min((int)x.size(), end) - 1;
       bool ml_reached = false;
       for(int i = start; i < the_end; i++) {
         pre.push_back(x[i]);
         if(pre.size() <= (size_t)when.max_length) {
-          // always contexts
+          // always contexts (single child)
           subs.push_back(new SubSequence(pre, this, what));
+          is_sub = true;
         } else {
           ml_reached = true;
           break;
@@ -408,8 +458,10 @@ bool EdgeNode::prune(int min_counts,
         // potential
         nb_ctx++;
       }
-      if(depth > mdepth) {
-        mdepth = depth;
+      // the sentinel does not count in the depth
+      int real_depth = depth - (end > nx ? 1 : 0);
+      if(real_depth > mdepth) {
+        mdepth = real_depth;
       }
       return false;
     }
@@ -507,8 +559,10 @@ EdgeNode* EdgeNode::clone_prune(int min_counts,
       if(nb_sub < nb_vals) {
         nb_ctx++;
       }
-      if(result->depth > mdepth) {
-        mdepth = result->depth;
+      // the sentinel does not count in the depth
+      int real_depth = result->depth - (result->end > nx ? 1 : 0);
+      if(real_depth > mdepth) {
+        mdepth = real_depth;
       }
       return result;
     }
@@ -623,7 +677,10 @@ void EdgeNode::make_explicit(const Rcpp::IntegerVector& x) {
 void EdgeNode::compute_reverse(
     const Rcpp::IntegerVector& x,
     const std::unordered_map<int, EdgeNode*>* parent_map) {
-  // should check for existing map
+  if(reverse != nullptr) {
+    // the reverse links are recomputed
+    delete reverse;
+  }
   reverse = new std::unordered_map<int, EdgeNode*>{};
   if(start < x.size()) {
     for(auto prev : *parent_map) {
