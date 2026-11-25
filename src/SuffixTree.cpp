@@ -1062,21 +1062,41 @@ List SuffixTree::raw_contexts() const {
   return List::create(Named("ctxs") = the_contexts, Named("ptrs") = the_ptrs);
 }
 
-bool SuffixTree::node_is_context(const XPtr<EdgeNode>& node) const {
-  return ((int)node->children.size()) <= max_x;
+bool SuffixTree::node_is_context(const XPtr<EdgeNode>& node,
+                                 int length) const {
+  if(node->depth == length) {
+    // explicit node or end of edge
+    return ((int)node->children.size()) <= max_x;
+  } else {
+    // middle of an edge: a single child, unless the next value is the
+    // sentinel
+    int pos = length - node->depth + node->end;
+    return pos >= x.size() || max_x >= 1;
+  }
 }
 
 IntegerVector SuffixTree::node_counts(const XPtr<EdgeNode>& node) const {
   return map_to_counts(node->counts, max_x);
 }
 
-IntegerVector SuffixTree::node_local_counts(const XPtr<EdgeNode>& node) const {
+IntegerVector SuffixTree::node_local_counts(const XPtr<EdgeNode>& node,
+                                            int length) const {
   Rcpp::IntegerVector result = map_to_counts(node->counts, max_x);
-  for(auto child : node->children) {
-    if(child.first >= 0) {
-      for(auto count : *(child.second->counts)) {
-        result[count.first] -= count.second;
+  if(node->depth == length) {
+    // explicit node or end of edge
+    for(auto child : node->children) {
+      if(child.first >= 0) {
+        for(auto count : *(child.second->counts)) {
+          result[count.first] -= count.second;
+        }
       }
+    }
+  } else {
+    // middle of an edge: the single child has the same counts, unless the
+    // next value is the sentinel
+    int pos = length - node->depth + node->end;
+    if(pos < x.size()) {
+      std::fill(result.begin(), result.end(), 0);
     }
   }
   return result;

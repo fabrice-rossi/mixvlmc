@@ -79,3 +79,32 @@ test_that("positions are reported after serialization", {
     "Cannot report positions if they were not saved"
   )
 })
+
+test_that("sequences in the middle of edges are handled correctly", {
+  withr::local_seed(5)
+  configs <- list(c(2, 6), c(5, 6), c(1, 10), c(3, 3))
+  for (config in configs) {
+    dts <- sample(c(0, 1, 2), 200, replace = TRUE)
+    dts_ctree <- ctx_tree(dts,
+      min_size = config[1], max_depth = config[2],
+      keep_position = FALSE, backend = "C++"
+    )
+    dts_rtree <- ctx_tree(dts,
+      min_size = config[1], max_depth = config[2],
+      backend = "R"
+    )
+    r_ctxs <- contexts(dts_rtree)
+    cpp_nodes <- lapply(r_ctxs, function(ctx) {
+      find_sequence(dts_ctree, as_sequence(ctx))
+    })
+    expect_identical(
+      sapply(cpp_nodes, is_context),
+      sapply(r_ctxs, is_context)
+    )
+    expect_equal(
+      lapply(cpp_nodes, counts, local = TRUE),
+      lapply(r_ctxs, counts, local = TRUE)
+    )
+    expect_true(all(sapply(contexts(dts_ctree), is_context)))
+  }
+})

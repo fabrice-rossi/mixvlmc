@@ -25,7 +25,7 @@ new_ctx_node_cpp <- function(ctx, tree, node, rev, ..., class = character()) {
   structure(
     list(
       sequence = ctx, node_env = node_env, tree = tree,
-      is_context = tree$root$node_is_context(node),
+      is_context = tree$root$node_is_context(node, length(ctx)),
       rev = rev, ...
     ),
     class = c(class, "ctx_node_cpp", "ctx_node")
@@ -101,7 +101,10 @@ counts.ctx_node_cpp <- function(node,
   if (!local) {
     freqs <- node$tree$root$node_counts(node$node_env$node)
   } else {
-    freqs <- node$tree$root$node_local_counts(node$node_env$node)
+    freqs <- node$tree$root$node_local_counts(
+      node$node_env$node,
+      length(node$sequence)
+    )
   }
   if (frequency == "total") {
     sum(freqs)
