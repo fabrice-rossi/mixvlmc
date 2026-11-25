@@ -144,3 +144,23 @@ test_that("the depth of the model does not include the sentinel", {
     expect_equal(predict(model, x, "probs"), predict(r_model, x, "probs"))
   }
 })
+
+test_that("a VLMC reduced to its root is built as in the R backend", {
+  for (x in list(c(0), c(0, 0), c(1, 0), c(0, 1, 2, 0))) {
+    r_model <- vlmc(x, min_size = 5, backend = "R")
+    expect_no_error(model <- vlmc(x, min_size = 5, backend = "C++"))
+    expect_equal(context_number(model), context_number(r_model))
+    expect_equal(depth(model), depth(r_model))
+    for (initial in c("truncated", "specific", "extended")) {
+      expect_equal(
+        loglikelihood(model, initial = initial),
+        loglikelihood(r_model, initial = initial)
+      )
+    }
+    expect_equal(predict(model, x, "probs"), predict(r_model, x, "probs"))
+    expect_identical(
+      as.vector(simulate(model, 5, seed = 1, sample = "R")),
+      as.vector(simulate(r_model, 5, seed = 1))
+    )
+  }
+})

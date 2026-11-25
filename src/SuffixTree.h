@@ -40,6 +40,7 @@ class SuffixTree {
                               int _nb_ctx,
                               int _first_value) const;
   void invalidate();
+  void prune_to_root();
   int x_at(int pos) const;
   Position find_subsequence(const Rcpp::IntegerVector& y) const;
   void add_initial_match(int first);

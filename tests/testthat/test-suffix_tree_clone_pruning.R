@@ -34,3 +34,18 @@ test_that("the suffix tree clone pruning gives an equivalent result as direct pr
     expect_true(compare_ctx(clone_ctxs, direct_ctxs))
   }
 })
+
+test_that("the suffix tree clone pruning keeps the root when needed", {
+  x <- c(0, 1, 1, 0, 1, 0)
+  x_rev <- rev(x)
+  tree <- build_suffix_tree(x_rev[-1], 2)
+  tree$compute_counts(x_rev[1], FALSE)
+  pruned_tree <- tree$clone_prune(10, -1)
+  expect_equal(pruned_tree$nb_contexts(), 1)
+  expect_equal(pruned_tree$depth(), 0)
+  expect_identical(pruned_tree$contexts(1, -1), list(integer()))
+  tree$prune(10, -1)
+  expect_equal(tree$nb_contexts(), 1)
+  expect_equal(tree$depth(), 0)
+  expect_identical(tree$contexts(1, -1), list(integer()))
+})

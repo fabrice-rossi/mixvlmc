@@ -80,6 +80,17 @@ void SuffixTree::invalidate() {
   cut_off = 0;
 }
 
+// the root does not fulfil the count constraint: as in the R backend, we
+// keep a tree reduced to its root (which is the only context)
+void SuffixTree::prune_to_root() {
+  for(auto child : root->children) {
+    delete child.second;
+  }
+  root->children.clear();
+  max_depth = 0;
+  nb_ctx = 1;
+}
+
 int SuffixTree::x_at(int pos) const {
   if(pos >= x.size()) {
     return sentinel;
@@ -604,8 +615,10 @@ void SuffixTree::prune(int min_counts, int max_length) {
   }
   max_depth = 0;  // we need to recompute max_depth
   nb_ctx = 0;
-  root->prune(min_counts, max_length, -1, max_x + 1, x.size(), max_depth,
-              nb_ctx);
+  if(root->prune(min_counts, max_length, -1, max_x + 1, x.size(), max_depth,
+                 nb_ctx)) {
+    prune_to_root();
+  }
   min_size = min_counts;
   this->max_length = max_length;
 }
@@ -619,8 +632,10 @@ void SuffixTree::prune_context(int min_counts, int max_length, double K) {
   }
   max_depth = 0;  // we need to recompute max_depth
   nb_ctx = 0;
-  root->prune(min_counts, max_length, K, max_x + 1, x.size(), max_depth,
-              nb_ctx);
+  if(root->prune(min_counts, max_length, K, max_x + 1, x.size(), max_depth,
+                 nb_ctx)) {
+    prune_to_root();
+  }
   min_size = min_counts;
   this->max_length = max_length;
   cut_off = K;
@@ -637,6 +652,12 @@ SuffixTree* SuffixTree::clone_prune(int min_counts, int max_length) const {
   int nb_ctx = 0;
   EdgeNode* new_root = root->clone_prune(min_counts, max_length, -1, max_x + 1,
                                          x.size(), n_max_depth, nb_ctx);
+  if(new_root == nullptr) {
+    // the root does not fulfil the count constraint: we keep only the root
+    new_root = root->clone_no_relatives();
+    n_max_depth = 0;
+    nb_ctx = 1;
+  }
   SuffixTree* result =
       clone_from_root(new_root, n_max_depth, nb_ctx, first_value);
   result->min_size = min_counts;
@@ -657,6 +678,12 @@ SuffixTree* SuffixTree::clone_prune_context(int min_counts,
   int nb_ctx = 0;
   EdgeNode* new_root = root->clone_prune(min_counts, max_length, K, max_x + 1,
                                          x.size(), n_max_depth, nb_ctx);
+  if(new_root == nullptr) {
+    // the root does not fulfil the count constraint: we keep only the root
+    new_root = root->clone_no_relatives();
+    n_max_depth = 0;
+    nb_ctx = 1;
+  }
   SuffixTree* result =
       clone_from_root(new_root, n_max_depth, nb_ctx, first_value);
   result->compute_reverse();
