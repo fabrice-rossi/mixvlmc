@@ -90,6 +90,9 @@ double SubSequence::cut_off() const {
 
 SubSequence::~SubSequence() {
   delete p_counts;
+  if(l_counts != nullptr) {
+    delete l_counts;
+  }
   if(p_positions != nullptr) {
     delete p_positions;
   }
