@@ -127,3 +127,20 @@ test_that("automatic C++ representation restoration works for pruned models", {
   restored_model <- readRDS(model_path)
   expect_true(compare_vlmc_cpp(best_model, restored_model))
 })
+
+test_that("the depth of the model does not include the sentinel", {
+  withr::local_seed(1)
+  for (k in 1:10) {
+    x <- sample(0:2, sample(5:60, 1), replace = TRUE)
+    model <- vlmc(x, min_size = 1, cutoff = 0, backend = "C++")
+    r_model <- vlmc(x, min_size = 1, cutoff = 0, backend = "R")
+    expect_equal(depth(model), depth(r_model))
+    for (initial in c("truncated", "specific", "extended")) {
+      expect_equal(
+        loglikelihood(model, initial = initial),
+        loglikelihood(r_model, initial = initial)
+      )
+    }
+    expect_equal(predict(model, x, "probs"), predict(r_model, x, "probs"))
+  }
+})

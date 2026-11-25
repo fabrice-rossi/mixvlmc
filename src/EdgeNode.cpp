@@ -408,8 +408,10 @@ bool EdgeNode::prune(int min_counts,
         // potential
         nb_ctx++;
       }
-      if(depth > mdepth) {
-        mdepth = depth;
+      // the sentinel does not count in the depth
+      int real_depth = depth - (end > nx ? 1 : 0);
+      if(real_depth > mdepth) {
+        mdepth = real_depth;
       }
       return false;
     }
@@ -507,8 +509,10 @@ EdgeNode* EdgeNode::clone_prune(int min_counts,
       if(nb_sub < nb_vals) {
         nb_ctx++;
       }
-      if(result->depth > mdepth) {
-        mdepth = result->depth;
+      // the sentinel does not count in the depth
+      int real_depth = result->depth - (result->end > nx ? 1 : 0);
+      if(real_depth > mdepth) {
+        mdepth = real_depth;
       }
       return result;
     }

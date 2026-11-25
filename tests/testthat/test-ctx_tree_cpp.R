@@ -18,3 +18,15 @@ test_that("automatic C++ representation restoration works", {
   expect_false(extptr_is_null(restored_tree$root$.pointer))
   expect_true(compare_ctx(ctxs_orig, ctxs_restored))
 })
+
+test_that("the depth of the tree does not include the sentinel", {
+  withr::local_seed(1)
+  for (k in 1:10) {
+    dts <- sample(0:2, sample(5:60, 1), replace = TRUE)
+    for (max_depth in c(3, 100)) {
+      dts_ctree <- ctx_tree(dts, min_size = 1, max_depth = max_depth, backend = "C++")
+      dts_rtree <- ctx_tree(dts, min_size = 1, max_depth = max_depth, backend = "R")
+      expect_equal(depth(dts_ctree), depth(dts_rtree))
+    }
+  }
+})
