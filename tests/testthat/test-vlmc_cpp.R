@@ -164,3 +164,26 @@ test_that("a VLMC reduced to its root is built as in the R backend", {
     )
   }
 })
+
+test_that("cut off values of a VLMC reduced to its root do not depend on the backend", {
+  withr::local_seed(1)
+  x <- sample(0:1, 50, replace = TRUE)
+  all_args <- list(
+    list(x = x, alpha = 1e-10),
+    list(x = c(0, 0), min_size = 5),
+    list(x = c(0, 1, 2, 0), min_size = 5)
+  )
+  for (args in all_args) {
+    model <- do.call(vlmc, c(args, backend = "C++"))
+    r_model <- do.call(vlmc, c(args, backend = "R"))
+    for (scale in c("quantile", "native")) {
+      for (raw in c(FALSE, TRUE)) {
+        expect_equal(cutoff(model, scale, raw), cutoff(r_model, scale, raw))
+      }
+    }
+  }
+  expect_equal(
+    tune_vlmc(x, cutoff_init = 20, backend = "C++")$results,
+    tune_vlmc(x, cutoff_init = 20, backend = "R")$results
+  )
+})

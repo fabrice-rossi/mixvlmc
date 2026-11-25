@@ -712,6 +712,11 @@ int SuffixTree::nb_contexts() const {
 NumericVector SuffixTree::cutoff() const {
   std::set<double> values;
   root->cutoff(values);
+  if(values.empty()) {
+    // no positive cut off (e.g. tree reduced to its root): as in the R
+    // backend, we report the null cut off of the root
+    values.insert(0.0);
+  }
   NumericVector res(values.size());
   int i = 0;
   for(auto val : values) {
