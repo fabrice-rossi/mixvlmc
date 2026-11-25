@@ -169,3 +169,19 @@ test_that("tune_covlmc increases a null max_depth without warning", {
   y <- data.frame(y = rnorm(length(x)))
   expect_no_warning(tune_covlmc(x, y, max_depth = 0))
 })
+
+test_that("tune_covlmc uses its control parameters", {
+  rdts <- rep(c(0, 1), 100)
+  rdts_cov <- data.frame(y = rep(0, length(rdts)))
+  default_tune <- tune_covlmc(rdts, rdts_cov)
+  tune_10 <- tune_covlmc(rdts, rdts_cov, control = covlmc_control(pseudo_obs = 10))
+  expect_identical(as_covlmc(tune_10)$control$pseudo_obs, 10)
+  expect_identical(
+    as_covlmc(tune_10)$control,
+    covlmc(rdts, rdts_cov, control = covlmc_control(pseudo_obs = 10))$control
+  )
+  expect_lt(
+    as.numeric(logLik(as_covlmc(tune_10))),
+    as.numeric(logLik(as_covlmc(default_tune)))
+  )
+})

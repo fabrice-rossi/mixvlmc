@@ -50,6 +50,8 @@
 #'   intermediate models, see details.
 #' @param best_trimming specify the type of trimming used when saving the best
 #'   model and the initial one (see details).
+#' @param control a list with control parameters used to fit the models, see
+#'   [covlmc_control()].
 #'
 #' @returns a list with the following components:
 #'
@@ -97,7 +99,8 @@ tune_covlmc <- function(x, covariate, criterion = c("BIC", "AIC"),
                         verbose = 0,
                         save = c("best", "initial", "all"),
                         trimming = c("full", "partial", "none"),
-                        best_trimming = c("none", "partial", "full")) {
+                        best_trimming = c("none", "partial", "full"),
+                        control = covlmc_control()) {
   criterion <- match.arg(criterion)
   assert_min_size(min_size)
   assert_max_depth(max_depth)
@@ -129,7 +132,7 @@ tune_covlmc <- function(x, covariate, criterion = c("BIC", "AIC"),
   saved_models <- list()
   base_model <- covlmc(x, covariate,
     alpha = alpha, min_size = min_size,
-    max_depth = max_depth
+    max_depth = max_depth, control = control
   )
   while (base_model$max_depth) {
     n_max_depth <- min(max(1, 2 * max_depth), length(x) - 1)
@@ -140,7 +143,7 @@ tune_covlmc <- function(x, covariate, criterion = c("BIC", "AIC"),
       max_depth <- n_max_depth
       base_model <- covlmc(x, covariate,
         alpha = alpha, min_size = min_size,
-        max_depth = max_depth
+        max_depth = max_depth, control = control
       )
     } else {
       warning("cannot find a suitable value for max_depth")

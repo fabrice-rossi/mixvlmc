@@ -15,7 +15,8 @@ tune_covlmc(
   verbose = 0,
   save = c("best", "initial", "all"),
   trimming = c("full", "partial", "none"),
-  best_trimming = c("none", "partial", "full")
+  best_trimming = c("none", "partial", "full"),
+  control = covlmc_control()
 )
 }
 \arguments{
@@ -58,6 +59,9 @@ intermediate models, see details.}
 
 \item{best_trimming}{specify the type of trimming used when saving the best
 model and the initial one (see details).}
+
+\item{control}{a list with control parameters used to fit the models, see
+\code{\link[=covlmc_control]{covlmc_control()}}.}
 }
 \value{
 a list with the following components:
