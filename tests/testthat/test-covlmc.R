@@ -302,3 +302,11 @@ test_that("covlmc validates min_size and max_depth", {
   }
   expect_equal(depth(covlmc(x, y, max_depth = 0)), 0)
 })
+
+test_that("covlmc reports missing p-values without printing debugging output", {
+  withr::local_seed(0)
+  x <- sample(c("a", "b"), 300, replace = TRUE)
+  cv <- data.frame(y = rnorm(300))
+  local_mocked_bindings(pchisq = function(...) NA_real_, .package = "stats")
+  expect_silent(expect_error(covlmc(x, cv, min_size = 5), "missing p-value"))
+})

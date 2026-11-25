@@ -1,3 +1,14 @@
+## the p-value of a likelihood ratio test is missing only if a likelihood is
+## missing, which should not happen
+check_lr_p_value <- function(p_value) {
+  if (is.na(p_value)) {
+    stop("a likelihood ratio test of covlmc() gave a missing p-value ",
+      "(this should not happen: please report it with your data)",
+      call. = FALSE
+    )
+  }
+}
+
 ## fit a glm guaranteed to be of full rank by removing older covariates if needed
 ## we also make sure there is no degeneracy such as a 0 likelihood
 node_fit_glm_full_rank <- function(index, y, covariate, nb_vals, d, control, from = 0) {
@@ -98,12 +109,7 @@ node_fit_glm_with_data <- function(local_mm, d, target, dim_cov, alpha, nb_vals,
       df <- (full_rank_model$hsize - H0_full_rank_model$hsize) * cov_size * (nb_vals - 1L)
       p_value <-
         stats::pchisq(as.numeric(lambda), df = df, lower.tail = FALSE)
-      if (is.na(p_value)) {
-        print(paste(p_value, lambda))
-        print(full_rank_model$likelihood)
-        print(H0_full_rank_model$likelihood)
-        print(H0_full_rank_model)
-      }
+      check_lr_p_value(p_value)
       if (return_all) {
         list(
           p_value = p_value,
@@ -154,9 +160,7 @@ node_prune_model <- function(model, cov_dim, cov_size, nb_vals, alpha, keep_data
       }
       lambda <- 2 * (current_like - stats::logLik(H0_local_glm))
       p_value <- stats::pchisq(as.numeric(lambda), df = cov_size * (nb_vals - 1), lower.tail = FALSE)
-      if (is.na(p_value)) {
-        print(paste(p_value, lambda))
-      }
+      check_lr_p_value(p_value)
       if (p_value > alpha) {
         ## H0 is not rejected
         current_like <- as.numeric(stats::logLik(H0_local_glm))
@@ -415,10 +419,6 @@ ctx_tree_fit_glm <- function(tree, y, covariate, alpha, control, assume_model = 
               } # nocov end
             }
             ll_model_H0_sub <- glm_likelihood(actual_model$model, local_data$local_mm, local_data$target)
-            if (is.na(ll_model_H0_sub)) {
-              print(utils::head(local_data$local_mm))
-              print(utils::head(local_data$local_mm))
-            }
             ll_model_H0 <- ll_model_H0 + ll_model_H0_sub
             ll_H0 <- ll_H0 + submodels[[v]][["model"]]$likelihood
           }
@@ -442,13 +442,7 @@ ctx_tree_fit_glm <- function(tree, y, covariate, alpha, control, assume_model = 
               df = local_df - sub_df
             )
           }
-          if (is.na(p_value)) {
-            print(paste(ll_H0, ll_model_H0, lambda, sub_df, local_df, max_hsize, d))
-            print(local_model$H1_model$model)
-            for (v in pr_candidates) {
-              print(submodels[[v]]$model$model)
-            }
-          }
+          check_lr_p_value(p_value)
           if (verbose) { # nocov start
             print(paste(lambda, p_value))
           } # nocov end
