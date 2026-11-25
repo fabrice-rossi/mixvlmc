@@ -163,7 +163,9 @@ void EdgeNode::compute_counts(int first,
     bool children_done;
   };
   std::vector<Visit> to_visit{{this, cdepth, false}};
+  std::size_t nb_visits = 0;
   while(!to_visit.empty()) {
+    check_interrupt(++nb_visits);
     Visit visit = to_visit.back();
     to_visit.pop_back();
     EdgeNode* node = visit.node;

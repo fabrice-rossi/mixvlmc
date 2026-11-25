@@ -129,3 +129,29 @@ test_that("vlmc simulation with sample = 'R' uses base::sample.int (C++)", {
   withr::defer(rm("sample.int", envir = globalenv()))
   expect_identical(simulate(x_vlmc, 50, seed = 4, sample = "R"), xs)
 })
+
+test_that("C++ simulation can be interrupted", {
+  skip_on_cran()
+  withr::local_seed(0)
+  model <- vlmc(sample(0:2, 1000, replace = TRUE), backend = "C++")
+  full_time <- system.time(simulate(model, 1e7))[["elapsed"]]
+  skip_if(full_time < 1, "simulation too fast to test interruption")
+  ## R time limits are checked by Rcpp::checkUserInterrupt(), as user
+  ## interruptions
+  withr::defer(setTimeLimit())
+  capture.output(type = "message", {
+    start <- proc.time()[["elapsed"]]
+    result <- tryCatch(
+      {
+        setTimeLimit(elapsed = full_time / 10, transient = TRUE)
+        simulate(model, 1e7)
+        "finished"
+      },
+      interrupt = function(e) "interrupted"
+    )
+    setTimeLimit()
+    elapsed <- proc.time()[["elapsed"]] - start
+  })
+  expect_identical(result, "interrupted")
+  expect_lt(elapsed, full_time / 2)
+})

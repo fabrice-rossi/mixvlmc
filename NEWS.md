@@ -114,6 +114,8 @@ renders the tree and adds the `forest` package to the preamble of the document.
 `format()` and `as.character()` give the representation as a character vector.
 
 ## Minor improvements
+* the computations of the C++ backend (construction of the context trees and
+  simulation) can be interrupted
 * `tune_covlmc()` has a `control` parameter to specify the control
   parameters of the models (see `covlmc_control()`), e.g. `pseudo_obs`
 * the progress of `tune_vlmc()` and `tune_covlmc()` (with `verbose > 0`) is

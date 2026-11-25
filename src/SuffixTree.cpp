@@ -119,6 +119,7 @@ void SuffixTree::insert(const IntegerVector& x_, int nb_vals) {
   int new_suffix = 0;
   // we consider x value by value
   for(int i = 0; i < nx; i++) {
+    check_interrupt(i);
     int current_val = x_at(i);
     if(i < nx - 1 && current_val < 0) {
       // this should never happen, raise an exception
@@ -909,6 +910,7 @@ IntegerVector SuffixTree::simulate(IntegerVector start,
   EdgeNode* current = root;
   int max_i = n + burnin;
   for(int i = 0; i < max_i; i++) {
+    check_interrupt(i);
     int pre_res = 0;
     if(i >= start_generating) {
       switch(method) {

@@ -20,4 +20,12 @@ int sample(const std::unordered_map<int, int>* counts, int max, int total);
 
 int sample2(const std::unordered_map<int, int>* counts, int max, int total);
 
+// checks for a user interruption (and R time limits) every 65536 iterations
+// of a long loop
+inline void check_interrupt(std::size_t k) {
+  if((k & 0xFFFF) == 0) {
+    Rcpp::checkUserInterrupt();
+  }
+}
+
 #endif
