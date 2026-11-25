@@ -171,7 +171,7 @@ sun_model_tune
 #>  cutoff: 2.306 (quantile: 0.03175)
 #>  Number of contexts: 9 
 #>  Maximum context length: 5 
-#>  Selected by BIC (236.262) with likelihood function "truncated" (-98.83247)
+#>  Selected by BIC (236.262) with likelihood function "truncated" (-92.85552)
 ```
 
 The results of the pruning process can be represented graphically:
@@ -180,7 +180,7 @@ The results of the pruning process can be represented graphically:
 print(autoplot(sun_model_tune) + geom_point())
 ```
 
-<img src="man/figures/README-sunspots_bic-1.png" width="100%" />
+<img src="man/figures/README-sunspots_bic-1.png" alt="" width="100%" />
 
 The plot shows that simpler models are too simple as the BIC increases
 when pruning becomes strong enough. The best model remains rather
@@ -221,7 +221,7 @@ ggplot(pc_week_5, aes(x = date_time, y = active_power)) +
   ylab("Activer power (kW)")
 ```
 
-<img src="man/figures/README-active_power_week_5-1.png" width="100%" />
+<img src="man/figures/README-active_power_week_5-1.png" alt="" width="100%" />
 
 The time series displays some typical patterns of electricity usage:
 
@@ -290,14 +290,14 @@ elec_covlmc_tune <- tune_covlmc(elec_dts, elec_cov)
 print(autoplot(elec_covlmc_tune))
 ```
 
-<img src="man/figures/README-elec_tune_process-1.png" width="100%" />
+<img src="man/figures/README-elec_tune_process-1.png" alt="" width="100%" />
 
 ``` r
 best_elec_covlmc <- as_covlmc(elec_covlmc_tune)
 draw(best_elec_covlmc, model = "full", time_sep = " | ", p_value = FALSE)
 #> *
-#> +-- low ([ (I)    | day_1TRUE
-#> |          -1.558 | 1.006     ])
+#> +-- low ([ (I)   
+#> |          -1.188 ])
 #> '-- typical
 #> |   +-- low ([ (I)   
 #> |   |          0.3365
@@ -313,17 +313,22 @@ draw(best_elec_covlmc, model = "full", time_sep = " | ", p_value = FALSE)
 #>             5.481 ])
 ```
 
-As in the VLMC case, the optimal model remains rather simple:
+As in the VLMC case, the optimal model remains rather simple. In fact,
+the BIC does not retain the covariate: each context is associated to a
+constant model (the `(I)` intercepts), so that the model is a VLMC. It
+differs slightly from the one obtained with `tune_vlmc()`:
 
-- the *high* context do not use the covariate and is equivalent to the
-  vlmc context;
-- the *low* context is more interesting: it does not switch to a *high*
-  context (hence the single row of parameters) but uses the covariate.
-  As expected, the probability of switching from *low* to *typical* is
-  larger during the day;
-- the *typical* context is described in a more complex way that in the
-  case of the vlmc as the transition probabilities depend on the
-  previous state.
+- the *low* and *high* contexts are equivalent to the vlmc contexts
+  (notice that the *low* context does not switch to a *high* context,
+  hence the single row of parameters);
+- the *typical* context is split according to the three possible
+  previous states, while the vlmc only distinguishes a *low* previous
+  state.
+
+The BIC is rather conservative. The AIC used below selects a model that
+keeps the day covariate in the *low* and *high* contexts. As expected,
+the probability of switching from *low* to *typical* is larger during
+the day in this model.
 
 ### Sampling
 
@@ -400,7 +405,7 @@ ggplot(lh, aes(x = time, color = model)) +
   geom_vline(xintercept = longuest_high(elec_dts), color = 3)
 ```
 
-<img src="man/figures/README-longest_time_in_high-1.png" width="100%" />
+<img src="man/figures/README-longest_time_in_high-1.png" alt="" width="100%" />
 
 The VLMC with covariate can be used to investigate the effects of
 changes in those covariates. For instance, if the day time is longer, we
@@ -432,4 +437,4 @@ ggplot(day_time_effect, aes(x = time, color = `day length`)) +
   geom_rug(alpha = 0.5)
 ```
 
-<img src="man/figures/README-longest_time_in_high_ld-1.png" width="100%" />
+<img src="man/figures/README-longest_time_in_high_ld-1.png" alt="" width="100%" />
