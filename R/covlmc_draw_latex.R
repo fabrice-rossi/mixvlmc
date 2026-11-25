@@ -111,9 +111,9 @@ draw_latex_covlmc_model <- function(coefficients, hsize,
       }
     } else {
       if (!is.null(model)) {
-        probs <- signif(glm_to_probs(model, vals), control$digit)
+        probs <- signif(glm_to_probs(model, vals), control$digits)
       } else {
-        probs <- signif(model_probs, control$digit)
+        probs <- signif(model_probs, control$digits)
       }
       probs
     }

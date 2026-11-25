@@ -13,7 +13,7 @@ vlmc_context_extractor <-
         local_kl <- kl_div(c_probs, p_summary) * sum(ct$f_by)
         res <- cbind(res, data.frame(cutoff = local_kl))
       }
-      if (isTRUE(control$metric)) {
+      if (isTRUE(control$metrics)) {
         if (!(identical(control[["frequency"]], "detailed") && isTRUE(control[["local"]]))) {
           l_cont <- control
           l_cont$frequency <- "detailed"

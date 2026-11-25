@@ -1,0 +1,21 @@
+test_that("no partial matching of list components", {
+  withr::local_options(warnPartialMatchDollar = TRUE)
+  withr::local_seed(0)
+  x <- sample(c("A", "B", "C"), 500, replace = TRUE)
+  for (backend in c("R", "C++")) {
+    model <- vlmc(x, alpha = 0.5, backend = backend)
+    expect_no_warning(contexts(model, frequency = "detailed", local = TRUE))
+    expect_no_warning(contexts(model, frequency = "total", local = TRUE))
+    expect_no_warning(contexts(model, metrics = TRUE))
+  }
+  model_tune <- tune_vlmc(x)
+  pdf(NULL)
+  withr::defer(dev.off())
+  expect_no_warning(plot(model_tune))
+  expect_no_warning(plot(model_tune, cutoff = "native"))
+  rdts <- rep(c(0, 1), 100)
+  rdts_cov <- data.frame(y = rep(0, length(rdts)))
+  constant_model <- covlmc(rdts, rdts_cov)
+  expect_no_warning(capture.output(print(draw(constant_model, model = "coef"))))
+  expect_no_warning(capture.output(print(draw(constant_model, "latex", model = "coef"))))
+})

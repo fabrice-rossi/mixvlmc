@@ -41,14 +41,14 @@ contexts.vlmc_cpp <- function(ct, sequence = FALSE, reverse = FALSE, frequency =
     if (!is.null(frequency)) {
       if (frequency == "detailed") {
         if (local) {
-          res <- cbind(res, pre_res$local)
+          res <- cbind(res, pre_res$local_counts)
         } else {
           res <- cbind(res, pre_res$counts)
         }
         names(res)[3:(2 + length(ct$vals))] <- as.character(ct$vals)
       } else {
         if (local) {
-          res$freq <- pre_res$local$freq
+          res$freq <- pre_res$local_counts$freq
         } else {
           res$freq <- pre_res$counts$freq
         }
@@ -68,8 +68,8 @@ contexts.vlmc_cpp <- function(ct, sequence = FALSE, reverse = FALSE, frequency =
       the_metrics <- NULL
       for (k in 1:nrow(res)) {
         fake_data <- generate_fake_data(
-          pre_res$local[k, 1],
-          pre_res$local[k, -1, drop = FALSE],
+          pre_res$local_counts[k, 1],
+          pre_res$local_counts[k, -1, drop = FALSE],
           pre_res$counts[k, -1, drop = FALSE] / pre_res$counts[k, 1],
           ct$vals
         )

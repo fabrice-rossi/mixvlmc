@@ -50,12 +50,12 @@ plot.tune_vlmc <- function(x,
     args$type <- "l"
   }
   if (cutoff == "native") {
-    args$x <- x$result$cutoff
+    args$x <- x$results$cutoff
     if (is.null(args[["xlab"]])) {
       args$xlab <- "Cut off (native scale)"
     }
   } else {
-    args$x <- x$result$alpha
+    args$x <- x$results$alpha
     if (is.null(args[["xlab"]])) {
       args$xlab <- "Cut off (quantile scale)"
     }
@@ -66,7 +66,7 @@ plot.tune_vlmc <- function(x,
       args$ylab <- "Log likelihood"
     }
   } else {
-    args$y <- x$result[[x$criterion]]
+    args$y <- x$results[[x$criterion]]
     if (is.null(args[["ylab"]])) {
       args$ylab <- x$criterion
     }

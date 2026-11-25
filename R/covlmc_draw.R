@@ -5,11 +5,11 @@ draw_covlmc_model <- function(coefficients, p_value, hsize, names, vals, lev,
     if (control[["model"]] == "coef") {
       if (isTRUE(control$collapse_constant) && hsize == 0) {
         if (!is.null(model)) {
-          coeffs <- stringr::str_c(signif(glm_to_probs(model, vals), control$digit),
+          coeffs <- stringr::str_c(signif(glm_to_probs(model, vals), control$digits),
             collapse = ", "
           )
         } else {
-          coeffs <- stringr::str_c(signif(probs, control$digit),
+          coeffs <- stringr::str_c(signif(probs, control$digits),
             collapse = ", "
           )
         }
