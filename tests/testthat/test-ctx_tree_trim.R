@@ -8,3 +8,13 @@ test_that("Context tree trimming preserve core information ", {
   )
   expect_true(object.size(trimmed_dts_tree) < object.size(dts_tree))
 })
+
+test_that("positions are not available after trimming", {
+  x <- c(0, 0, 1, 1, 0, 1)
+  ## the root is not a full node for c(x, 2)
+  for (y in list(x, c(x, 2))) {
+    ct <- trim(ctx_tree(y, min_size = 1, max_depth = 2))
+    expect_error(positions(find_sequence(ct, numeric(0))), "not saved")
+    expect_error(positions(find_sequence(ct, 0)), "not saved")
+  }
+})

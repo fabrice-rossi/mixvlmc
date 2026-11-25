@@ -28,3 +28,11 @@ test_that("vlmc trimming removes positions", {
     expect_error(contexts(trimmed_model, type = "data.frame", positions = TRUE))
   }
 })
+
+test_that("positions are not available after trimming", {
+  x <- c(0, 0, 1, 1, 0, 1, 1, 0, 0, 1, 1, 0, 1)
+  for (y in list(x, c(x, 2))) {
+    model <- trim(vlmc(y, alpha = 0.5, keep_match = TRUE))
+    expect_error(positions(find_sequence(model, numeric(0))), "not saved")
+  }
+})
