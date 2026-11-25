@@ -30,6 +30,7 @@ as_vlmc <- function(x, ...) {
 #' class(rdts_vlmc)
 #' draw(rdts_vlmc)
 as_vlmc.ctx_tree <- function(x, alpha, cutoff, ...) {
+  rlang::check_dots_empty()
   if (missing(alpha) && missing(cutoff)) {
     result <- new_ctx_tree(x$vals, x, class = "vlmc")
     result$alpha <- 1
@@ -79,5 +80,6 @@ as_vlmc.ctx_tree <- function(x, alpha, cutoff, ...) {
 #' rdts_best_vlmc <- as_vlmc(tune_result)
 #' draw(rdts_best_vlmc)
 as_vlmc.tune_vlmc <- function(x, ...) {
+  rlang::check_dots_empty()
   x$best_model
 }

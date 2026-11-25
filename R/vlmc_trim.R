@@ -20,6 +20,7 @@
 #' ## no effect when match positions are not kept
 #' print(object.size(nm_model))
 trim.vlmc <- function(ct, ...) {
+  rlang::check_dots_empty()
   # no specific trimming is needed for now, we just need to remove
   # matches as in a context tree
   result <- rec_trim_ctx_tree(ct)

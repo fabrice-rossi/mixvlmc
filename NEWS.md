@@ -1,5 +1,10 @@
 # mixvlmc (development version)
 ## Breaking changes
+* methods that do not use their `...` argument now report an error when
+  additional arguments are given (issue #64). Misspelled arguments such as
+  `simulate(model, 100, burn_in = 10)` or `loglikelihood(model, new_data = x)`
+  were silently ignored. This applies also to the `type` argument of
+  `contexts()`, which was removed in mixvlmc 0.2.0 and ignored since then
 * `draw()` has now a second parameter `format` with no default. This may break
   codes that used the fact that the `control` parameter was previously the 
   second one. 

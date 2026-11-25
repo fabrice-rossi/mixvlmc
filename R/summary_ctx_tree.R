@@ -1,5 +1,6 @@
 #' @exportS3Method
 summary.ctx_tree <- function(object, ...) {
+  rlang::check_dots_empty()
   ctx <- contexts(object)
   all_length <- sapply(ctx, length)
   res <- list(

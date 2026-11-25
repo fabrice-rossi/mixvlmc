@@ -177,6 +177,7 @@ contexts.covlmc <- function(ct, sequence = FALSE, reverse = FALSE, frequency = N
                             positions = FALSE, local = FALSE,
                             metrics = FALSE, model = NULL, hsize = FALSE,
                             merging = FALSE, ...) {
+  rlang::check_dots_empty()
   assertthat::assert_that(rlang::is_logical(sequence))
   assertthat::assert_that(rlang::is_logical(reverse))
   assertthat::assert_that(rlang::is_logical(local))

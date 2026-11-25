@@ -88,6 +88,7 @@ rec_trim_covlmc <- function(ct, keep_model, vals) {
 #' t_m_cov <- trim(m_cov)
 #' print(object.size(t_m_cov), units = "Mb")
 trim.covlmc <- function(ct, keep_model = FALSE, ...) {
+  rlang::check_dots_empty()
   pre_res <- rec_trim_covlmc(ct, keep_model, ct$vals)
   pre_res$x <- NULL
   pre_res$covariate <- NULL

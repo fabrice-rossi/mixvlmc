@@ -1,6 +1,7 @@
 #' @rdname logLik.vlmc
 #' @export
 logLik.vlmc_cpp <- function(object, initial = c("truncated", "specific", "extended"), ...) {
+  rlang::check_dots_empty()
   ll <- loglikelihood(object, initial = initial)
   class(ll) <- "logLik"
   ll
@@ -13,6 +14,7 @@ loglikelihood.vlmc_cpp <- function(vlmc,
                                    initial = c("truncated", "specific", "extended"),
                                    ignore,
                                    ...) {
+  rlang::check_dots_empty()
   restore_model(vlmc)
   initial <- match.arg(initial)
   if (!missing(ignore)) {

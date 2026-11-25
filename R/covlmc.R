@@ -883,6 +883,7 @@ assertthat::on_failure(is_covlmc) <- function(call, env) {
 #' @export
 cutoff.covlmc <- function(model, raw = FALSE,
                           tolerance = .Machine$double.eps^0.5, ...) {
+  rlang::check_dots_empty()
   recurse_cutoff <- function(tree) {
     if (is.null(tree[["children"]])) {
       if (is.null(tree[["model"]])) {
@@ -966,6 +967,7 @@ cutoff.covlmc <- function(model, raw = FALSE,
 #' draw(p_cov)
 #' @export
 prune.covlmc <- function(vlmc, alpha = 0.05, cutoff = NULL, ...) {
+  rlang::check_dots_empty()
   if (is.null(vlmc$x) || is.null(vlmc$covariate)) {
     stop("covlmc must be called with keep_data=TRUE to enable post pruning")
   }

@@ -26,6 +26,7 @@
 #' print(vlmc_plot + ggplot2::geom_point())
 #' @exportS3Method ggplot2::autoplot
 autoplot.tune_vlmc <- function(object, cutoff = c("quantile", "native"), ...) {
+  rlang::check_dots_empty()
   cutoff <- match.arg(cutoff)
   if (cutoff == "quantile") {
     x_lab <- "Cut off (quantile scale)"
@@ -85,6 +86,7 @@ autoplot.tune_vlmc <- function(object, cutoff = c("quantile", "native"), ...) {
 #' print(covlmc_plot)
 #'
 autoplot.tune_covlmc <- function(object, ...) {
+  rlang::check_dots_empty()
   vars <- names(object$results)
   vars[2] <- "Depth"
   vars[3] <- "Context number"

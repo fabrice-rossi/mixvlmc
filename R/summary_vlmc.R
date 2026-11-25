@@ -1,5 +1,6 @@
 #' @exportS3Method
 summary.vlmc <- function(object, ...) {
+  rlang::check_dots_empty()
   ctx <- contexts(object, frequency = "detailed")
   all_length <- lengths(ctx$context)
   res <- list(

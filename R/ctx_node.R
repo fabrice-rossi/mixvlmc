@@ -167,6 +167,7 @@ find_sequence <- function(ct, ctx, reverse = FALSE, ...) {
 #' @export
 #' @rdname find_sequence
 find_sequence.ctx_tree <- function(ct, ctx, reverse = FALSE, ...) {
+  rlang::check_dots_empty()
   if (length(ctx) == 0) {
     if (isTRUE(ct$keep_match) && is.null(ct$match)) {
       ct$match <- 0:(ct$data_size - 1L)

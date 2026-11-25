@@ -1,5 +1,6 @@
 #' @export
 trim.ctx_tree_cpp <- function(ct, ...) {
+  rlang::check_dots_empty()
   restore_model(ct)
   if (ct$root$has_positions()) {
     ct$root <- ct$root$trim()

@@ -3,6 +3,7 @@
 contexts.vlmc_cpp <- function(ct, sequence = FALSE, reverse = FALSE, frequency = NULL,
                               positions = FALSE, local = FALSE, cutoff = NULL,
                               metrics = FALSE, ...) {
+  rlang::check_dots_empty()
   restore_model(ct)
   assertthat::assert_that(rlang::is_logical(sequence))
   assertthat::assert_that(rlang::is_logical(reverse))

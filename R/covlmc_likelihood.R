@@ -169,6 +169,7 @@ rec_loglikelihood_covlmc_newdata <- function(tree, d, nb_vals, y, cov, verbose =
 #'
 #' @export
 logLik.covlmc <- function(object, initial = c("truncated", "specific", "extended"), ...) {
+  rlang::check_dots_empty()
   ll <- loglikelihood(object, initial = initial)
   class(ll) <- "logLik"
   ll
@@ -219,6 +220,7 @@ logLik.covlmc <- function(object, initial = c("truncated", "specific", "extended
 loglikelihood.covlmc <- function(vlmc, newdata,
                                  initial = c("truncated", "specific", "extended"),
                                  ignore, newcov, ...) {
+  rlang::check_dots_empty()
   initial <- match.arg(initial)
   if (missing(ignore)) {
     if (initial == "truncated") {

@@ -13,6 +13,7 @@
 #' predict(model, rdts[1:5], "probs")
 predict.vlmc_cpp <- function(object, newdata, type = c("raw", "probs"),
                              final_pred = TRUE, ...) {
+  rlang::check_dots_empty()
   restore_model(object)
   type <- match.arg(type)
   assertthat::assert_that(rlang::is_logical(final_pred))

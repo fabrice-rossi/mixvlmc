@@ -83,6 +83,7 @@
 #' new_rdts_2 <- simulate(model, 500, seed = 0, init = rdts[1:5])
 #' new_rdts_3 <- simulate(model, 500, seed = 0, burnin = 500)
 simulate.vlmc <- function(object, nsim = 1L, seed = NULL, init = NULL, burnin = 0L, ...) {
+  rlang::check_dots_empty()
   max_depth <- depth(object)
   if (!is.null(seed)) {
     attr(seed, "kind") <- as.list(RNGkind())

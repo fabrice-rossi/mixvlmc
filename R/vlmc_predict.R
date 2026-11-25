@@ -53,6 +53,7 @@
 #' predict(model, rdts[1:5], "probs")
 predict.vlmc <- function(object, newdata, type = c("raw", "probs"),
                          final_pred = TRUE, ...) {
+  rlang::check_dots_empty()
   type <- match.arg(type)
   max_depth <- depth(object)
   assertthat::assert_that(rlang::is_logical(final_pred))

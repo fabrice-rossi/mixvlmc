@@ -23,5 +23,6 @@ as_covlmc <- function(x, ...) {
 #' rdts_best_model <- as_covlmc(rdts_best_model_tune)
 #' draw(rdts_best_model)
 as_covlmc.tune_covlmc <- function(x, ...) {
+  rlang::check_dots_empty()
   x$best_model
 }

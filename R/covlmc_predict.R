@@ -53,6 +53,7 @@
 #' )
 predict.covlmc <- function(object, newdata, newcov, type = c("raw", "probs"),
                            final_pred = TRUE, ...) {
+  rlang::check_dots_empty()
   type <- match.arg(type)
   if (isTRUE(object$trimmed == "full")) {
     stop("predict is not supported by fully trimmed covlmc")

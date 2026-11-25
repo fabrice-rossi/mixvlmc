@@ -29,6 +29,7 @@
 #' cutoff(model_ctxs[[2]], scale = "native", raw = TRUE)
 cutoff.ctx_node <- function(model, scale = c("quantile", "native"), raw = FALSE,
                             ...) {
+  rlang::check_dots_empty()
   scale <- match.arg(scale)
   cparent <- parent(model)
   if (is.null(cparent)) {
@@ -69,6 +70,7 @@ cutoff.ctx_node <- function(model, scale = c("quantile", "native"), raw = FALSE,
 #' metrics(model_ctxs[[4]])
 #' @export
 metrics.ctx_node <- function(model, ...) {
+  rlang::check_dots_empty()
   c_probs <- matrix(probs(model), nrow = 1)
   c_freq <- counts(model, local = TRUE)
   fake_data <- generate_fake_data(

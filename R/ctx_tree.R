@@ -160,6 +160,7 @@ ctx_tree.default <- function(x, min_size = 2L, max_depth = 100L,
                              keep_position = TRUE,
                              backend = getOption("mixvlmc.backend", "R"),
                              ...) {
+  rlang::check_dots_empty()
   x_dts <- dts(x)
   ctx_tree_internal(
     x_dts$ix, x_dts$vals, min_size, max_depth, keep_position,
@@ -180,6 +181,7 @@ ctx_tree.dts <- function(x, min_size = 2L, max_depth = 100L,
                          keep_position = TRUE,
                          backend = getOption("mixvlmc.backend", "R"),
                          ...) {
+  rlang::check_dots_empty()
   ctx_tree_internal(
     x$ix, x$vals, min_size, max_depth, keep_position,
     backend

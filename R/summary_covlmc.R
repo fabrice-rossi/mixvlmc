@@ -1,5 +1,6 @@
 #' @exportS3Method
 summary.covlmc <- function(object, ...) {
+  rlang::check_dots_empty()
   ctx <- contexts(object, frequency = "detailed", hsize = TRUE)
   all_length <- sapply(ctx$context, length)
   delta_cov_depth <- all_length - ctx$hsize

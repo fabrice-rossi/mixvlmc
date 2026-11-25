@@ -1,5 +1,6 @@
 #' @exportS3Method
 summary.tune_vlmc <- function(object, ...) {
+  rlang::check_dots_empty()
   res <- object
   res$saved_models <- NULL
   structure(res, class = "summary.tune_vlmc")

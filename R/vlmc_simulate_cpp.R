@@ -24,6 +24,7 @@
 #'
 #' @export
 simulate.vlmc_cpp <- function(object, nsim = 1, seed = NULL, init = NULL, burnin = 0L, sample = c("fast", "slow", "R"), ...) {
+  rlang::check_dots_empty()
   restore_model(object)
   sample <- match.arg(sample)
   if (!is.null(seed)) {

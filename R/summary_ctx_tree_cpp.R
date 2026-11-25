@@ -1,5 +1,6 @@
 #' @exportS3Method
 summary.ctx_tree_cpp <- function(object, ...) {
+  rlang::check_dots_empty()
   res <- NextMethod()
   class(res) <- c("summary.ctx_tree_cpp", class(res))
   res

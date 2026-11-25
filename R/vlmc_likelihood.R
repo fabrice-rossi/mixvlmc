@@ -90,6 +90,7 @@ rec_loglikelihood_vlmc <- function(tree, node_as_ctx = FALSE, verbose = FALSE) {
 #' attributes(ll)
 #' @export
 logLik.vlmc <- function(object, initial = c("truncated", "specific", "extended"), ...) {
+  rlang::check_dots_empty()
   ll <- loglikelihood(object, initial = initial)
   class(ll) <- "logLik"
   ll
@@ -205,6 +206,7 @@ loglikelihood <- function(vlmc, newdata,
 loglikelihood.vlmc <- function(vlmc, newdata,
                                initial = c("truncated", "specific", "extended"),
                                ignore, ...) {
+  rlang::check_dots_empty()
   initial <- match.arg(initial)
   if (!missing(ignore)) {
     assert_ignore(ignore)

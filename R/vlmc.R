@@ -90,6 +90,7 @@ kl_div <- function(p, q) {
 #' @export
 cutoff.vlmc <- function(model, scale = c("quantile", "native"), raw = FALSE,
                         tolerance = .Machine$double.eps^0.5, ...) {
+  rlang::check_dots_empty()
   scale <- match.arg(scale)
   recurse_kl_cutoff <- function(model, p_probs) {
     c_probs <- model$f_by / sum(model$f_by)
@@ -221,6 +222,7 @@ prune <- function(vlmc, alpha = 0.05, cutoff = NULL, ...) {
 #' @rdname prune
 #' @export
 prune.vlmc <- function(vlmc, alpha = 0.05, cutoff = NULL, ...) {
+  rlang::check_dots_empty()
   if (is.null(cutoff)) {
     if (is.null(alpha) || !is.numeric(alpha) || alpha <= 0 || alpha > 1) {
       stop("the alpha parameter must be in (0, 1]")

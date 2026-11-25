@@ -45,6 +45,7 @@ covlmc_predictive_extractor <- function(tree, path, ct, vals, control, is_leaf, 
 #'
 #' @exportS3Method
 metrics.covlmc <- function(model, ...) {
+  rlang::check_dots_empty()
   if (!is.null(model$trimmed)) {
     stop("metrics is not supported by trimmed covlmc")
   }

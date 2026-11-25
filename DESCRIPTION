@@ -37,7 +37,7 @@ Imports:
     nnet,
     pROC,
     Rcpp (>= 1.0.8.3),
-    rlang,
+    rlang (>= 1.0.0),
     stats,
     stringr,
     VGAM,

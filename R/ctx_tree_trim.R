@@ -37,6 +37,7 @@ rec_trim_ctx_tree <- function(ct) {
 
 #' @export
 trim.ctx_tree <- function(ct, ...) {
+  rlang::check_dots_empty()
   result <- rec_trim_ctx_tree(ct)
   result$keep_match <- FALSE
   result

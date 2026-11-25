@@ -103,6 +103,7 @@ vlmc_context_extractor <-
 contexts.vlmc <- function(ct, sequence = FALSE, reverse = FALSE, frequency = NULL,
                           positions = FALSE, local = FALSE, cutoff = NULL,
                           metrics = FALSE, ...) {
+  rlang::check_dots_empty()
   assertthat::assert_that(rlang::is_logical(sequence))
   assertthat::assert_that(rlang::is_logical(reverse))
   assertthat::assert_that(rlang::is_logical(local))

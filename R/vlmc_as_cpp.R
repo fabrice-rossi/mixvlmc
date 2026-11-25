@@ -10,6 +10,7 @@
 #'
 #' @export
 as_vlmc.ctx_tree_cpp <- function(x, alpha, cutoff, ...) {
+  rlang::check_dots_empty()
   restore_model(x)
   if (missing(alpha) && missing(cutoff)) {
     result <- new_ctx_tree_cpp(x$vals, x$root, class = c("vlmc_cpp", "vlmc"))

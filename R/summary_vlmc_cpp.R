@@ -1,5 +1,6 @@
 #' @exportS3Method
 summary.vlmc_cpp <- function(object, ...) {
+  rlang::check_dots_empty()
   res <- NextMethod()
   class(res) <- c("summary.vlmc_cpp", class(res))
   res

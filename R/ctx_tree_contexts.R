@@ -99,6 +99,7 @@ frequency_context_extractor <-
 contexts.ctx_tree <- function(ct, sequence = FALSE,
                               reverse = FALSE, frequency = NULL,
                               positions = FALSE, ...) {
+  rlang::check_dots_empty()
   if (!is.null(frequency)) {
     assertthat::assert_that(frequency %in% c("total", "detailed"))
   }

@@ -36,6 +36,7 @@ assertthat::on_failure(is_ctx_node_covlmc) <- function(call, env) {
 #' is_context(node)
 #' model(node)
 find_sequence.covlmc <- function(ct, ctx, reverse = FALSE, ...) {
+  rlang::check_dots_empty()
   if (length(ctx) == 0) {
     if (isTRUE(ct$keep_match) && is.null(ct$match)) {
       ct$match <- 0:(ct$data_size - 1L)
@@ -286,6 +287,7 @@ covariate_memory <- function(node) {
 #'
 #' @export
 metrics.ctx_node_covlmc <- function(model, ...) {
+  rlang::check_dots_empty()
   if (is.null(model$node[["model"]])) {
     stop("the node is not a context, no metrics can be computed")
   }

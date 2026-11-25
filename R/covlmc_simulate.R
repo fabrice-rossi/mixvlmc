@@ -74,6 +74,7 @@ match_context_co <- function(tree, ctx) {
 #' new_rdts <- simulate(m_cov, nrow(new_cov), seed = 0, covariate = new_cov)
 #' new_rdts_2 <- simulate(m_cov, nrow(new_cov), seed = 0, covariate = new_cov, init = rdts[1:10])
 simulate.covlmc <- function(object, nsim = 1, seed = NULL, covariate, init = NULL, ...) {
+  rlang::check_dots_empty()
   if (isTRUE(object$trimmed == "full")) {
     stop("simulate is not supported by fully trimmed covlmc")
   }

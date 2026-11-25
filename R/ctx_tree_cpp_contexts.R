@@ -11,6 +11,7 @@ ctx_recode <- function(ctxs, reverse, vals) {
 contexts.ctx_tree_cpp <- function(ct, sequence = FALSE,
                                   reverse = FALSE, frequency = NULL,
                                   positions = FALSE, ...) {
+  rlang::check_dots_empty()
   restore_model(ct)
   if (!is.null(frequency)) {
     assertthat::assert_that(frequency %in% c("total", "detailed"))

@@ -54,6 +54,7 @@ print.vlmc_cpp <- function(x, ...) {
 #' @rdname prune
 #' @export
 prune.vlmc_cpp <- function(vlmc, alpha = 0.05, cutoff = NULL, ...) {
+  rlang::check_dots_empty()
   restore_model(vlmc)
   if (is.null(cutoff)) {
     if (is.null(alpha) || !is.numeric(alpha) || alpha <= 0 || alpha > 1) {
@@ -94,6 +95,7 @@ prune.vlmc_cpp <- function(vlmc, alpha = 0.05, cutoff = NULL, ...) {
 #' @export
 cutoff.vlmc_cpp <- function(model, scale = c("quantile", "native"), raw = FALSE,
                             tolerance = .Machine$double.eps^0.5, ...) {
+  rlang::check_dots_empty()
   restore_model(model)
   scale <- match.arg(scale)
   pre_result <- relaxed_unique(model$root$cutoff(), tolerance)
