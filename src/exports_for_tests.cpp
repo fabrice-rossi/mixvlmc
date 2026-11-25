@@ -38,7 +38,7 @@ IntegerVector mixvlmc_sample(IntegerVector p, int n) {
   RNGScope scope;
   IntegerVector res(n);
   for(int i = 0; i < n; i++) {
-    res[i] = sample(p_counts, p_sum);
+    res[i] = sample(p_counts, nx - 1, p_sum);
   }
   delete p_counts;
   return res;

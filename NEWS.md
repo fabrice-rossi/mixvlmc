@@ -85,6 +85,9 @@ previous versions, in particular for VLMC with covariates (see below).
 * with the C++ backend, `tune_vlmc()` increases `max_depth` as documented 
   (and as with the R backend) and `max_depth = 0` means a depth 0 model (it
   meant no limit)
+* with the C++ backend, `simulate()` with `sample = "fast"` (the default) gives
+  results that do not depend on the platform anymore: for a given seed, they
+  differ from the ones of previous versions
 
 ## Bug fixes
 ### Input validation
@@ -94,9 +97,11 @@ previous versions, in particular for VLMC with covariates (see below).
   factor) are supported
 * `min_size`, `max_depth` and the `ignore` parameter of `loglikelihood()` are
   validated (`min_size = 0` led to an exponential computation time)
+* time series with a single state (e.g. a constant series or a factor with a
+  single level) are rejected by the estimation functions (they led to a
+  degenerate model with the R backend and to an error with the C++ backend)
 
 ### VLMC
-* `vlmc()` works on time series with a single state (R backend)
 * `contexts()` with `local = TRUE` reports correct positions and supports
   `metrics = TRUE` (R backend)
 * positions of the empty context are 0 based in all cases and are not 

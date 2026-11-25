@@ -22,7 +22,8 @@
 #' chosen information criterion.
 #'
 #' @param x an object that can be interpreted as a discrete time series, such
-#'  as an integer vector or a `dts` object (see [dts()]).
+#'  as an integer vector or a `dts` object (see [dts()]). Its state space must
+#'  contain at least two states.
 #' @param covariate a data frame of covariates.
 #' @param criterion criterion used to select the best model. Either `"BIC"`
 #'   (default) or `"AIC"` (see details).

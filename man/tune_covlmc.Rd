@@ -20,7 +20,8 @@ tune_covlmc(
 }
 \arguments{
 \item{x}{an object that can be interpreted as a discrete time series, such
-as an integer vector or a \code{dts} object (see \code{\link[=dts]{dts()}}).}
+as an integer vector or a \code{dts} object (see \code{\link[=dts]{dts()}}). Its state space must
+contain at least two states.}
 
 \item{covariate}{a data frame of covariates.}
 

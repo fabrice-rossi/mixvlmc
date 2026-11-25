@@ -15,7 +15,8 @@ ctx_tree(
 }
 \arguments{
 \item{x}{an object that can be interpreted as a discrete time series, such
-as an integer vector or a \code{dts} object (see \code{\link[=dts]{dts()}})}
+as an integer vector or a \code{dts} object (see \code{\link[=dts]{dts()}}). Its state space must
+contain at least two states.}
 
 \item{min_size}{integer >= 1 (default: 2). Minimum number of observations for
 a context to be included in the tree.}

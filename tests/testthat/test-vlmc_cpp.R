@@ -146,7 +146,7 @@ test_that("the depth of the model does not include the sentinel", {
 })
 
 test_that("a VLMC reduced to its root is built as in the R backend", {
-  for (x in list(c(0), c(0, 0), c(1, 0), c(0, 1, 2, 0))) {
+  for (x in list(c(1, 0), c(0, 1, 1), c(0, 1, 2, 0))) {
     r_model <- vlmc(x, min_size = 5, backend = "R")
     expect_no_error(model <- vlmc(x, min_size = 5, backend = "C++"))
     expect_equal(context_number(model), context_number(r_model))
@@ -170,7 +170,7 @@ test_that("cut off values of a VLMC reduced to its root do not depend on the bac
   x <- sample(0:1, 50, replace = TRUE)
   all_args <- list(
     list(x = x, alpha = 1e-10),
-    list(x = c(0, 0), min_size = 5),
+    list(x = c(0, 1), min_size = 5),
     list(x = c(0, 1, 2, 0), min_size = 5)
   )
   for (args in all_args) {

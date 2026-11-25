@@ -282,7 +282,8 @@ prune.vlmc <- function(vlmc, alpha = 0.05, cutoff = NULL, ...) {
 #' any pruning). Automated model selection is provided by [tune_vlmc()].
 #'
 #' @param x an object that can be interpreted as a discrete time series, such
-#'  as an integer vector or a `dts` object (see [dts()])
+#'  as an integer vector or a `dts` object (see [dts()]). Its state space must
+#'  contain at least two states.
 #' @param alpha number in (0,1] (default: 0.05) cut off value in quantile scale
 #'   in the pruning phase.
 #' @param cutoff non negative number: cut off value in native (likelihood ratio)
@@ -377,6 +378,7 @@ vlmc_internal <- function(ix, vals, alpha, cutoff, min_size, max_depth,
   backend <- match.arg(backend, c("R", "C++"))
   assert_min_size(min_size)
   assert_max_depth(max_depth)
+  assert_state_space(vals)
   if (is.null(cutoff)) {
     if (is.null(alpha) || !is.numeric(alpha) || alpha <= 0 || alpha > 1) {
       stop("the alpha parameter must be in (0, 1]")

@@ -615,7 +615,8 @@ covlmc_control <- function(pseudo_obs = 1) {
 #' to a discrete time series coupled with a time series of covariates.
 #'
 #' @param x an object that can be interpreted as a discrete time series, such
-#'  as an integer vector or a `dts` object (see [dts()])
+#'  as an integer vector or a `dts` object (see [dts()]). Its state space must
+#'  contain at least two states.
 #' @param covariate a data frame of covariates.
 #' @param alpha number in (0,1) (default: 0.05) cut off value in the pruning
 #'   phase (in quantile scale).
@@ -744,6 +745,7 @@ covlmc_internal <- function(ix, fx, vals, covariate, alpha, min_size, max_depth,
   if (is.null(alpha) || !is.numeric(alpha) || alpha <= 0 || alpha > 1) {
     stop("the alpha parameter must be in (0, 1]")
   }
+  assert_state_space(vals)
   if (length(vals) > max(10, 0.05 * length(ix))) {
     warning(paste0("x as numerous unique values (", length(vals), ")"))
   }

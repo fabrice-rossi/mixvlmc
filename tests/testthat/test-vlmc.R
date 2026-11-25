@@ -148,21 +148,21 @@ test_that("min_size and max_depth are validated", {
   expect_error(tune_vlmc(x, max_depth = -1), "max_depth")
 })
 
-test_that("vlmc supports time series with a single state", {
-  x <- rep("a", 50)
-  m_r <- vlmc(x)
-  m_cpp <- vlmc(x, backend = "C++")
-  expect_equal(depth(m_r), depth(m_cpp))
-  expect_equal(context_number(m_r), context_number(m_cpp))
-  for (initial in c("truncated", "specific", "extended")) {
-    expect_equal(
-      loglikelihood(m_r, initial = initial),
-      loglikelihood(m_cpp, initial = initial)
-    )
-    expect_equal(
-      loglikelihood(m_r, initial = initial, newdata = rep("a", 60)),
-      loglikelihood(m_cpp, initial = initial, newdata = rep("a", 60))
-    )
+test_that("time series with a single state are rejected", {
+  for (x in list(rep("a", 50), rep(1, 50), factor(rep("a", 50)))) {
+    for (backend in c("R", "C++")) {
+      expect_error(ctx_tree(x, backend = backend), "at least two states")
+      expect_error(vlmc(x, backend = backend), "at least two states")
+      expect_error(tune_vlmc(x, backend = backend), "at least two states")
+    }
+    expect_error(covlmc(x, data.frame(y = seq_along(x))), "at least two states")
+    expect_error(tune_covlmc(x, data.frame(y = seq_along(x))), "at least two states")
   }
-  expect_no_error(vlmc(x, prune = FALSE))
+  ## a single observed state in a larger state space is supported
+  x <- factor(rep("a", 50), levels = c("a", "b"))
+  for (backend in c("R", "C++")) {
+    model <- vlmc(x, backend = backend)
+    expect_equal(depth(model), 0)
+    expect_equal(as.numeric(loglikelihood(model)), 0)
+  }
 })
