@@ -258,3 +258,22 @@ test_that("covlmc handles rank deficiency similarly with both engines", {
   expect_identical(covariate_depth(models$multinom), covariate_depth(models$glm))
   expect_identical(context_number(models$multinom), context_number(models$glm))
 })
+
+test_that("cutoff.covlmc ignores intercept only leaves with more than 2 states", {
+  pc <- powerconsumption[powerconsumption$week %in% 7:8, ]
+  pc <- pc[!is.na(pc$active_power), ]
+  dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(1 / 3, 2 / 3, 1))))
+  dts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
+  m_cov <- covlmc(dts, dts_cov, min_size = 5, alpha = 0.05)
+  ## intercept only leaves for which the covariate was not kept
+  h0_p_values <- unlist(lapply(contexts(m_cov), function(ctx) {
+    ctx_model <- ctx$node$model
+    if (ctx_model$hsize == 0 && !is.na(ctx_model$p_value) && ctx_model$p_value > m_cov$alpha) {
+      ctx_model$p_value
+    }
+  }))
+  expect_gt(length(h0_p_values), 0)
+  m_cuts <- cutoff(m_cov, raw = TRUE)
+  expect_false(any(h0_p_values %in% m_cuts))
+  expect_true(all(m_cuts <= m_cov$alpha))
+})

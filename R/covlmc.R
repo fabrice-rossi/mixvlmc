@@ -849,7 +849,7 @@ cutoff.covlmc <- function(model, raw = FALSE,
         p_value <- NULL
         if (!is.null(tree$model[["p_value"]])) {
           p_value <- tree$model[["p_value"]]
-          if (is.na(p_value) || (length(tree$model[["coefficients"]]) == 1 && p_value > model$alpha)) {
+          if (is.na(p_value) || (tree$model[["hsize"]] == 0 && p_value > model$alpha)) {
             p_value <- NULL
           }
         }
