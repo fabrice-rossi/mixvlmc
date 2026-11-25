@@ -765,6 +765,10 @@ void SuffixTree::compute_reverse() {
     stop("reverse links calculation is limited to fully explicit trees");
   }
   // root case
+  if(root->reverse != nullptr) {
+    // the reverse links are recomputed
+    delete root->reverse;
+  }
   root->reverse = new std::unordered_map<int, EdgeNode*>{};
   for(int i = 0; i <= max_x; i++) {
     auto child = root->children.find(i);

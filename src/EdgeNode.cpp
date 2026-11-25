@@ -627,7 +627,10 @@ void EdgeNode::make_explicit(const Rcpp::IntegerVector& x) {
 void EdgeNode::compute_reverse(
     const Rcpp::IntegerVector& x,
     const std::unordered_map<int, EdgeNode*>* parent_map) {
-  // should check for existing map
+  if(reverse != nullptr) {
+    // the reverse links are recomputed
+    delete reverse;
+  }
   reverse = new std::unordered_map<int, EdgeNode*>{};
   if(start < x.size()) {
     for(auto prev : *parent_map) {
