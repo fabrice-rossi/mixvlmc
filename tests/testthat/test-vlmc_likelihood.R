@@ -123,3 +123,14 @@ test_that("impossible transitions in new data have a null likelihood", {
     )
   }
 })
+
+test_that("the ignore parameter is validated", {
+  x <- rep(c(0, 1, 1), 100)
+  for (backend in c("R", "C++")) {
+    model <- vlmc(x, backend = backend)
+    for (ignore in list(-3, 2.5, c(1, 2), NA, "a")) {
+      expect_error(loglikelihood(model, initial = "extended", ignore = ignore), "ignore")
+      expect_error(loglikelihood(model, initial = "extended", ignore = ignore, newdata = x), "ignore")
+    }
+  }
+})

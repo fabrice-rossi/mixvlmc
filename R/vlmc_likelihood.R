@@ -199,6 +199,9 @@ loglikelihood <- function(vlmc, newdata, initial = c("truncated", "specific", "e
 #' @export
 loglikelihood.vlmc <- function(vlmc, newdata, initial = c("truncated", "specific", "extended"), ignore, ...) {
   initial <- match.arg(initial)
+  if (!missing(ignore)) {
+    assert_ignore(ignore)
+  }
   if (missing(ignore)) {
     if (initial == "truncated") {
       ignore <- depth(vlmc)

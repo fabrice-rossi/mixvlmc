@@ -40,6 +40,13 @@ assert_max_depth <- function(max_depth) {
   }
 }
 
+assert_ignore <- function(ignore) {
+  if (!is.numeric(ignore) || length(ignore) != 1 || !is.finite(ignore) ||
+    ignore < 0 || ignore != round(ignore)) {
+    stop("ignore must be a single non negative integer")
+  }
+}
+
 signif_null <- function(x, digits) {
   if (is.null(x) || is.na(x)) {
     "NA"
