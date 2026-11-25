@@ -888,7 +888,8 @@ IntegerVector SuffixTree::simulate(IntegerVector start,
   }
   Nullable<Function> r_sample = R_NilValue;
   if(method > 1) {
-    r_sample = Nullable<Function>(Function("sample.int"));
+    r_sample =
+        Nullable<Function>(Function("sample.int", Environment::base_env()));
   }
   RNGScope scope;
   // final result
