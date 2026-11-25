@@ -82,3 +82,21 @@ test_that("metrics.covlmc and predict.covlmc return consistent results", {
   names(dimnames(predict_table)) <- c("predicted value", "true value")
   expect_identical(m_metrics$conf_mat, predict_table)
 })
+
+test_that("metrics.covlmc works with constant models and more than 2 states", {
+  withr::local_seed(0)
+  x <- rep(c("a", "b", "c", "c"), 100)
+  x_cov <- data.frame(y = rnorm(length(x)))
+  for (engine in c("glm", "multinom")) {
+    withr::local_options(mixvlmc.predictive = engine)
+    m_cov <- covlmc(x, x_cov)
+    expect_true(any(sapply(contexts(m_cov), function(ctx) {
+      inherits(model(ctx, type = "full"), "constant_model")
+    })))
+    expect_no_error(m_metrics <- metrics(m_cov))
+    m_predict <- predict(m_cov, x, x_cov, final_pred = FALSE)
+    predict_table <- table(factor(m_predict, levels = states(m_cov)), x)
+    names(dimnames(predict_table)) <- c("predicted value", "true value")
+    expect_identical(m_metrics$conf_mat, predict_table)
+  }
+})
