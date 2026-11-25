@@ -332,23 +332,23 @@ covariate:
 
 ``` r
 best_elec_covlmc_aic <- as_covlmc(tune_covlmc(elec_dts, elec_cov, criterion = "AIC"))
-draw(best_elec_covlmc_aic, model = "full", time_sep = " | ", p_value = FALSE)
-#> *
-#> +-- low ([ (I)    | day_1TRUE
-#> |          -1.558 | 1.006     ])
-#> '-- typical
-#> |   +-- low ([ (I)   
-#> |   |          0.3365
-#> |   |          -1.609 ])
-#> |   '-- typical ([ (I)   
-#> |   |              2.937 
-#> |   |              0.3747 ])
-#> |   '-- high ([ (I)  
-#> |               2.773
-#> |               1.705 ])
-#> '-- high ([ (I)   | day_1TRUE
-#>             17.41 | -14.23   
-#>             19.38 | -14.88    ])
+draw(best_elec_covlmc_aic, model = "full")
+#> ▪
+#> ├─ low ([ (I)    • day_1TRUE
+#> │         -1.558 • 1.006     ])
+#> ├─ typical
+#> │  ├─ low ([ (I)   
+#> │  │         0.3365
+#> │  │         -1.609 ])
+#> │  ├─ typical ([ (I)   
+#> │  │             2.937 
+#> │  │             0.3747 ])
+#> │  └─ high ([ (I)  
+#> │             2.773
+#> │             1.705 ])
+#> └─ high ([ (I)   • day_1TRUE
+#>            17.41 • -14.23   
+#>            19.38 • -14.88    ])
 ```
 
 The coefficients of the logistic models are given with respect to the

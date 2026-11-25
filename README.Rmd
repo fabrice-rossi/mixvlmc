@@ -202,7 +202,7 @@ The BIC is rather conservative. The AIC selects a model with the same context tr
 
 ```{r}
 best_elec_covlmc_aic <- as_covlmc(tune_covlmc(elec_dts, elec_cov, criterion = "AIC"))
-draw(best_elec_covlmc_aic, model = "full", time_sep = " | ", p_value = FALSE)
+draw(best_elec_covlmc_aic, model = "full")
 ```
 
 The coefficients of the logistic models are given with respect to the first state, *low*:
