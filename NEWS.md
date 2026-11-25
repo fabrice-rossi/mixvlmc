@@ -13,6 +13,10 @@ previous versions, in particular for VLMC with covariates (see below).
   change the fitted model)
 * the `multinom` engine of `covlmc()` detects rank deficient models (e.g. 
   collinear covariates) consistently with the `glm` engine
+* the number of parameters of a `covlmc` (used by AIC and BIC, in particular in
+  `tune_covlmc()`) does not depend on the estimation engine anymore: levels
+  of factor covariates and states absent from the data of a context are
+  counted (the `glm` engine ignored them with three states or more)
 * the models associated to the root of the context tree of a `covlmc` (depth 0
   models, extended model used for the first observation) use all the
   observations (the first one was ignored)

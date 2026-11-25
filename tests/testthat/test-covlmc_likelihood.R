@@ -210,3 +210,57 @@ test_that("loglikelihood ignores impossible transitions in the ignored observati
     )
   }
 })
+
+test_that("the number of parameters does not depend on the estimation engine", {
+  ## the covariate can take the value "c" only after state 0: this level is
+  ## absent from the data of the contexts that do not start with 0
+  withr::local_seed(0)
+  n <- 2000
+  x <- integer(n)
+  z <- character(n)
+  for (t in 1:n) {
+    z[t] <- if (x[t] == 0L) sample(c("a", "b", "c"), 1) else sample(c("a", "b"), 1)
+    if (t < n) {
+      p <- switch(z[t],
+        a = c(0.7, 0.2, 0.1),
+        b = c(0.1, 0.7, 0.2),
+        c = c(0.2, 0.1, 0.7)
+      )
+      x[t + 1] <- sample(0:2, 1, prob = p)
+    }
+  }
+  cov <- data.frame(z = factor(z))
+  ## nominal number of parameters: one intercept and one parameter per level
+  ## (but the reference one) and per lag, for each state but one
+  nominal_df <- function(model, with_extended) {
+    rec <- function(ct, d) {
+      res <- 0
+      for (f in c("model", "merged_model")) {
+        if (!is.null(ct[[f]])) {
+          res <- res + (1 + 2 * ct[[f]]$hsize) * 2
+        }
+      }
+      if (with_extended && d < depth(model) && !is.null(ct$extended_model)) {
+        res <- res + (1 + 2 * ct$extended_model$hsize) * 2
+      }
+      for (child in ct$children) {
+        if (length(child) > 0) {
+          res <- res + rec(child, d + 1)
+        }
+      }
+      res
+    }
+    rec(model, 0)
+  }
+  for (engine in c("glm", "multinom")) {
+    withr::with_options(list(mixvlmc.predictive = engine), {
+      model <- covlmc(x, cov, min_size = 5)
+      expect_gt(covariate_depth(model), 0)
+      expect_equal(attr(logLik(model), "df"), nominal_df(model, FALSE))
+      expect_equal(
+        attr(logLik(model, initial = "extended"), "df"),
+        nominal_df(model, TRUE)
+      )
+    })
+  }
+})
