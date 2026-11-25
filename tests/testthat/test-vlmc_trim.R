@@ -11,8 +11,8 @@ test_that("vlmc trimming preserve core information when needed", {
   model <- vlmc(rdts, keep_match = TRUE)
   trimmed_model <- trim(model)
   expect_identical(
-    contexts(trimmed_model, type = "data.frame", frequency = "detailed"),
-    contexts(model, type = "data.frame", frequency = "detailed")
+    contexts(trimmed_model, frequency = "detailed"),
+    contexts(model, frequency = "detailed")
   )
   expect_true(object.size(trimmed_model) < object.size(model))
 })
@@ -23,9 +23,9 @@ test_that("vlmc trimming removes positions", {
   for (backend in c("R", "C++")) {
     withr::local_options("mixvlmc.backend" = backend)
     model <- vlmc(rdts, keep_match = TRUE)
-    expect_no_error(contexts(model, type = "data.frame", positions = TRUE))
+    expect_no_error(contexts(model, positions = TRUE))
     trimmed_model <- trim(model)
-    expect_error(contexts(trimmed_model, type = "data.frame", positions = TRUE))
+    expect_error(contexts(trimmed_model, positions = TRUE))
   }
 })
 

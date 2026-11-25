@@ -15,21 +15,21 @@ test_that("trimming removes only what it should remove", {
       ## identical contexts
       expect_identical(
         contexts(m_cov,
-          type = "data.frame", hsize = TRUE, model = "coef",
+          hsize = TRUE, model = "coef",
           frequency = "detailed", metrics = TRUE, merging = TRUE
         ),
         contexts(t_m_cov_model,
-          type = "data.frame", hsize = TRUE, model = "coef",
+          hsize = TRUE, model = "coef",
           frequency = "detailed", metrics = TRUE, merging = TRUE
         )
       )
       expect_identical(
         contexts(m_cov,
-          type = "data.frame", hsize = TRUE, model = "coef",
+          hsize = TRUE, model = "coef",
           frequency = "detailed", metrics = TRUE, merging = TRUE
         ),
         contexts(t_m_cov,
-          type = "data.frame", hsize = TRUE, model = "coef",
+          hsize = TRUE, model = "coef",
           frequency = "detailed", metrics = TRUE, merging = TRUE
         )
       )
@@ -39,7 +39,7 @@ test_that("trimming removes only what it should remove", {
         loglikelihood(t_m_cov_model, newdata = rdts, newcov = rdts_cov)
       )
       expect_no_error(contexts(t_m_cov_model,
-        type = "data.frame", hsize = TRUE,
+        hsize = TRUE,
         model = "full"
       ))
       expect_no_error(lapply(contexts(t_m_cov_model), model, type = "full"))
@@ -49,7 +49,7 @@ test_that("trimming removes only what it should remove", {
       )
       ## errors
       expect_error(
-        contexts(t_m_cov, type = "data.frame", hsize = TRUE, model = "full"),
+        contexts(t_m_cov, hsize = TRUE, model = "full"),
         "Full model extraction is not supported by fully trimmed covlmc"
       )
       expect_error(

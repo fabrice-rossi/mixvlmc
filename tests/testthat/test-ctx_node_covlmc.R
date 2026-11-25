@@ -33,10 +33,10 @@ test_that("models are correctly reported", {
     withr::local_options(mixvlmc.predictive = engine)
     model <- covlmc(rdts, df_y, alpha = 0.01, min_size = 3 / 2)
     ctxs_obj <- contexts(model)
-    ctxs_df <- contexts(model, type = "data.frame", model = "coef")
+    ctxs_df <- contexts(model, model = "coef")
     ctxs_coef <- lapply(ctxs_obj, model, type = "coef")
     expect_identical(ctxs_coef, unclass(ctxs_df$coef))
-    ctxs_df_f <- contexts(model, type = "data.frame", model = "full")
+    ctxs_df_f <- contexts(model, model = "full")
     ctxs_full <- lapply(ctxs_obj, model, type = "full")
     expect_identical(ctxs_full, unclass(ctxs_df_f$model))
   }
@@ -50,7 +50,7 @@ test_that("metrics and hsize are correctly reported", {
   df_y <- data.frame(y = y)
   model <- covlmc(rdts, df_y, alpha = 0.01, min_size = 3 / 2)
   ctxs_obj <- contexts(model)
-  ctxs_df <- contexts(model, type = "data.frame", metrics = TRUE, hsize = TRUE)
+  ctxs_df <- contexts(model, metrics = TRUE, hsize = TRUE)
   ctxs_metrics <- lapply(ctxs_obj, metrics)
   expect_identical(sapply(ctxs_metrics, \(x) x$accuracy), ctxs_df$accuracy)
   expect_identical(sapply(ctxs_metrics, \(x) x$auc), ctxs_df$auc)
@@ -60,7 +60,7 @@ test_that("metrics and hsize are correctly reported", {
 test_that("merged models are correctly reported", {
   d_model <- build_degenerate_elec_model(TRUE)
   ctxs_obj <- contexts(d_model$model)
-  ctxs_df <- contexts(d_model$model, type = "data.frame", model = "full", merging = TRUE)
+  ctxs_df <- contexts(d_model$model, model = "full", merging = TRUE)
   ctxs_merged <- sapply(ctxs_obj, is_merged)
   expect_identical(ctxs_merged, ctxs_df$merged)
   for (k in seq_along(ctxs_obj)) {

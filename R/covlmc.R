@@ -601,10 +601,10 @@ count_covlmc_local_context <- function(node) {
 #' rdts <- rep(c(0, 1), 100)
 #' rdts_cov <- data.frame(y = rep(0, length(rdts)))
 #' default_model <- covlmc(rdts, rdts_cov)
-#' contexts(default_model, type = "data.frame", model = "coef")$coef
+#' contexts(default_model, model = "coef")$coef
 #' control <- covlmc_control(pseudo_obs = 10)
 #' model <- covlmc(rdts, rdts_cov, control = control)
-#' contexts(model, type = "data.frame", model = "coef")$coef
+#' contexts(model, model = "coef")$coef
 covlmc_control <- function(pseudo_obs = 1) {
   list(pseudo_obs = pseudo_obs)
 }

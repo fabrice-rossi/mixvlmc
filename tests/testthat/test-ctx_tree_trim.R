@@ -3,8 +3,8 @@ test_that("Context tree trimming preserve core information ", {
   rdts_tree <- ctx_tree(rdts, max_depth = 10, min_size = 5, keep_position = TRUE)
   trimmed_rdts_tree <- trim(rdts_tree)
   expect_identical(
-    contexts(trimmed_rdts_tree, type = "data.frame", frequency = "detailed"),
-    contexts(rdts_tree, type = "data.frame", frequency = "detailed")
+    contexts(trimmed_rdts_tree, frequency = "detailed"),
+    contexts(rdts_tree, frequency = "detailed")
   )
   expect_true(object.size(trimmed_rdts_tree) < object.size(rdts_tree))
 })

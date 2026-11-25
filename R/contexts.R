@@ -104,7 +104,7 @@ contexts_extractor <- function(ct, reverse, extractor, control, summarize = no_s
 #'
 #' The default behaviour consists in returning a list of all the contexts
 #' contained in the tree using `ctx_node` objects (as returned by e.g.
-#' [find_sequence()]) (with `type="list"`). The properties of the contexts can
+#' [find_sequence()]). The properties of the contexts can
 #' then be explored using adapted functions such as [counts()] and
 #' [positions()]. The result list is of class `contexts`. When `sequence=TRUE`,
 #' the method returns a data.frame whose first column, named `context`, contains

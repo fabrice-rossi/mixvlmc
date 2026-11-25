@@ -16,8 +16,8 @@ test_that("ctx_node based cut off reporting is consistent with direct reporting"
     withr::local_options("mixvlmc.backend" = backend)
     model <- vlmc(rdts)
     model_ctxs <- contexts(model)
-    model_ctx_df <- contexts(model, type = "data.frame", cutoff = "native")
-    model_ctx_df_q <- contexts(model, type = "data.frame", cutoff = "quantile")
+    model_ctx_df <- contexts(model, cutoff = "native")
+    model_ctx_df_q <- contexts(model, cutoff = "quantile")
     for (k in seq_along(model_ctxs)) {
       expect_equal(
         cutoff(model_ctxs[[k]], scale = "native", raw = TRUE),
@@ -38,7 +38,7 @@ test_that("ctx_node based metrics reporting is consistent with direct reporting"
     withr::local_options("mixvlmc.backend" = backend)
     model <- vlmc(rdts)
     model_ctxs <- contexts(model)
-    model_ctx_df <- contexts(model, type = "data.frame", metrics = TRUE)
+    model_ctx_df <- contexts(model, metrics = TRUE)
     for (k in seq_along(model_ctxs)) {
       ctx_metrics <- metrics(model_ctxs[[k]])
       expect_equal(ctx_metrics$accuracy, model_ctx_df$accuracy[k])

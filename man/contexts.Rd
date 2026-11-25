@@ -27,7 +27,7 @@ contexts.
 \details{
 The default behaviour consists in returning a list of all the contexts
 contained in the tree using \code{ctx_node} objects (as returned by e.g.
-\code{\link[=find_sequence]{find_sequence()}}) (with \code{type="list"}). The properties of the contexts can
+\code{\link[=find_sequence]{find_sequence()}}). The properties of the contexts can
 then be explored using adapted functions such as \code{\link[=counts]{counts()}} and
 \code{\link[=positions]{positions()}}. The result list is of class \code{contexts}. When \code{sequence=TRUE},
 the method returns a data.frame whose first column, named \code{context}, contains
