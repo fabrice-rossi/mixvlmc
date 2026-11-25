@@ -17,7 +17,7 @@ vlmc(
 }
 \arguments{
 \item{x}{a discrete time series; can be numeric, character, factor or
-logical.}
+logical. Its state space must contain at least two states.}
 
 \item{alpha}{number in (0,1] (default: 0.05) cut off value in quantile scale
 in the pruning phase.}

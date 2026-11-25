@@ -113,7 +113,7 @@ grow_ctx_tree <- function(x, vals, min_size, max_depth, covsize = 0L, keep_match
 #' the positions of the contexts in the time series can be stored in the tree.
 #'
 #' @param x a discrete time series; can be numeric, character, factor or
-#'   logical.
+#'   logical. Its state space must contain at least two states.
 #' @param min_size integer >= 1 (default: 2). Minimum number of observations for
 #'   a context to be included in the tree.
 #' @param max_depth integer >= 0 (default: 100). Maximum length of a context to
@@ -154,6 +154,7 @@ ctx_tree <- function(x, min_size = 2L, max_depth = 100L, keep_position = TRUE,
   nx <- to_dts(x)
   ix <- nx$ix
   vals <- nx$vals
+  assert_state_space(vals)
   if (length(vals) > max(10, 0.05 * length(x))) {
     warning(paste0("x as numerous unique values (", length(vals), ")"))
   }

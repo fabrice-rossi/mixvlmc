@@ -33,9 +33,11 @@ previous versions, in particular for VLMC with covariates (see below).
   factor) are supported
 * `min_size`, `max_depth` and the `ignore` parameter of `loglikelihood()` are
   validated (`min_size = 0` led to an exponential computation time)
+* time series with a single state (e.g. a constant series or a factor with a
+  single level) are rejected by the estimation functions (they led to a
+  degenerate model with the R backend and to an error with the C++ backend)
 
 ### VLMC
-* `vlmc()` works on time series with a single state (R backend)
 * `contexts()` with `local = TRUE` reports correct positions and supports
   `metrics = TRUE` (R backend)
 * positions of the empty context are 0 based in all cases and are not 

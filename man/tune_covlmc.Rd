@@ -20,7 +20,7 @@ tune_covlmc(
 }
 \arguments{
 \item{x}{a discrete time series; can be numeric, character, factor and
-logical.}
+logical. Its state space must contain at least two states.}
 
 \item{covariate}{a data frame of covariates.}
 

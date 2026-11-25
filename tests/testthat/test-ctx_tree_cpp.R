@@ -32,7 +32,7 @@ test_that("the depth of the tree does not include the sentinel", {
 })
 
 test_that("a context tree reduced to its root is built as in the R backend", {
-  for (dts in list(c(0), c(0, 0), c(1, 0), c(0, 1, 2, 0))) {
+  for (dts in list(c(1, 0), c(0, 1, 1), c(0, 1, 2, 0))) {
     dts_rtree <- ctx_tree(dts, min_size = 5, backend = "R")
     expect_no_error(dts_ctree <- ctx_tree(dts, min_size = 5, backend = "C++"))
     expect_equal(context_number(dts_ctree), context_number(dts_rtree))

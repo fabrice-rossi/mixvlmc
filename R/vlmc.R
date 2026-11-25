@@ -270,7 +270,7 @@ prune.vlmc <- function(vlmc, alpha = 0.05, cutoff = NULL, ...) {
 #' any pruning). Automated model selection is provided by [tune_vlmc()].
 #'
 #' @param x a discrete time series; can be numeric, character, factor or
-#'   logical.
+#'   logical. Its state space must contain at least two states.
 #' @param alpha number in (0,1] (default: 0.05) cut off value in quantile scale
 #'   in the pruning phase.
 #' @param cutoff non negative number: cut off value in native (likelihood ratio)
@@ -319,6 +319,7 @@ vlmc <- function(x, alpha = 0.05, cutoff = NULL, min_size = 2L, max_depth = 100L
   nx <- to_dts(x)
   ix <- nx$ix
   vals <- nx$vals
+  assert_state_space(vals)
   if (is.null(cutoff)) {
     if (is.null(alpha) || !is.numeric(alpha) || alpha <= 0 || alpha > 1) {
       stop("the alpha parameter must be in (0, 1]")

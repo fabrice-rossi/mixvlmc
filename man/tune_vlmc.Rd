@@ -19,7 +19,7 @@ tune_vlmc(
 }
 \arguments{
 \item{x}{a discrete time series; can be numeric, character, factor and
-logical.}
+logical. Its state space must contain at least two states.}
 
 \item{criterion}{criterion used to select the best model. Either \code{"BIC"}
 (default) or \code{"AIC"} (see details).}

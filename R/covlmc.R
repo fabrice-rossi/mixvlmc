@@ -615,6 +615,7 @@ covlmc_control <- function(pseudo_obs = 1) {
 #' to a discrete time series coupled with a time series of covariates.
 #'
 #' @param x a discrete time series; can be numeric, character, factor or logical.
+#'   Its state space must contain at least two states.
 #' @param covariate a data frame of covariates.
 #' @param alpha number in (0,1) (default: 0.05) cut off value in the pruning
 #'   phase (in quantile scale).
@@ -706,6 +707,7 @@ covlmc <- function(x, covariate, alpha = 0.05, min_size = 5L, max_depth = 100L, 
   nx <- to_dts(x)
   ix <- nx$ix
   vals <- nx$vals
+  assert_state_space(vals)
   if (length(vals) > max(10, 0.05 * length(x))) {
     warning(paste0("x as numerous unique values (", length(vals), ")"))
   }

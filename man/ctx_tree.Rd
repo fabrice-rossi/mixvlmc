@@ -14,7 +14,7 @@ ctx_tree(
 }
 \arguments{
 \item{x}{a discrete time series; can be numeric, character, factor or
-logical.}
+logical. Its state space must contain at least two states.}
 
 \item{min_size}{integer >= 1 (default: 2). Minimum number of observations for
 a context to be included in the tree.}

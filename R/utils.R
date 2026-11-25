@@ -161,3 +161,10 @@ tune_best_loglikelihood <- function(x) {
   crit <- x$results[[x$criterion]]
   x$results$loglikelihood[max(which(crit == min(crit)))]
 }
+
+## a (CO)VLMC cannot be estimated on a time series with a single state
+assert_state_space <- function(vals) {
+  if (length(vals) < 2) {
+    stop("the state space of the time series must contain at least two states")
+  }
+}

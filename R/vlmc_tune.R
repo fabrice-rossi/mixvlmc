@@ -21,7 +21,7 @@
 #' chosen information criterion.
 #'
 #' @param x a discrete time series; can be numeric, character, factor and
-#'   logical.
+#'   logical. Its state space must contain at least two states.
 #' @param criterion criterion used to select the best model. Either `"BIC"`
 #'   (default) or `"AIC"` (see details).
 #' @param initial specifies the likelihood function, more precisely the way the
