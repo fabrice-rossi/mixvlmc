@@ -213,3 +213,34 @@ test_that("covlmc gives the same results with factors and dummy variables", {
     expect_equal(loglikelihood(p_f), loglikelihood(p_d))
   }
 })
+
+test_that("unused levels of factors do not change the model", {
+  pc <- powerconsumption[powerconsumption$week %in% 5:6, ]
+  dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1))))
+  dn <- ifelse(pc$hour >= 7 & pc$hour <= 17, "day", "night")
+  cov_1 <- data.frame(dn = factor(dn, levels = c("day", "night")))
+  cov_2 <- data.frame(dn = factor(dn, levels = c("day", "night", "unused")))
+  m_1 <- covlmc(dts, cov_1, min_size = 5)
+  m_2 <- covlmc(dts, cov_2, min_size = 5)
+  expect_identical(context_number(m_2), context_number(m_1))
+  expect_identical(covariate_depth(m_2), covariate_depth(m_1))
+  expect_equal(extract_p_value(m_2), extract_p_value(m_1))
+  expect_equal(loglikelihood(m_2), loglikelihood(m_1))
+  ## new covariates with the original levels
+  expect_equal(
+    predict(m_2, dts[1:100], cov_2[1:100, , drop = FALSE], type = "probs"),
+    predict(m_1, dts[1:100], cov_1[1:100, , drop = FALSE], type = "probs")
+  )
+  expect_equal(
+    loglikelihood(m_2, newdata = dts, newcov = cov_2),
+    loglikelihood(m_1, newdata = dts, newcov = cov_1)
+  )
+  expect_identical(
+    simulate(m_2, 100, seed = 0, covariate = cov_2),
+    simulate(m_1, 100, seed = 0, covariate = cov_1)
+  )
+  ## an actual use of a new level is rejected
+  cov_3 <- cov_2
+  cov_3$dn[10] <- "unused"
+  expect_error(predict(m_2, dts, cov_3), "new level")
+})

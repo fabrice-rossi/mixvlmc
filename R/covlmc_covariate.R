@@ -6,6 +6,8 @@ covariate_description <- function(covariate) {
       covariate[[var]] <- factor(covariate[[var]])
     }
     if (is.factor(covariate[[var]])) {
+      ## unused levels do not correspond to parameters
+      covariate[[var]] <- droplevels(covariate[[var]])
       cov_desc[[var]] <- levels(covariate[[var]])
       cov_size <- cov_size + length(cov_desc[[var]]) - 1
     } else {
@@ -24,9 +26,11 @@ validate_covariate <- function(model, covariate) {
     if (!is.factor(covariate[[var]])) {
       covariate[[var]] <- factor(covariate[[var]])
     }
-    new_levels <- match(levels(covariate[[var]]), model$cov_desc[[var]])
+    ## unused levels are discarded
+    used_levels <- levels(droplevels(covariate[[var]]))
+    new_levels <- match(used_levels, model$cov_desc[[var]])
     if (anyNA(new_levels)) {
-      new_levels <- levels(covariate[[var]])[is.na(new_levels)]
+      new_levels <- used_levels[is.na(new_levels)]
       if (length(new_levels) == 1) {
         str_level <- stringr::str_c(" ", new_levels)
       } else {
@@ -34,6 +38,7 @@ validate_covariate <- function(model, covariate) {
       }
       stop(stringr::str_c("Factor ", var, " has new level", str_level))
     }
+    covariate[[var]] <- factor(covariate[[var]], levels = model$cov_desc[[var]])
   }
   covariate
 }
