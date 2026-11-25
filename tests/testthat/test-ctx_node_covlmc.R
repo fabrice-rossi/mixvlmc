@@ -93,3 +93,17 @@ test_that("metrics reports clearly that a node is not a context", {
   expect_false(is_context(node))
   expect_error(metrics(node), "not a context")
 })
+
+test_that("positions of the empty sequence are 0 based", {
+  pc <- powerconsumption[powerconsumption$week == 5, ]
+  dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1))))
+  dts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
+  m_cov <- covlmc(dts, dts_cov, min_size = 5)
+  root <- find_sequence(m_cov, states(m_cov)[0])
+  expect_identical(positions(root), 0:(length(dts) - 1L))
+  ## positions rebuilt for the empty sequence
+  m_cov$match <- NULL
+  m_cov$keep_match <- TRUE
+  root <- find_sequence(m_cov, states(m_cov)[0])
+  expect_identical(positions(root), 0:(length(dts) - 1L))
+})

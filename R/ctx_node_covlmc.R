@@ -38,7 +38,7 @@ assertthat::on_failure(is_ctx_node_covlmc) <- function(call, env) {
 find_sequence.covlmc <- function(ct, ctx, reverse = FALSE, ...) {
   if (length(ctx) == 0) {
     if (isTRUE(ct$keep_match) && is.null(ct$match)) {
-      ct$match <- 1:ct$data_size
+      ct$match <- 0:(ct$data_size - 1L)
     }
     new_ctx_node(ctx, ct, ct, reverse, merged = FALSE, class = "ctx_node_covlmc")
   } else {
