@@ -193,11 +193,12 @@ draw(best_elec_covlmc, model = "full")
 ```
 
 
-As in the VLMC case, the optimal model remains rather simple:
+As in the VLMC case, the optimal model remains rather simple. In fact, the BIC does not retain the covariate: each context is associated to a constant model (the `(I)` intercepts), so that the model is a VLMC. It differs slightly from the one obtained with `tune_vlmc()`:
 
--   the *high* context do not use the covariate and is equivalent to the vlmc context;
--   the *low* context is more interesting: it does not switch to a *high* context (hence the single row of parameters) but uses the covariate. As expected, the probability of switching from *low* to *typical* is larger during the day;
--   the *typical* context is described in a more complex way that in the case of the vlmc as the transition probabilities depend on the previous state.
+-   the *low* and *high* contexts are equivalent to the vlmc contexts (notice that the *low* context does not switch to a *high* context, hence the single row of parameters);
+-   the *typical* context is split according to the three possible previous states, while the vlmc only distinguishes a *low* previous state.
+
+The BIC is rather conservative. The AIC used below selects a model that keeps the day covariate in the *low* and *high* contexts. As expected, the probability of switching from *low* to *typical* is larger during the day in this model.
 
 ### Sampling
 
