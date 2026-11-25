@@ -3,40 +3,22 @@
     \begin{forest}
     [\textbf{$\epsilon$}
     [\textbf{A}
-    [\textbf{A} (2.639e-10)]
-    [\textbf{B} (3.56e-11)]
-    [\textbf{C}
-    [\textbf{A} (0.002189)]
-    [ \textbf{B, C} (2.594e-06) ]
-    ]
+    [\textbf{A} (6.085e-09)]
+    [\textbf{B} (8.921e-10)]
+    [\textbf{C} (1.23e-05)]
     ]
     [\textbf{B}
-    [\textbf{A}\\\hline {\small (collapsing: 0.001604)}, align={c}
-    [\textbf{A} (0.000941)]
-    [\textbf{B} (0.0003583)]
-    [\textbf{C} (0.0001354)]
-    ]
+    [\textbf{A} (4.786e-05)]
     [\textbf{B}
-    [\textbf{C} (0.000957)]
-    [ \textbf{A, B} (6.639e-05) ]
+    [\textbf{C} (0.00761)]
+    [ \textbf{A, B} (0.000705) ]
     ]
-    [\textbf{C}\\\hline {\small (collapsing: 0.007425)}, align={c}
-    [\textbf{A} (8.321e-06)]
-    [\textbf{B} (0.0001755)]
-    [\textbf{C} (3.038e-06)]
-    ]
+    [\textbf{C} (3.541e-11)]
     ]
     [\textbf{C}
-    [\textbf{A} (1.463e-10)]
-    [\textbf{B}\\\hline {\small merging B and C: 0.001527}, align={c}
-    [\textbf{A} (0.001367)]
-    [\textbf{B} (0.007996)]
-    [\textbf{C} (0.0001326)]
-    ]
-    [\textbf{C}
-    [\textbf{C} (0.005984)]
-    [ \textbf{A, B} (4.118e-10) ]
-    ]
+    [\textbf{A} (3.459e-09)]
+    [\textbf{B} (0.0009756)]
+    [\textbf{C} (3.65e-08)]
     ]
     ]
     \end{forest}
@@ -79,8 +61,8 @@
     {\small $\text{y[B]}_{t-1}$}&{\small 1.954}&{\small 0.9274}\\
     , align=ccc]
     [\multicolumn{3}{c}{\textbf{B}}\\\hline
-    {\small (I)}&{\small -2.166}&{\small -2.165}\\
-    {\small $\text{y[B]}_{t-1}$}&{\small 1.553}&{\small 1.206}\\
+    {\small (I)}&{\small -0.8267}&{\small -1.163}\\
+    {\small $\text{y[B]}_{t-1}$}&{\small 1.52}&{\small 1.163}\\
     , align=ccc]
     [\multicolumn{3}{c}{\textbf{C}}\\\hline
     {\small (I)}&{\small -3.412}&{\small -4.026}\\
@@ -128,8 +110,8 @@
     {\small $\text{y[B]}_{t-1}$}&{\small 1.954}&{\small 0.9274}\\
     , align=ccc]
     [\multicolumn{3}{c}{\textbf{B}}\\\hline
-    {\small (I)}&{\small -2.166}&{\small -2.165}\\
-    {\small $\text{y[B]}_{t-1}$}&{\small 1.553}&{\small 1.206}\\
+    {\small (I)}&{\small -0.8267}&{\small -1.163}\\
+    {\small $\text{y[B]}_{t-1}$}&{\small 1.52}&{\small 1.163}\\
     , align=ccc]
     [\multicolumn{3}{c}{\textbf{C}}\\\hline
     {\small (I)}&{\small -3.412}&{\small -4.026}\\
@@ -176,10 +158,10 @@
     {\small $(I)$}&{\small $\text{y[B]}_{t-1}$}&{\small $\text{y[C]}_{t-1}$}&{\small $\text{y[B]}_{t-2}$}&{\small $\text{y[C]}_{t-2}$}\\
     {\small -3.164}&{\small 1.954}&{\small 1.545}&{\small 4.954}&{\small 2.35}\\
     {\small -2.597}&{\small 0.9274}&{\small 1.851}&{\small 1.814}&{\small 2.125}, align=ccccc]
-    [\multicolumn{5}{c}{\textbf{B}}\\\hline
-    {\small $(I)$}&{\small $\text{y[B]}_{t-1}$}&{\small $\text{y[C]}_{t-1}$}&{\small $\text{y[B]}_{t-2}$}&{\small $\text{y[C]}_{t-2}$}\\
-    {\small -2.166}&{\small 1.553}&{\small 1.428}&{\small 2.332}&{\small 1.055}\\
-    {\small -2.165}&{\small 1.206}&{\small 2.875}&{\small -0.07224}&{\small 1.419}, align=ccccc]
+    [\multicolumn{3}{c}{\textbf{B}}\\\hline
+    {\small $(I)$}&{\small $\text{y[B]}_{t-1}$}&{\small $\text{y[C]}_{t-1}$}\\
+    {\small -0.8267}&{\small 1.52}&{\small 1.386}\\
+    {\small -1.163}&{\small 1.163}&{\small 2.955}, align=ccc]
     [\multicolumn{5}{c}{\textbf{C}}\\\hline
     {\small $(I)$}&{\small $\text{y[B]}_{t-1}$}&{\small $\text{y[C]}_{t-1}$}&{\small $\text{y[B]}_{t-2}$}&{\small $\text{y[C]}_{t-2}$}\\
     {\small -3.412}&{\small 0.8723}&{\small 0.9043}&{\small 5.503}&{\small 2.849}\\
@@ -227,8 +209,8 @@
     $\text{y[B]}_{t-1}$&1.954&0.9274\\
     , align=ccc]
     [\multicolumn{3}{c}{\textbf{B}}\\\hline
-    {{A}}&\textbf{B}&\textbf{C}\\(I)&-2.166&-2.165\\
-    $\text{y[B]}_{t-1}$&1.553&1.206\\
+    {{A}}&\textbf{B}&\textbf{C}\\(I)&-0.8267&-1.163\\
+    $\text{y[B]}_{t-1}$&1.52&1.163\\
     , align=ccc]
     [\multicolumn{3}{c}{\textbf{C}}\\\hline
     {{A}}&\textbf{B}&\textbf{C}\\(I)&-3.412&-4.026\\
@@ -277,8 +259,8 @@
     {\scriptsize $\text{y[B]}_{t-1}$}&{\scriptsize 1.954}&{\scriptsize 0.9274}\\
     , align=ccc]
     [\multicolumn{3}{c}{\textbf{B}}\\\hline
-    {{{\scriptsize A}}}&\textbf{{\scriptsize B}}&\textbf{{\scriptsize C}}\\{\scriptsize (I)}&{\scriptsize -2.166}&{\scriptsize -2.165}\\
-    {\scriptsize $\text{y[B]}_{t-1}$}&{\scriptsize 1.553}&{\scriptsize 1.206}\\
+    {{{\scriptsize A}}}&\textbf{{\scriptsize B}}&\textbf{{\scriptsize C}}\\{\scriptsize (I)}&{\scriptsize -0.8267}&{\scriptsize -1.163}\\
+    {\scriptsize $\text{y[B]}_{t-1}$}&{\scriptsize 1.52}&{\scriptsize 1.163}\\
     , align=ccc]
     [\multicolumn{3}{c}{\textbf{C}}\\\hline
     {{{\scriptsize A}}}&\textbf{{\scriptsize B}}&\textbf{{\scriptsize C}}\\{\scriptsize (I)}&{\scriptsize -3.412}&{\scriptsize -4.026}\\
@@ -326,8 +308,8 @@
     {\small $\text{y[B]}_{t-1}$}&{\small 2}&{\small 0.93}\\
     , align=ccc]
     [\multicolumn{3}{c}{\textbf{B}}\\\hline
-    {{{\small A}}}&\textbf{{\small B}}&\textbf{{\small C}}\\{\small (I)}&{\small -2.2}&{\small -2.2}\\
-    {\small $\text{y[B]}_{t-1}$}&{\small 1.6}&{\small 1.2}\\
+    {{{\small A}}}&\textbf{{\small B}}&\textbf{{\small C}}\\{\small (I)}&{\small -0.83}&{\small -1.2}\\
+    {\small $\text{y[B]}_{t-1}$}&{\small 1.5}&{\small 1.2}\\
     , align=ccc]
     [\multicolumn{3}{c}{\textbf{C}}\\\hline
     {{{\small A}}}&\textbf{{\small B}}&\textbf{{\small C}}\\{\small (I)}&{\small -3.4}&{\small -4}\\
@@ -342,40 +324,22 @@
     \begin{forest}
     [\textbf{$\epsilon$}
     [\textbf{A}
-    [\textbf{A} (2.639e-10)]
-    [\textbf{B} (3.56e-11)]
-    [\textbf{C}
-    [\textbf{A} (0.002189)]
-    [ \textbf{B, C} (2.594e-06) ]
-    ]
+    [\textbf{A} (6.085e-09)]
+    [\textbf{B} (8.922e-10)]
+    [\textbf{C} (1.23e-05)]
     ]
     [\textbf{B}
-    [\textbf{A}\\\hline {\small (collapsing: 0.001604)}, align={c}
-    [\textbf{A} (0.0009415)]
-    [\textbf{B} (0.0003581)]
-    [\textbf{C} (0.0001354)]
-    ]
+    [\textbf{A} (4.786e-05)]
     [\textbf{B}
-    [\textbf{C} (0.0009274)]
-    [ \textbf{A, B} (6.639e-05) ]
+    [\textbf{C} (0.007403)]
+    [ \textbf{A, B} (0.000705) ]
     ]
-    [\textbf{C}\\\hline {\small (collapsing: 0.007429)}, align={c}
-    [\textbf{A} (8.313e-06)]
-    [\textbf{B} (0.0001756)]
-    [\textbf{C} (3.035e-06)]
-    ]
+    [\textbf{C} (3.541e-11)]
     ]
     [\textbf{C}
-    [\textbf{A} (1.463e-10)]
-    [\textbf{B}\\\hline {\small merging B and C: 0.001527}, align={c}
-    [\textbf{A} (0.001366)]
-    [\textbf{B} (0.007996)]
-    [\textbf{C} (0.0001326)]
-    ]
-    [\textbf{C}
-    [\textbf{C} (0.005982)]
-    [ \textbf{A, B} (4.118e-10) ]
-    ]
+    [\textbf{A} (3.459e-09)]
+    [\textbf{B} (0.0009756)]
+    [\textbf{C} (3.65e-08)]
     ]
     ]
     \end{forest}
@@ -418,8 +382,8 @@
     {\small $\text{y[B]}_{t-1}$}&{\small 2}&{\small 0.93}\\
     , align=ccc]
     [\multicolumn{3}{c}{\textbf{B}}\\\hline
-    {\small (I)}&{\small -2.2}&{\small -2.2}\\
-    {\small $\text{y[B]}_{t-1}$}&{\small 1.6}&{\small 1.2}\\
+    {\small (I)}&{\small -0.83}&{\small -1.2}\\
+    {\small $\text{y[B]}_{t-1}$}&{\small 1.5}&{\small 1.2}\\
     , align=ccc]
     [\multicolumn{3}{c}{\textbf{C}}\\\hline
     {\small (I)}&{\small -3.4}&{\small -4}\\
@@ -467,7 +431,7 @@
     {\small $\text{y[B]}_{t-1}$}&{\small 2}&{\small 0.9}\\
     , align=ccc]
     [\multicolumn{3}{c}{\textbf{B}}\\\hline
-    {\small (I)}&{\small -2}&{\small -2}\\
+    {\small (I)}&{\small -0.8}&{\small -1}\\
     {\small $\text{y[B]}_{t-1}$}&{\small 2}&{\small 1}\\
     , align=ccc]
     [\multicolumn{3}{c}{\textbf{C}}\\\hline
@@ -515,10 +479,10 @@
     {\small $(I)$}&{\small $\text{y[B]}_{t-1}$}&{\small $\text{y[C]}_{t-1}$}&{\small $\text{y[B]}_{t-2}$}&{\small $\text{y[C]}_{t-2}$}\\
     {\small -3.2}&{\small 2}&{\small 1.5}&{\small 5}&{\small 2.4}\\
     {\small -2.6}&{\small 0.93}&{\small 1.9}&{\small 1.8}&{\small 2.1}, align=ccccc]
-    [\multicolumn{5}{c}{\textbf{B}}\\\hline
-    {\small $(I)$}&{\small $\text{y[B]}_{t-1}$}&{\small $\text{y[C]}_{t-1}$}&{\small $\text{y[B]}_{t-2}$}&{\small $\text{y[C]}_{t-2}$}\\
-    {\small -2.2}&{\small 1.6}&{\small 1.4}&{\small 2.3}&{\small 1.1}\\
-    {\small -2.2}&{\small 1.2}&{\small 2.9}&{\small -0.072}&{\small 1.4}, align=ccccc]
+    [\multicolumn{3}{c}{\textbf{B}}\\\hline
+    {\small $(I)$}&{\small $\text{y[B]}_{t-1}$}&{\small $\text{y[C]}_{t-1}$}\\
+    {\small -0.83}&{\small 1.5}&{\small 1.4}\\
+    {\small -1.2}&{\small 1.2}&{\small 3}, align=ccc]
     [\multicolumn{5}{c}{\textbf{C}}\\\hline
     {\small $(I)$}&{\small $\text{y[B]}_{t-1}$}&{\small $\text{y[C]}_{t-1}$}&{\small $\text{y[B]}_{t-2}$}&{\small $\text{y[C]}_{t-2}$}\\
     {\small -3.4}&{\small 0.87}&{\small 0.9}&{\small 5.5}&{\small 2.8}\\
@@ -566,8 +530,8 @@
     $\text{y[B]}_{t-1}$&1.95&0.928\\
     , align=ccc]
     [\multicolumn{3}{c}{\textbf{B}}\\\hline
-    {{A}}&\textbf{B}&\textbf{C}\\(I)&-2.17&-2.17\\
-    $\text{y[B]}_{t-1}$&1.55&1.21\\
+    {{A}}&\textbf{B}&\textbf{C}\\(I)&-0.827&-1.16\\
+    $\text{y[B]}_{t-1}$&1.52&1.16\\
     , align=ccc]
     [\multicolumn{3}{c}{\textbf{C}}\\\hline
     {{A}}&\textbf{B}&\textbf{C}\\(I)&-3.41&-4.03\\
@@ -616,8 +580,8 @@
     {\scriptsize $\text{y[B]}_{t-1}$}&{\scriptsize 2}&{\scriptsize 0.93}\\
     , align=ccc]
     [\multicolumn{3}{c}{\textbf{B}}\\\hline
-    {{{\scriptsize A}}}&\textbf{{\scriptsize B}}&\textbf{{\scriptsize C}}\\{\scriptsize (I)}&{\scriptsize -2.2}&{\scriptsize -2.2}\\
-    {\scriptsize $\text{y[B]}_{t-1}$}&{\scriptsize 1.6}&{\scriptsize 1.2}\\
+    {{{\scriptsize A}}}&\textbf{{\scriptsize B}}&\textbf{{\scriptsize C}}\\{\scriptsize (I)}&{\scriptsize -0.83}&{\scriptsize -1.2}\\
+    {\scriptsize $\text{y[B]}_{t-1}$}&{\scriptsize 1.5}&{\scriptsize 1.2}\\
     , align=ccc]
     [\multicolumn{3}{c}{\textbf{C}}\\\hline
     {{{\scriptsize A}}}&\textbf{{\scriptsize B}}&\textbf{{\scriptsize C}}\\{\scriptsize (I)}&{\scriptsize -3.4}&{\scriptsize -4}\\
@@ -665,8 +629,8 @@
     {\small $\text{y[B]}_{t-1}$}&{\small 2}&{\small 0.93}\\
     , align=ccc]
     [\multicolumn{3}{c}{\textbf{B}}\\\hline
-    {{{\small A}}}&\textbf{{\small B}}&\textbf{{\small C}}\\{\small (I)}&{\small -2.2}&{\small -2.2}\\
-    {\small $\text{y[B]}_{t-1}$}&{\small 1.6}&{\small 1.2}\\
+    {{{\small A}}}&\textbf{{\small B}}&\textbf{{\small C}}\\{\small (I)}&{\small -0.83}&{\small -1.2}\\
+    {\small $\text{y[B]}_{t-1}$}&{\small 1.5}&{\small 1.2}\\
     , align=ccc]
     [\multicolumn{3}{c}{\textbf{C}}\\\hline
     {{{\small A}}}&\textbf{{\small B}}&\textbf{{\small C}}\\{\small (I)}&{\small -3.4}&{\small -4}\\
@@ -680,28 +644,12 @@
 
     \begin{forest}
     [\textbf{$\epsilon$}
-    [\textbf{0}
     [\multicolumn{2}{c}{\textbf{0}}\\\hline
     {\small (I)}&{\small 20}\\
     {\small $\text{y[2]}_{t-1}$}&{\small -20}\\
     {\small $\text{y[3]}_{t-1}$}&{\small -40}\\
     {\small $\text{y[4]}_{t-1}$}&{\small -20}\\
-    {\small $\text{z}_{t-1}$}&{\small 4}\\
-    {\small $\text{y[2]}_{t-2}$}&{\small 0}\\
-    {\small $\text{y[3]}_{t-2}$}&{\small 2}\\
-    {\small $\text{y[4]}_{t-2}$}&{\small 0.9}\\
-    {\small $\text{z}_{t-2}$}&{\small -1}\\, align=cc]
-    [\multicolumn{2}{c}{\textbf{1}}\\\hline
-    {\small (I)}&{\small 20}\\
-    {\small $\text{y[2]}_{t-1}$}&{\small -20}\\
-    {\small $\text{y[3]}_{t-1}$}&{\small -40}\\
-    {\small $\text{y[4]}_{t-1}$}&{\small -20}\\
-    {\small $\text{z}_{t-1}$}&{\small 4}\\
-    {\small $\text{y[2]}_{t-2}$}&{\small 0}\\
-    {\small $\text{y[3]}_{t-2}$}&{\small -0.001}\\
-    {\small $\text{y[4]}_{t-2}$}&{\small 0.1}\\
-    {\small $\text{z}_{t-2}$}&{\small -3}\\, align=cc]
-    ]
+    {\small $\text{z}_{t-1}$}&{\small 4}\\, align=cc]
     [\textbf{1}
     [\multicolumn{2}{c}{\textbf{0}}\\\hline
     {\small (I)}&{\small -4}\\
@@ -731,28 +679,12 @@
 
     \begin{forest}
       for tree={grow'=west}[\textbf{$\epsilon$}
-    [\textbf{0}
     [\multicolumn{2}{c}{\textbf{0}}\\\hline
-    {{\small 0}}&\textbf{{\small 1}}\\{\small (I)}&{\small 16}\\
-    {\small $\text{y[2]}_{t-1}$}&{\small -18}\\
-    {\small $\text{y[3]}_{t-1}$}&{\small -40}\\
+    {{\small 0}}&\textbf{{\small 1}}\\{\small (I)}&{\small 17}\\
+    {\small $\text{y[2]}_{t-1}$}&{\small -20}\\
+    {\small $\text{y[3]}_{t-1}$}&{\small -39}\\
     {\small $\text{y[4]}_{t-1}$}&{\small -19}\\
-    {\small $\text{z}_{t-1}$}&{\small 4.1}\\
-    {\small $\text{y[2]}_{t-2}$}&{\small 0}\\
-    {\small $\text{y[3]}_{t-2}$}&{\small 1.8}\\
-    {\small $\text{y[4]}_{t-2}$}&{\small 0.92}\\
-    {\small $\text{z}_{t-2}$}&{\small -1.5}\\, align=cc]
-    [\multicolumn{2}{c}{\textbf{1}}\\\hline
-    {{\small 0}}&\textbf{{\small 1}}\\{\small (I)}&{\small 18}\\
-    {\small $\text{y[2]}_{t-1}$}&{\small -21}\\
-    {\small $\text{y[3]}_{t-1}$}&{\small -38}\\
-    {\small $\text{y[4]}_{t-1}$}&{\small -20}\\
-    {\small $\text{z}_{t-1}$}&{\small 4.2}\\
-    {\small $\text{y[2]}_{t-2}$}&{\small 0}\\
-    {\small $\text{y[3]}_{t-2}$}&{\small -0.0013}\\
-    {\small $\text{y[4]}_{t-2}$}&{\small 0.12}\\
-    {\small $\text{z}_{t-2}$}&{\small -3}\\, align=cc]
-    ]
+    {\small $\text{z}_{t-1}$}&{\small 3.6}\\, align=cc]
     [\textbf{1}
     [\multicolumn{2}{c}{\textbf{0}}\\\hline
     {{\small 0}}&\textbf{{\small 1}}\\{\small (I)}&{\small -4}\\
@@ -782,28 +714,12 @@
 
     \begin{forest}
     [\textbf{$\epsilon$}
-    [\textbf{0}
     [\multicolumn{2}{c}{\textbf{0}}\\\hline
-    {\small (I)}&{\small 6}\\
-    {\small $\text{y[2]}_{t-1}$}&{\small -9}\\
-    {\small $\text{y[3]}_{t-1}$}&{\small -20}\\
-    {\small $\text{y[4]}_{t-1}$}&{\small -10}\\
-    {\small $\text{z}_{t-1}$}&{\small 4}\\
-    {\small $\text{y[2]}_{t-2}$}&{\small 1}\\
-    {\small $\text{y[3]}_{t-2}$}&{\small 3}\\
-    {\small $\text{y[4]}_{t-2}$}&{\small 2}\\
-    {\small $\text{z}_{t-2}$}&{\small -1}\\, align=cc]
-    [\multicolumn{2}{c}{\textbf{1}}\\\hline
-    {\small (I)}&{\small 9}\\
+    {\small (I)}&{\small 8}\\
     {\small $\text{y[2]}_{t-1}$}&{\small -10}\\
-    {\small $\text{y[3]}_{t-1}$}&{\small -20}\\
+    {\small $\text{y[3]}_{t-1}$}&{\small -30}\\
     {\small $\text{y[4]}_{t-1}$}&{\small -10}\\
-    {\small $\text{z}_{t-1}$}&{\small 4}\\
-    {\small $\text{y[2]}_{t-2}$}&{\small 0}\\
-    {\small $\text{y[3]}_{t-2}$}&{\small -0.001}\\
-    {\small $\text{y[4]}_{t-2}$}&{\small 0.1}\\
-    {\small $\text{z}_{t-2}$}&{\small -3}\\, align=cc]
-    ]
+    {\small $\text{z}_{t-1}$}&{\small 4}\\, align=cc]
     [\textbf{1}
     [\multicolumn{2}{c}{\textbf{0}}\\\hline
     {\small (I)}&{\small -4}\\
@@ -834,28 +750,12 @@
     \begin{small}
     \begin{forest}
     [\textbf{$\epsilon$}
-    [\textbf{0}
     [\multicolumn{2}{c}{\textbf{0}}\\\hline
-    {0}&\textbf{1}\\(I)&6\\
-    $\text{y[2]}_{t-1}$&-9\\
-    $\text{y[3]}_{t-1}$&-20\\
-    $\text{y[4]}_{t-1}$&-10\\
-    $\text{z}_{t-1}$&4\\
-    $\text{y[2]}_{t-2}$&1\\
-    $\text{y[3]}_{t-2}$&3\\
-    $\text{y[4]}_{t-2}$&2\\
-    $\text{z}_{t-2}$&-1\\, align=cc]
-    [\multicolumn{2}{c}{\textbf{1}}\\\hline
-    {0}&\textbf{1}\\(I)&9\\
+    {0}&\textbf{1}\\(I)&8\\
     $\text{y[2]}_{t-1}$&-10\\
-    $\text{y[3]}_{t-1}$&-20\\
+    $\text{y[3]}_{t-1}$&-30\\
     $\text{y[4]}_{t-1}$&-10\\
-    $\text{z}_{t-1}$&4\\
-    $\text{y[2]}_{t-2}$&0\\
-    $\text{y[3]}_{t-2}$&-0.001\\
-    $\text{y[4]}_{t-2}$&0.1\\
-    $\text{z}_{t-2}$&-3\\, align=cc]
-    ]
+    $\text{z}_{t-1}$&4\\, align=cc]
     [\textbf{1}
     [\multicolumn{2}{c}{\textbf{0}}\\\hline
     {0}&\textbf{1}\\(I)&-4\\
