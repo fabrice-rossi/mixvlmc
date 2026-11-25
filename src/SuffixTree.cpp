@@ -913,7 +913,7 @@ IntegerVector SuffixTree::simulate(IntegerVector start,
     if(i >= start_generating) {
       switch(method) {
         case 0:
-          pre_res = sample(current->counts, current->total_count);
+          pre_res = sample(current->counts, max_x, current->total_count);
           break;
         case 1:
           pre_res = sample2(current->counts, max_x, current->total_count);

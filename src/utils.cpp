@@ -41,16 +41,22 @@ double kl_criterion(const std::unordered_map<int, int>* c_counts,
   return res;
 }
 
-int sample(const std::unordered_map<int, int>* counts, int total) {
+int sample(const std::unordered_map<int, int>* counts, int max, int total) {
+  // the states are considered in increasing order (the iteration order of an
+  // unordered_map is implementation dependent, which would make the results
+  // depend on the platform)
   double bound = total * unif_rand();
   double current = 0;
   int last = 0;
-  for(auto count : *counts) {
-    current += count.second;
-    if(current >= bound) {
-      return count.first;
+  for(int k = 0; k <= max; k++) {
+    auto count = counts->find(k);
+    if(count != counts->end() && count->second > 0) {
+      current += count->second;
+      if(current >= bound) {
+        return k;
+      }
+      last = k;
     }
-    last = count.first;
   }
   return last;
 }

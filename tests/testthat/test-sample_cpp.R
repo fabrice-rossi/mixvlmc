@@ -23,3 +23,18 @@ test_that("mixvlmc_sample2 gives different results as sample in balanced cases",
     expect_false(identical(sp_cpp, sp_r))
   }
 })
+
+test_that("mixvlmc_sample considers the states in increasing order", {
+  ## the result must not depend on the iteration order of the C++ containers
+  for (k in 1:9) {
+    withr::local_seed(k)
+    freq <- sample(0:20, k + 1, replace = TRUE)
+    freq[sample.int(k + 1, 1)] <- 21L
+    withr::local_seed(0)
+    sp_cpp <- mixvlmc_sample(freq, 1000)
+    withr::local_seed(0)
+    u <- runif(1000)
+    sp_ref <- vapply(u, function(v) which(cumsum(freq) >= sum(freq) * v)[1] - 1L, 1L)
+    expect_equal(sp_cpp, sp_ref)
+  }
+})

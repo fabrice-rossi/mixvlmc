@@ -24,6 +24,9 @@ previous versions, in particular for VLMC with covariates (see below).
 * with the C++ backend, `tune_vlmc()` increases `max_depth` as documented 
   (and as with the R backend) and `max_depth = 0` means a depth 0 model (it
   meant no limit)
+* with the C++ backend, `simulate()` with `sample = "fast"` (the default) gives
+  results that do not depend on the platform anymore: for a given seed, they
+  differ from the ones of previous versions
 
 ## Bug fixes
 ### Input validation
