@@ -969,7 +969,9 @@ SuffixTree* SuffixTree::trim() const {
   result->min_size = min_size;
   result->max_length = max_length;
   result->has_positions = false;
-  result->compute_reverse();
+  if(has_reverse) {
+    result->compute_reverse();
+  }
   return result;
 }
 

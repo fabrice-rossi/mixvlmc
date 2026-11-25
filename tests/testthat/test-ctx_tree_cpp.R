@@ -63,3 +63,22 @@ test_that("max_depth = 0 gives a context tree reduced to its root", {
     contexts(restored_tree, frequency = "detailed", positions = TRUE)
   ))
 })
+
+test_that("trimming removes positions from C++ context trees", {
+  dts <- c(0, 0, 1, 1, 0, 1)
+  dts_ctree <- ctx_tree(dts, min_size = 1, max_depth = 2, backend = "C++")
+  orig_positions <- positions(find_sequence(dts_ctree, 0))
+  trimmed_ctree <- trim(dts_ctree)
+  expect_true(compare_ctx(
+    contexts(dts_ctree, frequency = "detailed"),
+    contexts(trimmed_ctree, frequency = "detailed")
+  ))
+  for (ctx in list(numeric(), 0, c(1, 0))) {
+    expect_error(
+      positions(find_sequence(trimmed_ctree, ctx)),
+      "Cannot report positions if they were not saved"
+    )
+  }
+  ## the original tree is not modified
+  expect_identical(positions(find_sequence(dts_ctree, 0)), orig_positions)
+})
