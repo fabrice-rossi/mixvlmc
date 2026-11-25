@@ -154,3 +154,17 @@ test_that("node nature is correctly reported", {
     expect_false(is_context(find_sequence(dts_ctree, 1, reverse = TRUE)))
   }
 })
+
+test_that("positions of the empty context do not depend on the tree", {
+  x <- c(0, 0, 1, 1, 0, 1)
+  ## the root is a full node for x but not for c(x, 2)
+  for (y in list(x, c(x, 2))) {
+    for (backend in c("R", "C++")) {
+      ct <- ctx_tree(y, min_size = 1, max_depth = 2, backend = backend)
+      expect_identical(
+        as.integer(positions(find_sequence(ct, numeric(0)))),
+        0:(length(y) - 1L)
+      )
+    }
+  }
+})
