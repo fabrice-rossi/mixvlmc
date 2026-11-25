@@ -81,13 +81,14 @@ glm_metrics.glm <- function(model, mm, target) {
 
 #' @exportS3Method
 glm_metrics.vglm <- function(model, mm, target) {
-  probs <- vglm_predict_no_warning(model, mm)
-  colnames(probs) <- glm_levels(model)
+  ## glm_predict adds the levels missing in degenerate models
+  probs <- glm_predict(model, mm, lev = levels(target))
   main_metrics(target, probs)
 }
 
 #' @exportS3Method
 glm_metrics.multinom <- function(model, mm, target) {
-  probs <- stats::predict(model, mm, type = "probs")
+  ## glm_predict adds the levels missing in degenerate models
+  probs <- glm_predict(model, mm, lev = levels(target))
   main_metrics(target, probs)
 }

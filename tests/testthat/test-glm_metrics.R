@@ -110,3 +110,23 @@ test_that("glm_likelihood handles degenerate models with a missing middle level"
     )
   }
 })
+
+test_that("metrics for degenerate vglm and multinom models are correct", {
+  withr::local_seed(2)
+  n <- 200
+  mm <- data.frame(z = rnorm(n))
+  lab <- ifelse(mm$z > 0, "c", "d")
+  lab[sample(n, 30)] <- "a"
+  ## level b is never observed
+  target <- factor(lab, levels = c("a", "b", "c", "d"))
+  for (engine in c("glm", "multinom")) {
+    withr::local_options(mixvlmc.predictive = engine)
+    model <- fit_glm(target, mm, 4, covlmc_control())
+    m_metrics <- glm_metrics(model, mm, target)
+    m_probs <- glm_predict(model, mm, lev = levels(target))
+    pred <- factor(levels(target)[apply(m_probs, 1, which.max)], levels = levels(target))
+    cm <- metrics_fix_names(table(pred, target))
+    expect_identical(m_metrics$conf_mat, cm)
+    expect_equal(m_metrics$accuracy, mean(pred == target))
+  }
+})
