@@ -687,6 +687,9 @@ covlmc_control <- function(pseudo_obs = 1) {
 covlmc <- function(x, covariate, alpha = 0.05, min_size = 5L, max_depth = 100L, keep_data = TRUE, control = covlmc_control(...), ...) {
   assertthat::assert_that(is.data.frame(covariate))
   assertthat::assert_that(nrow(covariate) == length(x))
+  if (anyNA(covariate)) {
+    stop("covariate cannot contain missing values")
+  }
   if (is.null(alpha) || !is.numeric(alpha) || alpha <= 0 || alpha > 1) {
     stop("the alpha parameter must be in (0, 1]")
   }

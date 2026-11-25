@@ -132,3 +132,17 @@ test_that("the semantics of final_pred is respected", {
     )
   }
 })
+
+test_that("covlmc predict rejects missing values in covariates", {
+  pc <- powerconsumption[powerconsumption$week == 5, ]
+  dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1))))
+  dts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17), z = pc$voltage)
+  m_cov <- covlmc(dts, dts_cov, min_size = 5)
+  new_cov <- dts_cov[1:50, ]
+  new_cov$z[20] <- NA
+  expect_error(predict(m_cov, dts[1:50], new_cov, type = "probs"), "missing values")
+  ## NA in unused variables are accepted
+  new_cov <- dts_cov[1:50, ]
+  new_cov$extra <- NA
+  expect_no_error(predict(m_cov, dts[1:50], new_cov, type = "probs"))
+})

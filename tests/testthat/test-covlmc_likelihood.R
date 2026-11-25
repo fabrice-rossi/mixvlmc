@@ -131,3 +131,13 @@ test_that("likelihood calculation artifical data with merged models", {
     }
   }
 })
+
+test_that("loglikelihood rejects missing values in new covariates", {
+  pc <- powerconsumption[powerconsumption$week == 5, ]
+  dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1))))
+  dts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
+  m_cov <- covlmc(dts, dts_cov, min_size = 5)
+  new_cov <- dts_cov[1:50, , drop = FALSE]
+  new_cov$day_night[20] <- NA
+  expect_error(loglikelihood(m_cov, newdata = dts[1:50], newcov = new_cov), "missing values")
+})

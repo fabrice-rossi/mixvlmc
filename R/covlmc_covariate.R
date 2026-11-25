@@ -17,6 +17,9 @@ covariate_description <- function(covariate) {
 
 validate_covariate <- function(model, covariate) {
   assertthat::assert_that(assertthat::has_name(covariate, model$cov_names))
+  if (anyNA(covariate[model$cov_names])) {
+    stop("covariates cannot contain missing values")
+  }
   for (var in names(model$cov_desc)) {
     if (!is.factor(covariate[[var]])) {
       covariate[[var]] <- factor(covariate[[var]])

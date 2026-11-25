@@ -160,3 +160,11 @@ test_that("node_fit_glm_full_rank_with_data discards models with a NA likelihood
   res <- node_fit_glm_full_rank_with_data(mm, 2L, target, 1, 2, covlmc_control())
   expect_identical(res$hsize, 0L)
 })
+
+test_that("covlmc rejects missing values in covariates", {
+  pc <- powerconsumption[powerconsumption$week == 5, ]
+  dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1))))
+  dts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
+  dts_cov$day_night[c(10, 50, 300)] <- NA
+  expect_error(covlmc(dts, dts_cov, min_size = 5), "missing values")
+})
