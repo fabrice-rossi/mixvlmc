@@ -64,6 +64,8 @@ covariates (see the breaking changes below).
 * with the C++ backend, `simulate()` with `sample = "fast"` (the default) gives
   results that do not depend on the platform anymore: for a given seed, they
   differ from the ones of previous versions
+* `metrics()` reports an error when it is applied to a node of a VLMC that is
+  not a context (it returned `NaN` values), as it does for VLMC with covariates
 * methods that do not use their `...` argument now report an error when
   additional arguments are given (issue #64). Misspelled arguments such as
   `simulate(model, 100, burn_in = 10)` or `loglikelihood(model, new_data = x)`

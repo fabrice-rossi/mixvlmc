@@ -46,3 +46,16 @@ test_that("ctx_node based metrics reporting is consistent with direct reporting"
     }
   }
 })
+
+test_that("metrics reports clearly that a node is not a context", {
+  x <- rep(c(0, 0, 1, 1), 50)
+  for (backend in c("R", "C++")) {
+    model <- vlmc(x, backend = backend)
+    root <- find_sequence(model, numeric(0))
+    expect_false(is_context(root))
+    expect_error(metrics(root), "not a context")
+    for (ctx in contexts(model)) {
+      expect_no_error(metrics(ctx))
+    }
+  }
+})

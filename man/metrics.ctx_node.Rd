@@ -7,7 +7,7 @@
 \method{metrics}{ctx_node}(model, ...)
 }
 \arguments{
-\item{model}{T \code{ctx_node} object as returned by \code{\link[=find_sequence]{find_sequence()}}.}
+\item{model}{a \code{ctx_node} object as returned by \code{\link[=find_sequence]{find_sequence()}}.}
 
 \item{...}{Additional parameters for predictive metrics computation.}
 }
@@ -28,7 +28,7 @@ This function computes and returns predictive quality metrics for a node
 Compared to \code{\link[=metrics.vlmc]{metrics.vlmc()}}, this function focuses on a single context and
 assesses the quality of its predictions, disregarding observations that have
 other contexts. Apart from this limited scope, the function operates as
-\code{\link[=metrics.vlmc]{metrics.vlmc()}}.
+\code{\link[=metrics.vlmc]{metrics.vlmc()}}. The node must be a context (see \code{\link[=is_context]{is_context()}}).
 }
 \examples{
 pc <- powerconsumption[powerconsumption$week == 5, ]

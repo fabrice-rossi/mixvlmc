@@ -54,9 +54,9 @@ cutoff.ctx_node <- function(model, scale = c("quantile", "native"), raw = FALSE,
 #' Compared to [metrics.vlmc()], this function focuses on a single context and
 #' assesses the quality of its predictions, disregarding observations that have
 #' other contexts. Apart from this limited scope, the function operates as
-#' [metrics.vlmc()].
+#' [metrics.vlmc()]. The node must be a context (see [is_context()]).
 #'
-#' @param model T `ctx_node` object as returned by [find_sequence()].
+#' @param model a `ctx_node` object as returned by [find_sequence()].
 #' @inherit metrics
 #' @examples
 #' pc <- powerconsumption[powerconsumption$week == 5, ]
@@ -71,6 +71,9 @@ cutoff.ctx_node <- function(model, scale = c("quantile", "native"), raw = FALSE,
 #' @export
 metrics.ctx_node <- function(model, ...) {
   rlang::check_dots_empty()
+  if (!is_context(model)) {
+    stop("the node is not a context, no metrics can be computed")
+  }
   c_probs <- matrix(probs(model), nrow = 1)
   c_freq <- counts(model, local = TRUE)
   fake_data <- generate_fake_data(
