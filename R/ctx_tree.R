@@ -96,7 +96,7 @@ grow_ctx_tree <- function(x, vals, min_size, max_depth, covsize = 0L, keep_match
       result
     }
   }
-  pre_res <- recurse_ctx_tree(x, length(vals), 0L, NULL, table(x))
+  pre_res <- recurse_ctx_tree(x, length(vals), 0L, NULL, tabulate(x + 1L, nbins = length(vals)))
   if (is.null(pre_res$max_depth)) {
     pre_res$max_depth <- FALSE
   }

@@ -75,3 +75,46 @@ test_that("vlmc returns an object with all the needed internal fields", {
     "keep_match", "data_size", "pruned"
   ), ignore.order = TRUE)
 })
+
+test_that("states that do not appear in the time series are supported", {
+  withr::local_seed(0)
+  x <- character(500)
+  x[1] <- "a"
+  for (i in 2:500) {
+    if (x[i - 1] == "a") {
+      x[i] <- sample(c("a", "b"), 1, prob = c(0.2, 0.8))
+    } else {
+      x[i] <- sample(c("a", "b"), 1, prob = c(0.7, 0.3))
+    }
+  }
+  x2 <- factor(x, levels = c("a", "b"))
+  x3 <- factor(x, levels = c("a", "b", "c"))
+  ## as "c" never appears, each internal node of the context tree is also a
+  ## context (that does not match any part of the time series): the context
+  ## trees differ from the ones obtained with only "a" and "b" but the
+  ## likelihoods are identical
+  nb_ctx <- list()
+  for (backend in c("R", "C++")) {
+    ct3 <- ctx_tree(x3, max_depth = 3, backend = backend)
+    c3 <- contexts(ct3, frequency = "detailed")
+    expect_true(all(c3[, 5] == 0))
+    m2 <- vlmc(x2, cutoff = 2, backend = backend)
+    m3 <- vlmc(x3, cutoff = 2, backend = backend)
+    expect_gt(depth(m3), 0)
+    expect_equal(depth(m3), depth(m2))
+    for (initial in c("truncated", "specific", "extended")) {
+      expect_equal(
+        as.numeric(loglikelihood(m3, initial = initial)),
+        as.numeric(loglikelihood(m2, initial = initial))
+      )
+    }
+    x3_sim <- simulate(m3, 100, seed = 0)
+    expect_false(any(x3_sim == "c"))
+    nb_ctx[[backend]] <- c(context_number(ct3), context_number(m3))
+  }
+  expect_equal(nb_ctx[["R"]], nb_ctx[["C++"]])
+  for (backend in c("R", "C++")) {
+    expect_no_error(m_lgl <- vlmc(rep(TRUE, 20), backend = backend))
+    expect_equal(context_number(m_lgl), 1)
+  }
+})
