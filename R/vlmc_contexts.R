@@ -14,7 +14,7 @@ vlmc_context_extractor <-
         res <- cbind(res, data.frame(cutoff = local_kl))
       }
       if (isTRUE(control$metric)) {
-        if (isFALSE(control[["frequency"]] == "detailed") || isFALSE(control[["local"]])) {
+        if (!(identical(control[["frequency"]], "detailed") && isTRUE(control[["local"]]))) {
           l_cont <- control
           l_cont$frequency <- "detailed"
           l_cont$local <- TRUE
