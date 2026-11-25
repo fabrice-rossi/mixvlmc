@@ -124,7 +124,7 @@ tune_covlmc <- function(x, covariate, criterion = c("BIC", "AIC"),
     alpha <- alpha_init
   }
   if (verbose > 0) {
-    message("Fitting a covlmc with max_depth = ", max_depth, " and alpha = ", alpha)
+    message("Fitting a covlmc with max_depth = ", max_depth, " and alpha = ", format(alpha))
   }
   saved_models <- list()
   base_model <- covlmc(x, covariate,
@@ -152,7 +152,7 @@ tune_covlmc <- function(x, covariate, criterion = c("BIC", "AIC"),
   max_order <- depth(model)
   best_crit <- Inf
   if (verbose > 0) {
-    message("Initial criterion = ", best_crit)
+    message("Initial criterion = ", format(best_crit))
   }
   if (save == "all") {
     all_models <- list()
@@ -171,7 +171,7 @@ tune_covlmc <- function(x, covariate, criterion = c("BIC", "AIC"),
       best_crit <- crit
       best_model <- model
       if (verbose > 0) {
-        message("Improving criterion = ", best_crit)
+        message("Improving criterion = ", format(best_crit))
       }
     }
     a_result <- data.frame(
@@ -197,7 +197,7 @@ tune_covlmc <- function(x, covariate, criterion = c("BIC", "AIC"),
         break
       }
       if (verbose > 0) {
-        message("Pruning covlmc with alpha = ", alpha)
+        message("Pruning covlmc with alpha = ", format(alpha))
       }
       model <- prune(model, alpha = alpha)
       if (save == "all") {

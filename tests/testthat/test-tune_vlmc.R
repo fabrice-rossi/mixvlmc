@@ -76,7 +76,7 @@ test_that("summary works as expected", {
 
 test_that("tune_vlmc verbosity is adequate", {
   data_set <- build_markov_chain(500, 3, seed = 0)
-  expect_snapshot_output(tune_vlmc(data_set$x, max_depth = 2, verbose = 1))
+  expect_snapshot(tune_vlmc(data_set$x, max_depth = 2, verbose = 1))
 })
 
 test_that("tune_vlmc initial cutoff/alpha are respected", {

@@ -113,53 +113,57 @@
 
 # tune_vlmc verbosity is adequate
 
-    Fitting a vlmc with max_depth= 2 and cutoff= 1.553652 
-    Max depth reached, increasing it to 4 
-    Max depth reached, increasing it to 8 
-    Max depth reached, increasing it to 16 
-    Initial criterion = Inf 
-    Improving criterion = 1422.461 likelihood = -413.7037 df = 96 nobs =  492 
-    Pruning vlmc with cutoff = 1.56652 
-    Improving criterion = 1378.897 likelihood = -416.7154 df = 88 nobs =  492 
-    Pruning vlmc with cutoff = 1.601899 
-    Improving criterion = 1358.369 likelihood = -418.8484 df = 84 nobs =  492 
-    Pruning vlmc with cutoff = 1.663405 
-    Pruning vlmc with cutoff = 1.731122 
-    Improving criterion = 1353.073 likelihood = -422.3991 df = 82 nobs =  492 
-    Pruning vlmc with cutoff = 1.771785 
-    Improving criterion = 1332.213 likelihood = -424.366 df = 78 nobs =  492 
-    Pruning vlmc with cutoff = 1.806683 
-    Improving criterion = 1323.379 likelihood = -426.1471 df = 76 nobs =  492 
-    Pruning vlmc with cutoff = 1.840646 
-    Improving criterion = 1302.31 likelihood = -428.0099 df = 72 nobs =  492 
-    Pruning vlmc with cutoff = 1.864315 
-    Improving criterion = 1213.979 likelihood = -433.4319 df = 56 nobs =  492 
-    Pruning vlmc with cutoff = 1.910771 
-    Improving criterion = 1181.547 likelihood = -435.8113 df = 50 nobs =  492 
-    Pruning vlmc with cutoff = 1.955919 
-    Improving criterion = 1160.906 likelihood = -437.8881 df = 46 nobs =  492 
-    Pruning vlmc with cutoff = 2.023933 
-    Improving criterion = 1141.51 likelihood = -440.587 df = 42 nobs =  492 
-    Pruning vlmc with cutoff = 2.198586 
-    Improving criterion = 1123.854 likelihood = -444.156 df = 38 nobs =  492 
-    Pruning vlmc with cutoff = 2.431783 
-    Improving criterion = 1081.568 likelihood = -447.8067 df = 30 nobs =  492 
-    Pruning vlmc with cutoff = 2.632452 
-    Improving criterion = 1063.522 likelihood = -451.1809 df = 26 nobs =  492 
-    Pruning vlmc with cutoff = 2.794372 
-    Improving criterion = 1044.716 likelihood = -454.1745 df = 22 nobs =  492 
-    Pruning vlmc with cutoff = 2.951746 
-    Improving criterion = 1017.094 likelihood = -458.9591 df = 16 nobs =  492 
-    Pruning vlmc with cutoff = 3.141665 
-    Improving criterion = 985.2628 likelihood = -461.639 df = 10 nobs =  492 
-    Pruning vlmc with cutoff = 3.76776 
-    Improving criterion = 967.7161 likelihood = -465.2626 df = 6 nobs =  492 
-    Pruning vlmc with cutoff = 9.203328 
-    Pruning vlmc with cutoff = 20.85968 
-    Pruning vlmc with cutoff = 24.0565 
-    VLMC context tree on 0, 1, 2 
-     cutoff: 3.768 (quantile: 0.0231)
-     Number of contexts: 3 
-     Maximum context length: 1 
-     Selected by BIC (967.7161) with likelihood function "truncated" (-465.2626)
+    Code
+      tune_vlmc(data_set$x, max_depth = 2, verbose = 1)
+    Message
+      Fitting a vlmc with max_depth = 2 and cutoff = 1.553652
+      Max depth reached, increasing it to 4
+      Max depth reached, increasing it to 8
+      Max depth reached, increasing it to 16
+      Initial criterion = Inf
+      Improving criterion = 1422.461, likelihood = -413.7037, df = 96, nobs = 492
+      Pruning vlmc with cutoff = 1.56652
+      Improving criterion = 1378.897, likelihood = -416.7154, df = 88, nobs = 492
+      Pruning vlmc with cutoff = 1.601899
+      Improving criterion = 1358.369, likelihood = -418.8484, df = 84, nobs = 492
+      Pruning vlmc with cutoff = 1.663405
+      Pruning vlmc with cutoff = 1.731122
+      Improving criterion = 1353.073, likelihood = -422.3991, df = 82, nobs = 492
+      Pruning vlmc with cutoff = 1.771785
+      Improving criterion = 1332.213, likelihood = -424.366, df = 78, nobs = 492
+      Pruning vlmc with cutoff = 1.806683
+      Improving criterion = 1323.379, likelihood = -426.1471, df = 76, nobs = 492
+      Pruning vlmc with cutoff = 1.840646
+      Improving criterion = 1302.31, likelihood = -428.0099, df = 72, nobs = 492
+      Pruning vlmc with cutoff = 1.864315
+      Improving criterion = 1213.979, likelihood = -433.4319, df = 56, nobs = 492
+      Pruning vlmc with cutoff = 1.910771
+      Improving criterion = 1181.547, likelihood = -435.8113, df = 50, nobs = 492
+      Pruning vlmc with cutoff = 1.955919
+      Improving criterion = 1160.906, likelihood = -437.8881, df = 46, nobs = 492
+      Pruning vlmc with cutoff = 2.023933
+      Improving criterion = 1141.51, likelihood = -440.587, df = 42, nobs = 492
+      Pruning vlmc with cutoff = 2.198586
+      Improving criterion = 1123.854, likelihood = -444.156, df = 38, nobs = 492
+      Pruning vlmc with cutoff = 2.431783
+      Improving criterion = 1081.568, likelihood = -447.8067, df = 30, nobs = 492
+      Pruning vlmc with cutoff = 2.632452
+      Improving criterion = 1063.522, likelihood = -451.1809, df = 26, nobs = 492
+      Pruning vlmc with cutoff = 2.794372
+      Improving criterion = 1044.716, likelihood = -454.1745, df = 22, nobs = 492
+      Pruning vlmc with cutoff = 2.951746
+      Improving criterion = 1017.094, likelihood = -458.9591, df = 16, nobs = 492
+      Pruning vlmc with cutoff = 3.141665
+      Improving criterion = 985.2628, likelihood = -461.639, df = 10, nobs = 492
+      Pruning vlmc with cutoff = 3.76776
+      Improving criterion = 967.7161, likelihood = -465.2626, df = 6, nobs = 492
+      Pruning vlmc with cutoff = 9.203328
+      Pruning vlmc with cutoff = 20.85968
+      Pruning vlmc with cutoff = 24.0565
+    Output
+      VLMC context tree on 0, 1, 2 
+       cutoff: 3.768 (quantile: 0.0231)
+       Number of contexts: 3 
+       Maximum context length: 1 
+       Selected by BIC (967.7161) with likelihood function "truncated" (-465.2626)
 

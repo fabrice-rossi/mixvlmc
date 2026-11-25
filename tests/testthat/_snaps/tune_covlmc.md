@@ -62,15 +62,19 @@
 
 # tune_vlmc verbosity is adequate
 
-    Fitting a covlmc with max_depth= 100 and alpha= 0.5 
-    Initial criterion= Inf 
-    Improving criterion= 1072.785 
-    Pruning covlmc with alpha= 1.633195e-08 
-    Pruning covlmc with alpha= 1.419105e-10 
-    Pruning covlmc with alpha= 5.152435e-11 
-    VLMC with covariate context tree on A, B, C 
-     cutoff in quantile scale: 0.5
-     Number of contexts: 3 
-     Maximum context length: 1 
-     Selected by BIC (1072.785) with likelihood function "truncated" (-461.8413)
+    Code
+      tune_covlmc(x, df_y, criterion = "BIC", verbose = 1)
+    Message
+      Fitting a covlmc with max_depth = 100 and alpha = 0.5
+      Initial criterion = Inf
+      Improving criterion = 1072.785
+      Pruning covlmc with alpha = 1.633195e-08
+      Pruning covlmc with alpha = 1.419105e-10
+      Pruning covlmc with alpha = 5.152435e-11
+    Output
+      VLMC with covariate context tree on A, B, C 
+       cutoff in quantile scale: 0.5
+       Number of contexts: 3 
+       Maximum context length: 1 
+       Selected by BIC (1072.785) with likelihood function "truncated" (-461.8413)
 

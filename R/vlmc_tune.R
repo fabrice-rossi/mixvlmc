@@ -119,7 +119,7 @@ tune_vlmc <- function(x, criterion = c("BIC", "AIC"),
     max_depth <- max(max_depth, length(x) - 1)
   }
   if (verbose > 0) {
-    message("Fitting a vlmc with max_depth = ", max_depth, " and cutoff = ", cutoff)
+    message("Fitting a vlmc with max_depth = ", max_depth, " and cutoff = ", format(cutoff))
   }
   saved_models <- list()
   base_model <- vlmc(x,
@@ -156,7 +156,7 @@ tune_vlmc <- function(x, criterion = c("BIC", "AIC"),
   model <- base_model
   best_crit <- Inf
   if (verbose > 0) {
-    message("Initial criterion = ", best_crit)
+    message("Initial criterion = ", format(best_crit))
   }
   if (save == "all") {
     all_models <- vector(mode = "list", length = length(cutoffs))
@@ -177,7 +177,7 @@ tune_vlmc <- function(x, criterion = c("BIC", "AIC"),
       best_model <- model
       if (verbose > 0) {
         message(
-          "Improving criterion = ", best_crit, ", likelihood = ", ll,
+          "Improving criterion = ", format(best_crit), ", likelihood = ", format(ll),
           ", df = ", attr(ll, "df"), ", nobs = ", attr(ll, "nobs")
         )
       }
@@ -189,7 +189,7 @@ tune_vlmc <- function(x, criterion = c("BIC", "AIC"),
     results$BIC[k] <- stats::BIC(ll)
     if (k <= length(cutoffs)) {
       if (verbose > 0) {
-        message("Pruning vlmc with cutoff = ", cutoffs[k])
+        message("Pruning vlmc with cutoff = ", format(cutoffs[k]))
       }
       model <- prune(model, cutoff = cutoffs[k])
       if (save == "all") {
