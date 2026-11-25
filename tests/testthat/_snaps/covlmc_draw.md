@@ -748,8 +748,7 @@
     [\multicolumn{2}{c}{\textbf{0}}\\\hline
     {\small 0.000998}&{\small 0.999}, align=cc]
     [\multicolumn{2}{c}{\textbf{1}}\\\hline
-    {\small 0.999}&{\small 0.000999}, align=cc]
-    ]
+    {\small 0.999}&{\small 0.000999}, align=cc]]
     \end{forest}
 
 ---
@@ -759,8 +758,7 @@
     [\multicolumn{2}{c}{\textbf{0}}\\\hline
     {\small 0.000998}&{\small 0.999}, align=cc]
     [\multicolumn{2}{c}{\textbf{1}}\\\hline
-    {\small 0.999}&{\small 0.000999}, align=cc]
-    ]
+    {\small 0.999}&{\small 0.000999}, align=cc]]
     \end{forest}
 
 ---
@@ -784,8 +782,7 @@
     [\multicolumn{2}{c}{\textbf{0}}\\\hline
     {\small 0.000998}&{\small 0.999}, align=cc]
     [\multicolumn{2}{c}{\textbf{1}}\\\hline
-    {\small 0.999}&{\small 0.000999}, align=cc]
-    ]
+    {\small 0.999}&{\small 0.000999}, align=cc]]
     \end{forest}
 
 ---
@@ -795,7 +792,6 @@
     [\multicolumn{2}{c}{\textbf{0}}\\\hline
     {\small 0.000998}&{\small 0.999}, align=cc]
     [\multicolumn{2}{c}{\textbf{1}}\\\hline
-    {\small 0.999}&{\small 0.000999}, align=cc]
-    ]
+    {\small 0.999}&{\small 0.000999}, align=cc]]
     \end{forest}
 

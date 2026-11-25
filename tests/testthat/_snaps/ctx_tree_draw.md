@@ -74,13 +74,10 @@
     [\textbf{$\epsilon$}
     [\textbf{0}
     [\textbf{0}]
-    [\textbf{1}]
-    ]
+    [\textbf{1}]]
     [\textbf{1}
     [\textbf{0}]
-    [\textbf{1}]
-    ]
-    ]
+    [\textbf{1}]]]
     \end{forest}
 
 ---
@@ -93,16 +90,13 @@
     [{\textbf{0}}\\\hline
     {\small 1}, align=c]
     [{\textbf{1}}\\\hline
-    {\small 2}, align=c]
-    ]
+    {\small 2}, align=c]]
     [{\textbf{1}}\\\hline
     {\small 5}, align=c
     [{\textbf{0}}\\\hline
     {\small 3}, align=c]
     [{\textbf{1}}\\\hline
-    {\small 2}, align=c]
-    ]
-    ]
+    {\small 2}, align=c]]]
     \end{forest}
 
 ---
@@ -115,16 +109,13 @@
     [\multicolumn{2}{c}{\textbf{0}}\\\hline
     {\small 0}&{\small 1}, align=cc]
     [\multicolumn{2}{c}{\textbf{1}}\\\hline
-    {\small 1}&{\small 1}, align=cc]
-    ]
+    {\small 1}&{\small 1}, align=cc]]
     [\multicolumn{2}{c}{\textbf{1}}\\\hline
     {\small 3}&{\small 2}, align=cc
     [\multicolumn{2}{c}{\textbf{0}}\\\hline
     {\small 2}&{\small 1}, align=cc]
     [\multicolumn{2}{c}{\textbf{1}}\\\hline
-    {\small 1}&{\small 1}, align=cc]
-    ]
-    ]
+    {\small 1}&{\small 1}, align=cc]]]
     \end{forest}
 
 ---
@@ -133,13 +124,10 @@
     [{\textbf{$\epsilon$} {\small (5,5)}}
     [{\textbf{0} {\small (1,3)}}
     [{\textbf{0} {\small (0,1)}}]
-    [{\textbf{1} {\small (1,1)}}]
-    ]
+    [{\textbf{1} {\small (1,1)}}]]
     [{\textbf{1} {\small (3,2)}}
     [{\textbf{0} {\small (2,1)}}]
-    [{\textbf{1} {\small (1,1)}}]
-    ]
-    ]
+    [{\textbf{1} {\small (1,1)}}]]]
     \end{forest}
 
 ---
@@ -149,13 +137,10 @@
     [{\textbf{$\epsilon$} (5,5)}
     [{\textbf{0} (1,3)}
     [{\textbf{0} (0,1)}]
-    [{\textbf{1} (1,1)}]
-    ]
+    [{\textbf{1} (1,1)}]]
     [{\textbf{1} (3,2)}
     [{\textbf{0} (2,1)}]
-    [{\textbf{1} (1,1)}]
-    ]
-    ]
+    [{\textbf{1} (1,1)}]]]
     \end{forest}
     \end{small}
 
@@ -163,16 +148,14 @@
 
     \begin{small}
     \begin{forest}
-      for tree={draw, grow'=west}[{\textbf{$\epsilon$} (5,5)}
+      for tree={draw, grow'=west}
+    [{\textbf{$\epsilon$} (5,5)}
     [{\textbf{0} (1,3)}
     [{\textbf{0} (0,1)}]
-    [{\textbf{1} (1,1)}]
-    ]
+    [{\textbf{1} (1,1)}]]
     [{\textbf{1} (3,2)}
     [{\textbf{0} (2,1)}]
-    [{\textbf{1} (1,1)}]
-    ]
-    ]
+    [{\textbf{1} (1,1)}]]]
     \end{forest}
     \end{small}
 
@@ -180,23 +163,21 @@
 
     \begin{small}
     \begin{forest}
-      for tree={circle, draw, grow'=west}[\multicolumn{2}{c}{\textbf{$\epsilon$}}\\\hline
+      for tree={circle, draw, grow'=west}
+    [\multicolumn{2}{c}{\textbf{$\epsilon$}}\\\hline
     {\scriptsize 5}&{\scriptsize 5}, align=cc
     [\multicolumn{2}{c}{\textbf{0}}\\\hline
     {\scriptsize 1}&{\scriptsize 3}, align=cc
     [\multicolumn{2}{c}{\textbf{0}}\\\hline
     {\scriptsize 0}&{\scriptsize 1}, align=cc]
     [\multicolumn{2}{c}{\textbf{1}}\\\hline
-    {\scriptsize 1}&{\scriptsize 1}, align=cc]
-    ]
+    {\scriptsize 1}&{\scriptsize 1}, align=cc]]
     [\multicolumn{2}{c}{\textbf{1}}\\\hline
     {\scriptsize 3}&{\scriptsize 2}, align=cc
     [\multicolumn{2}{c}{\textbf{0}}\\\hline
     {\scriptsize 2}&{\scriptsize 1}, align=cc]
     [\multicolumn{2}{c}{\textbf{1}}\\\hline
-    {\scriptsize 1}&{\scriptsize 1}, align=cc]
-    ]
-    ]
+    {\scriptsize 1}&{\scriptsize 1}, align=cc]]]
     \end{forest}
     \end{small}
 
