@@ -70,10 +70,10 @@ The result of `ctx_tree()` is a `ctx_tree` object. It can be drawn using ascii a
 draw(x_ctx)
 ```
 
-The default extraction is done with `min_size=2` and `max_depth=10` which means that
+The default extraction is done with `min_size=2` and `max_depth=100` which means that
 
 - contexts are included only if they appear at least twice in the time series;
-- the maximum length of a context is 10 (the term _depth_ is used in reference to the tree representation).
+- the maximum length of a context is 100 (the term _depth_ is used in reference to the tree representation).
 
 Notice that the number of potential contexts grows exponentially  with the length of the time series and it is therefore advisable to keep `max_depth` to a reasonable value. Let us consider a simple example.
 
