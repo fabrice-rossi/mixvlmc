@@ -17,7 +17,9 @@ test_that("draw() returns a printable representation", {
       expect_identical(format(repr), lines)
       expect_identical(capture.output(print(repr)), lines)
       expect_identical(capture.output(draw(model, format)), lines)
-      expect_invisible(print(repr))
+      capture.output(printed <- withVisible(print(repr)))
+      expect_false(printed$visible)
+      expect_identical(printed$value, repr)
     }
   }
 })
@@ -37,7 +39,7 @@ test_that("knitr includes LaTeX representations as is in LaTeX documents", {
   deps <- attr(out, "knit_meta")
   expect_length(deps, 1)
   expect_s3_class(deps[[1]], "latex_dependency")
-  expect_identical(deps[[1]]$name, "forest")
+  expect_match(deps[[1]]$extra_lines, "\\usepackage{forest}", fixed = TRUE)
   ## other outputs
   knitr::opts_knit$set(rmarkdown.pandoc.to = "html")
   capture.output(out <- knitr::knit_print(repr))
@@ -68,4 +70,29 @@ test_that("a LaTeX representation is rendered in a R Markdown LaTeX document", {
   expect_true(any(grepl("\\usepackage{forest}", tex_lines, fixed = TRUE)))
   expect_true(any(grepl("\\begin{forest}", tex_lines, fixed = TRUE)))
   expect_false(any(grepl("## \\begin{forest}", tex_lines, fixed = TRUE)))
+})
+
+test_that("a document can load forest with its own options", {
+  skip_on_cran()
+  skip_if_not_installed("rmarkdown")
+  skip_if_not(rmarkdown::pandoc_available())
+  skip_if(!nzchar(Sys.which("pdflatex")))
+  rmd <- withr::local_tempfile(fileext = ".Rmd")
+  writeLines(c(
+    "---",
+    "output:",
+    "  pdf_document:",
+    "    keep_tex: true",
+    "header-includes:",
+    "  - \\usepackage[linguistics]{forest}",
+    "---",
+    "```{r}",
+    "library(mixvlmc)",
+    "model <- vlmc(rep(c(\"A\", \"B\", \"B\"), 20))",
+    "draw(model, \"latex\")",
+    "```"
+  ), rmd)
+  pdf <- rmarkdown::render(rmd, quiet = TRUE, envir = new.env())
+  withr::defer(unlink(c(pdf, sub("pdf$", "tex", pdf))))
+  expect_true(file.exists(pdf))
 })

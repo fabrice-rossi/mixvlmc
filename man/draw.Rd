@@ -58,7 +58,8 @@ special characters in the names of the states of the context tree.
 
 In a knitr document (R Markdown, Quarto, ...) that produces LaTeX (e.g. a
 PDF output), the LaTeX representation is included as is in the document
-and the \code{forest} package is added automatically to its preamble: calling
+and the \code{forest} package is added automatically to its preamble (unless
+the document loads it, possibly with options): calling
 \code{draw(model, "latex")} in a chunk is enough to render the tree (see
 \code{\link[=print.mixvlmc_draw]{print.mixvlmc_draw()}}).
 }

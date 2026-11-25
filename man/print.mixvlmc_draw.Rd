@@ -36,8 +36,10 @@ In a knitr document (R Markdown, Quarto, ...), the result of \code{\link[=draw]{
 printed as standard R output, except for a LaTeX representation
 (\code{format = "latex"}) in a document that produces LaTeX (e.g. a PDF output).
 In this case, the LaTeX code is included as is in the document and the
-\code{forest} LaTeX package is added automatically to its preamble, so that the
-tree is rendered.
+\code{forest} LaTeX package is loaded automatically at the end of its preamble
+(with the \code{AtEndPreamble} command of the \code{etoolbox} package), so that the tree is
+rendered. A document can also load \code{forest} in its preamble, possibly with
+options: it is then not loaded a second time.
 }
 \examples{
 rdts <- sample(c(0, 1), 100, replace = TRUE)

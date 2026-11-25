@@ -437,7 +437,8 @@ rec_format_ctx_tree <- function(label, prefix, ct, vals, control, node2txt) {
 #'
 #'   In a knitr document (R Markdown, Quarto, ...) that produces LaTeX (e.g. a
 #'   PDF output), the LaTeX representation is included as is in the document
-#'   and the `forest` package is added automatically to its preamble: calling
+#'   and the `forest` package is added automatically to its preamble (unless
+#'   the document loads it, possibly with options): calling
 #'   `draw(model, "latex")` in a chunk is enough to render the tree (see
 #'   [print.mixvlmc_draw()]).
 #'
