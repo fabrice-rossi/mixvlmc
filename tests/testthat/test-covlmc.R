@@ -168,3 +168,48 @@ test_that("covlmc rejects missing values in covariates", {
   dts_cov$day_night[c(10, 50, 300)] <- NA
   expect_error(covlmc(dts, dts_cov, min_size = 5), "missing values")
 })
+
+test_that("likelihood ratio tests use the number of parameters of factors", {
+  withr::local_seed(4)
+  n <- 400
+  f <- factor(sample(c("A", "B", "C", "D"), n, replace = TRUE))
+  y <- rbinom(n, 1, 0.5)
+  res <- node_fit_glm(0:(n - 2), 1L, y, data.frame(f = f), 0.05, 2,
+    return_all = TRUE, control = covlmc_control()
+  )
+  df <- length(coef(res$H1_model$model)) - length(coef(res$H0_model$model))
+  expect_equal(df, 3)
+  expect_equal(res$p_value, stats::pchisq(res$lambda, df = df, lower.tail = FALSE))
+})
+
+test_that("covlmc gives the same results with factors and dummy variables", {
+  withr::local_seed(1)
+  n <- 600
+  f <- factor(sample(c("A", "B", "C", "D"), n, replace = TRUE))
+  x <- rep(0L, n)
+  for (k in 2:n) {
+    p <- c(0.3, 0.6, 0.5, 0.55)[as.integer(f[k - 1])]
+    if (x[k - 1] == 1) {
+      p <- 1 - p
+    }
+    x[k] <- stats::rbinom(1, 1, p)
+  }
+  cov_f <- data.frame(f = f)
+  ## treatment contrasts
+  cov_d <- as.data.frame(stats::model.matrix(~f, cov_f)[, -1])
+  x3 <- x + (c(0L, x[-n]) == 1 & x == 1)
+  for (dts in list(x, x3)) {
+    m_f <- covlmc(dts, cov_f, alpha = 0.2, min_size = 3)
+    m_d <- covlmc(dts, cov_d, alpha = 0.2, min_size = 3)
+    expect_identical(context_number(m_f), context_number(m_d))
+    expect_identical(covariate_depth(m_f), covariate_depth(m_d))
+    expect_equal(extract_p_value(m_f), extract_p_value(m_d))
+    expect_equal(loglikelihood(m_f), loglikelihood(m_d))
+    a_cut <- cutoff(m_f)[2]
+    expect_equal(cutoff(m_f), cutoff(m_d))
+    p_f <- prune(m_f, a_cut)
+    p_d <- prune(m_d, a_cut)
+    expect_equal(extract_p_value(p_f), extract_p_value(p_d))
+    expect_equal(loglikelihood(p_f), loglikelihood(p_d))
+  }
+})

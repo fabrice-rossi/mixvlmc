@@ -49,14 +49,17 @@ node_fit_glm_full_rank_with_data <- function(local_mm, d, target, dim_cov, nb_va
 ## the size=d model is returned (H0 is rejected). If it is not, the size=d-1 model
 ## is returned (H0 is not rejected)
 ## if return_all is true, both models are returned when this makes sense
-node_fit_glm <- function(index, d, y, covariate, alpha, nb_vals, return_all = FALSE, control, from = 0) {
+## cov_size is the number of parameters associated to one lag of the covariates
+node_fit_glm <- function(index, d, y, covariate, alpha, nb_vals, return_all = FALSE, control, from = 0,
+                         cov_size = covariate_description(covariate)$cov_size) {
   ## prepare the data
   glmdata <- prepare_glm(covariate, index, d, y, from)
-  node_fit_glm_with_data(glmdata$local_mm, d, glmdata$target, ncol(covariate), alpha, nb_vals, return_all, control)
+  node_fit_glm_with_data(glmdata$local_mm, d, glmdata$target, ncol(covariate), alpha, nb_vals, return_all, control, cov_size)
 }
 
 ## implementation of node_fit_glm
-node_fit_glm_with_data <- function(local_mm, d, target, dim_cov, alpha, nb_vals, return_all = FALSE, control) {
+## dim_cov is the number of columns of local_mm associated to one lag
+node_fit_glm_with_data <- function(local_mm, d, target, dim_cov, alpha, nb_vals, return_all = FALSE, control, cov_size) {
   ## compute the full rank "H1" model
   full_rank_model <- node_fit_glm_full_rank_with_data(
     local_mm,
@@ -92,7 +95,7 @@ node_fit_glm_with_data <- function(local_mm, d, target, dim_cov, alpha, nb_vals,
       full_rank_model$H0 <- FALSE
       H0_full_rank_model$H0 <- TRUE
       lambda <- 2 * (full_rank_model$likelihood - H0_full_rank_model$likelihood)
-      df <- (full_rank_model$hsize - H0_full_rank_model$hsize) * dim_cov * (nb_vals - 1L)
+      df <- (full_rank_model$hsize - H0_full_rank_model$hsize) * cov_size * (nb_vals - 1L)
       p_value <-
         stats::pchisq(as.numeric(lambda), df = df, lower.tail = FALSE)
       if (is.na(p_value)) {
@@ -129,7 +132,7 @@ ctx_tree_exists <- function(tree) {
   length(tree) > 0
 }
 
-node_prune_model <- function(model, cov_dim, nb_vals, alpha, keep_data = FALSE, control, verbose = FALSE) {
+node_prune_model <- function(model, cov_dim, cov_size, nb_vals, alpha, keep_data = FALSE, control, verbose = FALSE) {
   local_mm <- model$data$local_mm
   target <- model$data$target
   if (ncol(local_mm) >= 1) {
@@ -150,7 +153,7 @@ node_prune_model <- function(model, cov_dim, nb_vals, alpha, keep_data = FALSE, 
         warning("pruned model is rank deficient will non pruned model is not")
       }
       lambda <- 2 * (current_like - stats::logLik(H0_local_glm))
-      p_value <- stats::pchisq(as.numeric(lambda), df = cov_dim * (nb_vals - 1), lower.tail = FALSE)
+      p_value <- stats::pchisq(as.numeric(lambda), df = cov_size * (nb_vals - 1), lower.tail = FALSE)
       if (is.na(p_value)) {
         print(paste(p_value, lambda))
       }
@@ -211,6 +214,8 @@ node_prune_model <- function(model, cov_dim, nb_vals, alpha, keep_data = FALSE, 
 ctx_tree_fit_glm <- function(tree, y, covariate, alpha, control, assume_model = FALSE, keep_local_data = FALSE, keep_model = FALSE,
                              verbose = FALSE) {
   nb_vals <- length(tree$vals)
+  ## number of parameters associated to one lag of the covariates
+  cov_size <- covariate_description(covariate)$cov_size
   recurse_ctx_tree_fit_glm <-
     function(tree, ctx, d, y, covariate) {
       if (length(tree) == 0) {
@@ -237,7 +242,7 @@ ctx_tree_fit_glm <- function(tree, y, covariate, alpha, control, assume_model = 
           print(paste("call to glm with d=", d, sep = ""))
         } # nocov end
         res <- list(
-          model = node_fit_glm(tree$match, d, y, covariate, alpha, nb_vals, control = control),
+          model = node_fit_glm(tree$match, d, y, covariate, alpha, nb_vals, control = control, cov_size = cov_size),
           match = tree$match,
           f_by = tree$f_by
         )
@@ -340,7 +345,7 @@ ctx_tree_fit_glm <- function(tree, y, covariate, alpha, control, assume_model = 
             if (verbose) { # nocov start
               print(paste("fitting a local model (of full rank) with hsize", max_hsize, "at depth", d))
             } # nocov end
-            local_model <- node_fit_glm(tree$match, max_hsize, y, covariate, alpha, nb_vals, return_all = TRUE, control, d - max_hsize)
+            local_model <- node_fit_glm(tree$match, max_hsize, y, covariate, alpha, nb_vals, return_all = TRUE, control, d - max_hsize, cov_size)
             if (verbose) { # nocov start
               print(paste(local_model$H1_model$H0, local_model$H1_model$hsize))
             } # nocov end
@@ -365,7 +370,7 @@ ctx_tree_fit_glm <- function(tree, y, covariate, alpha, control, assume_model = 
             if (verbose) { # nocov start
               print(paste("call to glm with d=", d, sep = ""))
             } # nocov end
-            local_model <- node_fit_glm(full_index, max_hsize, y, covariate, alpha, nb_vals, return_all = TRUE, control, d - max_hsize)
+            local_model <- node_fit_glm(full_index, max_hsize, y, covariate, alpha, nb_vals, return_all = TRUE, control, d - max_hsize, cov_size)
           }
         }
         if (!is.null(local_model) && is.null(p_value)) {
@@ -388,10 +393,10 @@ ctx_tree_fit_glm <- function(tree, y, covariate, alpha, control, assume_model = 
               actual_model <- local_model$H1_model
             }
           }
-          local_df <- (1L + ncol(covariate) * actual_model$hsize) * (nb_vals - 1L)
+          local_df <- (1L + cov_size * actual_model$hsize) * (nb_vals - 1L)
           sub_df <- 0L
           for (v in pr_candidates) {
-            sub_df <- sub_df + (1L + ncol(covariate) * submodels[[v]][["model"]]$hsize) * (nb_vals - 1L)
+            sub_df <- sub_df + (1L + cov_size * submodels[[v]][["model"]]$hsize) * (nb_vals - 1L)
             if (verbose) { # nocov start
               print(paste(v, submodels[[v]][["model"]]$hsize, actual_model$hsize))
             } # nocov end
@@ -521,7 +526,7 @@ ctx_tree_fit_glm <- function(tree, y, covariate, alpha, control, assume_model = 
             } # nocov end
             for (v in pr_candidates) {
               result$children[[v]][["model"]] <-
-                node_prune_model(result$children[[v]][["model"]], ncol(covariate), nb_vals, alpha, keep_local_data, control)
+                node_prune_model(result$children[[v]][["model"]], ncol(covariate), cov_size, nb_vals, alpha, keep_local_data, control)
             }
           }
         } else {
@@ -529,7 +534,7 @@ ctx_tree_fit_glm <- function(tree, y, covariate, alpha, control, assume_model = 
             if (verbose) { # nocov start
               print("Trying to prune the merged model covariables")
             } # nocov end
-            result$merged_model <- node_prune_model(result$merged_model, ncol(covariate), nb_vals, alpha, keep_local_data, control)
+            result$merged_model <- node_prune_model(result$merged_model, ncol(covariate), cov_size, nb_vals, alpha, keep_local_data, control)
           }
         }
         ## prepare a local model for extended context if needed
@@ -539,7 +544,7 @@ ctx_tree_fit_glm <- function(tree, y, covariate, alpha, control, assume_model = 
             if (verbose) { # nocov start
               print("fitting model for extended contexts")
             } # nocov end
-            local_model <- node_fit_glm(tree$match, max_hsize, y, covariate, alpha, nb_vals, return_all = TRUE, control, d - max_hsize)
+            local_model <- node_fit_glm(tree$match, max_hsize, y, covariate, alpha, nb_vals, return_all = TRUE, control, d - max_hsize, cov_size)
             if (verbose) { # nocov start
               print(paste(local_model$H1_model$H0, local_model$H1_model$hsize))
             } # nocov end
@@ -631,8 +636,10 @@ covlmc_control <- function(pseudo_obs = 1) {
 #' for the [vlmc()] approach, the algorithm builds first a context tree (see
 #' [ctx_tree()]). The `min_size` parameter is used to compute the actual number
 #' of observations per context in the growing phase of the tree. It is computed
-#' as `min_size*(1+ncol(covariate)*d)*(s-1)` where `d` is the length of the
-#' context (a.k.a. the depth in the tree) and `s` is the number of states. This
+#' as `min_size*(1+p*d)*(s-1)` where `d` is the length of the context (a.k.a.
+#' the depth in the tree), `s` is the number of states and `p` is the number of
+#' parameters associated to one time step of the covariates (one per numerical
+#' or logical covariate, and the number of levels minus one per factor). This
 #' corresponds to ensuring min_size observations per parameter of the logistic
 #' regression during the estimation phase.
 #'

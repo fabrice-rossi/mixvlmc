@@ -50,8 +50,10 @@ The model is built using the algorithm described in Zanin Zambom et al. As
 for the \code{\link[=vlmc]{vlmc()}} approach, the algorithm builds first a context tree (see
 \code{\link[=ctx_tree]{ctx_tree()}}). The \code{min_size} parameter is used to compute the actual number
 of observations per context in the growing phase of the tree. It is computed
-as \code{min_size*(1+ncol(covariate)*d)*(s-1)} where \code{d} is the length of the
-context (a.k.a. the depth in the tree) and \code{s} is the number of states. This
+as \code{min_size*(1+p*d)*(s-1)} where \code{d} is the length of the context (a.k.a.
+the depth in the tree), \code{s} is the number of states and \code{p} is the number of
+parameters associated to one time step of the covariates (one per numerical
+or logical covariate, and the number of levels minus one per factor). This
 corresponds to ensuring min_size observations per parameter of the logistic
 regression during the estimation phase.
 

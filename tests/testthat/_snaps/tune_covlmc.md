@@ -4,7 +4,7 @@
       print(bt_covlmc)
     Output
       VLMC with covariate context tree on A, B, C 
-       cutoff in quantile scale: 7.738e-07
+       cutoff in quantile scale: 6.97e-06
        Number of contexts: 3 
        Maximum context length: 1 
        Selected by BIC (1044.993) with likelihood function "truncated" (-466.5832)
@@ -29,16 +29,16 @@
       
       Best VLMC with covariate selected by BIC (1044.993) with likelihood function "truncated" (-466.5832)
       VLMC with covariate context tree on A, B, C 
-       cutoff in quantile scale: 7.738e-07
+       cutoff in quantile scale: 6.97e-06
        Number of contexts: 3 
        Maximum context length: 1 
       
       Pruning results
               alpha depth nb_contexts loglikelihood cov_depth       AIC      BIC
        5.000000e-01     1           3     -449.6231         1  947.2463 1048.349
-       7.738076e-07     1           3     -466.5832         1  969.1665 1044.993
-       1.454609e-13     1           3     -499.9600         1 1019.9199 1062.046
-       1.950257e-17     0           1     -546.7476         0 1097.4951 1105.920
+       6.970371e-06     1           3     -466.5832         1  969.1665 1044.993
+       2.481355e-12     1           3     -499.9600         1 1019.9199 1062.046
+       4.218985e-16     0           1     -546.7476         0 1097.4951 1105.920
 
 ---
 
@@ -56,16 +56,18 @@
       Pruning results
               alpha depth nb_contexts loglikelihood cov_depth       AIC      BIC
        5.000000e-01     1           3     -449.6231         1  947.2463 1048.349
-       7.738076e-07     1           3     -466.5832         1  969.1665 1044.993
-       1.454609e-13     1           3     -499.9600         1 1019.9199 1062.046
-       1.950257e-17     0           1     -546.7476         0 1097.4951 1105.920
+       6.970371e-06     1           3     -466.5832         1  969.1665 1044.993
+       2.481355e-12     1           3     -499.9600         1 1019.9199 1062.046
+       4.218985e-16     0           1     -546.7476         0 1097.4951 1105.920
 
 # tune_vlmc verbosity is adequate
 
     Fitting a covlmc with max_depth= 100 and alpha= 0.5 
     Initial criterion= Inf 
     Improving criterion= 1072.785 
-    Pruning covlmc with alpha= 1.323035e-09 
+    Pruning covlmc with alpha= 1.633195e-08 
+    Pruning covlmc with alpha= 1.419105e-10 
+    Pruning covlmc with alpha= 5.152435e-11 
     VLMC with covariate context tree on A, B, C 
      cutoff in quantile scale: 0.5
      Number of contexts: 3 
