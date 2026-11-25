@@ -72,3 +72,15 @@ test_that("indexing works", {
   }
   expect_true(all_equal)
 })
+
+test_that("dts rejects missing values and empty time series", {
+  expect_error(dts(c(1, 2, NA, 1)), "missing values")
+  expect_error(dts(factor(c("a", NA, "b"))), "missing values")
+  expect_error(dts(c(1, 2, NA, 1), vals = c(1, 2)), "missing values")
+  expect_error(dts(integer(0)), "empty")
+  expect_error(dts(factor(character(0), levels = c("a", "b"))), "empty")
+  for (backend in c("R", "C++")) {
+    expect_error(vlmc(dts(c(1, 2, 1, 1, 2)), max_depth = 0, backend = backend) |>
+      loglikelihood(newdata = c(1, NA, 2)), "missing values")
+  }
+})
