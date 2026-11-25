@@ -35,7 +35,7 @@ loglikelihood.vlmc_cpp <- function(vlmc,
       if (ignore == depth(vlmc)) {
         delta_res <- vlmc$extended_ll
       } else {
-        delta_res <- vlmc$root$loglikelihood(nx$ix[1:min(ignore, length(vlmc$ix))], 0, TRUE, FALSE)
+        delta_res <- vlmc$root$loglikelihood(vlmc$ix[1:min(ignore, length(vlmc$ix))], 0, TRUE, FALSE)
       }
       pre_res <- pre_res - delta_res
     }

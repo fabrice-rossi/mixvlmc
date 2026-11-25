@@ -43,3 +43,16 @@ test_that("loglikelihood ignores the requested number of observation", {
     }
   }
 })
+
+test_that("C++ loglikelihood supports ignore without new data", {
+  x <- rep(c("B", "A", "C", "A", "D", "C", "B", "B", "A", "C"), 50)
+  m_r <- vlmc(x)
+  m_cpp <- vlmc(x, backend = "C++")
+  expect_gte(depth(m_cpp), 3)
+  for (ignore in 0:depth(m_cpp)) {
+    expect_equal(
+      loglikelihood(m_cpp, initial = "extended", ignore = ignore),
+      loglikelihood(m_r, initial = "extended", ignore = ignore)
+    )
+  }
+})
