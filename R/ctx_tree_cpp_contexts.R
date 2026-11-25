@@ -44,7 +44,7 @@ contexts.ctx_tree_cpp <- function(ct, sequence = FALSE,
       if (!is.null(frequency)) {
         if (frequency == "detailed") {
           res <- cbind(res, pre_res$counts)
-          names(res)[3:(2 + length(ct$vals))] <- ct$vals
+          names(res)[3:(2 + length(ct$vals))] <- as.character(ct$vals)
         } else {
           res$freq <- pre_res$counts$freq
         }
