@@ -1,3 +1,4 @@
+#include <memory>
 #include <vector>
 #include "SuffixTree.h"
 using namespace Rcpp;
@@ -1177,7 +1178,8 @@ List SuffixTree::node_children(const XPtr<EdgeNode>& node, int length) const {
 }
 
 SuffixTree* build_suffix_tree(const IntegerVector& x, int nb_vals) {
-  SuffixTree* tree = new SuffixTree();
+  // the tree is freed if insert throws an exception
+  std::unique_ptr<SuffixTree> tree(new SuffixTree());
   tree->insert(x, nb_vals);
-  return tree;
+  return tree.release();
 }
