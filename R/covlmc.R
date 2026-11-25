@@ -1063,24 +1063,52 @@ covariate_depth <- function(model) {
   rec_cov_depth(model)
 }
 
-rec_count_parameters <- function(ct, with_extended = FALSE, d, md) {
+## number of parameters associated to one time step of the covariates
+covlmc_cov_size <- function(model) {
+  sum(vapply(model$cov_names, function(var) {
+    if (var %in% names(model$cov_desc)) {
+      ## factor (or logical) covariate
+      length(model$cov_desc[[var]]) - 1L
+    } else {
+      1L
+    }
+  }, 1L))
+}
+
+## The number of parameters of a model is nominal: an intercept and the
+## parameters of the hsize time steps of the covariates, for each state but
+## one. As in the likelihood ratio tests, it does not depend on the states or
+## levels of the covariates that appear in the data of the context, and thus
+## not on the estimation engine (which may or may not drop such levels).
+rec_count_parameters <- function(ct, with_extended = FALSE, d, md, cov_size, nb_vals) {
+  model_parameters <- function(model) {
+    (1L + cov_size * model$hsize) * (nb_vals - 1L)
+  }
   local_counts <- 0
   if (!is.null(ct$model)) {
-    local_counts <- local_counts + length(ct$model$coefficients)
+    local_counts <- local_counts + model_parameters(ct$model)
   }
   if (!is.null(ct$merged_model)) {
-    local_counts <- local_counts + length(ct$merged_model$coefficients)
+    local_counts <- local_counts + model_parameters(ct$merged_model)
   }
   if (with_extended && d < md && !is.null(ct$extended_model)) {
-    local_counts <- local_counts + length(ct$extended_model$coefficients)
+    local_counts <- local_counts + model_parameters(ct$extended_model)
   }
   if (!is.null(ct$children)) {
-    local_counts <- local_counts + sum(sapply(ct$children, rec_count_parameters, with_extended, d + 1, md))
+    for (child in ct$children) {
+      if (length(child) > 0) {
+        local_counts <- local_counts +
+          rec_count_parameters(child, with_extended, d + 1, md, cov_size, nb_vals)
+      }
+    }
   }
   local_counts
 }
 
 count_parameters <- function(model, with_extended = FALSE) {
   assertthat::assert_that(is_covlmc(model))
-  rec_count_parameters(model, with_extended, 0, depth(model))
+  rec_count_parameters(
+    model, with_extended, 0, depth(model),
+    covlmc_cov_size(model), length(model$vals)
+  )
 }

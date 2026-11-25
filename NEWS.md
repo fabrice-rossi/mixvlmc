@@ -59,9 +59,10 @@ issue #66) as follows:
   by `draw.covlmc()` as a VLMC node, that is with the probability distribution
   on the state space that it represents
 
-# mixvlmc 0.2.3
-This is a bug fix release. Some fixes change the results obtained with
-previous versions, in particular for VLMC with covariates (see below).
+# mixvlmc 0.3.0
+This release fixes numerous bugs. Some of the fixes change the results
+obtained with previous versions, in particular for VLMC with covariates, hence
+the new minor version (see the breaking changes below).
 
 ## Breaking changes
 * the package now depends on R >= 4.1.0 (this was already implied by its
@@ -74,6 +75,10 @@ previous versions, in particular for VLMC with covariates (see below).
   change the fitted model)
 * the `multinom` engine of `covlmc()` detects rank deficient models (e.g. 
   collinear covariates) consistently with the `glm` engine
+* the number of parameters of a `covlmc` (used by AIC and BIC, in particular in
+  `tune_covlmc()`) does not depend on the estimation engine anymore: levels
+  of factor covariates and states absent from the data of a context are
+  counted (the `glm` engine ignored them with three states or more)
 * the models associated to the root of the context tree of a `covlmc` (depth 0
   models, extended model used for the first observation) use all the
   observations (the first one was ignored)
