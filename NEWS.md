@@ -59,6 +59,10 @@ issue #66) as follows:
   by `draw.covlmc()` as a VLMC node, that is with the probability distribution
   on the state space that it represents
 
+## Minor improvements
+* `vlmc()`, `cutoff()` and `prune()` are faster with the R backend (about 40%
+  for `vlmc()`)
+
 # mixvlmc 0.3.0
 This release fixes numerous bugs. Some of the fixes change the results
 obtained with previous versions, in particular for VLMC with covariates, hence

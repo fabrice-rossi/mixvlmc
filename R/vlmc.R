@@ -28,9 +28,9 @@ assertthat::on_failure(is_vlmc) <- function(call, env) {
 }
 
 kl_div <- function(p, q) {
-  pratio <- p / q
-  pratio <- ifelse(p == q, 1, pratio) ## handles p=q=0
-  sum(p * ifelse(pratio > 0, log(pratio), 0))
+  ## states with p = 0 do not contribute (this handles p = q = 0)
+  sel <- p > 0
+  sum(p[sel] * log(p[sel] / q[sel]))
 }
 
 #' Cut off values for pruning the context tree of a VLMC

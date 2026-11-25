@@ -78,3 +78,14 @@ test_that("KL based criterion is computed identical in R and C++", {
     }
   }
 })
+
+test_that("kl_div handles null probabilities", {
+  ## p = q = 0 and p = 0 < q do not contribute
+  expect_equal(kl_div(c(0, 0.5, 0.5), c(0, 0.5, 0.5)), 0)
+  expect_equal(kl_div(c(0, 1), c(0.5, 0.5)), log(2))
+  ## p > 0 = q gives an infinite divergence
+  expect_equal(kl_div(c(0.5, 0.5), c(1, 0)), Inf)
+  p <- c(0.2, 0, 0.3, 0.5)
+  q <- c(0.1, 0.2, 0.3, 0.4)
+  expect_equal(kl_div(p, q), sum(p[-2] * log(p[-2] / q[-2])))
+})
