@@ -101,3 +101,29 @@ test_that("automatic C++ representation restoration works", {
   expect_false(extptr_is_null(restored_model$root$.pointer))
   expect_true(compare_ctx(ctxs_orig, ctxs_restored))
 })
+
+test_that("automatic C++ representation restoration works for pruned models", {
+  withr::local_seed(4)
+  x <- sample(0:2, 500, replace = TRUE)
+  model <- vlmc(x, min_size = 5, max_depth = 3, alpha = 0.5, backend = "C++")
+  cut_off <- cutoff(model, scale = "native")
+  model_path <- withr::local_tempfile(fileext = ".Rds")
+  for (k in seq_along(cut_off)) {
+    pruned_model <- prune(model, cutoff = cut_off[k])
+    saveRDS(pruned_model, model_path)
+    restored_model <- readRDS(model_path)
+    expect_true(compare_vlmc_cpp(pruned_model, restored_model))
+    expect_equal(loglikelihood(restored_model), loglikelihood(pruned_model))
+  }
+  ## pruning with a smaller cut off than the one of the model
+  pruned_model <- prune(model, cutoff = cut_off[2])
+  repruned_model <- prune(pruned_model, cutoff = cut_off[1])
+  saveRDS(repruned_model, model_path)
+  restored_model <- readRDS(model_path)
+  expect_true(compare_vlmc_cpp(repruned_model, restored_model))
+  ## tune_vlmc
+  best_model <- as_vlmc(tune_vlmc(x, min_size = 5, max_depth = 3, backend = "C++"))
+  saveRDS(best_model, model_path)
+  restored_model <- readRDS(model_path)
+  expect_true(compare_vlmc_cpp(best_model, restored_model))
+})
