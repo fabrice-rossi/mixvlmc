@@ -171,3 +171,42 @@ test_that("the likelihood of a depth 0 covlmc uses all the observations", {
     )
   }
 })
+
+test_that("loglikelihood ignores impossible transitions in the ignored observations", {
+  withr::local_seed(0)
+  n <- 500
+  ## a is never followed by a
+  x <- character(n)
+  x[1] <- "b"
+  for (i in 2:n) {
+    if (x[i - 1] == "a") {
+      x[i] <- sample(c("b", "c"), 1)
+    } else {
+      x[i] <- sample(c("a", "b", "c"), 1)
+    }
+  }
+  x_cov <- data.frame(z = rnorm(n))
+  new_x <- c("a", "a", "b", x[4:100])
+  new_cov <- x_cov[1:100, , drop = FALSE]
+  for (engine in c("glm", "multinom")) {
+    withr::local_options(mixvlmc.predictive = engine)
+    m_cov <- covlmc(x, x_cov, min_size = 5, alpha = 0.5)
+    for (initial in c("truncated", "specific", "extended")) {
+      m_ll <- loglikelihood(m_cov,
+        newdata = new_x, newcov = new_cov,
+        initial = initial, ignore = 2
+      )
+      expect_true(is.finite(m_ll))
+      expect_equal(
+        m_ll,
+        co_slow_loglikelihood(m_cov, new_x, initial = initial, ignore = 2, newcov = new_cov),
+        ignore_attr = TRUE
+      )
+    }
+    ## not ignored
+    expect_equal(
+      as.numeric(loglikelihood(m_cov, newdata = new_x, newcov = new_cov, initial = "extended")),
+      -Inf
+    )
+  }
+})
