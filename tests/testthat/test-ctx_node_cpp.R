@@ -35,3 +35,25 @@ test_that("find_sequence handles sequences longer than the end of the time serie
     }
   }
 })
+
+test_that("children are computed correctly at the end of the time series", {
+  ## regression test: subscript out of bounds in node_children
+  dts <- c(0, 1, 1, 0, 1)
+  dts_ctree <- ctx_tree(dts, min_size = 1, backend = "C++")
+  expect_no_warning(the_children <- children(find_sequence(dts_ctree, dts[1:3])))
+  expect_length(the_children, 0)
+  withr::local_seed(3)
+  for (k in 1:10) {
+    dts <- sample(c(0, 1, 2), sample(5:40, 1), replace = TRUE)
+    dts_ctree <- ctx_tree(dts, min_size = 1, backend = "C++")
+    dts_rtree <- ctx_tree(dts, min_size = 1, backend = "R")
+    for (ctx in contexts(dts_rtree)) {
+      the_seq <- as_sequence(ctx)
+      expect_no_warning(
+        cpp_children <- children(find_sequence(dts_ctree, the_seq))
+      )
+      r_children <- children(find_sequence(dts_rtree, the_seq))
+      expect_identical(names(cpp_children), names(r_children))
+    }
+  }
+})

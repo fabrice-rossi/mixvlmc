@@ -1113,7 +1113,9 @@ List SuffixTree::node_children(const XPtr<EdgeNode>& node, int length) const {
   } else {
     // middle of an edge
     int pos = length - node->depth + node->end;
-    result[x[pos]] = node;
+    if(pos < x.size()) {
+      result[x[pos]] = node;
+    }  // else the next value is the sentinel: no children
   }
   return result;
 }
