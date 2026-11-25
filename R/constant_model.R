@@ -104,7 +104,7 @@ glm_levels.constant_model <- function(model, vals) {
 #' @exportS3Method
 glm_metrics.constant_model <- function(model, mm, target) {
   probs <- predict(model, mm, target)
-  main_metrics(target, probs)
+  main_metrics(target, probs, roc = FALSE)
 }
 
 #' @exportS3Method

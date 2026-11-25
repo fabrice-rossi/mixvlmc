@@ -62,6 +62,9 @@ issue #66) as follows:
 ## Minor improvements
 * `vlmc()`, `cutoff()` and `prune()` are faster with the R backend (about 40%
   for `vlmc()`)
+* `covlmc()` and `tune_covlmc()` are faster (about 15%) and the models they
+  return use much less memory (about a third), as the ROC curves of the logistic
+  models are not computed and stored anymore (their AUC is computed directly)
 
 # mixvlmc 0.3.0
 This release fixes numerous bugs. Some of the fixes change the results
