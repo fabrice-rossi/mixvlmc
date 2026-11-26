@@ -3,7 +3,7 @@
     Code
       print(bt_covlmc)
     Output
-      VLMC with covariate context tree on A, B, C 
+      VLMC with covariates context tree on A, B, C 
        cutoff in quantile scale: 6.97e-06
        Number of contexts: 3 
        Maximum context length: 1 
@@ -14,7 +14,7 @@
     Code
       print(at_covlmc)
     Output
-      VLMC with covariate context tree on A, B, C 
+      VLMC with covariates context tree on A, B, C 
        cutoff in quantile scale: 0.5
        Number of contexts: 3 
        Maximum context length: 1 
@@ -25,10 +25,10 @@
     Code
       print(summary(bt_covlmc))
     Output
-      VLMC with covariate tune results
+      VLMC with covariates tune results
       
-      Best VLMC with covariate selected by BIC (1044.993) with likelihood function "truncated" (-466.5832)
-      VLMC with covariate context tree on A, B, C 
+      Best VLMC with covariates selected by BIC (1044.993) with likelihood function "truncated" (-466.5832)
+      VLMC with covariates context tree on A, B, C 
        cutoff in quantile scale: 6.97e-06
        Number of contexts: 3 
        Maximum context length: 1 
@@ -45,10 +45,10 @@
     Code
       print(summary(at_covlmc))
     Output
-      VLMC with covariate tune results
+      VLMC with covariates tune results
       
-      Best VLMC with covariate selected by AIC (947.2463) with likelihood function "truncated" (-449.6231)
-      VLMC with covariate context tree on A, B, C 
+      Best VLMC with covariates selected by AIC (947.2463) with likelihood function "truncated" (-449.6231)
+      VLMC with covariates context tree on A, B, C 
        cutoff in quantile scale: 0.5
        Number of contexts: 3 
        Maximum context length: 1 
@@ -72,7 +72,7 @@
       Pruning covlmc with alpha = 1.419105e-10
       Pruning covlmc with alpha = 5.152435e-11
     Output
-      VLMC with covariate context tree on A, B, C 
+      VLMC with covariates context tree on A, B, C 
        cutoff in quantile scale: 0.5
        Number of contexts: 3 
        Maximum context length: 1 

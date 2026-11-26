@@ -3,7 +3,7 @@
     Code
       summary(model)
     Output
-      VLMC with covariate context tree on A, B, C 
+      VLMC with covariates context tree on A, B, C 
        Covariates: y 
        Cutoff in quantile scale: 0.01
        Number of contexts: 11 

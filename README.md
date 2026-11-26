@@ -418,14 +418,14 @@ lh_covlmc <- sapply(covlmc_simul, longuest_high)
 The average longest time spent in *high* consecutively is
 
 - for the VLMC: 243.6 minutes with a standard error of 6.7337834;
-- for the VLMC with covariate: 286 minutes with a standard error of
+- for the VLMC with covariates: 286 minutes with a standard error of
   8.9386235;
 - 410 minutes for the observed time series.
 
 The following figure shows the distributions of the times obtained by
-both models as well as the observed value. The VLMC model with covariate
-is able to generate longer sequences in the *high* active power state
-than the bare VLMC model as the consequence of the sensitivity to the
+both models as well as the observed value. The VLMC with covariates is
+able to generate longer sequences in the *high* active power state than
+the bare VLMC model as the consequence of the sensitivity to the
 day/night schedule.
 
 ``` r
@@ -441,7 +441,7 @@ ggplot(lh, aes(x = time, color = model)) +
 
 <img src="man/figures/README-longest_time_in_high-1.png" alt="Density curves, with rugs, of the longest time in minutes spent consecutively in the high active power state in the series simulated from the VLMC and from the COVLMC, with a vertical line at the value of the observed series. The COVLMC distribution has a heavier right tail that covers the observed value, while the VLMC distribution is concentrated on shorter times." width="100%" />
 
-The VLMC with covariate can be used to investigate the effects of
+The VLMC with covariates can be used to investigate the effects of
 changes in those covariates. For instance, if the day time is longer, we
 expect long periods of *high* power usage to be less frequent. To check
 this, we simulate one week with a day time from 6:00 to 20:00 as

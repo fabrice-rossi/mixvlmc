@@ -8,8 +8,8 @@ summary.tune_covlmc <- function(object, ...) {
 
 #' @exportS3Method
 print.summary.tune_covlmc <- function(x, ...) {
-  cat("VLMC with covariate tune results\n\n")
-  cat("Best VLMC with covariate selected by", x$criterion, "(")
+  cat("VLMC with covariates tune results\n\n")
+  cat("Best VLMC with covariates selected by", x$criterion, "(")
   if (x$criterion == "BIC") {
     cat(min(x$results$BIC))
   } else {

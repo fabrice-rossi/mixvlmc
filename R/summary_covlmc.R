@@ -22,7 +22,7 @@ summary.covlmc <- function(object, ...) {
 #' @exportS3Method
 print.summary.covlmc <- function(x, ...) {
   cat(paste(
-    "VLMC with covariate context tree on",
+    "VLMC with covariates context tree on",
     paste(x$state_space, collapse = ", ")
   ), "\n")
   cat(paste(" Covariates:", stringr::str_c(x$covariates, collapse = ", "), "\n"))

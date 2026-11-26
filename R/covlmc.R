@@ -1060,7 +1060,7 @@ prune.covlmc <- function(vlmc, alpha = 0.05, cutoff = NULL, ...) {
 #' @export
 print.covlmc <- function(x, ...) {
   cat(paste(
-    "VLMC with covariate context tree on",
+    "VLMC with covariates context tree on",
     paste(x$vals, collapse = ", ")
   ), "\n")
   cat(paste(" cutoff in quantile scale: ", signif(x$alpha, 4), "\n", sep = ""))

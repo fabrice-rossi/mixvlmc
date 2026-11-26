@@ -3,7 +3,7 @@
     Code
       print(m_metrics)
     Output
-      VLMC with covariate context tree on low, typical, high 
+      VLMC with covariates context tree on low, typical, high 
        cutoff in quantile scale: 0.5
        Number of contexts: 5 
        Maximum context length: 2 
@@ -20,7 +20,7 @@
     Code
       print(m_metrics)
     Output
-      VLMC with covariate context tree on low, typical, high 
+      VLMC with covariates context tree on low, typical, high 
        cutoff in quantile scale: 0.5
        Number of contexts: 5 
        Maximum context length: 2 

@@ -250,10 +250,10 @@ lh_covlmc <- sapply(covlmc_simul, longuest_high)
 The average longest time spent in *high* consecutively is
 
 -   for the VLMC: `r mean(lh_vlmc)` minutes with a standard error of `r sd(lh_vlmc)/sqrt(length(vlmc_simul))`;
--   for the VLMC with covariate: `r mean(lh_covlmc)` minutes with a standard error of `r sd(lh_covlmc)/sqrt(length(covlmc_simul))`;
+-   for the VLMC with covariates: `r mean(lh_covlmc)` minutes with a standard error of `r sd(lh_covlmc)/sqrt(length(covlmc_simul))`;
 -   `r longuest_high(elec_dts)` minutes for the observed time series.
 
-The following figure shows the distributions of the times obtained by both models as well as the observed value. The VLMC model with covariate is able to generate longer sequences in the *high* active power state than the bare VLMC model as the consequence of the sensitivity to the day/night schedule.
+The following figure shows the distributions of the times obtained by both models as well as the observed value. The VLMC with covariates is able to generate longer sequences in the *high* active power state than the bare VLMC model as the consequence of the sensitivity to the day/night schedule.
 
 ```{r longest_time_in_high, fig.alt="Density curves, with rugs, of the longest time in minutes spent consecutively in the high active power state in the series simulated from the VLMC and from the COVLMC, with a vertical line at the value of the observed series. The COVLMC distribution has a heavier right tail that covers the observed value, while the VLMC distribution is concentrated on shorter times."}
 lh <- data.frame(
@@ -266,7 +266,7 @@ ggplot(lh, aes(x = time, color = model)) +
   geom_vline(xintercept = longuest_high(elec_dts), color = 3)
 ```
 
-The VLMC with covariate can be used to investigate the effects of changes in those covariates. For instance, if the day time is longer, we expect long periods of *high* power usage to be less frequent. To check this, we simulate one week with a day time from 6:00 to 20:00 as follows.
+The VLMC with covariates can be used to investigate the effects of changes in those covariates. For instance, if the day time is longer, we expect long periods of *high* power usage to be less frequent. To check this, we simulate one week with a day time from 6:00 to 20:00 as follows.
 
 ```{r cache = TRUE}
 elec_cov_long_days <- data.frame(day = (pc_week_5$hour >= 6 & pc_week_5$hour <= 20))
