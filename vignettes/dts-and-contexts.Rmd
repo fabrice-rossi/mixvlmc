@@ -370,11 +370,10 @@ flat_contexts(contexts(model_5,
 The `accuracy` column gives the proportion of those time steps at which the
 most probable state according to the context is the observed next state (it is
 not defined when the local count is zero). For a VLMC, the predicted
-probabilities are identical for all the time steps of a context: the `auc`
-column is therefore not informative (it is either 0.5 or missing when some
-states never follow the context). It is more useful for a VLMC with covariates,
-see below. The metrics of the whole model are given by `metrics(model_5)` (see
-`vignette("prediction")`).
+probabilities are identical for all the time steps of a context, so that they
+cannot separate the next states: the `auc` column is therefore always missing.
+It is informative for a VLMC with covariates, see below. The metrics of the
+whole model are given by `metrics(model_5)` (see `vignette("prediction")`).
 
 ### Positions
 
@@ -425,9 +424,11 @@ draw(elec_model)
 probabilities of a COVLMC depend on the covariates, the `auc` column is now
 informative: for a context whose model uses the covariates, it measures how
 well the probabilities computed by its model separate the possible next states.
-The parameter `hsize` adds a column that gives the number of past values of the
-covariates used by the model of each context (0 for a context whose model does
-not use the covariates).
+For a context whose model does not use the covariates, the predictions are
+constant and the AUC is 0.5 (or missing when some states never follow the
+context). The parameter `hsize` adds a column that gives the number of past
+values of the covariates used by the model of each context (0 for a context
+whose model does not use the covariates).
 
 ```{r}
 flat_contexts(contexts(elec_model,
@@ -584,6 +585,21 @@ model(node_tt)
 covariate_memory(node_tt)
 ```
 
+`children()` returns also `ctx_node_covlmc` objects. `cutoff()` gives the
+p-values of the likelihood ratio tests associated with a node, in quantile
+scale only (see `cutoff.ctx_node_covlmc()`): for a context, the test used to
+reduce the memory of its model (when it can lead to pruning) and, for a node
+with children, the tests used to replace its children by the node or to merge
+some of them. The union of these values over all the nodes is given by
+`cutoff()` applied to the model:
+
+```{r}
+children(node_tt)
+cutoff(node_low)
+cutoff(node_tt)
+cutoff(elec_model)
+```
+
 `is_merged()` tells whether a context is merged with other contexts and
 `merged_with()` returns them (as a list with one element per state, in the
 same way as `children()`: the merged contexts differ only in their oldest
@@ -688,8 +704,9 @@ next_state_by_day(find_sequence(elec_model, "high"))
 ```
 
 Finally, the predictive metrics of the contexts that use the covariates show
-that their AUC is larger than 0.5, the value obtained by a context whose
-predictions do not depend on the covariates (see the `auc` column above):
+that their AUC is larger than 0.5, the value obtained by a context whose model
+does not use the covariates (see the `auc` column of `contexts()` for
+`elec_model` above):
 
 ```{r}
 sapply(uses_cov, function(node) unlist(metrics(node)[c("accuracy", "auc")]))

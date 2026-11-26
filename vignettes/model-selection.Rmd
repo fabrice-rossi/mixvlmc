@@ -451,8 +451,8 @@ sapply(
 
 Notice that all the $|S|-1$ parameters of a context are counted, even if
 some states never follow this context in the time series (and have therefore
-a zero estimated probability). The situation is different for COVLMC, as
-explained below.
+a zero estimated probability). The same rule applies to the intercepts of the
+logistic models of a COVLMC, as explained below.
 
 ## Hold-out validation
 
@@ -615,24 +615,29 @@ considered during a COVLMC selection.
 ### Number of parameters
 
 The number of parameters of a COVLMC, used by the information criteria, is
-the number of parameters actually estimated by the logistic models of its
-contexts: the states that never follow a context and the levels of factors
-absent from the data of a context are not counted, and a context always
-followed by the same state has no parameter (see the "Number of parameters"
-section of `?loglikelihood.covlmc` and the article on computing engines cited
-above for details).
+the sum of the numbers of parameters of the logistic models of its contexts.
+As for a VLMC, the model of a context has $|S|-1$ intercepts, even if some
+states never follow this context. The coefficients of the covariates are
+counted only when they are actually estimated: the ones associated with the
+states that never follow a context or with the levels of factors absent from
+the data of a context are not counted, and a context always followed by the
+same state has therefore only $|S|-1$ parameters. Counting all the intercepts
+ensures that each context has a cost in the information criteria (see the
+"Number of parameters" section of `?loglikelihood.covlmc` and the article on
+computing engines cited above for details).
 
 ```{r}
 attr(logLik(elec_covlmc), "df")
 ```
 
 This number can be read on the representation of the model given above: each
-context has an intercept and the context that uses the covariate has in
-addition one coefficient per level of the period of the day (except the
-reference level) for each time step of its covariate memory. The likelihood
-ratio tests used to build the model rely instead on the nominal number of
-parameters, which counts all the states and all the levels of the factors, as
-in the original algorithm.
+context has an intercept ($|S|-1=1$ for this binary time series) and the
+context that uses the covariate has in addition one coefficient per level of
+the period of the day (except the reference level) for each time step of its
+covariate memory. The likelihood ratio tests used to build the model rely
+instead on the nominal number of parameters, which counts the coefficients of
+the covariates for all the states and all the levels of the factors, as in
+the original algorithm.
 
 ### Choosing `min_size`
 

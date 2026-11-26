@@ -375,43 +375,55 @@ draw(sim_glm, "latex")
 
 The number of parameters of a COVLMC, used by `AIC()` and `BIC()`, is
 the `df` attribute of its log likelihood (see the "Number of parameters"
-section of `?loglikelihood.covlmc`). As shown above, it does not depend
-on the engine: the parameters that are not estimated, such as the
-coefficients of the states or levels absent from the data of a context,
-are not counted, regardless of the way the engine reports them.
+section of `?loglikelihood.covlmc`). It does not depend on the engine:
+the coefficients that are not estimated, such as the ones of the states
+or levels absent from the data of a context, are not counted, regardless
+of the way the engine reports them.
 
-More precisely, the model of a context followed by $k$ different states
-in the data has $(k-1)q$ parameters, where $q$ is the number of
-parameters associated with the covariates: one for the intercept and,
-for each time step of the memory of the model, one per numerical or
-logical covariate and the number of levels minus one per factor
-covariate (counting only the levels present in the data of the
-context). The following code recomputes the number of parameters of each
-context of the electricity consumption example from its detailed
-frequencies and from the memory of its model:
+More precisely, in a time series with $s$ states, the model of a context
+followed by $k$ different states in the data has $s-1$ intercepts and
+$(k-1)p$ coefficients for the covariates, where $p$ is the number of
+parameters associated with the covariates: for each time step of the
+memory of the model, one per numerical or logical covariate and the
+number of levels minus one per factor covariate (counting only the
+levels present in the data of the context). The $s-1$ intercepts are
+counted even if some states never follow the context, as for the
+transition probabilities of a context of a VLMC: a context followed by
+a single state has therefore $s-1$ parameters (see the next section).
+This ensures that each context has a cost in the information criteria,
+as in the theory of context tree selection. The following code
+recomputes the number of parameters of each context of the electricity
+consumption example from its detailed frequencies and from the memory of
+its model:
 
 ```{r}
 elec_ctx <- contexts(model_glm, frequency = "detailed", hsize = TRUE)
-nb_states <- rowSums(elec_ctx[, as.character(states(model_glm))] > 0)
-q <- 1 + elec_ctx$hsize
-elec_ctx$parameters <- (nb_states - 1) * q
-elec_ctx$nominal <- (length(states(model_glm)) - 1) * q
+s <- length(states(model_glm))
+k <- rowSums(elec_ctx[, as.character(states(model_glm))] > 0)
+p <- elec_ctx$hsize
+elec_ctx$parameters <- (s - 1) + (k - 1) * p
+elec_ctx$nominal <- (s - 1) * (1 + p)
 elec_ctx[, c("context", "hsize", "parameters", "nominal")]
 sum(elec_ctx$parameters)
 attr(logLik(model_glm), "df")
 ```
 
 For instance, the `low` context (first row) is followed by
-$k = `r nb_states[1]`$ different states and its model has a memory of
-`r elec_ctx$hsize[1]` time step of the logical covariate, thus
-$q = `r q[1]`$ and `r elec_ctx$parameters[1]` parameters.
+$k = `r k[1]`$ different states and its model has a memory of
+`r p[1]` time step of the logical covariate, thus $p = `r p[1]`$: its
+model has $s-1 = `r s - 1`$ intercepts and
+$(k-1)p = `r (k[1] - 1) * p[1]`$ coefficient for the covariate, that is
+`r elec_ctx$parameters[1]` parameters.
 
 The likelihood ratio tests used by `covlmc()` to simplify the models
-use instead the *nominal* number of parameters, $(s-1)q$, where $s$ is
-the number of states and $q$ counts all the levels of the factor
-covariates, as in the original algorithm. In this example, the sum of
-the nominal numbers of parameters of the contexts would be
-`r sum(elec_ctx$nominal)` instead of `r attr(logLik(model_glm), "df")`.
+use instead the *nominal* number of parameters, $(s-1)(1+p)$, where $p$
+counts all the levels of the factor covariates, as in the original
+algorithm. The two numbers differ only for the contexts whose model uses
+the covariates and that are not followed by all the states (such as the
+`low` context) or, with factor covariates, whose data do not contain all
+the levels. In this example, the sum of the nominal numbers of
+parameters of the contexts would be `r sum(elec_ctx$nominal)` instead of
+`r attr(logLik(model_glm), "df")`.
 
 ## Degenerate contexts
 
@@ -494,9 +506,10 @@ data.frame(
 
 The regularised probabilities are used to compute the likelihood, which
 decreases when `pseudo_obs` increases as the probability of the observed
-transition decreases. The model of a context followed by a single state
-has no parameter (see the previous section), so `pseudo_obs` has no
-effect on the number of parameters:
+transition decreases. Whatever the value of `pseudo_obs`, the model of a
+context followed by a single state has $s-1$ parameters, its intercepts
+(see the previous section), so `pseudo_obs` has no effect on the number
+of parameters:
 
 ```{r}
 attr(logLik(deg_models[[1]]), "df")
@@ -578,16 +591,19 @@ documentation of the corresponding functions):
 | `logLik()`, `AIC()`, `BIC()`                | yes    | yes     |
 | `draw()`, `contexts(model = "coef")`        | yes    | yes     |
 | `contexts(metrics = TRUE)`                  | yes    | yes     |
+| `metrics()` of the model (except the AUC)   | yes    | yes     |
 | `contexts(model = "full")`                  | yes    | no      |
 | `model(type = "full")`                      | yes    | no      |
 | `loglikelihood()` on new data               | yes    | no      |
 | `predict()`, `simulate()`                   | yes    | no      |
-| `metrics()` of the model                    | no     | no      |
 | `positions()`, `contexts(positions = TRUE)` | no     | no      |
 | `prune()`                                   | no     | no      |
 
-For instance, the likelihood of the original data is preserved by
-trimming, while the likelihood of new data needs the engine objects:
+The metrics of a trimmed model are computed from the ones of its
+contexts (and of the first observations, computed by `trim()`): the
+accuracy and the confusion matrix are available, but the AUC is missing
+(with a warning). The likelihood of the original data is also preserved
+by trimming, while the likelihood of new data needs the engine objects:
 
 ```{r, error = TRUE}
 elec_trimmed <- trim(model_glm)

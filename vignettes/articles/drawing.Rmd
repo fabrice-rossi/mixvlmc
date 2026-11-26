@@ -36,6 +36,9 @@ and `vlmc()`). All the methods share the same organisation:
   information is shown (characters used to draw the tree, number of significant
   digits, LaTeX layout, etc.).
 
+The methods report an error when they are given an argument they do not use,
+for instance an option of `draw_control()` given directly to `draw()`.
+
 This organisation of the arguments was introduced in mixvlmc 0.3.0. Calls
 written for previous versions, in which the second argument of `draw()` was
 the control list, still work but trigger a deprecation warning.
@@ -478,8 +481,9 @@ counterpart:
 - constant models are always represented by the probability distribution they
   induce (`constant_as_prob` is ignored);
 - the intercept is denoted `(I)` and the variables are given with a temporal
-  subscript of the form $t-1$, $t-2$, etc. They are named after the covariates
-  (with the level between square brackets for a factor, as in `y[B]`);
+  subscript of the form $t-1$, $t-2$, etc. They are named after the covariates,
+  with the level between square brackets for a factor or a logical covariate,
+  as in `y[B]` or `day[TRUE]`;
 - the coefficients of the levels of a factor that are absent from the data of a
   context, which are not estimated, are represented by zeros, whatever the
   computing engine (in the text format, `VGAM::vglm()` gives no coefficient
