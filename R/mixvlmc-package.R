@@ -17,7 +17,8 @@
 #'
 #'    The first option `"glm"` is recommended as both [stats::glm()] and
 #'    [VGAM::vglm()] are able to detect and deal with degeneracy in the data
-#'    set.
+#'    set. The results of the two options can differ, see the "Logistic models"
+#'    section of [covlmc()].
 #' - `mixvlmc.backend`: specifies the implementation used for the context tree
 #'    construction in [ctx_tree()], [vlmc()] and [tune_vlmc()]. Two values are
 #'    supported:

@@ -81,12 +81,33 @@ states, \code{covlmc} uses \code{\link[VGAM:vglm]{VGAM::vglm()}} with the multin
 (\code{\link[VGAM:multinomial]{VGAM::multinomial()}}).
 }
 
-Both engines are able to detect degenerate cases and lead to more robust
-results than using \code{\link[nnet:multinom]{nnet::multinom()}}. It is nevertheless possible to
-replace \code{\link[stats:glm]{stats::glm()}} and \code{\link[VGAM:vglm]{VGAM::vglm()}} with \code{\link[nnet:multinom]{nnet::multinom()}} by setting
-the global option \code{mixvlmc.predictive} to \code{"multinom"} (the default value is
-\code{"glm"}). Notice that while results should be comparable, there is no
-guarantee that they will be identical.
+It is possible to replace \code{\link[stats:glm]{stats::glm()}} and \code{\link[VGAM:vglm]{VGAM::vglm()}} with
+\code{\link[nnet:multinom]{nnet::multinom()}} by setting the global option \code{mixvlmc.predictive} to
+\code{"multinom"} (the default value is \code{"glm"}). The engines estimate the same
+models, but their results are not always identical:
+\itemize{
+\item \code{\link[stats:glm]{stats::glm()}} and \code{\link[VGAM:vglm]{VGAM::vglm()}} use iteratively reweighted least
+squares while \code{\link[nnet:multinom]{nnet::multinom()}} uses a quasi-Newton optimisation. When
+the data of a context are (almost) separable, for instance when a value of
+a covariate determines the next state, the maximum likelihood coefficients
+are infinite and the engines stop at different (large) values. The
+likelihoods remain very close, but the coefficients can be quite different
+and a likelihood ratio test whose p-value is close to \code{alpha} can lead to
+different decisions, and thus to different models.
+\item \code{\link[stats:glm]{stats::glm()}} and \code{\link[VGAM:vglm]{VGAM::vglm()}} report a warning when they do not
+converge in \code{mixvlmc.maxit} iterations (see \link{mixvlmc-package}), while
+\code{\link[nnet:multinom]{nnet::multinom()}} does not.
+\item the states that never follow a context in the data are ignored by the
+model of this context, which gives them a zero probability and has fewer
+coefficients. Similarly, levels of factor covariates absent from the data
+of a context are ignored: \code{\link[VGAM:vglm]{VGAM::vglm()}} reports no coefficient for them
+while \code{\link[stats:glm]{stats::glm()}} and \code{\link[nnet:multinom]{nnet::multinom()}} report a zero coefficient (for
+instance in \code{\link[=draw.covlmc]{draw.covlmc()}}).
+}
+
+As a consequence of the last point, the number of parameters of a COVLMC,
+used by \code{\link[stats:AIC]{stats::AIC()}} and \code{\link[stats:BIC]{stats::BIC()}} (see \code{\link[=loglikelihood.covlmc]{loglikelihood.covlmc()}}),
+does not depend on the engine.
 }
 
 \examples{

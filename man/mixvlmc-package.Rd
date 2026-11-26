@@ -30,7 +30,8 @@ state space with three or more values;
 
 The first option \code{"glm"} is recommended as both \code{\link[stats:glm]{stats::glm()}} and
 \code{\link[VGAM:vglm]{VGAM::vglm()}} are able to detect and deal with degeneracy in the data
-set.
+set. The results of the two options can differ, see the "Logistic models"
+section of \code{\link[=covlmc]{covlmc()}}.
 \item \code{mixvlmc.backend}: specifies the implementation used for the context tree
 construction in \code{\link[=ctx_tree]{ctx_tree()}}, \code{\link[=vlmc]{vlmc()}} and \code{\link[=tune_vlmc]{tune_vlmc()}}. Two values are
 supported:
