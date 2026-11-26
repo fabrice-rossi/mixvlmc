@@ -74,11 +74,11 @@ test_that("trimming removes only what it should remove", {
       )
       expect_error(
         prune(t_m_cov),
-        "covlmc must be called with keep_data=TRUE to enable post pruning"
+        "post pruning is not supported by trimmed covlmc"
       )
       expect_error(
         prune(t_m_cov_model),
-        "covlmc must be called with keep_data=TRUE to enable post pruning"
+        "post pruning is not supported by trimmed covlmc"
       )
     }
   }
