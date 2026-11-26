@@ -126,7 +126,9 @@ contexts.vlmc <- function(ct, sequence = FALSE, reverse = FALSE, frequency = NUL
     }
   }
   if (!sequence) {
-    NextMethod()
+    ## the other parameters are only used by the data frame representation
+    ## (NextMethod() would pass them to contexts.ctx_tree(), which rejects them)
+    contexts.ctx_tree(ct, sequence = FALSE, reverse = reverse)
   } else {
     control <- list(
       frequency = frequency, local = local, p_value = !is.null(cutoff),

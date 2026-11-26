@@ -55,3 +55,20 @@ test_that("metrics can be computed with local counts", {
     expect_equal(m_loc$accuracy, m_glob$accuracy)
   }
 })
+
+test_that("contexts() accepts the default values of the data frame parameters", {
+  withr::local_seed(0)
+  x <- sample(c("a", "b", "c"), 300, replace = TRUE)
+  for (backend in c("R", "C++")) {
+    model <- vlmc(x, alpha = 0.5, backend = backend)
+    ref <- contexts(model)
+    expect_identical(contexts(model, metrics = FALSE), ref)
+    expect_identical(contexts(model, cutoff = NULL), ref)
+    expect_identical(contexts(model, local = TRUE), ref)
+    expect_identical(contexts(model, positions = FALSE, frequency = NULL), ref)
+    expect_identical(
+      contexts(model, reverse = TRUE, metrics = FALSE),
+      contexts(model, reverse = TRUE)
+    )
+  }
+})
