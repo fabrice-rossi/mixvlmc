@@ -37,10 +37,13 @@ and new logistic models must be estimated. Thus the pruning opportunities
 given by \code{\link[=cutoff.covlmc]{cutoff.covlmc()}} are only a subset of interesting cut offs for a
 given COVLMC.
 
-Nevertheless, \code{\link[=covlmc]{covlmc()}} shares with \code{\link[=vlmc]{vlmc()}} the principle that
-post-pruning a COVLMC should give the same model as building the COVLMC
-directly, provided that the post-pruning alpha is smaller than the alpha
-used to build the initial model.
+Contrarily to the case of \code{\link[=vlmc]{vlmc()}}, post-pruning a COVLMC does not always
+give the same model as building the COVLMC directly with the post-pruning
+alpha (even if it is smaller than the alpha used to build the initial
+model). Indeed the pruning decisions depend on the logistic models
+available in the initial COVLMC. For the same reason, successive pruning
+operations (as in \code{\link[=tune_covlmc]{tune_covlmc()}}) can give a different model than a single
+pruning operation with the final alpha.
 }
 \examples{
 pc <- powerconsumption[powerconsumption$week == 5, ]
