@@ -140,6 +140,10 @@ renders the tree and adds the `forest` package to the preamble of the document.
 * `covlmc()` and `tune_covlmc()` are faster (about 15%) and the models they
   return use much less memory (about a third), as the ROC curves of the logistic
   models are not computed and stored any more (their AUC is computed directly)
+* a `covlmc` records the computing engine used to estimate it (option
+  `mixvlmc.predictive`) and `prune.covlmc()` uses it to estimate new logistic
+  models, with a warning if the option has been changed in between (the
+  current engine was used, possibly mixing engines in a model)
 * `print()` and `summary()` describe a `covlmc` as a "VLMC with covariates"
   (instead of "VLMC with covariate")
 

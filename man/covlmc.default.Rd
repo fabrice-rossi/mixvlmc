@@ -106,9 +106,13 @@ instance in the text format of \code{\link[=draw.covlmc]{draw.covlmc()}}; the La
 zero coefficients for all the engines).
 }
 
-As a consequence of the last point, the number of parameters of a COVLMC,
-used by \code{\link[stats:AIC]{stats::AIC()}} and \code{\link[stats:BIC]{stats::BIC()}} (see \code{\link[=loglikelihood.covlmc]{loglikelihood.covlmc()}}),
-does not depend on the engine.
+The engine used to estimate a COVLMC is recorded in the model: it is also
+used to estimate the new logistic models needed by \code{\link[=prune.covlmc]{prune.covlmc()}}, even
+if the option has been changed in between (with a warning).
+
+As a consequence of the last point of the list above, the number of
+parameters of a COVLMC, used by \code{\link[stats:AIC]{stats::AIC()}} and \code{\link[stats:BIC]{stats::BIC()}} (see
+\code{\link[=loglikelihood.covlmc]{loglikelihood.covlmc()}}), does not depend on the engine.
 }
 
 \examples{

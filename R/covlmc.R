@@ -696,9 +696,13 @@ assert_pseudo_obs <- function(pseudo_obs) {
 #'   instance in the text format of [draw.covlmc()]; the LaTeX format shows
 #'   zero coefficients for all the engines).
 #'
-#'   As a consequence of the last point, the number of parameters of a COVLMC,
-#'   used by [stats::AIC()] and [stats::BIC()] (see [loglikelihood.covlmc()]),
-#'   does not depend on the engine.
+#'   The engine used to estimate a COVLMC is recorded in the model: it is also
+#'   used to estimate the new logistic models needed by [prune.covlmc()], even
+#'   if the option has been changed in between (with a warning).
+#'
+#'   As a consequence of the last point of the list above, the number of
+#'   parameters of a COVLMC, used by [stats::AIC()] and [stats::BIC()] (see
+#'   [loglikelihood.covlmc()]), does not depend on the engine.
 #'
 #' @references
 #'
@@ -808,6 +812,7 @@ covlmc_internal <- function(ix, fx, vals, covariate, alpha, min_size, max_depth,
   pre_result$cov_names <- names(covariate)
   pre_result$alpha <- alpha
   pre_result$control <- control
+  pre_result$engine <- getOption("mixvlmc.predictive")
   pre_result$cov_desc <- cov_desc
   pre_result$cov_logical <- desc$cov_logical
   pre_result$max_depth <- ctx_tree$max_depth
@@ -1029,6 +1034,19 @@ prune.covlmc <- function(vlmc, alpha = 0.05, cutoff = NULL, ...) {
       "this alpha"
     )
   }
+  ## the new logistic models are estimated with the engine of the model
+  ## (models estimated before mixvlmc 0.3.0 do not record it)
+  engine <- vlmc[["engine"]]
+  current_engine <- getOption("mixvlmc.predictive")
+  if (is.null(engine)) {
+    engine <- current_engine
+  } else if (!identical(engine, current_engine)) {
+    warning(
+      "the model was estimated with the \"", engine, "\" engine, which is used ",
+      "to prune it instead of the current one (\"", current_engine, "\")"
+    )
+  }
+  withr::local_options(mixvlmc.predictive = engine)
   pruned_tree <- ctx_tree_fit_glm(vlmc, vlmc$x, vlmc$covariate,
     alpha = alpha, control = vlmc$control, assume_model = TRUE,
     keep_local_data = TRUE, keep_model = TRUE, verbose = FALSE
@@ -1037,6 +1055,7 @@ prune.covlmc <- function(vlmc, alpha = 0.05, cutoff = NULL, ...) {
   pre_result$cov_names <- vlmc$cov_names
   pre_result$alpha <- alpha
   pre_result$control <- vlmc$control
+  pre_result$engine <- engine
   pre_result$cov_desc <- vlmc$cov_desc
   pre_result$cov_logical <- vlmc$cov_logical
   pre_result$max_depth <- vlmc$max_depth
