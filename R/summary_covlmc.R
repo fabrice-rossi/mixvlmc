@@ -1,3 +1,42 @@
+#' Summary of a VLMC with covariates
+#'
+#' This function computes summary statistics of a VLMC with covariates, which
+#' are displayed by the associated `print()` method.
+#'
+#' @param object a fitted VLMC with covariates (a `covlmc` object).
+#' @param x a summary of a VLMC with covariates, as returned by `summary()`.
+#' @param ... additional arguments (not used).
+#'
+#' @returns `summary()` returns an object of class `summary.covlmc`, a list
+#'   with the following components:
+#'   - `state_space`: the state space of the model;
+#'   - `nb`: the number of contexts;
+#'   - `depth`: the length of the longest context;
+#'   - `avg_depth`: the average length of the contexts;
+#'   - `alpha`: the cut off of the model in quantile scale;
+#'   - `covariates`: the names of the covariates;
+#'   - `no_cov`: the number of contexts whose model does not use the
+#'   covariates;
+#'   - `avg_hsize`: the average length of the memory of the covariates (see
+#'   [covariate_memory()]), computed on the contexts whose model uses the
+#'   covariates (`NaN` if there is none);
+#'   - `max_hsize`: the longest memory of the covariates (see
+#'   [covariate_depth()]);
+#'   - `delta`: the average difference between the length of a context and
+#'   the memory of its model, computed on the contexts whose model uses the
+#'   covariates (`NaN` if there is none).
+#'
+#'   `print()` displays the summary and returns `x` invisibly.
+#' @seealso [covlmc()], [contexts.covlmc()], [context_number.covlmc()],
+#'   [depth()], [covariate_depth()]
+#' @examples
+#' pc <- powerconsumption[powerconsumption$week == 5, ]
+#' rdts <- cut(pc$active_power,
+#'   breaks = c(0, quantile(pc$active_power, probs = c(1 / 3, 2 / 3, 1)))
+#' )
+#' rdts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
+#' m_cov <- covlmc(rdts, rdts_cov, min_size = 5)
+#' summary(m_cov)
 #' @exportS3Method
 summary.covlmc <- function(object, ...) {
   rlang::check_dots_empty()
@@ -19,6 +58,7 @@ summary.covlmc <- function(object, ...) {
   structure(res, class = "summary.covlmc")
 }
 
+#' @rdname summary.covlmc
 #' @exportS3Method
 print.summary.covlmc <- function(x, ...) {
   cat(paste(

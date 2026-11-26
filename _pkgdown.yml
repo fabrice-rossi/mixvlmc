@@ -47,6 +47,7 @@ reference:
   - draw_control
   - print.contexts
   - states
+  - summary.ctx_tree
 - title: Context tree nodes
   desc: Extract nodes from context trees and manipulate them.
 - contents:
@@ -82,6 +83,7 @@ reference:
   - metrics.vlmc
   - predict.vlmc
   - states
+  - summary.vlmc
 - title: Variable Length Markov Chain with covariates (COVLMC)
   desc: Estimate COVLMC from a time series and covariates. Extract information from them.
 - contents:
@@ -99,6 +101,7 @@ reference:
   - metrics.covlmc
   - predict.covlmc
   - states
+  - summary.covlmc
 - title: Model selection for (CO)VLMC
   desc: Functions to adjust automatically or manually the complexity of a (CO)VLMC to the time series.
 - subtitle: VLMC
@@ -106,6 +109,7 @@ reference:
   - tune_vlmc
   - plot.tune_vlmc
   - autoplot.tune_vlmc
+  - summary.tune_vlmc
   - cutoff.vlmc
   - prune
 - subtitle: COVLMC
@@ -113,6 +117,7 @@ reference:
   - tune_covlmc
   - plot.tune_covlmc
   - autoplot.tune_covlmc
+  - summary.tune_covlmc
   - cutoff.covlmc
   - prune.covlmc
 - title: Simulation

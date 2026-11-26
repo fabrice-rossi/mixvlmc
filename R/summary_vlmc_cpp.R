@@ -1,3 +1,4 @@
+#' @rdname summary.vlmc
 #' @exportS3Method
 summary.vlmc_cpp <- function(object, ...) {
   rlang::check_dots_empty()
@@ -11,6 +12,7 @@ summary.vlmc_cpp <- function(object, ...) {
   res
 }
 
+#' @rdname summary.vlmc
 #' @exportS3Method
 print.summary.vlmc_cpp <- function(x, ...) {
   cat(paste(

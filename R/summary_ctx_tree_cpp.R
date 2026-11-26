@@ -1,3 +1,4 @@
+#' @rdname summary.ctx_tree
 #' @exportS3Method
 summary.ctx_tree_cpp <- function(object, ...) {
   rlang::check_dots_empty()
@@ -6,6 +7,7 @@ summary.ctx_tree_cpp <- function(object, ...) {
   res
 }
 
+#' @rdname summary.ctx_tree
 #' @exportS3Method
 print.summary.ctx_tree_cpp <- function(x, ...) {
   cat(paste(
