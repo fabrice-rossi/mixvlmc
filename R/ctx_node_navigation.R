@@ -84,7 +84,7 @@ children.ctx_node <- function(node) {
     res <- vector(mode = "list", length = length(node$node[["children"]]))
     for (k in seq_along(res)) {
       if (length(node$node$children[[k]]) > 0) {
-        the_ctx <- c(node$sequence, node$tree$vals[k])
+        the_ctx <- append_state(node$sequence, node$tree$vals, k)
         res[[k]] <- new_ctx_node(the_ctx, node$tree, node$node$children[[k]], node$rev)
       }
     }

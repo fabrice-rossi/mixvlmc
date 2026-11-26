@@ -40,7 +40,7 @@ children.ctx_node_cpp <- function(node) {
   for (k in seq_along(raw_result)) {
     if (!is.null(raw_result[[k]])) {
       raw_result[[k]] <- new_ctx_node_cpp(
-        c(node$sequence, node$tree$vals[k]),
+        append_state(node$sequence, node$tree$vals, k),
         node$tree,
         raw_result[[k]],
         node$rev

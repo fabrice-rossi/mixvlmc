@@ -155,6 +155,9 @@ renders the tree and adds the `forest` package to the preamble of the document.
   degenerate model with the R backend and to an error with the C++ backend)
 
 ### VLMC
+* `children()` and `merged_with()` report the states of models fitted on a
+  factor (they reported their integer codes when the sequence of the node had
+  been given as a character vector, e.g. to `find_sequence()`)
 * `tune_vlmc()` and `tune_covlmc()` increase a null `max_depth` instead of
   warning that they cannot find a suitable value
 * `contexts()` with `local = TRUE` reports correct positions and supports

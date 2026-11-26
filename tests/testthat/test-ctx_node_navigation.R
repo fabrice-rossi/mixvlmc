@@ -49,3 +49,21 @@ test_that("children navigation works", {
     expect_true(all_ok)
   }
 })
+
+test_that("children() keeps the states of models fitted on factors", {
+  withr::local_seed(0)
+  x <- factor(sample(c("low", "typical", "high"), 500, replace = TRUE))
+  for (backend in c("R", "C++")) {
+    model <- vlmc(x, alpha = 0.9, min_size = 2, backend = backend)
+    node <- find_sequence(model, c("typical", "high"))
+    kids <- children(node)
+    for (k in seq_along(kids)) {
+      if (!is.null(kids[[k]])) {
+        expect_identical(
+          as.character(as_sequence(kids[[k]])),
+          c(names(kids)[k], "typical", "high")
+        )
+      }
+    }
+  }
+})

@@ -212,7 +212,7 @@ merged_with <- function(node) {
     merged <- setdiff(node$node$merged, node$index)
     res <- vector(mode = "list", length = length(pnode[["children"]]))
     for (k in merged) {
-      the_ctx <- c(pseq, node$tree$vals[k])
+      the_ctx <- append_state(pseq, node$tree$vals, k)
       res[[k]] <- new_ctx_node(the_ctx, node$tree, pnode$children[[k]],
         node$rev,
         merged = TRUE,

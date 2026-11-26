@@ -338,3 +338,14 @@ probs <- function(node) {
 probs.ctx_node <- function(node) {
   node$node[["f_by"]] / sum(node$node[["f_by"]])
 }
+
+## add the k-th state of vals to a sequence: the sequence may have been given
+## by the user (e.g. to find_sequence()) as a character vector while the states
+## are a factor, in which case c() would use the integer code of the state
+append_state <- function(sequence, vals, k) {
+  state <- vals[k]
+  if (is.factor(state) && length(sequence) > 0 && !is.factor(sequence)) {
+    state <- as.character(state)
+  }
+  c(sequence, state)
+}
