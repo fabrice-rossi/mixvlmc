@@ -121,3 +121,9 @@ glm_to_probs.constant_model <- function(model, lev) {
     VGAM::multilogitlink(matrix(model$coefficients[1:model$rank], ncol = model$rank), inverse = TRUE)[1, ]
   }
 }
+
+## a single state follows the context: there is no parameter to estimate
+#' @exportS3Method
+glm_nb_parameters.constant_model <- function(model) {
+  0L
+}

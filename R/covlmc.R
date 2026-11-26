@@ -44,6 +44,7 @@ node_fit_glm_full_rank_with_data <- function(local_mm, d, target, dim_cov, nb_va
       data = list(local_mm = local_mm, target = target),
       model = local_glm,
       hsize = d,
+      nb_parameters = glm_nb_parameters(local_glm),
       metrics = glm_metrics(local_glm, local_mm, target)
     )
     res
@@ -203,6 +204,7 @@ node_prune_model <- function(model, cov_dim, cov_size, nb_vals, alpha, keep_data
         data = current_data,
         model = current_model,
         hsize = hsize,
+        nb_parameters = glm_nb_parameters(current_model),
         metrics = glm_metrics(current_model, local_mm, target),
         p_value = p_value
       )
@@ -1094,26 +1096,26 @@ covariate_depth <- function(model) {
   rec_cov_depth(model)
 }
 
-## number of parameters associated to one time step of the covariates
-covlmc_cov_size <- function(model) {
-  sum(vapply(model$cov_names, function(var) {
-    if (var %in% names(model$cov_desc)) {
-      ## factor (or logical) covariate
-      length(model$cov_desc[[var]]) - 1L
-    } else {
-      1L
-    }
-  }, 1L))
-}
-
-## The number of parameters of a model is nominal: an intercept and the
-## parameters of the hsize time steps of the covariates, for each state but
-## one. As in the likelihood ratio tests, it does not depend on the states or
-## levels of the covariates that appear in the data of the context, and thus
-## not on the estimation engine (which may or may not drop such levels).
-rec_count_parameters <- function(ct, with_extended = FALSE, d, md, cov_size, nb_vals) {
+## The number of parameters of a context model is the number of parameters
+## estimated by the engine, stored in nb_parameters when the model is fitted.
+## The engines ignore the states that do not follow the context in the data and
+## the unused levels of factor covariates: a model of k observed states whose
+## design matrix has q columns (the intercept and the parameters of the hsize
+## time steps of the covariates, for the levels present in the data) has
+## (k - 1) * q parameters. Constant models (k = 1) have no parameter. Contrarily
+## to the likelihood ratio tests, which use the nominal number of parameters,
+## the number of parameters depends on the data of each context.
+rec_count_parameters <- function(ct, with_extended = FALSE, d, md) {
   model_parameters <- function(model) {
-    (1L + cov_size * model$hsize) * (nb_vals - 1L)
+    if (!is.null(model[["nb_parameters"]])) {
+      model[["nb_parameters"]]
+    } else if (!is.null(model[["model"]])) {
+      ## models fitted before mixvlmc 0.3.0
+      glm_nb_parameters(model[["model"]])
+    } else {
+      ## fully trimmed models fitted before mixvlmc 0.3.0
+      sum(!is.na(model$coefficients))
+    }
   }
   local_counts <- 0
   if (!is.null(ct$model)) {
@@ -1129,7 +1131,7 @@ rec_count_parameters <- function(ct, with_extended = FALSE, d, md, cov_size, nb_
     for (child in ct$children) {
       if (length(child) > 0) {
         local_counts <- local_counts +
-          rec_count_parameters(child, with_extended, d + 1, md, cov_size, nb_vals)
+          rec_count_parameters(child, with_extended, d + 1, md)
       }
     }
   }
@@ -1138,8 +1140,5 @@ rec_count_parameters <- function(ct, with_extended = FALSE, d, md, cov_size, nb_
 
 count_parameters <- function(model, with_extended = FALSE) {
   assertthat::assert_that(is_covlmc(model))
-  rec_count_parameters(
-    model, with_extended, 0, depth(model),
-    covlmc_cov_size(model), length(model$vals)
-  )
+  rec_count_parameters(model, with_extended, 0, depth(model))
 }

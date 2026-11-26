@@ -60,6 +60,27 @@ The definition of the likelihood function depends on the value of the
 \code{initial} parameter, see the section below as well as the dedicated
 vignette: \code{vignette("likelihood", package = "mixvlmc")}.
 }
+\section{Number of parameters}{
+
+
+The \code{df} attribute of the result is the number of parameters estimated by
+the logistic models of the contexts (see \code{\link[=covlmc]{covlmc()}}). The model of a
+context followed by \code{k} different states in the data has \code{(k-1)*q}
+parameters, where \code{q} is the number of parameters of its covariates: an
+intercept, and for each time step of the memory of the model, one
+parameter per numerical or logical covariate and the number of levels
+minus one per factor covariate, counting only the levels present in the
+data of the context. In particular, the model of a context followed by a
+single state has no parameter. This number does not depend on the
+computing engine (see the \code{mixvlmc.predictive} option in
+\link{mixvlmc-package}).
+
+The likelihood ratio tests used to build the model (see \code{\link[=covlmc]{covlmc()}}) use
+instead the nominal number of parameters, \code{(s-1)*q} where \code{s} is the number
+of states and \code{q} counts all the levels of the factor covariates, as in
+the original algorithm.
+}
+
 \section{Likelihood calculation}{
 
 

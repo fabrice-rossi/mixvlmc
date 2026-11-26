@@ -201,3 +201,26 @@ glm_to_probs.multinom <- function(model, lev) {
     NULL
   }
 }
+
+## number of parameters estimated by the engine: VGAM::vglm() and
+## nnet::multinom() ignore the states absent from the data and all engines
+## ignore unused levels of factors (nnet::multinom() keeps a zero coefficient
+## for them, but does not count it in its degrees of freedom)
+glm_nb_parameters <- function(model) {
+  UseMethod("glm_nb_parameters")
+}
+
+#' @exportS3Method
+glm_nb_parameters.glm <- function(model) {
+  model$rank
+}
+
+#' @exportS3Method
+glm_nb_parameters.vglm <- function(model) {
+  model@rank
+}
+
+#' @exportS3Method
+glm_nb_parameters.multinom <- function(model) {
+  model$edf
+}

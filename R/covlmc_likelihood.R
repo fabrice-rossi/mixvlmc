@@ -193,6 +193,25 @@ logLik.covlmc <- function(object, initial = c("truncated", "specific", "extended
 #'   `newdata`). Evaluating the likelihood on new data is not supported by
 #'   fully trimmed models (see [trim.covlmc()]).
 #' @inherit loglikelihood
+#' @section Number of parameters:
+#'
+#'   The `df` attribute of the result is the number of parameters estimated by
+#'   the logistic models of the contexts (see [covlmc()]). The model of a
+#'   context followed by `k` different states in the data has `(k-1)*q`
+#'   parameters, where `q` is the number of parameters of its covariates: an
+#'   intercept, and for each time step of the memory of the model, one
+#'   parameter per numerical or logical covariate and the number of levels
+#'   minus one per factor covariate, counting only the levels present in the
+#'   data of the context. In particular, the model of a context followed by a
+#'   single state has no parameter. This number does not depend on the
+#'   computing engine (see the `mixvlmc.predictive` option in
+#'   [mixvlmc-package]).
+#'
+#'   The likelihood ratio tests used to build the model (see [covlmc()]) use
+#'   instead the nominal number of parameters, `(s-1)*q` where `s` is the number
+#'   of states and `q` counts all the levels of the factor covariates, as in
+#'   the original algorithm.
+#'
 #' @examples
 #'
 #' ## Likelihood for a fitted VLMC with covariates.
