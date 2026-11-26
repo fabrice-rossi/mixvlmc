@@ -303,6 +303,8 @@ covlmc_node2txt <- function(node, vals, control) {
 #' draw(m_cov, model = "full", with_state = TRUE)
 #' draw(m_cov, constant_as_prob = FALSE)
 #' draw(m_cov, format = "latex", control = draw_control(orientation = "h"))
+#' @param ... not used, except for the deprecated `digits` and `time_sep`
+#'   arguments (customisation options are given with [draw_control()]).
 #' @export
 draw.covlmc <- function(ct, format,
                         control = draw_control(), model = c("coef", "full"),
@@ -329,6 +331,19 @@ draw.covlmc <- function(ct, format,
     )
     control$time_sep <- dot_params[["time_sep"]]
     dot_params[["time_sep"]] <- NULL
+  }
+  if (length(dot_params) > 0) {
+    ## other arguments are not used (they used to be silently ignored)
+    dot_names <- names(dot_params)
+    if (is.null(dot_names)) {
+      dot_names <- rep("", length(dot_params))
+    }
+    dot_names[dot_names == ""] <- "(unnamed)"
+    stop(
+      "unused argument(s) in draw(): ", paste(dot_names, collapse = ", "),
+      " (customisation options must be given with draw_control())",
+      call. = FALSE
+    )
   }
   dot_params$with_state <- with_state
   if (format == "text") {

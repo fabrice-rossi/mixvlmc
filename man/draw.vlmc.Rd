@@ -25,7 +25,7 @@ Setting \code{prob=FALSE} replaces the conditional distribution by the frequency
 of the states that follow the context as in \code{\link[=draw.ctx_tree]{draw.ctx_tree()}}. Setting
 \code{prob=NULL} removes all additional information.}
 
-\item{...}{additional arguments for the methods of \code{draw()}.}
+\item{...}{not used (customisation options are given with \code{\link[=draw_control]{draw_control()}}).}
 }
 \value{
 an object of class \code{mixvlmc_draw} that contains the representation

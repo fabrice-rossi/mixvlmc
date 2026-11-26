@@ -24,7 +24,7 @@ anything. Setting \code{frequency} to \code{"total"} includes the frequency of t
 (partial) context of the node, while \code{"detailed"} includes the frequency of
 the states that follow the context (as in \code{\link[=contexts.ctx_tree]{contexts.ctx_tree()}}).}
 
-\item{...}{additional arguments for the methods of \code{draw()}.}
+\item{...}{not used (customisation options are given with \code{\link[=draw_control]{draw_control()}}).}
 }
 \value{
 an object of class \code{mixvlmc_draw} that contains the representation

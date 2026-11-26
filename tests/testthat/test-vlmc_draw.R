@@ -17,12 +17,10 @@ test_that("draw obeys its contract for latex output", {
   expect_snapshot_output(draw(x_vlmc, format = "latex", prob = FALSE))
   expect_snapshot_output(draw(x_vlmc,
     format = "latex",
-    frequency = "detailed",
     control = draw_control(tabular = FALSE)
   ))
   expect_snapshot_output(draw(x_vlmc,
     format = "latex",
-    frequency = "detailed",
     control = draw_control(
       tabular = FALSE,
       fontsize = "small"
@@ -30,7 +28,6 @@ test_that("draw obeys its contract for latex output", {
   ))
   expect_snapshot_output(draw(x_vlmc,
     format = "latex",
-    frequency = "detailed",
     control = draw_control(
       tabular = FALSE,
       fontsize = "small",
@@ -40,7 +37,6 @@ test_that("draw obeys its contract for latex output", {
   ))
   expect_snapshot_output(draw(x_vlmc,
     format = "latex",
-    frequency = "detailed",
     control = draw_control(
       fontsize = "small",
       prob_fontsize = "scriptsize",

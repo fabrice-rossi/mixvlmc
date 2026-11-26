@@ -40,7 +40,8 @@ each dimension of the logistic model (defaults to \code{FALSE}, see details).}
 for \code{format="text"} (defaults to \code{TRUE}, see details). Disregarded when
 \code{format="latex"}.}
 
-\item{...}{additional arguments for the methods of \code{draw()}.}
+\item{...}{not used, except for the deprecated \code{digits} and \code{time_sep}
+arguments (customisation options are given with \code{\link[=draw_control]{draw_control()}}).}
 }
 \value{
 an object of class \code{mixvlmc_draw} (see \code{\link[=print.mixvlmc_draw]{print.mixvlmc_draw()}}).

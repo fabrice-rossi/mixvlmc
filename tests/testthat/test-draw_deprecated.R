@@ -43,3 +43,18 @@ test_that("the digits and time_sep arguments of draw.covlmc() are deprecated", {
     capture.output(draw(m_cov, control = draw_control(digits = 2)))
   )
 })
+
+test_that("draw() reports unused arguments", {
+  withr::local_seed(0)
+  x <- sample(c("A", "B", "C"), 200, replace = TRUE)
+  for (backend in c("R", "C++")) {
+    expect_error(draw(ctx_tree(x, backend = backend), tab_orientation = "h"))
+    expect_error(draw(vlmc(x, backend = backend), probs = TRUE))
+  }
+  cov <- data.frame(y = stats::runif(200))
+  m_cov <- covlmc(x, cov)
+  expect_error(draw(m_cov, tab_orientation = "horizontal"), "tab_orientation")
+  expect_error(draw(m_cov, "text", draw_control(), "full", FALSE, FALSE, TRUE, 3), "unnamed")
+  ## deprecated arguments are still supported
+  lifecycle::expect_deprecated(draw(m_cov, digits = 2))
+})

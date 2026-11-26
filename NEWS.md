@@ -17,6 +17,9 @@ covariates (see the breaking changes below).
   deprecated (it is still supported with a warning)
 * the `digits` parameter of `draw.covlmc()` is deprecated and replaced by a
   similar parameter in `draw_control()`
+* `draw()` methods report an error when they are given unused arguments, for
+  instance an option of `draw_control()` given directly to `draw()` (they
+  were silently ignored)
 * defaults for `draw.covlmc()` have changed (issue #66):
   * `p_value` is now `FALSE` by default
   * when `p_value` is `TRUE` the p-values are represented between separators 

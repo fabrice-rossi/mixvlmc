@@ -1,6 +1,7 @@
 #' @export
 #' @rdname draw.vlmc
 draw.vlmc_cpp <- function(ct, format, control = draw_control(), prob = TRUE, ...) {
+  rlang::check_dots_empty()
   format_control <- draw_format_control(format, control)
   format <- format_control$format
   control <- format_control$control
@@ -10,12 +11,12 @@ draw.vlmc_cpp <- function(ct, format, control = draw_control(), prob = TRUE, ...
     if (is.null(prob)) {
       res <- format_ctx_tree_cpp(
         control$root, "", ct_r, ct_r[[1]], ct$vals,
-        c(control, list(...)), NULL
+        control, NULL
       )
     } else {
       res <- format_ctx_tree_cpp(
         control$root, "", ct_r, ct_r[[1]], ct$vals,
-        c(control, list(prob = prob), list(...)),
+        c(control, list(prob = prob)),
         vlmc_node2txt
       )
     }
@@ -23,12 +24,12 @@ draw.vlmc_cpp <- function(ct, format, control = draw_control(), prob = TRUE, ...
     if (is.null(prob)) {
       res <- format_latex_ctx_tree_cpp(
         ct_r, ct_r[[1]], xtable::sanitize(ct$vals, "latex"),
-        c(control, list(...)), ctx_tree_node2latex
+        control, ctx_tree_node2latex
       )
     } else {
       res <- format_latex_ctx_tree_cpp(
         ct_r, ct_r[[1]], xtable::sanitize(ct$vals, "latex"),
-        c(control, list(prob = prob), list(...)), vlmc_node2latex
+        c(control, list(prob = prob)), vlmc_node2latex
       )
     }
   }

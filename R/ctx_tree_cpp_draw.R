@@ -72,6 +72,7 @@ format_ctx_tree_cpp <- function(label, prefix, tree, ct, vals, control, node2txt
 #' @rdname draw.ctx_tree
 draw.ctx_tree_cpp <- function(ct, format, control = draw_control(),
                               frequency = NULL, ...) {
+  rlang::check_dots_empty()
   format_control <- draw_format_control(format, control)
   format <- format_control$format
   control <- format_control$control
@@ -80,21 +81,21 @@ draw.ctx_tree_cpp <- function(ct, format, control = draw_control(),
   if (format == "text") {
     if (is.null(frequency)) {
       res <- format_ctx_tree_cpp(
-        control$root, "", ct_r, ct_r[[1]], ct$vals, c(control, list(...)),
+        control$root, "", ct_r, ct_r[[1]], ct$vals, control,
         NULL
       )
     } else {
       frequency <- match.arg(frequency, c("total", "detailed"))
       res <- format_ctx_tree_cpp(
         control$root, "", ct_r, ct_r[[1]], ct$vals,
-        c(control, list(frequency = frequency), list(...)),
+        c(control, list(frequency = frequency)),
         ctx_tree_node2txt
       )
     }
   } else if (format == "latex") {
     res <- format_latex_ctx_tree_cpp(
       ct_r, ct_r[[1]], xtable::sanitize(ct$vals, "latex"),
-      c(control, list(...), list(frequency = frequency)),
+      c(control, list(frequency = frequency)),
       ctx_tree_node2latex
     )
   }

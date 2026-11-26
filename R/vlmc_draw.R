@@ -33,21 +33,23 @@ vlmc_node2txt <- function(ct, vals, control) {
 #' draw(model, prob = NULL)
 #' ## LaTeX output
 #' draw(model, "latex")
+#' @param ... not used (customisation options are given with [draw_control()]).
 #' @export
 draw.vlmc <- function(ct, format, control = draw_control(), prob = TRUE, ...) {
+  rlang::check_dots_empty()
   format_control <- draw_format_control(format, control)
   format <- format_control$format
   control <- format_control$control
   if (format == "text") {
     if (is.null(prob)) {
       res <- format_ctx_tree(
-        ct, c(control, list(...)),
+        ct, control,
         NULL
       )
     } else {
       res <- format_ctx_tree(
         ct,
-        c(control, list(prob = prob), list(...)),
+        c(control, list(prob = prob)),
         vlmc_node2txt
       )
     }
@@ -55,13 +57,13 @@ draw.vlmc <- function(ct, format, control = draw_control(), prob = TRUE, ...) {
     if (is.null(prob)) {
       res <- format_latex_ctx_tree(
         ct, xtable::sanitize(ct$vals, "latex"),
-        c(control, list(...)),
+        control,
         ctx_tree_node2latex
       )
     } else {
       res <- format_latex_ctx_tree(
         ct, xtable::sanitize(ct$vals, "latex"),
-        c(control, list(prob = prob), list(...)),
+        c(control, list(prob = prob)),
         vlmc_node2latex
       )
     }

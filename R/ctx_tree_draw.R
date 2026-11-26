@@ -531,27 +531,29 @@ draw_format_control <- function(format, control, user_env = rlang::caller_env(2)
 #' ctree_c <- ctx_tree(rdts_c, min_size = 10, max_depth = 2)
 #' ## the LaTeX output is sanitised
 #' draw(ctree_c, "latex", frequency = "detailed")
+#' @param ... not used (customisation options are given with [draw_control()]).
 #' @export
 draw.ctx_tree <- function(ct, format, control = draw_control(),
                           frequency = NULL, ...) {
+  rlang::check_dots_empty()
   format_control <- draw_format_control(format, control)
   format <- format_control$format
   control <- format_control$control
   if (format == "text") {
     if (is.null(frequency)) {
-      res <- format_ctx_tree(ct, c(control, list(...)), NULL)
+      res <- format_ctx_tree(ct, control, NULL)
     } else {
       frequency <- match.arg(frequency, c("total", "detailed"))
       res <- format_ctx_tree(
         ct,
-        c(control, list(...), list(frequency = frequency)),
+        c(control, list(frequency = frequency)),
         ctx_tree_node2txt
       )
     }
   } else if (format == "latex") {
     res <- format_latex_ctx_tree(
       ct, xtable::sanitize(ct$vals, "latex"),
-      c(control, list(...), list(frequency = frequency)),
+      c(control, list(frequency = frequency)),
       ctx_tree_node2latex
     )
   }
