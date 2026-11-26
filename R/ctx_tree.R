@@ -112,9 +112,9 @@ grow_ctx_tree <- function(x, vals, min_size, max_depth, covsize = 0L, keep_match
 #' stores the frequencies of the states that follow each context. Optionally,
 #' the positions of the contexts in the time series can be stored in the tree.
 #'
-#' @param x an object that can be interpreted as a discrete time series, such
-#'  as an integer vector or a `dts` object (see [dts()]). Its state space must
-#'  contain at least two states.
+#' @param x an object that can be interpreted as a discrete time series: a
+#'  numeric, character, factor or logical vector, or a `dts` object (see
+#'  [dts()]). Its state space must contain at least two states.
 #' @param min_size integer >= 1 (default: 2). Minimum number of observations for
 #'   a context to be included in the tree.
 #' @param max_depth integer >= 0 (default: 100). Maximum length of a context to

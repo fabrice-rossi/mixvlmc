@@ -22,9 +22,9 @@
 #' collection, including the initial complex tree, as the one that minimises the
 #' chosen information criterion.
 #'
-#' @param x an object that can be interpreted as a discrete time series, such
-#'  as an integer vector or a `dts` object (see [dts()]). Its state space must
-#'  contain at least two states.
+#' @param x an object that can be interpreted as a discrete time series: a
+#'  numeric, character, factor or logical vector, or a `dts` object (see
+#'  [dts()]). Its state space must contain at least two states.
 #' @param criterion criterion used to select the best model. Either `"BIC"`
 #'   (default) or `"AIC"` (see details).
 #' @param initial specifies the likelihood function, more precisely the way the

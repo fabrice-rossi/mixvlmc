@@ -619,9 +619,9 @@ assert_pseudo_obs <- function(pseudo_obs) {
 #' This function fits a Variable Length Markov Chain with covariates (COVLMC)
 #' to a discrete time series coupled with a time series of covariates.
 #'
-#' @param x an object that can be interpreted as a discrete time series, such
-#'  as an integer vector or a `dts` object (see [dts()]). Its state space must
-#'  contain at least two states.
+#' @param x an object that can be interpreted as a discrete time series: a
+#'  numeric, character, factor or logical vector, or a `dts` object (see
+#'  [dts()]). Its state space must contain at least two states.
 #' @param covariate a data frame of covariates, with one row per observation
 #'   of `x`, at least one column and no missing values.
 #' @param alpha number in (0,1] (default: 0.05) cut off value in the pruning

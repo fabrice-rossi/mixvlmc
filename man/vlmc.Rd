@@ -16,9 +16,9 @@ vlmc(
 )
 }
 \arguments{
-\item{x}{an object that can be interpreted as a discrete time series, such
-as an integer vector or a \code{dts} object (see \code{\link[=dts]{dts()}}). Its state space must
-contain at least two states.}
+\item{x}{an object that can be interpreted as a discrete time series: a
+numeric, character, factor or logical vector, or a \code{dts} object (see
+\code{\link[=dts]{dts()}}). Its state space must contain at least two states.}
 
 \item{alpha}{number in (0,1] (default: 0.05) cut off value in quantile scale
 in the pruning phase.}

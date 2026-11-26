@@ -16,9 +16,9 @@ covlmc(
 )
 }
 \arguments{
-\item{x}{an object that can be interpreted as a discrete time series, such
-as an integer vector or a \code{dts} object (see \code{\link[=dts]{dts()}}). Its state space must
-contain at least two states.}
+\item{x}{an object that can be interpreted as a discrete time series: a
+numeric, character, factor or logical vector, or a \code{dts} object (see
+\code{\link[=dts]{dts()}}). Its state space must contain at least two states.}
 
 \item{covariate}{a data frame of covariates, with one row per observation
 of \code{x}, at least one column and no missing values.}

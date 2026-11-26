@@ -284,9 +284,9 @@ prune.vlmc <- function(vlmc, alpha = 0.05, cutoff = NULL, ...) {
 #' convenience parameter to avoid setting `alpha=1` (which essentially prevents
 #' any pruning). Automated model selection is provided by [tune_vlmc()].
 #'
-#' @param x an object that can be interpreted as a discrete time series, such
-#'  as an integer vector or a `dts` object (see [dts()]). Its state space must
-#'  contain at least two states.
+#' @param x an object that can be interpreted as a discrete time series: a
+#'  numeric, character, factor or logical vector, or a `dts` object (see
+#'  [dts()]). Its state space must contain at least two states.
 #' @param alpha number in (0,1] (default: 0.05) cut off value in quantile scale
 #'   in the pruning phase.
 #' @param cutoff non negative number: cut off value in native (log likelihood
