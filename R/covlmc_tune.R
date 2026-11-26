@@ -132,7 +132,7 @@ tune_covlmc <- function(x, covariate, criterion = c("BIC", "AIC"),
   if (is.null(alpha_init)) {
     alpha <- 0.5
   } else {
-    if (is.null(alpha_init) || !is.numeric(alpha_init) || alpha_init <= 0 || alpha_init > 1) {
+    if (!is.numeric(alpha_init) || alpha_init <= 0 || alpha_init > 1) {
       stop("the alpha_init parameter must be in (0, 1]")
     }
     alpha <- alpha_init

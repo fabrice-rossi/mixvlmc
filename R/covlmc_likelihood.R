@@ -130,7 +130,7 @@ rec_loglikelihood_covlmc_newdata <- function(tree, d, nb_vals, y, cov, verbose =
         mm_match <- setdiff(mm_match, sub_match)
       }
       mm_match <- not_ignored_positions(mm_match, d, ignore)
-      if (length(mm_match > 0)) {
+      if (length(mm_match) > 0) {
         glmdata <- prepare_glm(cov, mm_match, tree$extended_model$hsize, y,
           from = d - tree$extended_model$hsize
         )
