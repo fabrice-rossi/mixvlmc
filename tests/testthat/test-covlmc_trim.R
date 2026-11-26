@@ -64,13 +64,13 @@ test_that("trimming removes only what it should remove", {
         simulate(t_m_cov, nsim = 50, seed = 0, rdts_cov),
         "simulate is not supported by fully trimmed covlmc"
       )
-      expect_error(
+      expect_warning(
         metrics(t_m_cov),
-        "metrics is not supported by trimmed covlmc"
+        "AUC cannot be computed for a trimmed covlmc"
       )
-      expect_error(
+      expect_warning(
         metrics(t_m_cov_model),
-        "metrics is not supported by trimmed covlmc"
+        "AUC cannot be computed for a trimmed covlmc"
       )
       expect_error(
         prune(t_m_cov),

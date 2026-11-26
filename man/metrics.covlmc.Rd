@@ -10,8 +10,7 @@
 \method{print}{metrics.covlmc}(x, ...)
 }
 \arguments{
-\item{model}{a fitted VLMC with covariates (a \code{covlmc} object). Trimmed
-models are not supported (see \code{\link[=trim.covlmc]{trim.covlmc()}}).}
+\item{model}{a fitted VLMC with covariates (a \code{covlmc} object).}
 
 \item{...}{additional parameters for predictive metrics computation.}
 
@@ -54,6 +53,17 @@ AUC in case of a state space with more than 2 states
 covariates.
 
 }}
+\section{Trimmed models}{
+
+
+The predictions of a trimmed model (see \code{\link[=trim.covlmc]{trim.covlmc()}}) on the time
+series used to fit it are not available any more. The accuracy and the
+confusion matrix are obtained from the confusion matrices of the contexts
+computed when the model was fitted (and from the one of the first
+observations computed when the model was trimmed), but the AUC cannot be
+computed: it is \code{NA}, with a warning.
+}
+
 \section{Extended contexts}{
 
 

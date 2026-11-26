@@ -62,17 +62,17 @@ rec_trim_covlmc <- function(ct, keep_model, vals) {
 #' Called with `keep_model` set to `FALSE` (default case), the trimming is
 #' maximal and reduces further usability of the model. In particular
 #' [loglikelihood.covlmc()] cannot be used for new data, [contexts.covlmc()]
-#' and [model()] do not support full model extraction, and [predict.covlmc()],
-#' [simulate.covlmc()], [metrics.covlmc()] and [prune.covlmc()] cannot be used
-#' at all.
+#' and [model()] do not support full model extraction, [predict.covlmc()],
+#' [simulate.covlmc()] and [prune.covlmc()] cannot be used at all, and
+#' [metrics.covlmc()] does not compute the AUC.
 #'
 #' Called with `keep_model` set to `TRUE`, the trimming process is less
 #' complete. In particular internal models are simplified using
 #' [butcher::butcher()] and some additional minor reductions. This saves less
 #' memory but enables the use of [loglikelihood.covlmc()] for new data, of
 #' [predict.covlmc()] and of [simulate.covlmc()], as well as full model
-#' extraction. [metrics.covlmc()] and [prune.covlmc()] cannot be used on the
-#' trimmed model.
+#' extraction. [prune.covlmc()] cannot be used on the trimmed model and
+#' [metrics.covlmc()] does not compute the AUC.
 #'
 #' @param ct a fitted VLMC with covariates (a `covlmc` object).
 #' @param keep_model specifies whether to keep the internal models (or not).
@@ -98,7 +98,14 @@ rec_trim_covlmc <- function(ct, keep_model, vals) {
 #' logLik(t_m_cov)
 trim.covlmc <- function(ct, keep_model = FALSE, ...) {
   rlang::check_dots_empty()
+  if (is.null(ct$trimmed)) {
+    ## keep what is needed for metrics()
+    extended_conf_mat <- covlmc_extended_conf_mat(ct)
+  } else {
+    extended_conf_mat <- ct[["extended_conf_mat"]]
+  }
   pre_res <- rec_trim_covlmc(ct, keep_model, ct$vals)
+  pre_res$extended_conf_mat <- extended_conf_mat
   pre_res$x <- NULL
   pre_res$covariate <- NULL
   pre_res$trimmed <- ifelse(keep_model, "non_model", "full")

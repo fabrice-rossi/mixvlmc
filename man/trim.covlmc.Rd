@@ -25,17 +25,17 @@ removed.
 Called with \code{keep_model} set to \code{FALSE} (default case), the trimming is
 maximal and reduces further usability of the model. In particular
 \code{\link[=loglikelihood.covlmc]{loglikelihood.covlmc()}} cannot be used for new data, \code{\link[=contexts.covlmc]{contexts.covlmc()}}
-and \code{\link[=model]{model()}} do not support full model extraction, and \code{\link[=predict.covlmc]{predict.covlmc()}},
-\code{\link[=simulate.covlmc]{simulate.covlmc()}}, \code{\link[=metrics.covlmc]{metrics.covlmc()}} and \code{\link[=prune.covlmc]{prune.covlmc()}} cannot be used
-at all.
+and \code{\link[=model]{model()}} do not support full model extraction, \code{\link[=predict.covlmc]{predict.covlmc()}},
+\code{\link[=simulate.covlmc]{simulate.covlmc()}} and \code{\link[=prune.covlmc]{prune.covlmc()}} cannot be used at all, and
+\code{\link[=metrics.covlmc]{metrics.covlmc()}} does not compute the AUC.
 
 Called with \code{keep_model} set to \code{TRUE}, the trimming process is less
 complete. In particular internal models are simplified using
 \code{\link[butcher:butcher]{butcher::butcher()}} and some additional minor reductions. This saves less
 memory but enables the use of \code{\link[=loglikelihood.covlmc]{loglikelihood.covlmc()}} for new data, of
 \code{\link[=predict.covlmc]{predict.covlmc()}} and of \code{\link[=simulate.covlmc]{simulate.covlmc()}}, as well as full model
-extraction. \code{\link[=metrics.covlmc]{metrics.covlmc()}} and \code{\link[=prune.covlmc]{prune.covlmc()}} cannot be used on the
-trimmed model.
+extraction. \code{\link[=prune.covlmc]{prune.covlmc()}} cannot be used on the trimmed model and
+\code{\link[=metrics.covlmc]{metrics.covlmc()}} does not compute the AUC.
 }
 \examples{
 pc <- powerconsumption[powerconsumption$week \%in\% 5:7, ]

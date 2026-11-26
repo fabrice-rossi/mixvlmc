@@ -113,3 +113,43 @@ test_that("metrics.covlmc works on depth 0 models", {
   names(dimnames(predict_table)) <- c("predicted value", "true value")
   expect_identical(m_metrics$conf_mat, predict_table)
 })
+
+test_that("metrics of trimmed models are consistent with the ones of the models", {
+  pc <- powerconsumption[powerconsumption$week %in% 5:6, ]
+  cov <- data.frame(day = (pc$hour >= 7 & pc$hour <= 17))
+  series <- list(
+    cut(pc$active_power, breaks = c(0, 0.4, 2, 8)),
+    cut(pc$active_power, breaks = c(0, 1.2, 8))
+  )
+  for (x in series) {
+    for (engine in c("glm", "multinom")) {
+      withr::local_options(mixvlmc.predictive = engine)
+      model <- covlmc(x, cov, min_size = 5)
+      expect_gt(depth(model), 0)
+      ref <- metrics(model)
+      for (keep_model in c(FALSE, TRUE)) {
+        trimmed <- trim(model, keep_model = keep_model)
+        expect_warning(t_metrics <- metrics(trimmed), "AUC")
+        expect_identical(t_metrics$auc, NA_real_)
+        expect_equal(t_metrics$accuracy, ref$accuracy)
+        expect_equal(
+          unclass(t_metrics$conf_mat), unclass(ref$conf_mat),
+          ignore_attr = TRUE
+        )
+        expect_identical(dimnames(t_metrics$conf_mat), dimnames(ref$conf_mat))
+      }
+    }
+  }
+})
+
+test_that("metrics of trimmed models support character time series", {
+  withr::local_seed(0)
+  x <- sample(c("A", "B", "C"), 500, replace = TRUE)
+  cov <- data.frame(z = stats::runif(length(x)))
+  model <- covlmc(x, cov, alpha = 0.5)
+  expect_gt(depth(model), 0)
+  ref <- metrics(model)
+  expect_warning(t_metrics <- metrics(trim(model)), "AUC")
+  expect_equal(t_metrics$accuracy, ref$accuracy)
+  expect_equal(unclass(t_metrics$conf_mat), unclass(ref$conf_mat), ignore_attr = TRUE)
+})
