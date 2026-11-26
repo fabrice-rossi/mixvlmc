@@ -35,7 +35,10 @@ test_that("knitr includes LaTeX representations as is in LaTeX documents", {
   withr::defer(knitr::opts_knit$set(rmarkdown.pandoc.to = old_to))
   out <- knitr::knit_print(repr)
   expect_s3_class(out, "knit_asis")
-  expect_identical(as.character(out), paste(as.character(repr), collapse = "\n"))
+  expect_identical(
+    as.character(out),
+    paste0("\n\n", paste(as.character(repr), collapse = "\n"), "\n\n")
+  )
   deps <- attr(out, "knit_meta")
   expect_length(deps, 1)
   expect_s3_class(deps[[1]], "latex_dependency")

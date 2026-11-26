@@ -79,8 +79,9 @@ forest_latex_dependency <- function() {
 ## knitr printing (registered in .onLoad())
 knit_print.mixvlmc_draw <- function(x, ...) {
   if (identical(attr(x, "format"), "latex") && knitr::is_latex_output()) {
+    ## blank lines make each tree a paragraph of its own
     knitr::asis_output(
-      paste(format(x), collapse = "\n"),
+      paste0("\n\n", paste(format(x), collapse = "\n"), "\n\n"),
       meta = list(forest_latex_dependency())
     )
   } else {
