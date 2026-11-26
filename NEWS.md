@@ -176,6 +176,9 @@ renders the tree and adds the `forest` package to the preamble of the document.
 ### VLMC with covariates
 * the logistic models without covariates (intercept only) obey the
   `mixvlmc.maxit` option with the `glm` and `multinom` engines
+* the `mixvlmc.maxit` option is used by `VGAM::vglm()` (three states or more
+  with the `glm` engine): VGAM replaced it by its own default (31 iterations),
+  and models stopped at this limit could be reported as not converged
 * the likelihood of degenerate `multinom` models is not NA any more (which
   crashed `covlmc()`) and NaN likelihoods with zero probabilities are avoided,
   including in ignored observations

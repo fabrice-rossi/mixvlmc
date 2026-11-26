@@ -90,3 +90,24 @@ test_that("intercept only models obey the mixvlmc.maxit option", {
   ## convergence is 1 when the maximum number of iterations is reached
   expect_identical(model$convergence, 1L)
 })
+
+test_that("vglm models obey the mixvlmc.maxit option", {
+  withr::local_seed(0)
+  n <- 500
+  mm <- data.frame(x = stats::rnorm(n))
+  target <- factor(sample(c("a", "b", "c"), n, replace = TRUE))
+  ## quasi separation makes the fit slow
+  target[mm$x > 1.5] <- "c"
+  withr::local_options(mixvlmc.predictive = "glm")
+  for (maxit in c(2, 50)) {
+    withr::local_options(mixvlmc.maxit = maxit)
+    model <- suppressWarnings(fit_glm(target, mm, 3, covlmc_control()))
+    expect_s4_class(model, "vglm")
+    expect_identical(model@control$maxit, maxit)
+    expect_lte(model@iter, maxit)
+  }
+  ## intercept only model
+  withr::local_options(mixvlmc.maxit = 2)
+  model <- suppressWarnings(fit_glm(target, mm[, FALSE], 3, covlmc_control()))
+  expect_identical(model@control$maxit, 2)
+})

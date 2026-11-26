@@ -151,7 +151,7 @@ fit_glm <- function(target, mm, nb_vals, control) {
               result <- VGAM::vglm(target ~ .,
                 data = mm, family = VGAM::multinomial(refLevel = 1),
                 x.arg = FALSE, y.arg = FALSE, model = FALSE,
-                control = VGAM::vglm.control(maxit = getOption("mixvlmc.maxit"))
+                maxit = getOption("mixvlmc.maxit")
               )
             ),
             silent = TRUE
@@ -183,7 +183,7 @@ fit_glm <- function(target, mm, nb_vals, control) {
               result <- VGAM::vglm(target ~ 1,
                 data = mm, family = VGAM::multinomial(refLevel = 1),
                 x.arg = FALSE, y.arg = FALSE, model = FALSE,
-                control = VGAM::vglm.control(maxit = getOption("mixvlmc.maxit"))
+                maxit = getOption("mixvlmc.maxit")
               )
             ),
             silent = TRUE
