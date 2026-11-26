@@ -1,6 +1,8 @@
 #include <algorithm>
 #include "utils.h"
 
+// used only by the debugging functions print_tree() and print_context()
+// # nocov start
 std::string counts_to_string(const std::unordered_map<int, int>* counts) {
   if(counts->size() == 0) {
     return "[ ]";
@@ -15,6 +17,7 @@ std::string counts_to_string(const std::unordered_map<int, int>* counts) {
     return res.substr(0, res.length() - 2) + " ]";
   }
 }
+// # nocov end
 
 Rcpp::IntegerVector map_to_counts(std::unordered_map<int, int>* counts,
                                   int max) {
@@ -58,7 +61,8 @@ int sample(const std::unordered_map<int, int>* counts, int max, int total) {
       last = k;
     }
   }
-  return last;
+  // not reached as bound <= total, kept for safety
+  return last;  // # nocov
 }
 
 int sample2(const std::unordered_map<int, int>* counts, int max, int total) {

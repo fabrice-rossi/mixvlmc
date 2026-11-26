@@ -281,6 +281,7 @@ Position SuffixTree::find_subsequence(const IntegerVector& y) const {
   return Position{};  // default case
 }
 
+// # nocov start
 void SuffixTree::print_context(const IntegerVector& y) const {
   Position pos = find_subsequence(y);
   if(pos.is_valid()) {
@@ -301,6 +302,7 @@ void SuffixTree::print_context(const IntegerVector& y) const {
     Rcout << "Not found\n";
   }
 }
+// # nocov end
 
 // test whether a subsequence is a suffix or not
 bool SuffixTree::is_suffix(const IntegerVector& y) const {

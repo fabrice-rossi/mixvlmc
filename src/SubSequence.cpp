@@ -60,7 +60,9 @@ IntegerVector SubSequence::sequence() const {
 
 IntegerVector SubSequence::positions() const {
   if(p_positions == nullptr) {
-    return IntegerVector();
+    // not reached: SuffixTree::raw_subsequences() checks that the positions
+    // were saved
+    return IntegerVector();  // # nocov
   } else {
     std::sort(p_positions->rbegin(), p_positions->rend());
     return IntegerVector(p_positions->begin(), p_positions->end());
