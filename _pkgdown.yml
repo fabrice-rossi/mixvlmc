@@ -17,9 +17,13 @@ articles:
 - title: Advanced topics
   navbar: Advanced topics
   contents:
+  - model-selection
+  - dts-and-contexts
   - likelihood
   - prediction
   - sampling
+  - articles/drawing
+  - articles/covlmc-engines
 - title: Implementation
   desc: This article documents implementation details.
   contents:
