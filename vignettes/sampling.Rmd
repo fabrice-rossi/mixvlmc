@@ -24,22 +24,23 @@ library(ggplot2)
 library(data.table) ## for frollapply
 ```
 
-Once a (CO)VLMC has been estimated from a sequence, it can be used to produce new sequences. Any statistical estimator defined on the original sequence can be applied to the simulated sequences leading a form of [semi-parametric bootstrap](https://en.wikipedia.org/wiki/Bootstrapping_(statistics)). This provides
+Once a (CO)VLMC has been estimated from a sequence, it can be used to produce new sequences. Any statistical estimator defined on the original sequence can be applied to the simulated sequences leading to a form of [semi-parametric bootstrap](https://en.wikipedia.org/wiki/Bootstrapping_(statistics)). This provides
 an interesting alternative to other bootstrapping solutions for correlated data,
-such as the block bootstrap. This can also be use to consider what-if scenarios 
-when different values of the covariates are used study their effect beyond analysis
-coefficients in context specific models. 
+such as the block bootstrap. With a COVLMC, this can also be used to consider
+what-if scenarios in which different values of the covariates are used to study
+their effect, beyond the analysis of the coefficients of the context specific
+models. 
 
 ## Theoretical results
 
 Bühlmann and Wyner show in [their paper](https://dx.doi.org/10.1214/aos/1018031204)
-that this approach is consistent for statistics that depend smoothly from arbitrary
+that this approach is consistent for statistics that depend smoothly on arbitrary
 means of fixed mappings of contexts to numerical values. In simple terms, one can
 first choose a mapping of arbitrary tuples of values in the state space to numerical 
-vectors and then build a estimator by averaging those vectors over the observed sequence.
+vectors and then build an estimator by averaging those vectors over the observed sequence.
 The resulting vector mean can then be transformed smoothly to lead to an estimator.
 The VLMC bootstrap is then consistent for this estimator under relatively mild
-hypothesis on the underlying VLMC. 
+hypotheses on the underlying VLMC. 
 
 A typical example of such estimator is the probability of observing a fixed 
 pattern in the sequence. More generally, the class of estimators includes smooth
@@ -81,11 +82,12 @@ samples. In general `simulate.vlmc()` is used as `stats::simulate()` and support
 the standard parameters:
 
 - `nsim` for the number of simulated values, here the length of the new time series
-- `seed` to specify the random seed used during the simulation (the initial state of
-   the random number generator is restored to its previous after simulating the values)
+- `seed` to specify the random seed used during the simulation (the state of
+   the random number generator is restored to its previous value after simulating
+   the values)
    
-As for `stats::simulate()`, the state of the random number generator is never 
-modified by a call to `simulate.vlmc()`. 
+As for `stats::simulate()`, when `seed` is specified the state of the random
+number generator is not modified by a call to `simulate.vlmc()`. 
 
 In addition, one can specify the initial values of the sequence via the `init` parameter, for
 instance:
@@ -97,14 +99,14 @@ is guaranteed to start with $0, 0$:
 dts_sample_2
 ```
 This provides an alternative to dropping the initial values of the simulated time
-series by setting those values to the one observed in the data set. Notice that this
-practice has no theoretical justification. 
+series, for instance by setting those values to the ones observed in the data set.
+Notice that this practice has no theoretical justification. 
 
 To implement a *burn in* period, just use the `burnin` parameter. For instance:
 ```{r}
 dts_sample_3 <- simulate(as_vlmc(best_vlmc), 10, burnin = 20)
 ```
-will simulated 30 values and drop the first 20. 
+simulates 30 values and drops the first 20. 
 
 ### CAC time series
 Let us consider the French CAC index provided in `EuStockMarkets`:
@@ -128,14 +130,16 @@ CAC_dts <- factor(
 )
 ```
 
-Then we adjust a VLMC to the time series using the AIC criterion:
+Then we fit a VLMC to the time series using the AIC criterion:
 ```{r cache=TRUE}
 CAC_vlmc <- tune_vlmc(CAC_dts, criterion = "AIC")
 CAC_model <- as_vlmc(CAC_vlmc)
 ```
 
-We use here the AIC to favour predictive performances and as a consequence the
-obtained model is quite complex with `r context_number(CAC_model)` contexts. 
+We use here the AIC to favour predictive performances. Notice however that the
+obtained model has only `r context_number(CAC_model)` context and is therefore
+memoryless: the bootstrap procedure described below applies without
+modification to more complex models. 
 
 The original discrete time series does not exhibit long subsequences of constant 
 values as shown in the following graphical representation.
@@ -151,11 +155,11 @@ ggplot(CAC_rle_df, aes(x = length)) +
   )
 ```
 
-To study this aspect of the time series, a natural statistics is the probability 
+To study this aspect of the time series, a natural statistic is the probability 
 of observing a constant subsequence of a length between 5 and 10 among all 
 subsequences of length 10 that can be generated by the model. Notice that the 
-patterns used in the statistics must be of fixed lengths to be covered by the 
-consistency theorems mentioned above. We implement the statistics as follows:
+patterns used in the statistic must be of fixed lengths to be covered by the 
+consistency theorems mentioned above. We implement the statistic as follows:
 
 ```{r}
 long_sequence <- function(rdts) {
@@ -168,8 +172,9 @@ long_sequence <- function(rdts) {
 ```
 
 We generate 100 bootstrap samples, using a *burn in* time proportional to the 
-depth of the model, in order to allow for a proper mixing to take place. Notice 
-that we could use also `burnin="auto"` to use the another heuristics which uses
+depth of the model, in order to allow for a proper mixing to take place (this
+is useless here as the model is memoryless). Notice 
+that we could also use `burnin="auto"` to use another heuristic which uses
 the number of contexts to compute the length of the *burn in* period. We use
 the `seed` parameter of `stats::simulate()` to ensure reproducibility. 
 
@@ -185,13 +190,13 @@ for (b in seq_along(bootstrap_samples)) {
 }
 ```
 
-Then we compute the statistics on the bootstrap samples. 
+Then we compute the statistic on the bootstrap samples. 
 ```{r cache=TRUE}
 bootstrap_ls <- sapply(bootstrap_samples, long_sequence)
 ```
 
-The bootstrap distribution of this statistics is illustrated on the following
-figure in which the red vertical line represents the value of the statistics on
+The bootstrap distribution of this statistic is illustrated on the following
+figure in which the red vertical line represents the value of the statistic on
 the original sequence. 
 ```{r fig.height=4, fig.alt="Density plot, with a rug, of the bootstrap distribution of the probability of long constant subsequences, with a red vertical line at the value computed on the original series. The observed value lies within the bulk of the bootstrap distribution."}
 ggplot(mapping = aes(x = bootstrap_ls)) +
@@ -206,9 +211,9 @@ ggplot(mapping = aes(x = bootstrap_ls)) +
 
 ## Sampling from a COVLMC
 
-The case of COVLMC is more complex mainly because of the dependence towards an 
+The case of COVLMC is more complex mainly because of the dependence on an 
 external time series that is not modelled. In addition, no theoretical result
-justify a form of COVLMC bootstrap at the time of writing this document (2023).
+justifies a form of COVLMC bootstrap at the time of writing this document (2023).
 
 We can nevertheless use sampling both to get an idea of the potential variability
 of the results from a qualitative point of view, and also to study some what-if 
@@ -235,7 +240,7 @@ latter. A *burn in*  time is also problematic here as we do not have additional
 throw away values for the covariates. A possibility used here consists in starting
 the discrete time series as the observed one started, using as many values as the
 size of the largest context. Notice that in the current implementation, 
-simulating from a COVLMC is relatively slow compared to simulation from a VLMC. 
+simulating from a COVLMC is relatively slow compared to simulating from a VLMC. 
 Here we perform a single simulation to illustrate the feature.
 ```{r cache=TRUE}
 co_sample <- simulate(CAC_comodel,
@@ -260,14 +265,14 @@ ggplot(pc_week, aes(x = date_time, y = active_power)) +
   ylab("Active power (kW)")
 ```
 We build a discrete version by considering two states: the background base 
-active power below 0.4 kW and the active use of electric appliance above this limit.
+active power below 1.2 kW and the active use of electric appliances above this limit.
 
 ```{r}
 elec_dts <- cut(elec, breaks = c(0, 1.2, 8), labels = c("background", "active"))
 elec_cov <- data.frame(day = (pc_week$hour >= 7 & pc_week$hour <= 17))
 ```
 
-Then we adjust a COVLMC with a binary covariate day/night, using the AIC. 
+Then we fit a COVLMC with a binary covariate day/night, using the AIC. 
 
 ```{r}
 elec_covlmc_tune <- tune_covlmc(elec_dts, elec_cov, criterion = "AIC")

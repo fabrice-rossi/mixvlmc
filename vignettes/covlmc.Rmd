@@ -34,7 +34,7 @@ structures in discrete time series as they can mix short memory with
 long memory in a contextual way, leading to sparse models.
 
 However, they cannot capture the influence of exogenous variables on the
-behaviour of a time series. As a consequence, a VLMC adjusted on
+behaviour of a time series. As a consequence, a VLMC fitted to
 sequences influenced by covariates could fail to capture interesting
 patterns.
 
@@ -62,7 +62,7 @@ We build again a discrete time series using the following thresholds:
 elec_dts <- cut(elec, breaks = c(0, 0.4, 2, 8), labels = c("low", "typical", "high"))
 ```
 
-Adjusting a VLMC to this sequence gives the following model (using BIC
+Fitting a VLMC to this sequence gives the following model (using BIC
 for model selection):
 
 ```{r}
@@ -72,7 +72,7 @@ draw(best_elec_vlmc)
 ```
 
 Considering the apparent regularity of the time series, one may wonder
-whether this model is really capturing the dynamics of power electricity
+whether this model really captures the dynamics of electricity
 consumption. In particular the longest memory of 3 time steps, i.e., 30
 minutes, may seem a bit short compared to the somewhat long periods of
 stability.
@@ -91,15 +91,16 @@ $\mathbf{X}=X_1, X_2, \ldots, X_n, \ldots$. The random variables take
 values in a finite state space $S$ exactly as in a standard VLMC. We
 have *in addition* another sequence of random variables
 $\mathbf{Y}=Y_1, Y_2, \ldots, Y_n, \ldots$ which take values in
-$\mathbb{R}^p$. This latter assumption $Y_l\in \mathbb{R}^p$ is can be
+$\mathbb{R}^p$. This latter assumption $Y_l\in \mathbb{R}^p$ can be
 relaxed to more general spaces.
 
-A COVLMC puts restriction on the conditional probabilities of $X_n$
+A COVLMC puts restrictions on the conditional probabilities of $X_n$
 given the past of *both* sequences. To simplify the presentation, we
 denote $X^k_m$ the sequence of random variables $$
 X_k^m=(X_k, X_{k-1}, \ldots, X_m),
 $$ and we use similar notations for the values taken by the variables
-$x^k_m$, as well as for $Y^k_m$ and $y^k_m$. The notation accommodates both temporal order if $k<m$ and reverse temporal if $k>m$. 
+$x^k_m$, as well as for $Y^k_m$ and $y^k_m$. The notation accommodates both the temporal order if $k<m$ and the reverse
+temporal order if $k>m$. 
 
 A pair of sequences $\mathbf{X}$ and $\mathbf{Y}$ is a COVLMC if there
 is a maximal order $l_{\max}$ and a function $l$ from $S^{l_{\max}}$ to
@@ -123,7 +124,7 @@ $\bigcup_{k=0}^{l_{\max}}S^k$ given by $$
 c(x^{n-1}_{n-l_{\max}})=x^{n-1}_{n-l\left(x^{n-1}_{n-l_{\max}}\right)}
 $$ The image by $c$ of $S^{l_{\max}}$ is the set of contexts of the
 COVLMC which is entirely specified by $l$ and one conditional
-distribution by unique context.
+distribution per context.
 
 As the notations are somewhat opaque at first, we can illustrate the
 definition with a simple example. We consider a binary sequence (values
@@ -153,24 +154,24 @@ The main difficulty induced by COVLMC compared to VLMC is the
 specification of the conditional distributions. Indeed the conditional
 distributions depend on $\mathbf{Y}$ and cannot simply be given by a
 table. For instance, in the example above, we need to specify, among
-others, $\mathbb{P}(X_t=1\mid X_{t-1}=0, Y_{t_1}=y_{t-1})$, for each all
+others, $\mathbb{P}(X_t=1\mid X_{t-1}=0, Y_{t-1}=y_{t-1})$, for all
 values of $y_{t-1}\in \mathbb{R}$ (in $\mathbb{R}^p$ in the general
 case).
 
 A natural choice in this particular example is to use a logistic model,
 i.e. to assume $$
-\mathbb{P}(X_t=1\mid X_{t-1}=0, Y_{t_1}=y_{t-1})=g(\alpha^0+y_{t-1}\beta_1^0),
-$$ with $g(t)=\frac{1}{1+\exp(-t)}$ is the logistic function. The
-superscript on $\alpha^0$ and $\beta^0_1$ refer to the context, here
+\mathbb{P}(X_t=1\mid X_{t-1}=0, Y_{t-1}=y_{t-1})=g(\alpha^0+y_{t-1}\beta_1^0),
+$$ where $g(t)=\frac{1}{1+\exp(-t)}$ is the logistic function. The
+superscripts on $\alpha^0$ and $\beta^0_1$ refer to the context, here
 $0$, while the subscript on $\beta^0_1$ refers to the time delay (here
 $1$). By extension, we have for example $$
 \begin{multline*}
-\mathbb{P}(X_t=1\mid X_{t-1}=1, X_{t-2}=1, Y_{t_1}=y_{t-1}, Y_{t_2}=y_{t-2})=\\
+\mathbb{P}(X_t=1\mid X_{t-1}=1, X_{t-2}=1, Y_{t-1}=y_{t-1}, Y_{t-2}=y_{t-2})=\\
 g\left(\alpha^{1,1}+y_{t-1}\beta^{1,1}_1+y_{t-2}\beta^{1,1}_2\right).
 \end{multline*}
 $$
 
-More generally, the probability distribution associated to a context
+More generally, the probability distribution associated with a context
 could be given by any function that maps the values of the covariates to
 a distribution on $S$, the state space. Following the original
 [paper](https://doi.org/10.1111/jtsa.12615), `mixvlmc` uses multinomial
@@ -183,18 +184,18 @@ more general solution:
     estimated for each relevant context: this could induce a large
     computational burden for more complex models than multinomial
     logistic ones;
-2)  having a simple model enables to fit contexts with limited number of
-    occurrences which is important to allow searching for long term
+2)  having a simple model makes it possible to fit contexts with a limited
+    number of occurrences which is important to allow searching for long term
     dependencies;
-3)  logistic models with different memory order are easy to compare
+3)  logistic models with different memory orders are easy to compare
     using a likelihood-ratio test.
 
 The last point is used in `mixvlmc` (as in the original paper) to
 simplify local models with respect to the covariates. For a context of
 length $l$, the probability distribution is assumed to depend on the $l$
-past values of $\mathbf{Y}$ but in practice we allow a dependency to
+past values of $\mathbf{Y}$ but in practice we allow a dependency on
 only $k<l$ past values. For instance, we could have $$
-\mathbb{P}(X_t=1\mid X_{t-1}=1, X_{t-2}=1, Y_{t_1}=y_{t-1}, Y_{t_2}=y_{t-2})=g\left(\alpha^{1,1}+y_{t-1}\beta^{1,1}_1\right).
+\mathbb{P}(X_t=1\mid X_{t-1}=1, X_{t-2}=1, Y_{t-1}=y_{t-1}, Y_{t-2}=y_{t-2})=g\left(\alpha^{1,1}+y_{t-1}\beta^{1,1}_1\right).
 $$
 
 ### Beta-Context algorithm
@@ -202,18 +203,18 @@ $$
 Estimating a COVLMC model from two time series is more complex than
 estimating a VLMC model. `mixvlmc` implements the Beta-Context algorithm
 proposed in the original [paper](https://doi.org/10.1111/jtsa.12615). It
-is inspired from the context algorithm used for VLMC (and proposed in
+is inspired by the context algorithm used for VLMC (and proposed in
 [Variable length Markov
 chains](https://dx.doi.org/10.1214/aos/1018031204)). It can be
-summarized as follows:
+summarised as follows:
 
 1)  the first step consists in building a context tree (see
     `vignette("context-trees")`) from the $\mathbf{X}$ discrete
-    sequences, almost exactly as for a VLMC: the only difference is that
+    sequence, almost exactly as for a VLMC: the only difference is that
     to be kept in the tree a context must appear a number of times that
     depends on its length, on the dimension of the covariates and on the
     number of states. This guarantees a minimal number of observations
-    for the (maximum likelihood) estimation of the context dependant
+    for the (maximum likelihood) estimation of the context-dependent
     multinomial logistic regression.
 2)  the second step is an estimation one: a multinomial logistic
     regression model is estimated for each context, using a number of
@@ -227,7 +228,7 @@ summarized as follows:
         $g\left(\alpha^{1,1}+y_{t-1}\beta^{1,1}_1\right)$ to
         $g\left(\alpha^{1,1}+y_{t-1}\beta^{1,1}_1+y_{t-2}\beta^{1,1}_2\right)$
         as an estimator of
-        $\mathbb{P}(X_t=1\mid X_{t-1}=1, X_{t-2}=1, Y_{t_1}=y_{t-1}, Y_{t_2}=y_{t-2})$;
+        $\mathbb{P}(X_t=1\mid X_{t-1}=1, X_{t-2}=1, Y_{t-1}=y_{t-1}, Y_{t-2}=y_{t-2})$;
     2)  based on the results of those tests, it may be possible to
         completely remove a context from the tree, see the
         [paper](https://doi.org/10.1111/jtsa.12615) for details.
@@ -283,9 +284,9 @@ The estimation process is controlled by three parameters:
 -   `min_size`: this parameter controls the minimal number of
     occurrences needed for a context to be included in the initial
     context tree. It gives the number of occurrences *per parameter* of
-    the logistic model which depends on both the length of the context,
-    the dimension of the covariates and the number of states;
--   `alpha`: is the parameter of the pruning process of the Beta-Context
+    the logistic model, which depends on the length of the context, the
+    dimension of the covariates and the number of states;
+-   `alpha`: the parameter of the pruning process of the Beta-Context
     algorithm. Pruning decisions are all based on likelihood ratio tests
     and `alpha` is the common level of all those tests.
 
@@ -298,26 +299,27 @@ draw(model, model = "full")
 The model has 2 contexts, 0 and 1, as expected. The logistic models are described
 by their parameters. For context 0, the intercept is negative and the coefficient of
 $y_{t-1}$ is positive: the probability of switching to 1 is small when $y_{t-1}$ is
-small and increases with $y_{t-1}$. For context 1, the situation is reversed and
-the effect of $y_{t-1}$ is smaller. This is consistent with the way the series
+small and increases with $y_{t-1}$. For context 1, the situation is reversed (the
+probability of staying in 1 decreases with $y_{t-1}$) and the effect of $y_{t-1}$
+is smaller. This is consistent with the way the series
 were constructed. 
 
-Notice however that obtained an interesting model with the default parameters 
+Notice however that obtaining an interesting model with the default parameters 
 should not be seen as a general property and proper model choice must be implemented. 
 
 ### Model choice
 As COVLMC estimation fits a potentially large number of logistic models to the 
-data, the use of a penalized likelihood approach is recommended to set its parameters
+data, the use of a penalised likelihood approach is recommended to set its parameters
 and avoid overfitting. 
 
 However, model choice is more complex in the case of the COVLMC than for VLMC. In particular,
-the pair `cutoff()`/`prune()` does not work as well for COVLMC than for VLMC (see `vignette("variable-length-markov-chains")`). Indeed the pruning process of the 
+the pair `cutoff()`/`prune()` does not work as well for COVLMC as for VLMC (see `vignette("variable-length-markov-chains")`). Indeed the pruning process of the 
 Beta-Context algorithm is such that its effects cannot be predicted as easily as 
 the ones of the Context algorithm. In practice, computing the largest `alpha` 
 (test level) that is guaranteed to make a minimal but actual pruning of a given
-COVLMC is easy. But subsequent cut off values could be misleading. To avoid any 
+COVLMC is easy, but subsequent cut off values could be misleading. To avoid any 
 problem it is therefore recommended to rely on the `tune_covlmc()` function that
-has been designed to explore the full "pruning space" associated to a given data set.
+has been designed to explore the full "pruning space" associated with a given data set.
 
 Used on the artificial example above, it gives:
 ```{r}
@@ -336,7 +338,7 @@ avoid using it inadvertently as a regularisation parameter. However, while
 `min_size` is generally considered as not having a major influence on the model
 selection for VLMC, this is not the case for COVLMC. There is currently no
 support in `mixvlmc` for an automatic choice of `min_size` and one should therefore
-test several values and compare the obtained BIC/AIC. In the articial case, we
+test several values and compare the obtained BIC/AIC. In the artificial case, we
 can try for instance `min_size=2` as follows:
 ```{r}
 model_tune_2 <- tune_covlmc(x, covariates, min_size = 2)
@@ -348,8 +350,8 @@ model_tune_10 <- tune_covlmc(x, covariates, min_size = 10)
 model_tune_10
 ```
 
-Here we see no particular effect of the parameter because of the simplicity of the
-problem.
+Here we see no particular effect of the parameter on the selected model because
+of the simplicity of the problem.
 
 Let us now come back to the electricity consumption example described above. We
 introduce a very basic day/night covariate as follows:
@@ -380,17 +382,20 @@ draw(as_covlmc(elec_tune), model = "full", with_state = TRUE)
 
 It shows some interesting patterns:
 
-- one of the logistic model is degenerate: in the `high` context, no transition 
-  to a `low` context can happen. This was already observed with the VLMC;
+- one of the logistic models is degenerate: in the `high` context, no transition 
+  to the `low` state can happen. This was already observed with the VLMC;
 - the only dependency with respect to the covariate is in the context typical, 
-  typical, typical. In this case, the probability to stay in the typical context is 
-  increased during day time and decreased (but to a lesser extent) during the night. 
+  typical, typical. In this case, the probability of staying in the typical state
+  is higher during the day (about 91%) than at night (about 77%).
   In practice, this means that the model is able to generate longer sequences that
   stay in the typical state during the day than at night.
 
 Notice finally that for this real world example, the `min_size` parameter has
 some influence on the results. Setting it to a smaller value does not change the 
-final model, as shown below:
+final model, as shown below (the reported BIC and log likelihood differ slightly
+because the truncated likelihood used for model selection discards a number of
+initial observations that depends on the initial model, see
+`vignette("likelihood")`):
 
 ```{r}
 elec_tune_3 <- tune_covlmc(elec_dts, elec_cov, min_size = 3)
@@ -398,7 +403,7 @@ elec_tune_3
 ```
 
 However, increasing the parameter to, e.g., 10 generates a simpler but weaker model
-as show here:
+(with a higher BIC) as shown here:
 
 ```{r}
 elec_tune_10 <- tune_covlmc(elec_dts, elec_cov, min_size = 10)
@@ -407,14 +412,14 @@ elec_tune_10
 
 
 ### Diagnostics
-The package provides numerous ways to analyse a COVLMC. asic functions include
+The package provides numerous ways to analyse a COVLMC. Basic functions include
 
 - `states()` returns the state space of the model;
 - `depth()` returns the length of the longest context in the model;
 - `covariate_depth()` returns the longest memory used by the model with respect to covariates;
 - `context_number()` returns the number of contexts in the model.
 
-For instance, the large model obtained above has the following
+For instance, the model selected above has the following
 characteristics:
 ```{r}
 elec_model <- as_covlmc(elec_tune)
@@ -423,7 +428,7 @@ depth(elec_model)
 covariate_depth(elec_model)
 context_number(elec_model)
 ```
-VLMC objects support classical statistical functions such as:
+COVLMC objects support classical statistical functions such as:
 ```{r}
 logLik(elec_model)
 AIC(elec_model)
@@ -431,17 +436,17 @@ BIC(elec_model)
 ```
 
 ### Contexts
-The model can be explored in details by drawing its context tree 
+The model can be explored in detail by drawing its context tree 
 (see `vignette("context-trees")` for details) as follows:
 ```{r}
 draw(elec_model, p_value = TRUE)
 ```
 
-The `draw.covlmc()` function is more advanced than its VLMC counterpart. It provides more detailed information, particularly regarding p-values associated with pruning operations. The "merging" p-value corresponds to replacing some of the contexts with a single joint model, while the "collapsing" p-value is associated to pruning all the sub-contexts of a context. P-values associated to specific models correspond to reducing the memory of the corresponding model, that is discarding the dependency 
-of the conditional probability towards the oldest covariates. 
+The `draw.covlmc()` function is more advanced than its VLMC counterpart. It provides more detailed information, particularly regarding p-values associated with pruning operations (shown when `p_value = TRUE`). The "merging" p-value corresponds to replacing some of the contexts with a single joint model, while the "collapsing" p-value is associated with pruning all the sub-contexts of a context. P-values associated with specific models (shown between angle brackets) correspond to reducing the memory of the corresponding model, that is discarding the dependency 
+of the conditional probability on the oldest covariates. 
 
 To explore the contexts in a programmatic way, one should rely on the `contexts()` function. COVLMC contexts have additional characteristics compared to VLMC and context trees.
-In particular, the `contexts()` function can report the model associated to each context, either
+In particular, the `contexts()` function can report the model associated with each context, either
 by its parameters only:
 ```{r}
 contexts(elec_model, model = "coef")

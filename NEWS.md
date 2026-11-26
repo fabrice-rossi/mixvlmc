@@ -10,11 +10,11 @@ covariates (see the breaking changes below).
 * `draw()` returns a representation of the context tree (an object of class
   `mixvlmc_draw`) instead of the context tree itself. The representation is
   printed automatically, so that `draw(model)` displays the tree as before in
-  the console, but not anymore when the result is not printed, for instance
+  the console, but not any more when the result is not printed, for instance
   inside a function or a loop (use `print(draw(model))`)
-* `draw()` has now a second parameter `format` with no default. Passing the
-  `control` list as the second argument of `draw()` is deprecated (it is still
-  supported with a warning)
+* `draw()` has now a second parameter `format` (`"text"` when it is missing,
+  see below). Passing the `control` list as the second argument of `draw()` is
+  deprecated (it is still supported with a warning)
 * the `digits` parameter of `draw.covlmc()` is deprecated and replaced by a
   similar parameter in `draw_control()`
 * defaults for `draw.covlmc()` have changed (issue #66):
@@ -25,12 +25,12 @@ covariates (see the breaking changes below).
   * the intercept is separated from other coefficients by the characters
     specified in the `intercept_sep` member of the `control` list. Defaults
     to `" & "`
-  * the characters used to separate levels from models is now `" ~ "`
+  * the characters used to separate levels from models are now `" ~ "`
   * temporal blocks are now separated by default by the `time_sep` member
     of the `control` list. The default value is set to `" | "` and the
     `time_sep` parameter of `draw.covlmc()` is deprecated
-  * the new parameter `constant_as_prob` is set to `TRUE` which modifies also
-    the default display
+  * the new parameter `constant_as_prob` is `TRUE` by default, which also
+    modifies the default display
 * the interface of `draw_control()` has been significantly changed (issue #66)
   which should break most customisation code at the level of characters used
   by `draw()` to display a model
@@ -47,10 +47,10 @@ covariates (see the breaking changes below).
 * the `multinom` engine of `covlmc()` detects rank deficient models (e.g. 
   collinear covariates) consistently with the `glm` engine
 * the number of parameters of a `covlmc` (used by AIC and BIC, in particular in
-  `tune_covlmc()`) does not depend on the estimation engine anymore: levels
+  `tune_covlmc()`) does not depend on the estimation engine any more: levels
   of factor covariates and states absent from the data of a context are
   counted (the `glm` engine ignored them with three states or more)
-* the models associated to the root of the context tree of a `covlmc` (depth 0
+* the models associated with the root of the context tree of a `covlmc` (depth 0
   models, extended model used for the first observation) use all the
   observations (the first one was ignored)
 * `loglikelihood()` returns `-Inf` on new data containing a transition that has
@@ -62,7 +62,7 @@ covariates (see the breaking changes below).
   (and as with the R backend) and `max_depth = 0` means a depth 0 model (it
   meant no limit)
 * with the C++ backend, `simulate()` with `sample = "fast"` (the default) gives
-  results that do not depend on the platform anymore: for a given seed, they
+  results that do not depend on the platform any more: for a given seed, they
   differ from the ones of previous versions
 * `metrics()` reports an error when it is applied to a node of a VLMC that is
   not a context (it returned `NaN` values), as it does for VLMC with covariates
@@ -78,27 +78,27 @@ In order to ease the introduction of multiple time series support, a single
 discrete time series can now be represented by the `dts` class, via the `dts()`
 function (see issue #76). All functions that use discrete time series now accept
 objects of this class in addition to simple vectors of a supported type
-(`integer`, `factor`, `character` and `logical`). This applies to model
+(`numeric`, `factor`, `character` and `logical`). This applies to model
 estimation functions such as `vlmc()` or `covlmc()`, to model selection functions
-(e.g. `tune_vlmc`) but also to functions that use new data such
+(e.g. `tune_vlmc()`) but also to functions that use new data such as
 `loglikelihood()` and `predict.vlmc()`.
 
 ### Model representation (with `draw()`)
 A major change of `draw()` is the support of multiple output formats. This is
-done via a `format` parameter. It supports currently:
+done via a `format` parameter. It currently supports:
 
 * the format of previous versions of `mixvlmc` with `format="text"`. This is
   the default text based representation.
 * a new LaTeX export with `format="latex"` based on the LaTeX package `forest` 
   (<https://ctan.org/pkg/forest>) as per issue #66. This can be used to include
-  (CO)VLMC models in LaTeX document, for instance when using rmarkdown or quarto.
+  (CO)VLMC models in LaTeX documents, for instance when using rmarkdown or quarto.
 
-In addition, text based model representation has been improved (as per 
+In addition, the text based model representation has been improved (as per 
 issue #66) as follows:
 
 * a new global option `mixvlmc.charset` can be used to select the characters
   used by `draw()` when `format="text"` between pure ASCII and UTF-8
-* when possible, the text based representation will default to UTF-8 symbols to 
+* when possible, the text based representation defaults to UTF-8 symbols to 
   provide a cleaner display of the context tree
 * full customisation of the character set has moved from `draw_control()` to 
   `charset_ascii()` and `charset_utf8()`
@@ -127,7 +127,7 @@ renders the tree and adds the `forest` package to the preamble of the document.
   for `vlmc()`)
 * `covlmc()` and `tune_covlmc()` are faster (about 15%) and the models they
   return use much less memory (about a third), as the ROC curves of the logistic
-  models are not computed and stored anymore (their AUC is computed directly)
+  models are not computed and stored any more (their AUC is computed directly)
 
 ## Bug fixes
 ### Input validation
@@ -151,7 +151,7 @@ renders the tree and adds the `forest` package to the preamble of the document.
 * `contexts()` with `local = TRUE` reports correct positions and supports
   `metrics = TRUE` (R backend)
 * positions of the empty context are 0 based in all cases and are not 
-  reported anymore after `trim()`
+  reported any more after `trim()`
 * `simulate()` discards the correct number of values during the burn in period
   for depth 0 models (R backend)
 * `loglikelihood()` with `ignore` and without `newdata` works with the C++
@@ -164,7 +164,7 @@ renders the tree and adds the `forest` package to the preamble of the document.
 ### VLMC with covariates
 * the logistic models without covariates (intercept only) obey the
   `mixvlmc.maxit` option with the `glm` and `multinom` engines
-* the likelihood of degenerate `multinom` models is not NA anymore (which
+* the likelihood of degenerate `multinom` models is not NA any more (which
   crashed `covlmc()`) and NaN likelihoods with zero probabilities are avoided,
   including in ignored observations
 * `metrics()` works with constant models and at least 3 states, and per context
@@ -178,8 +178,8 @@ renders the tree and adds the `forest` package to the preamble of the document.
 ### C++ backend
 * out of bounds accesses (which led to fake contexts in `ctx_tree()` with
   `min_size = 1` and to crashes in `draw()`) and memory leaks are fixed
-* long repeats in the time series do not overflow the stack anymore
-* pruned models are restored correctly after serialization (e.g. after 
+* long repeats in the time series do not overflow the stack any more
+* pruned models are restored correctly after serialisation (e.g. after 
   `saveRDS()`/`readRDS()`), as well as positions and models obtained with 
   `as_vlmc()` from a context tree. Notice that pruned models saved with
   previous versions are still restored incorrectly
@@ -194,6 +194,10 @@ renders the tree and adds the `forest` package to the preamble of the document.
 ### Documentation
 * the bootstrap example of `vignette("sampling")` used no burn in period, as
   the `burnin` argument of `simulate()` was misspelled
+* the vignettes and the README have been proofread: in particular, the text of
+  `vignette("prediction")` and `vignette("sampling")` now agrees with the
+  models they select, and `vignette("variable-length-markov-chains")` gives the
+  correct number of parameters of a Markov chain of order m
 
 # mixvlmc 0.2.2
 This is a bug fix release (see issue #79 for the main bugs):
