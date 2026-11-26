@@ -208,9 +208,10 @@ The estimation process is controlled by three parameters:
     conservative. Larger values will produce simpler trees;
 -   `alpha`/`cutoff`: this is the main complexity control parameter,
     which can be expressed in two different scales. `cutoff` is
-    expressed in the native Kullback-Leibler divergence scale used to
-    assess the difference between conditional probability distributions
-    given different contexts. `alpha` is expressed in a more convenient
+    expressed in the native log-likelihood ratio scale (a
+    Kullback-Leibler divergence weighted by the number of occurrences of
+    the context) used to assess the difference between conditional
+    probability distributions given different contexts. `alpha` is expressed in a more convenient
     universal scale based on the quantiles of the Chi-Squared
     distribution that appears when the pruning criterion is interpreted
     as a likelihood ratio test (the default is `alpha=0.05`).

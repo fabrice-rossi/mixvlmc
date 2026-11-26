@@ -72,6 +72,9 @@ depth, number of contexts, log-likelihood, AIC and BIC)
 \code{save="all"}. It contains an \code{initial} component with the large VLMC
 obtained first and, if \code{save="all"}, an \code{all} component with a list of all
 the \emph{other} VLMCs obtained by pruning the initial one.
+\item \code{cutoffs}: the cut offs in native scale of the models considered (the
+\code{cutoff} column of \code{results}): the one of the initial model followed by
+the ones used to prune it.
 }
 }
 \description{

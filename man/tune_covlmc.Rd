@@ -68,7 +68,8 @@ best model and the initial one: \code{"none"} (default), \code{"partial"} or
 \code{\link[=covlmc_control]{covlmc_control()}}.}
 }
 \value{
-a list with the following components:
+an object of class \code{tune_covlmc}, a list with the following
+components:
 \itemize{
 \item \code{best_model}: the optimal COVLMC
 \item \code{criterion}: the criterion used to select the optimal COVLMC

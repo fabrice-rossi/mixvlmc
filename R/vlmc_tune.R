@@ -66,6 +66,9 @@
 #'   `save="all"`. It contains an `initial` component with the large VLMC
 #'   obtained first and, if `save="all"`, an `all` component with a list of all
 #'   the *other* VLMCs obtained by pruning the initial one.
+#'   - `cutoffs`: the cut offs in native scale of the models considered (the
+#'   `cutoff` column of `results`): the one of the initial model followed by
+#'   the ones used to prune it.
 #'
 #' @export
 #' @seealso [vlmc()], [cutoff()] and [prune()], as well as [as_vlmc()],

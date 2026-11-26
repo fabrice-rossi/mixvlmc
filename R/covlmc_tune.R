@@ -57,7 +57,8 @@
 #' @param control a list with control parameters used to fit the models, see
 #'   [covlmc_control()].
 #'
-#' @returns a list with the following components:
+#' @returns an object of class `tune_covlmc`, a list with the following
+#'   components:
 #'
 #'   - `best_model`: the optimal COVLMC
 #'   - `criterion`: the criterion used to select the optimal COVLMC
