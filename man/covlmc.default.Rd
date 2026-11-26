@@ -75,7 +75,7 @@ By default, \code{covlmc} uses two different computing \emph{engines} for logist
 models:
 \itemize{
 \item when the time series has only two states, \code{covlmc} uses \code{\link[stats:glm]{stats::glm()}}
-with the binomial family (\code{\link[stats:family]{stats::binomial()}});
+with the binomial family (\code{\link[stats:binomial]{stats::binomial()}});
 \item when the time series has at least three
 states, \code{covlmc} uses \code{\link[VGAM:vglm]{VGAM::vglm()}} with the multinomial family
 (\code{\link[VGAM:multinomial]{VGAM::multinomial()}}).

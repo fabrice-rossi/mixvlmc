@@ -119,7 +119,7 @@ the best one are saved untrimmed. This default behaviour corresponds to
 \code{trimming="none"} turns off trimming, which is discouraged except for
 small data sets.
 
-In parallel processing contexts (e.g. using \link[foreach:foreach]{foreach::\%dopar\%}), the
+In parallel processing contexts (e.g. using \link[foreach:\%dopar\%]{foreach::\%dopar\%}), the
 results are serialised to be sent back to the main process: as the
 logistic models keep the data used to fit them (including in the
 environments attached to their formulas), this can be costly. It is highly

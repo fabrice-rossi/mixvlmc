@@ -47,7 +47,6 @@ Imports:
     withr,
     xtable
 LinkingTo: Rcpp
-RoxygenNote: 7.3.2
 Suggests: 
     data.table,
     foreach,
@@ -66,3 +65,4 @@ Depends:
     R (>= 4.1.0)
 Roxygen: list(markdown = TRUE)
 VignetteBuilder: knitr
+Config/roxygen2/version: 8.1.0

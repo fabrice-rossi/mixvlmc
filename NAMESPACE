@@ -202,6 +202,8 @@ export(vlmc)
 import(Rcpp)
 importFrom(Rcpp,evalCpp)
 importFrom(rlang,.data)
-importFrom(stats,predict)
-importFrom(stats,simulate)
+importFrom(stats,
+  predict,
+  simulate
+)
 useDynLib(mixvlmc, .registration = TRUE)

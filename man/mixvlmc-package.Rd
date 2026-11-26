@@ -22,7 +22,7 @@ loaded (unless they are already set):
 for \code{\link[=covlmc]{covlmc()}} and related functions. Two values are supported:
 \itemize{
 \item \code{"glm"} (default value): \code{\link[=covlmc]{covlmc()}} uses \code{\link[stats:glm]{stats::glm()}} with a binomial
-link (\code{\link[stats:family]{stats::binomial()}}) for a two-value state space, and
+link (\code{\link[stats:binomial]{stats::binomial()}}) for a two-value state space, and
 \code{\link[VGAM:vglm]{VGAM::vglm()}} with a multinomial link (\code{\link[VGAM:multinomial]{VGAM::multinomial()}}) for a
 state space with three or more values;
 \item \code{"multinom"}: \code{\link[=covlmc]{covlmc()}} uses \code{\link[nnet:multinom]{nnet::multinom()}} in all cases.
@@ -71,6 +71,11 @@ Useful links:
 }
 \author{
 \strong{Maintainer}: Fabrice Rossi \email{Fabrice.Rossi@apiacoa.org} (\href{https://orcid.org/0000-0003-4638-1286}{ORCID}) [copyright holder]
+
+Authors:
+\itemize{
+  \item Fabrice Rossi \email{Fabrice.Rossi@apiacoa.org} (\href{https://orcid.org/0000-0003-4638-1286}{ORCID}) [copyright holder]
+}
 
 Other contributors:
 \itemize{

@@ -17,7 +17,7 @@ draw_control(
 }
 \arguments{
 \item{digits}{numerical parameters, probabilities and p-values are
-represented using the \code{\link[base:Round]{base::signif()}} function, using the number of
+represented using the \code{\link[base:signif]{base::signif()}} function, using the number of
 significant digits specified with this parameter (defaults to 4).}
 
 \item{charset}{specifies the characters used for the "ascii art"
