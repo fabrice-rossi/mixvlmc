@@ -1017,6 +1017,9 @@ cutoff.covlmc <- function(model, raw = FALSE,
 #' @export
 prune.covlmc <- function(vlmc, alpha = 0.05, cutoff = NULL, ...) {
   rlang::check_dots_empty()
+  if (!is.null(vlmc$trimmed)) {
+    stop("post pruning is not supported by trimmed covlmc")
+  }
   if (is.null(vlmc$x) || is.null(vlmc$covariate)) {
     stop("covlmc must be called with keep_data=TRUE to enable post pruning")
   }
