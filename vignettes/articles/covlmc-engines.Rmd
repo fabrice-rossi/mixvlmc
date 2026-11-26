@@ -50,11 +50,10 @@ To use an engine only for some computations, it is simpler to rely on
 `withr::with_options()` (or on `withr::local_options()` inside a
 function), as done in the rest of this article.
 
-The option is read each time a logistic model is fitted, including when
-`prune()` fits new models for a COVLMC (`tune_covlmc()` relies on
-`prune()`). The engine is not recorded in the model: the option should
-therefore keep the same value between the call to `covlmc()` and
-subsequent calls to `prune()` on the resulting model.
+The engine used by `covlmc()` is recorded in the model. When `prune()`
+fits new models for a COVLMC (`tune_covlmc()` relies on `prune()`), it
+uses the recorded engine, with a warning if the option has been changed
+in between.
 
 ### A running example
 
