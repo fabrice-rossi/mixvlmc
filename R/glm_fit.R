@@ -25,7 +25,9 @@ vgam_warning_ignore <- function(w) {
     stringr::coll("some quantities such as z, residuals, SEs may be inaccurate due to convergence at a half-step"),
     stringr::coll("iterations terminated because half-step sizes are very small"),
     stringr::coll("there are NAs here in slot linkinv"),
-    stringr::coll("there are NAs in eta in slot inverse")
+    stringr::coll("there are NAs in eta in slot inverse"),
+    ## non convergence is reported by fit_glm()
+    "convergence not obtained in [0-9]+ IRLS iterations"
   )
   for (msg in to_ignore) {
     if (stringr::str_detect(conditionMessage(w), msg)) {

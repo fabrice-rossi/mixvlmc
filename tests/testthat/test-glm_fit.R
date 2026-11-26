@@ -111,3 +111,21 @@ test_that("vglm models obey the mixvlmc.maxit option", {
   model <- suppressWarnings(fit_glm(target, mm[, FALSE], 3, covlmc_control()))
   expect_identical(model@control$maxit, 2)
 })
+
+test_that("non convergence of vglm is reported once", {
+  withr::local_seed(0)
+  n <- 500
+  mm <- data.frame(x = stats::rnorm(n))
+  target <- factor(sample(c("a", "b", "c"), n, replace = TRUE))
+  target[mm$x > 1.5] <- "c"
+  withr::local_options(mixvlmc.predictive = "glm", mixvlmc.maxit = 2)
+  warnings <- character()
+  withCallingHandlers(
+    fit_glm(target, mm, 3, covlmc_control()),
+    warning = function(w) {
+      warnings <<- c(warnings, conditionMessage(w))
+      invokeRestart("muffleWarning")
+    }
+  )
+  expect_identical(warnings, "vglm.fit did not converge")
+})
