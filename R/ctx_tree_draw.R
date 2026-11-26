@@ -114,6 +114,25 @@ charset_ascii <- function(root = "*",
 #'   representation of a model in [draw.covlmc()].
 #' @param close_model characters used as closing delimiters for the
 #'   representation of a model in [draw.covlmc()].
+#' @usage
+#' charset_utf8(
+#'   root = "\\u25AA",
+#'   first_node = "\\u251C",
+#'   next_node = "\\u251C",
+#'   final_node = "\\u2514",
+#'   vbranch = "\\u2502",
+#'   hbranch = "\\u2500",
+#'   open_ct = "(",
+#'   close_ct = ")",
+#'   level_sep = " ~ ",
+#'   time_sep = " \\u205E ",
+#'   intercept = "(I)",
+#'   intercept_sep = " \\u2022 ",
+#'   open_p_value = "\\u2039",
+#'   close_p_value = "\\u203A",
+#'   open_model = "[",
+#'   close_model = "]"
+#' )
 #' @returns a list of character strings, one per parameter.
 #' @seealso [draw()], [draw_control()], [charset_ascii()].
 #' @export

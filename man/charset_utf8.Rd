@@ -5,20 +5,20 @@
 \title{UTF-8 character set for context tree text representation}
 \usage{
 charset_utf8(
-  root = "▪",
-  first_node = "├",
-  next_node = "├",
-  final_node = "└",
-  vbranch = "│",
-  hbranch = "─",
+  root = "\\u25AA",
+  first_node = "\\u251C",
+  next_node = "\\u251C",
+  final_node = "\\u2514",
+  vbranch = "\\u2502",
+  hbranch = "\\u2500",
   open_ct = "(",
   close_ct = ")",
   level_sep = " ~ ",
-  time_sep = " ⁞ ",
+  time_sep = " \\u205E ",
   intercept = "(I)",
-  intercept_sep = " • ",
-  open_p_value = "‹",
-  close_p_value = "›",
+  intercept_sep = " \\u2022 ",
+  open_p_value = "\\u2039",
+  close_p_value = "\\u203A",
   open_model = "[",
   close_model = "]"
 )
