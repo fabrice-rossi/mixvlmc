@@ -1,0 +1,296 @@
+# Context trees
+
+Variable Length Markov Chain (VLMC) models provide parsimonious high
+order Markov chains which can have a finite but long memory without
+suffering from the computational and estimation problems associated with
+dense high order Markov chains. This is achieved using the notion of
+context.
+
+## Contexts
+
+### Definition
+
+We consider a time series \\x=(x_i)\_{i\geq 1}\\ with values in a finite
+set \\S\\, its state space. A context \\c\\ is a finite sequence of
+elements of \\S\\, \\c=(c_k, \ldots, c_1)\\ *observed* in \\x\\. \\c\\
+is *observed* in \\x\\ if there is \\t\\ such that \\ x\_{t-1}=c_1,
+x\_{t-2}=c_2, \ldots, x\_{t-k}=c_k. \\ Notice that \\c\\ is numbered in
+a *reverse* order, in the sense that \\c_1\\ is the most recent value in
+\\x\\ while \\c_k\\ is the oldest one. Thus \\c\\ is written in the
+temporal order of the sub-sequence \\(x\_{t-k}, \ldots, x\_{t-1})\\
+observed in \\x\\. In numerous papers, for instance in the works of
+Bühlmann and Wyner, the convention is to reverse the temporal order and
+to write \\c=(c_1, \ldots, c_k)\\, keeping \\c_1\\ as the most recent
+value and \\c_k\\ as the oldest one. In `mixvlmc` we use the more
+natural convention of writing contexts in temporal order, but many
+functions offer a `reverse` parameter that can be used to switch to the
+Bühlmann and Wyner convention.
+
+For example, if \\S=\\0, 1\\\\ and \\x=(0, 0, 0, 1, 1, 1)\\
+
+- \\(0, 0)\\ is a context of \\x\\ with \\t=3\\ and \\t=4\\;
+- \\(0, 1, 0)\\ is not a context of \\x\\.
+
+### Tree representation
+
+The contexts of a time series can be represented by a tree. The root of
+the tree stands for the empty context. The children of the root
+represent the contexts of length 1. In general, if a node represents the
+context \\c=(c_k, \ldots, c_1)\\, then contexts of the form
+\\c'=(c\_{k+1}, c_k, \ldots, c_1)\\ are represented by the children of
+the node. Descending in the context tree corresponds to adding to the
+past of the context.
+
+Let us consider again \\x=(0, 0, 0, 1, 1, 1)\\ and all contexts that
+appear *at least twice* in \\x\\ (i.e. which are observed for at least
+two different values of \\t\\). An ASCII art representation of the
+corresponding context tree is (in pure ASCII):
+
+    *
+    +-- 0
+    |   '-- 0
+    '-- 1
+
+The tree represents 2 contexts of length 1 (\\(0)\\ and \\(1)\\), the
+direct children of the root (shown as a star `*`). It represents in
+addition 1 context of length 2, \\(0, 0)\\. Notice that for instance,
+\\(1, 0)\\ is not a context in the tree as the node of context \\(0)\\
+has only one child labelled by \\0\\.
+
+## Extracting contexts from a time series in mixvlmc
+
+Mixvlmc can be used to compute all the contexts of a time series using
+the
+[`ctx_tree()`](https://fabrice-rossi.github.io/mixvlmc/reference/ctx_tree.md)
+function/constructor as follows:
+
+``` r
+
+x <- c(0, 0, 0, 1, 1, 1)
+library(mixvlmc)
+x_ctx <- ctx_tree(x)
+x_ctx
+#> Context tree on 0, 1 [C++]
+#>  Number of contexts: 3 
+#>  Maximum context length: 2
+```
+
+The time series can be given as a vector (numeric, character, factor or
+logical) or as a discrete time series object created by
+[`dts()`](https://fabrice-rossi.github.io/mixvlmc/reference/dts.md)
+(which can also specify the state space). The result of
+[`ctx_tree()`](https://fabrice-rossi.github.io/mixvlmc/reference/ctx_tree.md)
+is a `ctx_tree` object. It can be drawn as text with
+[`draw()`](https://fabrice-rossi.github.io/mixvlmc/reference/draw.md),
+using UTF-8 characters when the output supports them and pure ASCII
+characters otherwise (see the `mixvlmc.charset` option):
+
+``` r
+
+draw(x_ctx)
+#> ▪
+#> ├─ 0
+#> │  └─ 0
+#> └─ 1
+```
+
+[`draw()`](https://fabrice-rossi.github.io/mixvlmc/reference/draw.md)
+returns a representation of the tree that is printed automatically, as
+above (inside a function or a loop, use `print(draw(x_ctx))`). It can
+also produce a LaTeX representation of the tree, based on the
+[forest](https://ctan.org/pkg/forest) package, with
+`draw(x_ctx, "latex")`. In an R Markdown or Quarto document that
+produces LaTeX (e.g. a PDF document), the tree is then rendered directly
+and the `forest` package is added automatically to the preamble of the
+document.
+
+The default extraction is done with `min_size=2` and `max_depth=100`
+which means that
+
+- contexts are included only if they appear at least twice in the time
+  series;
+- the maximum length of a context is 100 (the term *depth* is used in
+  reference to the tree representation).
+
+Notice that the number of potential contexts grows exponentially with
+their length and it is therefore advisable to keep `max_depth` to a
+reasonable value. Let us consider a simple example.
+
+``` r
+
+set.seed(0)
+y <- sample(c("a", "b", "c"), 100, replace = TRUE)
+y_ctx_def <- ctx_tree(y)
+y_ctx_def
+#> Context tree on a, b, c [C++]
+#>  Number of contexts: 77 
+#>  Maximum context length: 6
+```
+
+With the default parameters, we end up with already 77 contexts. Setting
+`min_size=1` gives an unreasonable number of contexts:
+
+``` r
+
+y_ctx_min_1 <- ctx_tree(y, min_size = 1)
+y_ctx_min_1
+#> Context tree on a, b, c [C++]
+#>  Number of contexts: 4607 
+#>  Maximum context length: 99
+```
+
+Even if we decrease the depth limit, the number of contexts remains very
+large:
+
+``` r
+
+y_ctx_min_1_d_15 <- ctx_tree(y, min_size = 1, max_depth = 15)
+y_ctx_min_1_d_15
+#> Context tree on a, b, c [C++]
+#>  Number of contexts: 1037 
+#>  Maximum context length: 15
+```
+
+Contexts can be extracted from a context tree using the
+[`contexts()`](https://fabrice-rossi.github.io/mixvlmc/reference/contexts.md)
+function as follows:
+
+``` r
+
+contexts(x_ctx)
+#> Contexts:
+#>  0, 0
+#>  0
+#>  1
+```
+
+In general, the raw list of contexts is not directly useful and one
+should use the node manipulation functions to leverage it (see below). A
+simple approach consists in asking
+[`contexts()`](https://fabrice-rossi.github.io/mixvlmc/reference/contexts.md)
+for a `data.frame` output that contains additional information about the
+contexts. This is done implicitly when additional parameters are given
+to
+[`contexts()`](https://fabrice-rossi.github.io/mixvlmc/reference/contexts.md).
+In the simple case of `ctx_tree`, setting the `frequency` parameter to
+`"total"` or `"detailed"` gives access to the distribution of \\x_t\\
+for all the \\t\\ at which a context appears.
+
+``` r
+
+contexts(x_ctx, frequency = "total")
+#>   context freq
+#> 1    0, 0    2
+#> 2       0    3
+#> 3       1    2
+```
+
+With `frequency = "total"`, we obtain a data frame with a column `freq`
+that contains the number of occurrences of each context.
+
+``` r
+
+contexts(x_ctx, frequency = "detailed")
+#>   context freq 0 1
+#> 1    0, 0    2 1 1
+#> 2       0    3 2 1
+#> 3       1    2 0 2
+```
+
+With `frequency = "detailed"`, we obtain *in addition* a column for each
+value in the state space \\S\\ which contains the distribution of
+\\x_t\\ for the occurrences of each context. For instance in the table
+above, the context \\(0, 0)\\ appears twice in \\x\\ and is followed
+once by \\0\\ and once by \\1\\.
+
+## Direct manipulation of nodes
+
+Another way to extract information from a context tree, especially a
+large one, is to operate at the node level, using the
+[`find_sequence()`](https://fabrice-rossi.github.io/mixvlmc/reference/find_sequence.md)
+function (or the
+[`contexts()`](https://fabrice-rossi.github.io/mixvlmc/reference/contexts.md)
+function). For instance exploring the 4607 contexts obtained above with
+`min_size=1` is not convenient, but we may be interested in e.g. the
+sequence `c("a", "a", "a")`. We look for a corresponding node in the
+tree with
+
+``` r
+
+node_aaa <- find_sequence(y_ctx_min_1, c("a", "a", "a"))
+node_aaa
+#> Sequence [T]: a, a, a 
+#>  followed by a (3), b (2), c (2)
+```
+
+As the result is not `NULL`, we know that the sequence appears in the
+original time series. It is not a context, as shown by
+
+``` r
+
+is_context(node_aaa)
+#> [1] FALSE
+```
+
+In this particular case, it is likely to be caused by longer contexts
+for which `c("a", "a", "a")` is a suffix. This can be verified by
+looking at the children of `node_aaa`:
+
+``` r
+
+children(node_aaa)
+#> $a
+#> Context [T]: a, a, a, a 
+#>  followed by a (0), b (1), c (2)
+#> 
+#> $b
+#> Context [T]: b, a, a, a 
+#>  followed by a (1), b (0), c (0)
+#> 
+#> $c
+#> Context [T]: c, a, a, a 
+#>  followed by a (2), b (1), c (0)
+```
+
+This shows that we have indeed three contexts that all end with
+`c("a", "a", "a")`.
+
+Nodes carry information about the sequences or contexts they represent.
+The number of occurrences of a sequence in the original time series is
+obtained with the
+[`counts()`](https://fabrice-rossi.github.io/mixvlmc/reference/counts.md)
+function as follows:
+
+``` r
+
+counts(node_aaa, frequency = "total")
+#> [1] 7
+```
+
+Notice that as with
+[`contexts()`](https://fabrice-rossi.github.io/mixvlmc/reference/contexts.md)
+those occurrences cover only positions where the sequence is followed by
+at least one value. The distribution of those values is given by another
+call to
+[`counts()`](https://fabrice-rossi.github.io/mixvlmc/reference/counts.md):
+
+``` r
+
+counts(node_aaa, frequency = "detailed")
+#>   total a b c
+#> 1     7 3 2 2
+```
+
+If sequence positions were saved during the construction of the context
+tree (`keep_position = TRUE`, the default), the `ctx_node` can report
+them using the
+[`positions()`](https://fabrice-rossi.github.io/mixvlmc/reference/positions.md)
+function:
+
+``` r
+
+positions(node_aaa)
+#> [1] 15 25 26 73 74 83 84
+```
+
+See the documentation of the function for the definition of a position.
