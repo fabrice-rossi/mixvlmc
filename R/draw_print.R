@@ -66,7 +66,7 @@ forest_latex_dependency <- function() {
     "\\AtEndPreamble{\\csname @ifpackageloaded\\endcsname{forest}{}",
     "{\\usepackage{forest}}}"
   )
-  if (requireNamespace("rmarkdown", quietly = TRUE)) {
+  if (has_rmarkdown()) {
     rmarkdown::latex_dependency("etoolbox", extra_lines = load_forest)
   } else {
     structure(
@@ -74,6 +74,11 @@ forest_latex_dependency <- function() {
       class = "latex_dependency"
     )
   }
+}
+
+## this function is introduced only to ease mocking in tests
+has_rmarkdown <- function() {
+  rlang::is_installed("rmarkdown")
 }
 
 ## knitr printing (registered in .onLoad())

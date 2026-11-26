@@ -52,6 +52,14 @@ test_that("knitr includes LaTeX representations as is in LaTeX documents", {
   expect_false(inherits(out, "knit_asis"))
 })
 
+test_that("the LaTeX dependency is built without rmarkdown", {
+  skip_if_not_installed("rmarkdown")
+  with_rmarkdown <- forest_latex_dependency()
+  local_mocked_bindings(has_rmarkdown = function() FALSE)
+  without_rmarkdown <- forest_latex_dependency()
+  expect_identical(without_rmarkdown, with_rmarkdown)
+})
+
 test_that("a LaTeX representation is rendered in a R Markdown LaTeX document", {
   skip_on_cran()
   skip_if_not_installed("rmarkdown")
