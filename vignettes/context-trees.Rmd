@@ -40,7 +40,7 @@ For example, if $S=\{0, 1\}$ and $x=(0, 0, 0, 1, 1, 1)$
 - $(0, 0)$ is a context of $x$ with $t=3$ and $t=4$;
 - $(0, 1, 0)$ is not a context of $x$.
 
-### Context trees
+### Tree representation
 
 The contexts of a time series can be represented by a tree. The root of the tree stands for the empty context. The children of the root represent the
 contexts of length 1. In general, if a node represents the context $c=(c_k,
