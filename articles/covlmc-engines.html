@@ -25,7 +25,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">mixvlmc</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -717,7 +717,7 @@ by the object in the R session.</p>
 <span>  <span class="st">"nnet::multinom()"</span> <span class="op">=</span> <span class="va">model_multinom</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt;                  object_size_kb serialised_kb</span></span>
-<span><span class="co">#&gt; VGAM::vglm()               5264          2697</span></span>
+<span><span class="co">#&gt; VGAM::vglm()               5299          2703</span></span>
 <span><span class="co">#&gt; nnet::multinom()           1132           683</span></span></code></pre></div>
 <p>The two measures do not agree, as they do not account for the
 components of the objects in the same way, but both show that the models
@@ -742,7 +742,7 @@ removed and only their coefficients are kept.</p>
 <span>  <span class="st">"trim()"</span> <span class="op">=</span> <span class="fu"><a href="../reference/trim.html">trim</a></span><span class="op">(</span><span class="va">model_glm</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt;                         object_size_kb serialised_kb</span></span>
-<span><span class="co">#&gt; untrimmed                         5264          2697</span></span>
+<span><span class="co">#&gt; untrimmed                         5299          2703</span></span>
 <span><span class="co">#&gt; trim(keep_model = TRUE)           3893           702</span></span>
 <span><span class="co">#&gt; trim()                              36             7</span></span></code></pre></div>
 <p>The fully trimmed model is very small, but it supports fewer
@@ -869,7 +869,7 @@ processing contexts:</p>
 <span>  <span class="st">"best_trimming = \"full\""</span> <span class="op">=</span> <span class="va">elec_glm_trimmed</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt;                        object_size_kb serialised_kb</span></span>
-<span><span class="co">#&gt; default                          5267          2697</span></span>
+<span><span class="co">#&gt; default                          5302          2704</span></span>
 <span><span class="co">#&gt; best_trimming = "full"             39             8</span></span></code></pre></div>
 <p>The trimmed result still gives access to the selected model and to
 the results of the selection process, for instance:</p>

@@ -766,7 +766,7 @@ obj_sizes(
   "nnet::multinom()" = model_multinom
 )
 #>                  object_size_kb serialised_kb
-#> VGAM::vglm()               5264          2697
+#> VGAM::vglm()               5299          2703
 #> nnet::multinom()           1132           683
 ```
 
@@ -799,7 +799,7 @@ obj_sizes(
   "trim()" = trim(model_glm)
 )
 #>                         object_size_kb serialised_kb
-#> untrimmed                         5264          2697
+#> untrimmed                         5299          2703
 #> trim(keep_model = TRUE)           3893           702
 #> trim()                              36             7
 ```
@@ -878,7 +878,7 @@ obj_sizes(
   "best_trimming = \"full\"" = elec_glm_trimmed
 )
 #>                        object_size_kb serialised_kb
-#> default                          5267          2697
+#> default                          5302          2704
 #> best_trimming = "full"             39             8
 ```
 

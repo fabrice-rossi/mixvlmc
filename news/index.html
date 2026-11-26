@@ -13,7 +13,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">mixvlmc</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -67,12 +67,12 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.3.0" id="mixvlmc-030">mixvlmc 0.3.0<a class="anchor" aria-label="anchor" href="#mixvlmc-030"></a></h2>
+<h2 class="pkg-version" data-toc-text="0.3.1" id="mixvlmc-031">mixvlmc 0.3.1<a class="anchor" aria-label="anchor" href="#mixvlmc-031"></a></h2>
 <p>This release introduces a class for discrete time series, a new representation of context trees with a LaTeX output integrated with knitr, and fixes numerous bugs. Several changes break compatibility with previous versions, in particular some bug fixes change the models obtained with VLMC with covariates (see the breaking changes below).</p>
 <div class="section level3">
-<h3 id="breaking-changes-0-3-0">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-0-3-0"></a></h3>
+<h3 id="breaking-changes-0-3-1">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-0-3-1"></a></h3>
 <div class="section level4">
-<h4 id="model-representation-with-draw-0-3-0">Model representation (with <code>draw()</code>)<a class="anchor" aria-label="anchor" href="#model-representation-with-draw-0-3-0"></a></h4>
+<h4 id="model-representation-with-draw-0-3-1">Model representation (with <code>draw()</code>)<a class="anchor" aria-label="anchor" href="#model-representation-with-draw-0-3-1"></a></h4>
 <ul><li>
 <code><a href="../reference/draw.html">draw()</a></code> returns a representation of the context tree (an object of class <code>mixvlmc_draw</code>) instead of the context tree itself. The representation is printed automatically, so that <code>draw(model)</code> displays the tree as before in the console, but not any more when the result is not printed, for instance inside a function or a loop (use <code>print(draw(model))</code>)</li>
 <li>
@@ -99,7 +99,7 @@
 <li>the counts of <code><a href="../reference/draw.ctx_tree.html">draw.ctx_tree()</a></code> (with <code>frequency = "detailed"</code>) are separated by <code>", "</code> as in <code><a href="../reference/draw.vlmc.html">draw.vlmc()</a></code> (they were separated by <code>","</code>)</li>
 </ul></div>
 <div class="section level4">
-<h4 id="estimation-and-use-of-models-0-3-0">Estimation and use of models<a class="anchor" aria-label="anchor" href="#estimation-and-use-of-models-0-3-0"></a></h4>
+<h4 id="estimation-and-use-of-models-0-3-1">Estimation and use of models<a class="anchor" aria-label="anchor" href="#estimation-and-use-of-models-0-3-1"></a></h4>
 <ul><li>the C++ backend is the default backend of <code><a href="../reference/ctx_tree.html">ctx_tree()</a></code>, <code><a href="../reference/vlmc.html">vlmc()</a></code> and <code><a href="../reference/tune_vlmc.html">tune_vlmc()</a></code> (option <code>mixvlmc.backend</code>) and is not considered experimental any more. It gives the same models as the R backend, which remains available with <code>backend = "R"</code> or <code>options(mixvlmc.backend = "R")</code>, e.g. to process context trees in R. <code><a href="../reference/covlmc.html">covlmc()</a></code> is not concerned</li>
 <li>the package now depends on R &gt;= 4.1.0 (this was already implied by its dependencies)</li>
 <li>the degrees of freedom of the likelihood ratio tests used by <code><a href="../reference/covlmc.html">covlmc()</a></code> and <code><a href="../reference/prune.covlmc.html">prune.covlmc()</a></code> take into account the number of levels of factor covariates (a factor with L levels has L-1 parameters per time step, not 1). This changes the models obtained with factors with at least 3 levels</li>
@@ -119,13 +119,13 @@
 </ul></div>
 </div>
 <div class="section level3">
-<h3 id="new-features-0-3-0">New features<a class="anchor" aria-label="anchor" href="#new-features-0-3-0"></a></h3>
+<h3 id="new-features-0-3-1">New features<a class="anchor" aria-label="anchor" href="#new-features-0-3-1"></a></h3>
 <div class="section level4">
-<h4 id="discrete-time-series-class-dts-0-3-0">Discrete time series class (<code>dts</code>)<a class="anchor" aria-label="anchor" href="#discrete-time-series-class-dts-0-3-0"></a></h4>
+<h4 id="discrete-time-series-class-dts-0-3-1">Discrete time series class (<code>dts</code>)<a class="anchor" aria-label="anchor" href="#discrete-time-series-class-dts-0-3-1"></a></h4>
 <p>In order to ease the introduction of multiple time series support, a single discrete time series can now be represented by the <code>dts</code> class, via the <code><a href="../reference/dts.html">dts()</a></code> function (see issue <a href="https://github.com/fabrice-rossi/mixvlmc/issues/76" class="external-link">#76</a>). All functions that use discrete time series now accept objects of this class in addition to simple vectors of a supported type (<code>numeric</code>, <code>factor</code>, <code>character</code> and <code>logical</code>). This applies to model estimation functions such as <code><a href="../reference/vlmc.html">vlmc()</a></code> or <code><a href="../reference/covlmc.html">covlmc()</a></code>, to model selection functions (e.g. <code><a href="../reference/tune_vlmc.html">tune_vlmc()</a></code>) but also to functions that use new data such as <code><a href="../reference/loglikelihood.html">loglikelihood()</a></code> and <code><a href="../reference/predict.vlmc.html">predict.vlmc()</a></code>.</p>
 </div>
 <div class="section level4">
-<h4 id="model-representation-with-draw-0-3-0-1">Model representation (with <code>draw()</code>)<a class="anchor" aria-label="anchor" href="#model-representation-with-draw-0-3-0-1"></a></h4>
+<h4 id="model-representation-with-draw-0-3-1-1">Model representation (with <code>draw()</code>)<a class="anchor" aria-label="anchor" href="#model-representation-with-draw-0-3-1-1"></a></h4>
 <p>A major change of <code><a href="../reference/draw.html">draw()</a></code> is the support of multiple output formats. This is done via a <code>format</code> parameter. It currently supports:</p>
 <ul><li>the format of previous versions of <code>mixvlmc</code> with <code>format="text"</code>. This is the default text based representation.</li>
 <li>a new LaTeX export with <code>format="latex"</code> based on the LaTeX package <code>forest</code> (<a href="https://ctan.org/pkg/forest" class="external-link uri">https://ctan.org/pkg/forest</a>) as per issue <a href="https://github.com/fabrice-rossi/mixvlmc/issues/66" class="external-link">#66</a>. This can be used to include (CO)VLMC models in LaTeX documents, for instance when using rmarkdown or quarto.</li>
@@ -140,7 +140,7 @@
 </div>
 </div>
 <div class="section level3">
-<h3 id="minor-improvements-0-3-0">Minor improvements<a class="anchor" aria-label="anchor" href="#minor-improvements-0-3-0"></a></h3>
+<h3 id="minor-improvements-0-3-1">Minor improvements<a class="anchor" aria-label="anchor" href="#minor-improvements-0-3-1"></a></h3>
 <ul><li>
 <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code> of a VLMC is much faster with the R backend (about 13 times on a model with 9,000 contexts)</li>
 <li>the computations of the C++ backend (construction of the context trees and simulation) can be interrupted</li>
@@ -162,9 +162,9 @@
 <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code> and <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code> describe a <code>covlmc</code> as a “VLMC with covariates” (instead of “VLMC with covariate”)</li>
 </ul></div>
 <div class="section level3">
-<h3 id="bug-fixes-0-3-0">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-3-0"></a></h3>
+<h3 id="bug-fixes-0-3-1">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-3-1"></a></h3>
 <div class="section level4">
-<h4 id="input-validation-0-3-0">Input validation<a class="anchor" aria-label="anchor" href="#input-validation-0-3-0"></a></h4>
+<h4 id="input-validation-0-3-1">Input validation<a class="anchor" aria-label="anchor" href="#input-validation-0-3-1"></a></h4>
 <ul><li>
 <code><a href="../reference/prune.covlmc.html">prune.covlmc()</a></code> checks that <code>alpha</code> is in (0, 1] and warns when it is larger than the <code>alpha</code> of the model</li>
 <li>
@@ -176,7 +176,7 @@
 <li>time series with a single state (e.g. a constant series or a factor with a single level) are rejected by the estimation functions (they led to a degenerate model with the R backend and to an error with the C++ backend)</li>
 </ul></div>
 <div class="section level4">
-<h4 id="vlmc-0-3-0">VLMC<a class="anchor" aria-label="anchor" href="#vlmc-0-3-0"></a></h4>
+<h4 id="vlmc-0-3-1">VLMC<a class="anchor" aria-label="anchor" href="#vlmc-0-3-1"></a></h4>
 <ul><li>the AUC of a context of a VLMC (<code><a href="../reference/metrics.html">metrics()</a></code> of a node and <code>contexts(metrics = TRUE)</code>) is <code>NA</code>: as the predictions of a context are constant, it was always 0.5 or <code>NA</code>
 </li>
 <li>the time series produced by <code><a href="https://rdrr.io/r/stats/simulate.html" class="external-link">simulate()</a></code> (for VLMC and VLMC with covariates) do not print their class as an attribute any more</li>
@@ -197,7 +197,7 @@
 <li>the documentation of <code><a href="../reference/loglikelihood.html">loglikelihood()</a></code> states correctly that the default likelihood function is the truncated one</li>
 </ul></div>
 <div class="section level4">
-<h4 id="vlmc-with-covariates-0-3-0">VLMC with covariates<a class="anchor" aria-label="anchor" href="#vlmc-with-covariates-0-3-0"></a></h4>
+<h4 id="vlmc-with-covariates-0-3-1">VLMC with covariates<a class="anchor" aria-label="anchor" href="#vlmc-with-covariates-0-3-1"></a></h4>
 <ul><li>the cut off values given by <code><a href="../reference/cutoff.covlmc.html">cutoff.covlmc()</a></code> (with <code>raw = FALSE</code>) are smaller than the p-values by a relative margin, so that pruning with them has an effect even when the p-values recomputed by <code><a href="../reference/prune.covlmc.html">prune.covlmc()</a></code> differ in the last digits from the ones stored in the model, as with some linear algebra libraries (e.g. MKL). <code><a href="../reference/tune_covlmc.html">tune_covlmc()</a></code> could report models identical to the previous one and return different results for different values of <code>max_depth</code>
 </li>
 <li>
@@ -222,7 +222,7 @@
 <code><a href="../reference/metrics.html">metrics()</a></code> on a node which is not a context gives a clear error</li>
 </ul></div>
 <div class="section level4">
-<h4 id="c-backend-0-3-0">C++ backend<a class="anchor" aria-label="anchor" href="#c-backend-0-3-0"></a></h4>
+<h4 id="c-backend-0-3-1">C++ backend<a class="anchor" aria-label="anchor" href="#c-backend-0-3-1"></a></h4>
 <ul><li>out of bounds accesses (which led to fake contexts in <code><a href="../reference/ctx_tree.html">ctx_tree()</a></code> with <code>min_size = 1</code> and to crashes in <code><a href="../reference/draw.html">draw()</a></code>) and memory leaks are fixed</li>
 <li>long repeats in the time series do not overflow the stack any more</li>
 <li>pruned models are restored correctly after serialisation (e.g. after <code><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS()</a></code>/<code><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS()</a></code>), as well as positions and models obtained with <code><a href="../reference/as_vlmc.html">as_vlmc()</a></code> from a context tree. Notice that pruned models saved with previous versions are still restored incorrectly</li>
@@ -236,7 +236,7 @@
 <code><a href="https://rdrr.io/r/stats/simulate.html" class="external-link">simulate()</a></code> uses <code><a href="https://rdrr.io/r/base/sample.html" class="external-link">base::sample.int()</a></code> even if another function with the same name is defined in the global environment</li>
 </ul></div>
 <div class="section level4">
-<h4 id="documentation-0-3-0">Documentation<a class="anchor" aria-label="anchor" href="#documentation-0-3-0"></a></h4>
+<h4 id="documentation-0-3-1">Documentation<a class="anchor" aria-label="anchor" href="#documentation-0-3-1"></a></h4>
 <ul><li>the bootstrap example of <code><a href="../articles/sampling.html">vignette("sampling")</a></code> used no burn in period, as the <code>burnin</code> argument of <code><a href="https://rdrr.io/r/stats/simulate.html" class="external-link">simulate()</a></code> was misspelled</li>
 <li>the vignettes and the README have been proofread: in particular, the text of <code><a href="../articles/prediction.html">vignette("prediction")</a></code> and <code><a href="../articles/sampling.html">vignette("sampling")</a></code> now agrees with the models they select, and <code><a href="../articles/variable-length-markov-chains.html">vignette("variable-length-markov-chains")</a></code> gives the correct number of parameters of a Markov chain of order m</li>
 </ul></div>

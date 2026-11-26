@@ -17,13 +17,13 @@ Source:
 [`DESCRIPTION`](https://github.com/fabrice-rossi/mixvlmc/blob/main/DESCRIPTION)
 
 Rossi F (2026). *mixvlmc: Variable Length Markov Chains with
-Covariates*. R package version 0.3.0,
+Covariates*. R package version 0.3.1,
 <https://github.com/fabrice-rossi/mixvlmc>.
 
     @Manual{,
       title = {mixvlmc: Variable Length Markov Chains with Covariates},
       author = {Fabrice Rossi},
       year = {2026},
-      note = {R package version 0.3.0},
+      note = {R package version 0.3.1},
       url = {https://github.com/fabrice-rossi/mixvlmc},
     }
