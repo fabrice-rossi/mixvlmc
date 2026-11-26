@@ -8,6 +8,10 @@
 [![R-CMD-check](https://github.com/fabrice-rossi/mixvlmc/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/fabrice-rossi/mixvlmc/actions/workflows/R-CMD-check.yaml)
 [![Codecov test
 coverage](https://codecov.io/gh/fabrice-rossi/mixvlmc/branch/main/graph/badge.svg)](https://app.codecov.io/gh/fabrice-rossi/mixvlmc?branch=main)
+[![R-universe
+version](https://fabrice-rossi.r-universe.dev/mixvlmc/badges/version)](https://fabrice-rossi.r-universe.dev/mixvlmc)
+[![R-universe
+checks](https://fabrice-rossi.r-universe.dev/mixvlmc/badges/checks)](https://fabrice-rossi.r-universe.dev/mixvlmc)
 <!-- badges: end -->
 
 `mixvlmc` implements variable length Markov chains (VLMC) and variable
@@ -35,11 +39,14 @@ The package can be installed from CRAN with:
 install.packages("mixvlmc")
 ```
 
-The development version is available from GitHub:
+The development version is available from
+[R-universe](https://fabrice-rossi.r-universe.dev/mixvlmc), which
+provides binary packages for Windows, macOS and Linux:
 
 ``` r
-# install.packages("devtools")
-devtools::install_github("fabrice-rossi/mixvlmc")
+install.packages("mixvlmc",
+  repos = c("https://fabrice-rossi.r-universe.dev", "https://cloud.r-project.org")
+)
 ```
 
 ## Usage
