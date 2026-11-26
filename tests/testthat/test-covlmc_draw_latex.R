@@ -244,3 +244,28 @@ test_that("latex draw supports unused levels of factors with vglm", {
   res <- paste(format(draw(model, "latex")), collapse = "\n")
   expect_match(res, "\\multicolumn{2}{c}{\\textbf{1}}", fixed = TRUE)
 })
+
+test_that("latex draw uses the same font size for all the states", {
+  withr::local_seed(2)
+  n <- 600
+  cov <- data.frame(y = stats::rnorm(n))
+  x <- integer(n)
+  for (t in 2:n) {
+    lp <- c(0, 0.8 * cov$y[t - 1], -0.5 * cov$y[t - 1])
+    x[t] <- sample(0:2, 1, prob = exp(lp))
+  }
+  x <- factor(c("A", "B", "C")[x + 1])
+  model <- covlmc(x, cov, min_size = 5)
+  expect_gt(covariate_depth(model), 0)
+  for (orientation in c("vertical", "horizontal")) {
+    res <- paste(format(draw(model, "latex",
+      with_state = TRUE,
+      control = draw_control(tab_orientation = orientation, prob_fontsize = "small")
+    )), collapse = "\n")
+    expect_match(res, "{\\small A}&", fixed = TRUE)
+    expect_match(res, "\\textbf{{\\small B}}", fixed = TRUE)
+    expect_match(res, "\\textbf{{\\small C}}", fixed = TRUE)
+    expect_no_match(res, "{{{", fixed = TRUE)
+    expect_no_match(res, "$(I)$", fixed = TRUE)
+  }
+})

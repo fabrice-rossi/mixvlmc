@@ -90,20 +90,27 @@ draw_latex_covlmc_model <- function(coefficients, hsize,
         sep = ""
       )
       vars_coeffs <- add_fontsize(vars_coeffs, control)
+      if (isTRUE(control$with_state)) {
+        ## the same font size for all the states (and the variables)
+        ref_state <- add_fontsize(lev[1], control)
+        target_states <- stringr::str_c(
+          "\\textbf{", add_fontsize(lev[-1], control), "}"
+        )
+      }
       if (control$tab_orientation == "horizontal") {
         ## header with variables and one row per level
-        header <- stringr::str_c(add_fontsize("$(I)$", control),
+        header <- stringr::str_c(add_fontsize("(I)", control),
           stringr::str_flatten(vars_coeffs, collapse = "&"),
           sep = "&"
         )
         if (isTRUE(control$with_state)) {
-          header <- stringr::str_c("{", lev[1], "}&", header)
+          header <- stringr::str_c(ref_state, "&", header)
         }
         if (length(lev) == 2) {
           values <- add_fontsize(signif(coefficients, control$digits), control)
           coeffs <- stringr::str_flatten(values, collapse = "&")
           if (isTRUE(control$with_state)) {
-            coeffs <- stringr::str_c("\\textbf{", lev[2], "}&", coeffs)
+            coeffs <- stringr::str_c(target_states[1], "&", coeffs)
           }
           stringr::str_c(header, coeffs, sep = "\\\\\n")
         } else {
@@ -112,7 +119,7 @@ draw_latex_covlmc_model <- function(coefficients, hsize,
             values <- add_fontsize(signif(coefficients[k, ], control$digits), control)
             coeffs <- stringr::str_flatten(values, collapse = "&")
             if (isTRUE(control$with_state)) {
-              coeffs <- stringr::str_c("\\textbf{", add_fontsize(lev[k + 1], control), "}&", coeffs)
+              coeffs <- stringr::str_c(target_states[k], "&", coeffs)
             }
             tab <- stringr::str_c(tab, coeffs, sep = "\\\\\n")
           }
@@ -120,14 +127,9 @@ draw_latex_covlmc_model <- function(coefficients, hsize,
         }
       } else {
         ## one column of variables and then one per level - 1
-        if (isTRUE(control$with_state)) {
-          the_levels <- add_fontsize(lev, control)
-          the_levels[1] <- stringr::str_c("{", the_levels[1], "}")
-          the_levels[-1] <- stringr::str_c("\\textbf{", the_levels[-1], "}")
-        }
         if (length(lev) == 2) {
           if (isTRUE(control$with_state)) {
-            tab <- stringr::str_c(the_levels[1], "&", the_levels[2], "\\\\")
+            tab <- stringr::str_c(ref_state, "&", target_states[1], "\\\\")
           } else {
             tab <- ""
           }
@@ -142,8 +144,8 @@ draw_latex_covlmc_model <- function(coefficients, hsize,
         } else {
           if (isTRUE(control$with_state)) {
             tab <- stringr::str_c(
-              "{", the_levels[1], "}&",
-              stringr::str_flatten(the_levels[-1], collapse = "&"),
+              ref_state, "&",
+              stringr::str_flatten(target_states, collapse = "&"),
               "\\\\"
             )
           } else {
