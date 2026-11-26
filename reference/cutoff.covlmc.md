@@ -61,9 +61,18 @@ this function does not provide a `scale` parameter: values are always
 given in quantile scale (i.e. as p-values of the likelihood ratio
 tests).
 
-Setting `raw` to `TRUE` removes the small perturbations that are
-subtracted from the p-values of the likelihood ratio tests computed from
-the COVLMC (in quantile scale).
+By default (`raw = FALSE`), the values are slightly smaller than the
+p-values of the likelihood ratio tests computed from the COVLMC (in
+quantile scale): they are reduced by a relative margin of
+`tolerance / 2` (and by at least the smallest representable amount).
+[`prune.covlmc()`](https://fabrice-rossi.github.io/mixvlmc/reference/prune.covlmc.md)
+estimates new logistic models and recomputes the likelihood ratio tests,
+whose p-values can differ in the last digits from the ones stored in the
+model, depending on the linear algebra library used by R. The margin
+ensures that pruning with a cut off value does have an effect on the
+model. As consecutive values differ by at least `tolerance`, the margin
+keeps each value larger than the next one. Setting `raw` to `TRUE`
+returns the p-values themselves.
 
 As automated model selection is provided by
 [`tune_covlmc()`](https://fabrice-rossi.github.io/mixvlmc/reference/tune_covlmc.md),
@@ -97,7 +106,7 @@ cutoff(m_cov)
 #> [1] 0.02328831 0.01834317
 ## raw values are slightly larger than the default ones
 cutoff(m_cov, raw = TRUE) - cutoff(m_cov)
-#> [1] 3.469447e-18 3.469447e-18
+#> [1] 1.735114e-10 1.366673e-10
 ## pruning with the largest cut off value
 draw(prune(m_cov, alpha = cutoff(m_cov)[1]))
 #> ▪

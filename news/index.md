@@ -345,6 +345,17 @@ representation as a character vector.
 
 #### VLMC with covariates
 
+- the cut off values given by
+  [`cutoff.covlmc()`](https://fabrice-rossi.github.io/mixvlmc/reference/cutoff.covlmc.md)
+  (with `raw = FALSE`) are smaller than the p-values by a relative
+  margin, so that pruning with them has an effect even when the p-values
+  recomputed by
+  [`prune.covlmc()`](https://fabrice-rossi.github.io/mixvlmc/reference/prune.covlmc.md)
+  differ in the last digits from the ones stored in the model, as with
+  some linear algebra libraries (e.g. MKL).
+  [`tune_covlmc()`](https://fabrice-rossi.github.io/mixvlmc/reference/tune_covlmc.md)
+  could report models identical to the previous one and return different
+  results for different values of `max_depth`
 - [`children()`](https://fabrice-rossi.github.io/mixvlmc/reference/children.md)
   of a node of a VLMC with covariates returns nodes of VLMC with
   covariates (they were nodes of context trees, without the logistic

@@ -128,9 +128,16 @@ COVLMC as the differences in model sizes are not constant through the
 pruning process. As a consequence, unlike <code><a href="cutoff.vlmc.html">cutoff.vlmc()</a></code>, this function
 does not provide a <code>scale</code> parameter: values are always given in quantile
 scale (i.e. as p-values of the likelihood ratio tests).</p>
-<p>Setting <code>raw</code> to <code>TRUE</code> removes the small perturbations that are subtracted
-from the p-values of the likelihood ratio tests computed from the COVLMC (in
-quantile scale).</p>
+<p>By default (<code>raw = FALSE</code>), the values are slightly smaller than the
+p-values of the likelihood ratio tests computed from the COVLMC (in quantile
+scale): they are reduced by a relative margin of <code>tolerance / 2</code> (and by at
+least the smallest representable amount). <code><a href="prune.covlmc.html">prune.covlmc()</a></code> estimates new
+logistic models and recomputes the likelihood ratio tests, whose p-values
+can differ in the last digits from the ones stored in the model, depending
+on the linear algebra library used by R. The margin ensures that pruning
+with a cut off value does have an effect on the model. As consecutive values
+differ by at least <code>tolerance</code>, the margin keeps each value larger than the
+next one. Setting <code>raw</code> to <code>TRUE</code> returns the p-values themselves.</p>
 <p>As automated model selection is provided by <code><a href="tune_covlmc.html">tune_covlmc()</a></code>, the direct use of
 <code>cutoff</code> should be reserved to advanced exploration of the set of trees that
 can be obtained from a complex one, e.g. to implement model selection
@@ -159,7 +166,7 @@ techniques that are not provided by <code><a href="tune_covlmc.html">tune_covlmc
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.02328831 0.01834317</span>
 <span class="r-in"><span><span class="co">## raw values are slightly larger than the default ones</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="cutoff.html">cutoff</a></span><span class="op">(</span><span class="va">m_cov</span>, raw <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">-</span> <span class="fu"><a href="cutoff.html">cutoff</a></span><span class="op">(</span><span class="va">m_cov</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 3.469447e-18 3.469447e-18</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1.735114e-10 1.366673e-10</span>
 <span class="r-in"><span><span class="co">## pruning with the largest cut off value</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="draw.html">draw</a></span><span class="op">(</span><span class="fu"><a href="prune.html">prune</a></span><span class="op">(</span><span class="va">m_cov</span>, alpha <span class="op">=</span> <span class="fu"><a href="cutoff.html">cutoff</a></span><span class="op">(</span><span class="va">m_cov</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ▪</span>

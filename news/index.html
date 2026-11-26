@@ -198,7 +198,9 @@
 </ul></div>
 <div class="section level4">
 <h4 id="vlmc-with-covariates-0-3-0">VLMC with covariates<a class="anchor" aria-label="anchor" href="#vlmc-with-covariates-0-3-0"></a></h4>
-<ul><li>
+<ul><li>the cut off values given by <code><a href="../reference/cutoff.covlmc.html">cutoff.covlmc()</a></code> (with <code>raw = FALSE</code>) are smaller than the p-values by a relative margin, so that pruning with them has an effect even when the p-values recomputed by <code><a href="../reference/prune.covlmc.html">prune.covlmc()</a></code> differ in the last digits from the ones stored in the model, as with some linear algebra libraries (e.g. MKL). <code><a href="../reference/tune_covlmc.html">tune_covlmc()</a></code> could report models identical to the previous one and return different results for different values of <code>max_depth</code>
+</li>
+<li>
 <code><a href="../reference/children.html">children()</a></code> of a node of a VLMC with covariates returns nodes of VLMC with covariates (they were nodes of context trees, without the logistic models and the merged contexts)</li>
 <li>the coefficients of constant models (contexts followed by a single state) with three states or more are expressed with respect to the first state, as for the other models: they were expressed with respect to the last state, so that <code><a href="../reference/draw.html">draw()</a></code> (with <code>constant_as_prob = FALSE</code>) and <code><a href="../reference/contexts.html">contexts()</a></code> (with <code>model = "coef"</code>) reported them under the wrong states</li>
 <li>the logistic models of a <code>covlmc</code> do not keep references to the functions that fitted them: saved models (e.g. with <code><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS()</a></code>) were several times larger than the models themselves, up to 20 times for the models returned by <code><a href="../reference/tune_covlmc.html">tune_covlmc()</a></code>
