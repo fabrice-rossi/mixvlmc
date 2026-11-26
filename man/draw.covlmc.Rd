@@ -183,7 +183,11 @@ covariate \code{y} with two delays, it will appear with two variables \code{y_1}
 \code{y_2}.
 
 When \code{format="latex"}, the representation uses a temporal subscript of the
-form \code{t-1}, \code{t-2}, etc.
+form \code{t-1}, \code{t-2}, etc. and levels are given between square brackets. For
+instance, the level \code{B} of a factor \code{y} with a delay of one is represented
+by \code{y_1B} in text and by \code{y[B]} with subscript \code{t-1} in LaTeX, while a
+logical covariate \code{day} with a delay of one is represented by \code{day_1TRUE}
+and by \code{day[TRUE]} with subscript \code{t-1}.
 }
 
 \examples{

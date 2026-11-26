@@ -6,8 +6,12 @@ covlmc_model_covar_names <- function(cov_names, cov_desc, cov_logical) {
   spos <- 1
   for (v in cov_names) {
     vlevels <- cov_desc[[v]]
-    if (is.null(vlevels) || cov_logical[[v]]) {
+    if (is.null(vlevels)) {
       result[spos] <- v
+      spos <- spos + 1
+    } else if (cov_logical[[v]]) {
+      ## the level is appended as in the text format (e.g. day_1TRUE)
+      result[spos] <- stringr::str_c(v, "[TRUE]")
       spos <- spos + 1
     } else {
       result[spos:(spos + length(vlevels) - 2)] <-

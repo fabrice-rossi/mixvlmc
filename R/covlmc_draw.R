@@ -282,7 +282,11 @@ covlmc_node2txt <- function(node, vals, control) {
 #' `y_2`.
 #'
 #' When `format="latex"`, the representation uses a temporal subscript of the
-#' form `t-1`, `t-2`, etc.
+#' form `t-1`, `t-2`, etc. and levels are given between square brackets. For
+#' instance, the level `B` of a factor `y` with a delay of one is represented
+#' by `y_1B` in text and by `y[B]` with subscript `t-1` in LaTeX, while a
+#' logical covariate `day` with a delay of one is represented by `day_1TRUE`
+#' and by `day[TRUE]` with subscript `t-1`.
 #'
 #' @examples
 #' pc <- powerconsumption[powerconsumption$week == 5, ]

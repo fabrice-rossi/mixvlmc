@@ -983,18 +983,18 @@
     [\textbf{(0,1.28]}
     [\multicolumn{2}{c}{\textbf{(0,1.28]}}\\\hline
     {{\small (0,1.28]}}&\textbf{{\small (1.28,7.54]}}\\{\small (I)}&{\small -3}\\
-    {\small $\text{day\_night}_{t-1}$}&{\small -0.43}\\
-    {\small $\text{day\_night}_{t-2}$}&{\small -0.64}\\
-    {\small $\text{day\_night}_{t-3}$}&{\small 1.5}\\
-    {\small $\text{day\_night}_{t-4}$}&{\small -2.3}\\
-    {\small $\text{day\_night}_{t-5}$}&{\small 2.6}\\, align=cc]
+    {\small $\text{day\_night[TRUE]}_{t-1}$}&{\small -0.43}\\
+    {\small $\text{day\_night[TRUE]}_{t-2}$}&{\small -0.64}\\
+    {\small $\text{day\_night[TRUE]}_{t-3}$}&{\small 1.5}\\
+    {\small $\text{day\_night[TRUE]}_{t-4}$}&{\small -2.3}\\
+    {\small $\text{day\_night[TRUE]}_{t-5}$}&{\small 2.6}\\, align=cc]
     [\multicolumn{2}{c}{\textbf{(1.28,7.54]}}\\\hline
     {\small 0.91}&{\small 0.093}, align=cc]]
     [\multicolumn{2}{c}{\textbf{(1.28,7.54]}}\\\hline
     {\small 0.89}&{\small 0.11}, align=cc]]
     [\multicolumn{2}{c}{\textbf{(1.28,7.54]}}\\\hline
     {{\small (0,1.28]}}&\textbf{{\small (1.28,7.54]}}\\{\small (I)}&{\small -2.7}\\
-    {\small $\text{day\_night}_{t-1}$}&{\small 1.3}\\, align=cc]]
+    {\small $\text{day\_night[TRUE]}_{t-1}$}&{\small 1.3}\\, align=cc]]
     [\multicolumn{2}{c}{\textbf{(1.28,7.54]}}\\\hline
     {\small 0.84}&{\small 0.16}, align=cc]]
     [\textbf{(1.28,7.54]}
@@ -1006,7 +1006,7 @@
     [\textbf{(1.28,7.54]}
     [\multicolumn{2}{c}{\textbf{(0,1.28]}}\\\hline
     {{\small (0,1.28]}}&\textbf{{\small (1.28,7.54]}}\\{\small (I)}&{\small 0.99}\\
-    {\small $\text{day\_night}_{t-1}$}&{\small 1.3}\\, align=cc]
+    {\small $\text{day\_night[TRUE]}_{t-1}$}&{\small 1.3}\\, align=cc]
     [\multicolumn{2}{c}{\textbf{(1.28,7.54]}}\\\hline
     {\small 0.056}&{\small 0.94}, align=cc]]]]]
     \end{forest}
@@ -1021,18 +1021,18 @@
     [\textbf{(0,1.28]}
     [\multicolumn{2}{c}{\textbf{(0,1.28]}}\\\hline
     {{\tiny (0,1.28]}}&\textbf{{\tiny (1.28,7.54]}}\\{\tiny (I)}&{\tiny -3}\\
-    {\tiny $\text{day\_night}_{t-1}$}&{\tiny -0.43}\\
-    {\tiny $\text{day\_night}_{t-2}$}&{\tiny -0.64}\\
-    {\tiny $\text{day\_night}_{t-3}$}&{\tiny 1.5}\\
-    {\tiny $\text{day\_night}_{t-4}$}&{\tiny -2.3}\\
-    {\tiny $\text{day\_night}_{t-5}$}&{\tiny 2.6}\\, align=cc]
+    {\tiny $\text{day\_night[TRUE]}_{t-1}$}&{\tiny -0.43}\\
+    {\tiny $\text{day\_night[TRUE]}_{t-2}$}&{\tiny -0.64}\\
+    {\tiny $\text{day\_night[TRUE]}_{t-3}$}&{\tiny 1.5}\\
+    {\tiny $\text{day\_night[TRUE]}_{t-4}$}&{\tiny -2.3}\\
+    {\tiny $\text{day\_night[TRUE]}_{t-5}$}&{\tiny 2.6}\\, align=cc]
     [\multicolumn{2}{c}{\textbf{(1.28,7.54]}}\\\hline
     {\tiny 0.91}&{\tiny 0.093}, align=cc]]
     [\multicolumn{2}{c}{\textbf{(1.28,7.54]}}\\\hline
     {\tiny 0.89}&{\tiny 0.11}, align=cc]]
     [\multicolumn{2}{c}{\textbf{(1.28,7.54]}}\\\hline
     {{\tiny (0,1.28]}}&\textbf{{\tiny (1.28,7.54]}}\\{\tiny (I)}&{\tiny -2.7}\\
-    {\tiny $\text{day\_night}_{t-1}$}&{\tiny 1.3}\\, align=cc]]
+    {\tiny $\text{day\_night[TRUE]}_{t-1}$}&{\tiny 1.3}\\, align=cc]]
     [\multicolumn{2}{c}{\textbf{(1.28,7.54]}}\\\hline
     {\tiny 0.84}&{\tiny 0.16}, align=cc]]
     [\textbf{(1.28,7.54]}
@@ -1044,7 +1044,7 @@
     [\textbf{(1.28,7.54]}
     [\multicolumn{2}{c}{\textbf{(0,1.28]}}\\\hline
     {{\tiny (0,1.28]}}&\textbf{{\tiny (1.28,7.54]}}\\{\tiny (I)}&{\tiny 0.99}\\
-    {\tiny $\text{day\_night}_{t-1}$}&{\tiny 1.3}\\, align=cc]
+    {\tiny $\text{day\_night[TRUE]}_{t-1}$}&{\tiny 1.3}\\, align=cc]
     [\multicolumn{2}{c}{\textbf{(1.28,7.54]}}\\\hline
     {\tiny 0.056}&{\tiny 0.94}, align=cc]]]]]
     \end{forest}
@@ -1059,18 +1059,18 @@
     [\textbf{(0,1.28]}
     [\multicolumn{2}{c}{\textbf{(0,1.28]}}\\\hline
     {{\small (0,1.28]}}&\textbf{{\small (1.28,7.54]}}\\{\small (I)}&{\small -3}\\
-    {\small $\text{day\_night}_{t-1}$}&{\small -0.43}\\
-    {\small $\text{day\_night}_{t-2}$}&{\small -0.64}\\
-    {\small $\text{day\_night}_{t-3}$}&{\small 1.5}\\
-    {\small $\text{day\_night}_{t-4}$}&{\small -2.3}\\
-    {\small $\text{day\_night}_{t-5}$}&{\small 2.6}\\, align=cc]
+    {\small $\text{day\_night[TRUE]}_{t-1}$}&{\small -0.43}\\
+    {\small $\text{day\_night[TRUE]}_{t-2}$}&{\small -0.64}\\
+    {\small $\text{day\_night[TRUE]}_{t-3}$}&{\small 1.5}\\
+    {\small $\text{day\_night[TRUE]}_{t-4}$}&{\small -2.3}\\
+    {\small $\text{day\_night[TRUE]}_{t-5}$}&{\small 2.6}\\, align=cc]
     [\multicolumn{2}{c}{\textbf{(1.28,7.54]}}\\\hline
     {\small 0.91}&{\small 0.093}, align=cc]]
     [\multicolumn{2}{c}{\textbf{(1.28,7.54]}}\\\hline
     {\small 0.89}&{\small 0.11}, align=cc]]
     [\multicolumn{2}{c}{\textbf{(1.28,7.54]}}\\\hline
     {{\small (0,1.28]}}&\textbf{{\small (1.28,7.54]}}\\{\small (I)}&{\small -2.7}\\
-    {\small $\text{day\_night}_{t-1}$}&{\small 1.3}\\, align=cc]]
+    {\small $\text{day\_night[TRUE]}_{t-1}$}&{\small 1.3}\\, align=cc]]
     [\multicolumn{2}{c}{\textbf{(1.28,7.54]}}\\\hline
     {\small 0.84}&{\small 0.16}, align=cc]]
     [\textbf{(1.28,7.54]}
@@ -1082,7 +1082,7 @@
     [\textbf{(1.28,7.54]}
     [\multicolumn{2}{c}{\textbf{(0,1.28]}}\\\hline
     {{\small (0,1.28]}}&\textbf{{\small (1.28,7.54]}}\\{\small (I)}&{\small 0.99}\\
-    {\small $\text{day\_night}_{t-1}$}&{\small 1.3}\\, align=cc]
+    {\small $\text{day\_night[TRUE]}_{t-1}$}&{\small 1.3}\\, align=cc]
     [\multicolumn{2}{c}{\textbf{(1.28,7.54]}}\\\hline
     {\small 0.056}&{\small 0.94}, align=cc]]]]]
     \end{forest}
@@ -1097,18 +1097,18 @@
     [\textbf{(0,1.28]}
     [\multicolumn{2}{c}{\textbf{(0,1.28]}}\\\hline
     {{\tiny (0,1.28]}}&\textbf{{\tiny (1.28,7.54]}}\\{\tiny (I)}&{\tiny -3}\\
-    {\tiny $\text{day\_night}_{t-1}$}&{\tiny -0.43}\\
-    {\tiny $\text{day\_night}_{t-2}$}&{\tiny -0.64}\\
-    {\tiny $\text{day\_night}_{t-3}$}&{\tiny 1.5}\\
-    {\tiny $\text{day\_night}_{t-4}$}&{\tiny -2.3}\\
-    {\tiny $\text{day\_night}_{t-5}$}&{\tiny 2.6}\\, align=cc]
+    {\tiny $\text{day\_night[TRUE]}_{t-1}$}&{\tiny -0.43}\\
+    {\tiny $\text{day\_night[TRUE]}_{t-2}$}&{\tiny -0.64}\\
+    {\tiny $\text{day\_night[TRUE]}_{t-3}$}&{\tiny 1.5}\\
+    {\tiny $\text{day\_night[TRUE]}_{t-4}$}&{\tiny -2.3}\\
+    {\tiny $\text{day\_night[TRUE]}_{t-5}$}&{\tiny 2.6}\\, align=cc]
     [\multicolumn{2}{c}{\textbf{(1.28,7.54]}}\\\hline
     {\tiny 0.91}&{\tiny 0.093}, align=cc]]
     [\multicolumn{2}{c}{\textbf{(1.28,7.54]}}\\\hline
     {\tiny 0.89}&{\tiny 0.11}, align=cc]]
     [\multicolumn{2}{c}{\textbf{(1.28,7.54]}}\\\hline
     {{\tiny (0,1.28]}}&\textbf{{\tiny (1.28,7.54]}}\\{\tiny (I)}&{\tiny -2.7}\\
-    {\tiny $\text{day\_night}_{t-1}$}&{\tiny 1.3}\\, align=cc]]
+    {\tiny $\text{day\_night[TRUE]}_{t-1}$}&{\tiny 1.3}\\, align=cc]]
     [\multicolumn{2}{c}{\textbf{(1.28,7.54]}}\\\hline
     {\tiny 0.84}&{\tiny 0.16}, align=cc]]
     [\textbf{(1.28,7.54]}
@@ -1120,7 +1120,7 @@
     [\textbf{(1.28,7.54]}
     [\multicolumn{2}{c}{\textbf{(0,1.28]}}\\\hline
     {{\tiny (0,1.28]}}&\textbf{{\tiny (1.28,7.54]}}\\{\tiny (I)}&{\tiny 0.99}\\
-    {\tiny $\text{day\_night}_{t-1}$}&{\tiny 1.3}\\, align=cc]
+    {\tiny $\text{day\_night[TRUE]}_{t-1}$}&{\tiny 1.3}\\, align=cc]
     [\multicolumn{2}{c}{\textbf{(1.28,7.54]}}\\\hline
     {\tiny 0.056}&{\tiny 0.94}, align=cc]]]]]
     \end{forest}

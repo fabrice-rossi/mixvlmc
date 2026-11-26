@@ -37,6 +37,8 @@ covariates (see the breaking changes below).
 * with the ASCII charset (`charset_ascii()`), the intermediate children of a
   node are introduced by `+--` like the first one (they were introduced by
   `'--` like the last one)
+* in the LaTeX format of `draw.covlmc()`, logical covariates are named with
+  their level (`day[TRUE]`), consistently with factors and with the text format
 * the counts of `draw.ctx_tree()` (with `frequency = "detailed"`) are
   separated by `", "` as in `draw.vlmc()` (they were separated by `","`)
 
