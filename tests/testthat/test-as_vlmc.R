@@ -1,6 +1,6 @@
 test_that("as_vlmc.ctx_tree produces a valid vlmc object", {
   data_set <- build_markov_chain(1000, 4, seed = 4)
-  data_tree <- ctx_tree(data_set$x, min_size = 4, max_depth = 10)
+  data_tree <- ctx_tree(data_set$x, min_size = 4, max_depth = 10, backend = "R")
   vlmc_from_tree <- as_vlmc(data_tree)
   expect_named(vlmc_from_tree, c(
     "children", "f_by", "max_depth", "vals", "depth",
@@ -10,7 +10,7 @@ test_that("as_vlmc.ctx_tree produces a valid vlmc object", {
   ## degenerate case should add match
   withr::local_seed(0)
   data_set <- sample(c("A", "B", "C"), 500, replace = TRUE)
-  data_tree <- ctx_tree(data_set, min_size = 4, max_depth = 10)
+  data_tree <- ctx_tree(data_set, min_size = 4, max_depth = 10, backend = "R")
   vlmc_from_tree <- as_vlmc(data_tree, alpha = 0.01)
   expect_named(vlmc_from_tree, c(
     "f_by", "max_depth", "vals", "depth",
@@ -108,7 +108,7 @@ test_that("as_vlmc.ctx_tree applies pruning", {
 
 test_that("as_vlmc.tune_vlmc obeys is basic contract", {
   data_set <- build_markov_chain(1000, 4, seed = 4)
-  tune_results <- tune_vlmc(data_set$x)
+  tune_results <- tune_vlmc(data_set$x, backend = "R")
   model <- as_vlmc(tune_results)
   expect_true(is_vlmc(model))
 })

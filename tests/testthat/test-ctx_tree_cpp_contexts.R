@@ -4,7 +4,7 @@ test_that("the C++ backend find the same contexts as the R one", {
     x <- sample(0:k, 1000, replace = TRUE)
     cpp_tree <- ctx_tree(x, min_size = 2, max_depth = 5 + k, keep_position = FALSE, backend = "C++")
     cpp_ctxs <- contexts(cpp_tree, sequence = TRUE)
-    r_tree <- ctx_tree(x, min_size = 2, max_depth = 5 + k)
+    r_tree <- ctx_tree(x, min_size = 2, max_depth = 5 + k, backend = "R")
     r_ctxs <- contexts(r_tree, sequence = TRUE)
     expect_true(compare_ctx(r_ctxs, cpp_ctxs))
   }
@@ -16,7 +16,7 @@ test_that("the C++ backend find the same detailed contexts as the R one (up to o
     x <- sample(0:k, 500, replace = TRUE)
     cpp_tree <- ctx_tree(x, min_size = 2, max_depth = 5 + k, backend = "C++")
     cpp_ctxs <- contexts(cpp_tree, frequency = "detailed", position = TRUE)
-    r_tree <- ctx_tree(x, min_size = 2, max_depth = 5 + k)
+    r_tree <- ctx_tree(x, min_size = 2, max_depth = 5 + k, backend = "R")
     r_ctxs <- contexts(r_tree, frequency = "detailed", position = TRUE)
     expect_true(compare_ctx(r_ctxs, cpp_ctxs))
   }

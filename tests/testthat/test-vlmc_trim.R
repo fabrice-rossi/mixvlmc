@@ -1,14 +1,14 @@
 test_that("vlmc trimming does nothing in the default case", {
   pc <- powerconsumption[powerconsumption$week == 5, ]
   rdts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.25, 0.5, 0.75, 1))))
-  model <- vlmc(rdts)
+  model <- vlmc(rdts, backend = "R")
   expect_identical(trim(model), model)
 })
 
 test_that("vlmc trimming preserve core information when needed", {
   pc <- powerconsumption[powerconsumption$week == 5, ]
   rdts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.25, 0.5, 0.75, 1))))
-  model <- vlmc(rdts, keep_match = TRUE)
+  model <- vlmc(rdts, keep_match = TRUE, backend = "R")
   trimmed_model <- trim(model)
   expect_identical(
     contexts(trimmed_model, frequency = "detailed"),
@@ -32,7 +32,7 @@ test_that("vlmc trimming removes positions", {
 test_that("positions are not available after trimming", {
   x <- c(0, 0, 1, 1, 0, 1, 1, 0, 0, 1, 1, 0, 1)
   for (y in list(x, c(x, 2))) {
-    model <- trim(vlmc(y, alpha = 0.5, keep_match = TRUE))
+    model <- trim(vlmc(y, alpha = 0.5, keep_match = TRUE, backend = "R"))
     expect_error(positions(find_sequence(model, numeric(0))), "not saved")
   }
 })

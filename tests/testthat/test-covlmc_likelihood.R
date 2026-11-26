@@ -174,7 +174,7 @@ test_that("loglikelihood rejects missing values in new covariates", {
 test_that("the likelihood of a depth 0 covlmc uses all the observations", {
   x <- c(1, rep(0, 9))
   x_cov <- data.frame(z = seq_along(x))
-  x_vlmc <- vlmc(x, min_size = 100)
+  x_vlmc <- vlmc(x, min_size = 100, backend = "R")
   for (engine in c("glm", "multinom")) {
     withr::local_options(mixvlmc.predictive = engine)
     m_cov <- covlmc(x, x_cov, min_size = 100)

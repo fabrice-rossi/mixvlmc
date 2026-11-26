@@ -3,8 +3,8 @@ test_that("draw() returns a printable representation", {
   withr::local_seed(0)
   x <- sample(c("A", "B", "C"), 200, replace = TRUE)
   models <- list(
-    ctx_tree(x, max_depth = 3), ctx_tree(x, max_depth = 3, backend = "C++"),
-    vlmc(x), vlmc(x, backend = "C++"),
+    ctx_tree(x, max_depth = 3, backend = "R"), ctx_tree(x, max_depth = 3, backend = "C++"),
+    vlmc(x, backend = "R"), vlmc(x, backend = "C++"),
     covlmc(x, data.frame(y = rnorm(length(x))), min_size = 10)
   )
   for (model in models) {
@@ -27,7 +27,7 @@ test_that("draw() returns a printable representation", {
 test_that("knitr includes LaTeX representations as is in LaTeX documents", {
   skip_if_not_installed("knitr")
   withr::local_seed(0)
-  model <- vlmc(sample(c("A", "B", "C"), 200, replace = TRUE))
+  model <- vlmc(sample(c("A", "B", "C"), 200, replace = TRUE), backend = "R")
   repr <- draw(model, "latex")
   ## LaTeX output
   old_to <- knitr::opts_knit$get("rmarkdown.pandoc.to")

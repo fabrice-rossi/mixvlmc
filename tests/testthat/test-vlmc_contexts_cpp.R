@@ -4,7 +4,7 @@ test_that("contexts do not depend on the backend", {
     x <- sample(0:k, 500, replace = TRUE)
     cpp_model <- vlmc(x, alpha = 0.2, backend = "C++", keep_match = TRUE)
     cpp_ctxs <- contexts(cpp_model, frequency = "detailed", position = TRUE, cutoff = "native", metrics = TRUE)
-    r_model <- vlmc(x, alpha = 0.2, keep_match = TRUE)
+    r_model <- vlmc(x, alpha = 0.2, keep_match = TRUE, backend = "R")
     r_ctxs <- contexts(r_model, frequency = "detailed", position = TRUE, cutoff = "native", metrics = TRUE)
     expect_true(compare_ctx(r_ctxs, cpp_ctxs))
   }
@@ -17,7 +17,7 @@ test_that("detailed frequencies are named by states", {
     sample(c("a", "b", "c"), 200, replace = TRUE),
     sample(c(3, 5, 7), 200, replace = TRUE)
   )) {
-    for (model in list(ctx_tree(x, max_depth = 2), vlmc(x, alpha = 0.5))) {
+    for (model in list(ctx_tree(x, max_depth = 2, backend = "R"), vlmc(x, alpha = 0.5, backend = "R"))) {
       model_cpp <- switch(class(model)[1],
         ctx_tree = ctx_tree(x, max_depth = 2, backend = "C++"),
         vlmc(x, alpha = 0.5, backend = "C++")

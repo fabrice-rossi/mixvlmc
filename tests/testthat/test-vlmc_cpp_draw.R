@@ -1,6 +1,6 @@
 test_that("C++ based vlmc draw produces identical results as the R one", {
   data_set <- build_markov_chain(1000, 3, seed = 0)
-  x_vlmc <- vlmc(data_set$x)
+  x_vlmc <- vlmc(data_set$x, backend = "R")
   x_vlmc_cpp <- vlmc(data_set$x, backend = "C++")
   expect_true(compare_output(
     {
@@ -18,7 +18,7 @@ test_that("C++ based vlmc draw produces identical results as the R one", {
   skip_on_cran()
   for (k in 1:5) {
     rdts <- sample(0:k, 100, replace = TRUE)
-    r_vlmc <- vlmc(rdts, min_size = 1, max_depth = 8, alpha = 0.5)
+    r_vlmc <- vlmc(rdts, min_size = 1, max_depth = 8, alpha = 0.5, backend = "R")
     cpp_vlmc <- vlmc(rdts, min_size = 1, max_depth = 8, alpha = 0.5, backend = "C++")
     expect_true(compare_output(
       {
@@ -37,7 +37,7 @@ test_that("C++ based vlmc draw produces identical results as the R one", {
 
 test_that("C++ based vlmc draw produces identical results as the R one (latex)", {
   data_set <- build_markov_chain(1000, 3, seed = 0)
-  x_vlmc <- vlmc(data_set$x)
+  x_vlmc <- vlmc(data_set$x, backend = "R")
   x_vlmc_cpp <- vlmc(data_set$x, backend = "C++")
   expect_true(compare_output(
     {
@@ -55,7 +55,7 @@ test_that("C++ based vlmc draw produces identical results as the R one (latex)",
   skip_on_cran()
   for (k in 1:5) {
     rdts <- sample(0:k, 100, replace = TRUE)
-    r_vlmc <- vlmc(rdts, min_size = 1, max_depth = 8, alpha = 0.5)
+    r_vlmc <- vlmc(rdts, min_size = 1, max_depth = 8, alpha = 0.5, backend = "R")
     cpp_vlmc <- vlmc(rdts, min_size = 1, max_depth = 8, alpha = 0.5, backend = "C++")
     expect_true(compare_output(
       {

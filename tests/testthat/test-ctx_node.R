@@ -73,7 +73,7 @@ test_that("find_sequence finds all subsequences", {
 
 test_that("context objects are printed as expected", {
   rdts <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 0)
-  rdts_ctree <- ctx_tree(rdts, min_size = 1, max_depth = 3)
+  rdts_ctree <- ctx_tree(rdts, min_size = 1, max_depth = 3, backend = "R")
   expect_snapshot(print(find_sequence(rdts_ctree, c(0, 0))))
   expect_snapshot(print(find_sequence(rdts_ctree, c(1, 0))))
   expect_snapshot(print(rev(find_sequence(rdts_ctree, c(0, 0)))))

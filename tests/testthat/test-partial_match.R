@@ -8,7 +8,7 @@ test_that("no partial matching of list components", {
     expect_no_warning(contexts(model, frequency = "total", local = TRUE))
     expect_no_warning(contexts(model, metrics = TRUE))
   }
-  model_tune <- tune_vlmc(x)
+  model_tune <- tune_vlmc(x, backend = "R")
   pdf(NULL)
   withr::defer(dev.off())
   expect_no_warning(plot(model_tune))

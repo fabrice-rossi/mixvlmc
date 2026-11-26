@@ -2,13 +2,13 @@ test_that("plot.tune_vlmc works as expected", {
   skip_if_not_installed("vdiffr")
   pc <- powerconsumption[powerconsumption$week == 10, ]
   rdts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1))))
-  tune_result <- tune_vlmc(rdts)
+  tune_result <- tune_vlmc(rdts, backend = "R")
   vdiffr::expect_doppelganger("Bic base plot", \() plot(tune_result))
   vdiffr::expect_doppelganger(
     "Log likelihood base plot",
     \() plot(tune_result, value = "likelihood")
   )
-  tune_result_aic <- tune_vlmc(rdts, criterion = "AIC")
+  tune_result_aic <- tune_vlmc(rdts, criterion = "AIC", backend = "R")
   vdiffr::expect_doppelganger(
     "Aic native base plot",
     \() plot(tune_result_aic, cutoff = "native")

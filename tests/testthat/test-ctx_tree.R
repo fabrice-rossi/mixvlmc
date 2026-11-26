@@ -21,20 +21,20 @@ test_that("the context number is calculted correctly", {
 
 test_that("the context tree has the correct class", {
   rdts <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 0)
-  rdts_ctree <- ctx_tree(rdts, min_size = 1, max_depth = 2)
+  rdts_ctree <- ctx_tree(rdts, min_size = 1, max_depth = 2, backend = "R")
   expect_s3_class(rdts_ctree, "ctx_tree", exact = TRUE)
 })
 
 test_that("a warning is given when the state space is large", {
   rdts <- rep(1:20, 2)
   expect_warning({
-    rdts_ctree <- ctx_tree(rdts, min_size = 1, max_depth = 2)
+    rdts_ctree <- ctx_tree(rdts, min_size = 1, max_depth = 2, backend = "R")
   })
 })
 
 test_that("printing", {
   rdts <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 0)
-  rdts_ctree <- ctx_tree(rdts, min_size = 1, max_depth = 2)
+  rdts_ctree <- ctx_tree(rdts, min_size = 1, max_depth = 2, backend = "R")
   expect_snapshot_output(print(rdts_ctree))
 })
 
@@ -43,7 +43,7 @@ test_that("results do not depend on the use of dts", {
   withr::local_seed(42)
   rdts <- sample(sample(letters, 4), 100, replace = TRUE)
   xdts <- dts(rdts)
-  rtree <- ctx_tree(rdts)
-  xtree <- ctx_tree(xdts)
+  rtree <- ctx_tree(rdts, backend = "R")
+  xtree <- ctx_tree(xdts, backend = "R")
   expect_identical(rtree, xtree)
 })

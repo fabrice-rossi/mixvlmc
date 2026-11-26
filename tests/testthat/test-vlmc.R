@@ -1,6 +1,6 @@
 test_that("vlmc estimation works on super simple case", {
   x <- rep(c(0, 1), 1000)
-  x_vlmc <- vlmc(x)
+  x_vlmc <- vlmc(x, backend = "R")
   expect_identical(depth(x_vlmc), 1L)
   expect_identical(context_number(x_vlmc), 2L)
   x_vlmc_ctx <- contexts(x_vlmc)
@@ -12,18 +12,18 @@ test_that("vlmc estimation works on super simple case", {
 test_that("vlmc reports correctly the empty context if it exists", {
   withr::local_seed(0)
   rdts <- sample(0:1, size = 100, replace = TRUE)
-  empty_vlmc <- vlmc(rdts, max_depth = 0)
+  empty_vlmc <- vlmc(rdts, max_depth = 0, backend = "R")
   expect_equal(context_number(empty_vlmc), 1L)
 })
 
 test_that("post pruning is equivalent to direct pruning (alpha)", {
   pc <- powerconsumption[powerconsumption$week == 5, ]
   rdts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.25, 0.5, 0.75, 1))))
-  model <- vlmc(rdts, alpha = 0.1, keep_match = TRUE)
+  model <- vlmc(rdts, alpha = 0.1, keep_match = TRUE, backend = "R")
   cut_off <- cutoff(model)
   for (k in seq_along(cut_off)) {
     pruned_model <- prune(model, alpha = cut_off[k])
-    direct_model <- vlmc(rdts, alpha = cut_off[k], keep_match = TRUE)
+    direct_model <- vlmc(rdts, alpha = cut_off[k], keep_match = TRUE, backend = "R")
     expect_true(compare_vlmc(pruned_model, direct_model))
   }
 })
@@ -31,11 +31,11 @@ test_that("post pruning is equivalent to direct pruning (alpha)", {
 test_that("post pruning is equivalent to direct pruning (cutoff)", {
   pc <- powerconsumption[powerconsumption$week == 5, ]
   rdts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.25, 0.5, 0.75, 1))))
-  model <- vlmc(rdts, alpha = 0.1)
+  model <- vlmc(rdts, alpha = 0.1, backend = "R")
   cut_off <- cutoff(model, scale = "native")
   for (k in seq_along(cut_off)) {
     pruned_model <- prune(model, cutoff = cut_off[k])
-    direct_model <- vlmc(rdts, cutoff = cut_off[k])
+    direct_model <- vlmc(rdts, cutoff = cut_off[k], backend = "R")
     expect_true(compare_vlmc(pruned_model, direct_model))
   }
 })
@@ -43,7 +43,7 @@ test_that("post pruning is equivalent to direct pruning (cutoff)", {
 test_that("alpha pruning is equivalent to cutoff pruning", {
   pc <- powerconsumption[powerconsumption$week == 5, ]
   rdts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.25, 0.5, 0.75, 1))))
-  model <- vlmc(rdts, alpha = 0.1)
+  model <- vlmc(rdts, alpha = 0.1, backend = "R")
   c_cut_off <- cutoff(model, scale = "native")
   a_cut_off <- cutoff(model, scale = "quantile")
   expect_length(a_cut_off, length(c_cut_off))
@@ -56,19 +56,19 @@ test_that("alpha pruning is equivalent to cutoff pruning", {
 
 test_that("max_depth is always reported", {
   data_set <- build_markov_chain(500, 2, seed = 6)
-  model <- vlmc(data_set$x, cutoff = 0.5 * log(length(data_set$x)), max_depth = 2)
+  model <- vlmc(data_set$x, cutoff = 0.5 * log(length(data_set$x)), max_depth = 2, backend = "R")
   expect_true(model$max_depth)
 })
 
 test_that("vlmc always returns a vlmc object", {
   data_set <- build_markov_chain(500, 2, seed = 6)
-  model <- vlmc(data_set$x, cutoff = 0.5 * log(length(data_set$x)), max_depth = 2, prune = FALSE)
+  model <- vlmc(data_set$x, cutoff = 0.5 * log(length(data_set$x)), max_depth = 2, prune = FALSE, backend = "R")
   expect_s3_class(model, "vlmc")
 })
 
 test_that("vlmc returns an object with all the needed internal fields", {
   data_set <- build_markov_chain(500, 2, seed = 6)
-  model <- vlmc(data_set$x, cutoff = 0.1, keep_match = TRUE)
+  model <- vlmc(data_set$x, cutoff = 0.1, keep_match = TRUE, backend = "R")
   expect_named(model, c(
     "children", "f_by", "max_depth", "vals", "depth",
     "nb_ctx", "alpha", "cutoff", "ix", "extended_ll",
@@ -80,11 +80,11 @@ test_that("vlmc results do not depend on the time series representation", {
   data_set <- build_markov_chain(500, 2, seed = 6)
   model <- vlmc(data_set$x,
     cutoff = 0.1 * log(length(data_set$x)),
-    max_depth = 4, prune = FALSE
+    max_depth = 4, prune = FALSE, backend = "R"
   )
   dts_model <- vlmc(dts(data_set$x),
     cutoff = 0.1 * log(length(data_set$x)),
-    max_depth = 4, prune = FALSE
+    max_depth = 4, prune = FALSE, backend = "R"
   )
   expect_identical(model, dts_model)
 })
@@ -144,8 +144,8 @@ test_that("min_size and max_depth are validated", {
       expect_error(vlmc(x, max_depth = md, backend = backend), "max_depth")
     }
   }
-  expect_error(tune_vlmc(x, min_size = 0, max_depth = 3), "min_size")
-  expect_error(tune_vlmc(x, max_depth = -1), "max_depth")
+  expect_error(tune_vlmc(x, min_size = 0, max_depth = 3, backend = "R"), "min_size")
+  expect_error(tune_vlmc(x, max_depth = -1, backend = "R"), "max_depth")
 })
 
 test_that("time series with a single state are rejected", {

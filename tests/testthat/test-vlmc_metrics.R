@@ -15,7 +15,7 @@ test_that("generate_fake_data works as expected", {
 test_that("metrics.vlmc obey its contract", {
   pc <- powerconsumption[powerconsumption$week == 5, ]
   rdts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.25, 0.5, 0.75, 1))))
-  model <- vlmc(rdts, alpha = 0.1)
+  model <- vlmc(rdts, alpha = 0.1, backend = "R")
   m_metrics <- metrics(model)
   ## class
   expect_s3_class(m_metrics, "metrics.vlmc")
@@ -33,7 +33,7 @@ test_that("metrics.vlmc obey its contract", {
 test_that("metrics.vlmc objects print as expected", {
   pc <- powerconsumption[powerconsumption$week == 5, ]
   rdts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.25, 0.5, 0.75, 1))))
-  model <- vlmc(rdts, alpha = 0.1)
+  model <- vlmc(rdts, alpha = 0.1, backend = "R")
   m_metrics <- metrics(model)
   expect_snapshot(print(m_metrics))
 })
@@ -41,7 +41,7 @@ test_that("metrics.vlmc objects print as expected", {
 test_that("metrics.vlmc and predict.vlmc return consistent results", {
   pc <- powerconsumption[powerconsumption$week == 5, ]
   rdts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.25, 0.5, 0.75, 1))))
-  model <- vlmc(rdts, alpha = 0.1)
+  model <- vlmc(rdts, alpha = 0.1, backend = "R")
   m_metrics <- metrics(model)
   m_predict <- predict(model, rdts, final_pred = FALSE)
   predict_table <- table(m_predict, rdts)
@@ -49,7 +49,7 @@ test_that("metrics.vlmc and predict.vlmc return consistent results", {
   expect_identical(m_metrics$conf_mat, predict_table)
   for (k in 2:4) {
     data_set <- build_markov_chain(500, k, seed = 3 * k)
-    model <- vlmc(data_set$x, alpha = 0.5)
+    model <- vlmc(data_set$x, alpha = 0.5, backend = "R")
     m_metrics <- metrics(model)
     m_predict <- predict(model, data_set$x, final_pred = FALSE)
     predict_table <- table(m_predict, data_set$x)
@@ -60,6 +60,6 @@ test_that("metrics.vlmc and predict.vlmc return consistent results", {
 
 test_that("metrics.vlmc works on real world data", {
   sun_activity <- as.factor(ifelse(sunspot.year >= median(sunspot.year), "high", "low"))
-  sun_model_tune <- tune_vlmc(sun_activity)
+  sun_model_tune <- tune_vlmc(sun_activity, backend = "R")
   expect_no_error(metrics(as_vlmc(sun_model_tune)))
 })

@@ -1,6 +1,6 @@
 test_that("tune_vlmc obeys is basic contract", {
   data_set <- build_markov_chain(1000, 4, seed = 4)
-  t_vlmc <- tune_vlmc(data_set$x)
+  t_vlmc <- tune_vlmc(data_set$x, backend = "R")
   expect_s3_class(t_vlmc, "tune_vlmc")
   expect_true(all(c("best_model", "criterion", "initial", "results") %in% names(t_vlmc)))
   expect_true(is_vlmc(t_vlmc$best_model))
@@ -12,15 +12,15 @@ test_that("tune_vlmc obeys is basic contract", {
 
 test_that("tune_vlmc selects the best model", {
   data_set <- build_markov_chain(300, 3, seed = 3)
-  bt_vlmc <- tune_vlmc(data_set$x, initial = "specific", criterion = "BIC")
+  bt_vlmc <- tune_vlmc(data_set$x, initial = "specific", criterion = "BIC", backend = "R")
   expect_equal(stats::BIC(logLik(bt_vlmc$best_model, initial = "specific")), min(bt_vlmc$results$BIC))
-  at_vlmc <- tune_vlmc(data_set$x, initial = "specific", criterion = "AIC")
+  at_vlmc <- tune_vlmc(data_set$x, initial = "specific", criterion = "AIC", backend = "R")
   expect_equal(stats::AIC(logLik(at_vlmc$best_model, initial = "specific")), min(at_vlmc$results$AIC))
 })
 
 test_that("tune_vlmc memorizes the models it is asked to memorize", {
   data_set <- build_markov_chain(500, 4, seed = 2)
-  bt_vlmc <- tune_vlmc(data_set$x, initial = "extended", criterion = "BIC", save = "all")
+  bt_vlmc <- tune_vlmc(data_set$x, initial = "extended", criterion = "BIC", save = "all", backend = "R")
   expect_equal(length(bt_vlmc$saved_models$all) + 1L, nrow(bt_vlmc$results))
   best_BIC_idx <- which.min(bt_vlmc$results$BIC)
   expect_identical(bt_vlmc$best_model, bt_vlmc$saved_models$all[[best_BIC_idx - 1]])
@@ -44,19 +44,19 @@ test_that("tune_vlmc memorizes the models it is asked to memorize", {
 test_that("tune_vlmc find a large enough max_depth", {
   for (k in 2:4) {
     data_set <- build_markov_chain(500, k, seed = 3 * k)
-    t_vlmc_auto <- tune_vlmc(data_set$x, max_depth = 2)
-    t_vlmc <- tune_vlmc(data_set$x, max_depth = 100)
+    t_vlmc_auto <- tune_vlmc(data_set$x, max_depth = 2, backend = "R")
+    t_vlmc <- tune_vlmc(data_set$x, max_depth = 100, backend = "R")
     expect_equal(t_vlmc, t_vlmc_auto)
   }
 })
 
 test_that("print works as expected", {
   data_set <- build_markov_chain(500, 3, seed = 0)
-  t_vlmc_auto <- tune_vlmc(data_set$x, max_depth = 2)
+  t_vlmc_auto <- tune_vlmc(data_set$x, max_depth = 2, backend = "R")
   expect_snapshot_output(print(t_vlmc_auto))
   t_vlmc_auto <- tune_vlmc(data_set$x,
     max_depth = 2,
-    initial = "truncated", criterion = "AIC"
+    initial = "truncated", criterion = "AIC", backend = "R"
   )
   expect_snapshot_output(print(t_vlmc_auto))
 })
@@ -65,25 +65,25 @@ test_that("summary works as expected", {
   skip_on_ci()
   skip_on_cran()
   data_set <- build_markov_chain(500, 3, seed = 0)
-  t_vlmc_auto <- tune_vlmc(data_set$x, max_depth = 2)
+  t_vlmc_auto <- tune_vlmc(data_set$x, max_depth = 2, backend = "R")
   expect_snapshot_output(print(summary(t_vlmc_auto)))
   t_vlmc_auto <- tune_vlmc(data_set$x,
     max_depth = 2,
-    initial = "specific", criterion = "AIC"
+    initial = "specific", criterion = "AIC", backend = "R"
   )
   expect_snapshot_output(print(summary(t_vlmc_auto)))
 })
 
 test_that("tune_vlmc verbosity is adequate", {
   data_set <- build_markov_chain(500, 3, seed = 0)
-  expect_snapshot(tune_vlmc(data_set$x, max_depth = 2, verbose = 1))
+  expect_snapshot(tune_vlmc(data_set$x, max_depth = 2, verbose = 1, backend = "R"))
 })
 
 test_that("tune_vlmc initial cutoff/alpha are respected", {
   data_set <- build_markov_chain(500, 3, seed = 0)
-  vlmc_cutoff <- tune_vlmc(data_set$x, cutoff_init = 4)
+  vlmc_cutoff <- tune_vlmc(data_set$x, cutoff_init = 4, backend = "R")
   expect_equal(vlmc_cutoff$results$cutoff[1], 4)
-  vlmc_alpha <- tune_vlmc(data_set$x, alpha_init = 0.02)
+  vlmc_alpha <- tune_vlmc(data_set$x, alpha_init = 0.02, backend = "R")
   expect_equal(vlmc_alpha$results$alpha[1], 0.02)
 })
 
@@ -91,7 +91,7 @@ test_that("tune_vlmc reports the log likelihood used for model selection", {
   sun <- as.factor(ifelse(sunspot.year >= median(sunspot.year), "high", "low"))
   for (initial in c("truncated", "specific", "extended")) {
     for (criterion in c("BIC", "AIC")) {
-      t_res <- tune_vlmc(sun, initial = initial, criterion = criterion)
+      t_res <- tune_vlmc(sun, initial = initial, criterion = criterion, backend = "R")
       crit <- t_res$results[[criterion]]
       ## the best model is the last one that reaches the minimum
       sel_ll <- t_res$results$loglikelihood[max(which(crit == min(crit)))]

@@ -1,18 +1,18 @@
 test_that("contexts keep the original type of the rdts", {
   rdts <- sample(c(0L, 1L), 100, replace = TRUE)
-  rdts_tree <- ctx_tree(rdts, max_depth = 4)
+  rdts_tree <- ctx_tree(rdts, max_depth = 4, backend = "R")
   rdts_contexts <- contexts(rdts_tree)
   expect_type(as_sequence(rdts_contexts[[1]]), "integer")
   rdts <- sample(c(0, 1), 100, replace = TRUE)
-  rdts_tree <- ctx_tree(rdts, max_depth = 4)
+  rdts_tree <- ctx_tree(rdts, max_depth = 4, backend = "R")
   rdts_contexts <- contexts(rdts_tree)
   expect_type(as_sequence(rdts_contexts[[1]]), "double")
   rdts <- sample(c("A", "B", "C"), 100, replace = TRUE)
-  rdts_tree <- ctx_tree(rdts, max_depth = 4)
+  rdts_tree <- ctx_tree(rdts, max_depth = 4, backend = "R")
   rdts_contexts <- contexts(rdts_tree)
   expect_type(as_sequence(rdts_contexts[[1]]), "character")
   rdts <- sample(as.factor(c("A", "B", "C")), 100, replace = TRUE)
-  rdts_tree <- ctx_tree(rdts, max_depth = 4)
+  rdts_tree <- ctx_tree(rdts, max_depth = 4, backend = "R")
   rdts_contexts <- contexts(rdts_tree)
   expect_s3_class(as_sequence(rdts_contexts[[1]]), "factor", exact = TRUE)
   expect_equal(levels(as_sequence(rdts_contexts[[1]])), levels(rdts))
@@ -20,7 +20,7 @@ test_that("contexts keep the original type of the rdts", {
 
 test_that("the context tree construction finds the specified contexts", {
   rdts <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 0)
-  rdts_ctree <- ctx_tree(rdts, min_size = 1, max_depth = 2)
+  rdts_ctree <- ctx_tree(rdts, min_size = 1, max_depth = 2, backend = "R")
   ctxs <- list(c(0, 0), c(0, 1), c(1, 0), c(1, 1))
   expect_identical(
     lapply(contexts(rdts_ctree, reverse = TRUE), as_sequence),
@@ -31,7 +31,7 @@ test_that("the context tree construction finds the specified contexts", {
 test_that("contexts print as expected", {
   withr::local_seed(0)
   rdts <- sample(c("A", "B", "C"), 100, replace = TRUE)
-  rdts_tree <- ctx_tree(rdts, max_depth = 4)
+  rdts_tree <- ctx_tree(rdts, max_depth = 4, backend = "R")
   expect_snapshot(contexts(rdts_tree))
 })
 

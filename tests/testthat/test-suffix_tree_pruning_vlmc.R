@@ -2,7 +2,7 @@ test_that("the C++ context algorithm selects the same PST as the R implementatio
   withr::local_seed(10)
   for (k in 1:9) {
     x <- sample(0:k, 10000, replace = TRUE)
-    model <- vlmc(x)
+    model <- vlmc(x, backend = "R")
     x_rev <- rev(x)
     tree <- build_suffix_tree(x_rev[-1], k + 1)
     tree$compute_counts(x_rev[1], FALSE)

@@ -1,6 +1,6 @@
 test_that("draw obeys its contract for default text output", {
   data_set <- build_markov_chain(1000, 3, seed = 0)
-  x_vlmc <- vlmc(data_set$x)
+  x_vlmc <- vlmc(data_set$x, backend = "R")
   for (charset in c("ascii", "utf8")) {
     withr::local_options(mixvlmc.charset = charset)
     expect_snapshot_output(draw(x_vlmc))
@@ -11,7 +11,7 @@ test_that("draw obeys its contract for default text output", {
 
 test_that("draw obeys its contract for latex output", {
   data_set <- build_markov_chain(1000, 3, seed = 0)
-  x_vlmc <- vlmc(data_set$x)
+  x_vlmc <- vlmc(data_set$x, backend = "R")
   expect_snapshot_output(draw(x_vlmc, format = "latex"))
   expect_snapshot_output(draw(x_vlmc, format = "latex", prob = NULL))
   expect_snapshot_output(draw(x_vlmc, format = "latex", prob = FALSE))

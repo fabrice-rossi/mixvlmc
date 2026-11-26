@@ -2,12 +2,12 @@ test_that("plot.tune_vlmc works as expected", {
   skip_if_not_installed("vdiffr")
   pc <- powerconsumption[powerconsumption$week == 10, ]
   rdts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1))))
-  tune_result <- tune_vlmc(rdts)
+  tune_result <- tune_vlmc(rdts, backend = "R")
   vdiffr::expect_doppelganger(
     "Base autoplot",
     \() print(ggplot2::autoplot(tune_result))
   )
-  tune_result_aic <- tune_vlmc(rdts, criterion = "AIC")
+  tune_result_aic <- tune_vlmc(rdts, criterion = "AIC", backend = "R")
   vdiffr::expect_doppelganger(
     "Native cut off autoplot",
     \() print(ggplot2::autoplot(tune_result_aic, cutoff = "native"))

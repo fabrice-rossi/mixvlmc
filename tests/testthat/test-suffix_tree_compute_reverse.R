@@ -2,7 +2,7 @@ test_that("reverse links are computed correctly", {
   withr::local_seed(100)
   for (k in 1:4) {
     x <- sample(0:k, 5000, replace = TRUE)
-    r_model <- vlmc(x, alpha = 0.1)
+    r_model <- vlmc(x, alpha = 0.1, backend = "R")
     cpp_model <- vlmc(x, alpha = 0.1, backend = "C++")
     ctxs <- lapply(contexts(cpp_model, reverse = TRUE), as_sequence)
     all_valid <- TRUE

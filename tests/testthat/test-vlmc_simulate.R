@@ -1,7 +1,7 @@
 test_that("vlmc simulation generates a consistent sample", {
   for (k in 2:4) {
     data_set <- build_markov_chain(1000, k, seed = k)
-    x_vlmc <- vlmc(data_set$x)
+    x_vlmc <- vlmc(data_set$x, backend = "R")
     xs <- simulate(x_vlmc, 50, seed = 2 * k + 1)
     expect_equal(length(xs), 50)
     expect_identical(sort(unique(xs)), states(x_vlmc))
@@ -11,7 +11,7 @@ test_that("vlmc simulation generates a consistent sample", {
 test_that("vlmc simulation generates always the same sample with the same seed", {
   for (k in 2:4) {
     data_set <- build_markov_chain(1000, k, seed = k)
-    x_vlmc <- vlmc(data_set$x)
+    x_vlmc <- vlmc(data_set$x, backend = "R")
     xs <- simulate(x_vlmc, 50, seed = 2 * k + 1)
     xs2 <- simulate(x_vlmc, 50, seed = 2 * k + 1)
     expect_identical(xs2, xs)
@@ -25,7 +25,7 @@ test_that("vlmc simulation generates always the same sample with the same seed",
 test_that("vlmc simulates uses correctly the initial values", {
   for (k in 2:4) {
     data_set <- build_markov_chain(1000, k, seed = k)
-    x_vlmc <- vlmc(data_set$x, alpha = 0.01)
+    x_vlmc <- vlmc(data_set$x, alpha = 0.01, backend = "R")
     init <- sample(states(x_vlmc), 2 * k, replace = TRUE)
     rng <- .Random.seed
     xs <- simulate(x_vlmc, 100, init = init)
@@ -37,19 +37,19 @@ test_that("vlmc simulates uses correctly the initial values", {
 test_that("vlmc simulate detects unadapted init values", {
   for (k in 2:4) {
     data_set <- build_markov_chain(1000, k, seed = k)
-    x_vlmc <- vlmc(data_set$x, alpha = 0.01)
+    x_vlmc <- vlmc(data_set$x, alpha = 0.01, backend = "R")
     expect_error(simulate(x_vlmc, nsim = 10, init = sample(x_vlmc$vals, 11, replace = TRUE)))
     expect_error(simulate(x_vlmc, nsim = 10, init = c(1.0, 2.0, 5.0)))
   }
   rdts <- sample(c("A", "B", "C"), 100, replace = TRUE)
-  model <- vlmc(rdts, alpha = 0.5)
+  model <- vlmc(rdts, alpha = 0.5, backend = "R")
   expect_error(simulate(model, nsim = 4, init = c("A", "D")))
 })
 
 test_that("vlmc simulate supports zero depth model", {
   withr::local_seed(0)
   data_set <- sample(1:5, 50, replace = TRUE)
-  d_vlmc <- vlmc(data_set)
+  d_vlmc <- vlmc(data_set, backend = "R")
   expect_equal(depth(d_vlmc), 0L)
   expect_equal(length(simulate(d_vlmc, 50)), 50)
 })
@@ -63,7 +63,7 @@ test_that("vlmc simulate respects the type of the data", {
     lgl_data = sample(c(TRUE, FALSE), 200, replace = TRUE)
   )
   for (data in all_data) {
-    d_model <- vlmc(data)
+    d_model <- vlmc(data, backend = "R")
     expect_type(simulate(d_model, 50), typeof(data))
   }
 })
@@ -71,7 +71,7 @@ test_that("vlmc simulate respects the type of the data", {
 test_that("vlmc simulate handles correctly burnin", {
   for (k in 2:4) {
     data_set <- build_markov_chain(1000, k, seed = k)
-    x_vlmc <- vlmc(data_set$x, alpha = 0.05)
+    x_vlmc <- vlmc(data_set$x, alpha = 0.05, backend = "R")
     xs <- simulate(x_vlmc, nsim = 250, seed = 5, burnin = 50)
     expect_length(xs, 250)
     xs_full <- simulate(x_vlmc, nsim = 300, seed = 5, burnin = 0)
@@ -89,7 +89,7 @@ test_that("vlmc simulate handles correctly burnin", {
 test_that("vlmc simulate handles correctly burnin with init values", {
   for (k in 2:4) {
     data_set <- build_markov_chain(1000, k, seed = k)
-    x_vlmc <- vlmc(data_set$x, alpha = 0.05)
+    x_vlmc <- vlmc(data_set$x, alpha = 0.05, backend = "R")
     xs_init <- sample(states(x_vlmc), 25, replace = TRUE)
     xs <- simulate(x_vlmc, nsim = 250, seed = 5, burnin = 50, init = xs_init)
     expect_length(xs, 250)

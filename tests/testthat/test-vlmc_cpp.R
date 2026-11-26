@@ -2,7 +2,7 @@ test_that("the C++ context algorithm selects the same PST as the R implementatio
   withr::local_seed(0)
   x <- sample(c("A", "B", "C"), 10000, replace = TRUE)
   model <- vlmc(x, alpha = 0.05, backend = "C++")
-  r_model <- vlmc(x, alpha = 0.05)
+  r_model <- vlmc(x, alpha = 0.05, backend = "R")
   ctx_cpp <- contexts(model)
   ctx_r <- contexts(r_model)
   expect_true(compare_ctx(ctx_r, ctx_cpp))
@@ -50,7 +50,7 @@ test_that("cut off values do not depend (much) on the backend", {
   withr::local_seed(0)
   for (k in 1:9) {
     x <- sample(0:k, 5000 + 500 * k, replace = TRUE)
-    r_tree <- vlmc(x, alpha = 0.1)
+    r_tree <- vlmc(x, alpha = 0.1, backend = "R")
     cpp_tree <- vlmc(x, alpha = 0.1, backend = "C++")
     ## we compare only raw values to avoid introducing additional rounding
     ## errors

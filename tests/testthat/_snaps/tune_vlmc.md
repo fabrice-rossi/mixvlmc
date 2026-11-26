@@ -114,7 +114,7 @@
 # tune_vlmc verbosity is adequate
 
     Code
-      tune_vlmc(data_set$x, max_depth = 2, verbose = 1)
+      tune_vlmc(data_set$x, max_depth = 2, verbose = 1, backend = "R")
     Message
       Fitting a vlmc with max_depth = 2 and cutoff = 1.553652
       Max depth reached, increasing it to 4

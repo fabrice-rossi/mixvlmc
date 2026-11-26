@@ -36,7 +36,7 @@ test_that("vlmc simulate detects unadapted init values (C++)", {
     expect_error(simulate(x_vlmc, nsim = 10, init = c(1.0, 2.0, 5.0)))
   }
   rdts <- sample(c("A", "B", "C"), 100, replace = TRUE)
-  model <- vlmc(rdts, alpha = 0.5)
+  model <- vlmc(rdts, alpha = 0.5, backend = "R")
   expect_error(simulate(model, nsim = 4, init = c("A", "D")))
 })
 

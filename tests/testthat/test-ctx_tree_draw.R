@@ -1,6 +1,6 @@
 test_that("draw obeys its contract for default text output", {
   rdts <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 0)
-  rdts_ctree <- ctx_tree(rdts, min_size = 1, max_depth = 2)
+  rdts_ctree <- ctx_tree(rdts, min_size = 1, max_depth = 2, backend = "R")
   for (charset in c("ascii", "utf8")) {
     withr::local_options(mixvlmc.charset = charset)
     expect_snapshot_output(draw(rdts_ctree))
@@ -21,7 +21,7 @@ test_that("draw obeys its contract for default text output", {
 
 test_that("draw obeys its contract for LaTeX output", {
   rdts <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 0)
-  rdts_ctree <- ctx_tree(rdts, min_size = 1, max_depth = 2)
+  rdts_ctree <- ctx_tree(rdts, min_size = 1, max_depth = 2, backend = "R")
   expect_snapshot_output(draw(rdts_ctree, format = "latex"))
   expect_snapshot_output(draw(rdts_ctree, format = "latex", frequency = "total"))
   expect_snapshot_output(draw(rdts_ctree, format = "latex", frequency = "detailed"))
