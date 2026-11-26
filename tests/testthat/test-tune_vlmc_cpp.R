@@ -1,4 +1,5 @@
 test_that("tune_vlmc results do not depend on the backend", {
+  skip_on_cran()
   for (k in 2:4) {
     data_set <- build_markov_chain(1000, k, seed = 3 * k)
     for (initial in c("truncated", "specific", "extended")) {

@@ -110,6 +110,7 @@ test_that("covlmc simulate detects new levels in factors", {
 })
 
 test_that("covlmc simulate works correctly with degenerate models", {
+  skip_on_cran()
   d_model <- build_degenerate_elec_model(TRUE)
   expect_no_error(result <- simulate(d_model$model,
     nsim = nrow(d_model$new_cov),

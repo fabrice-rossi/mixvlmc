@@ -1,4 +1,5 @@
 test_that("draw obeys its contract (with vgam)", {
+  skip_on_cran()
   withr::local_seed(0)
   rdts <- sample(c("A", "B", "C"), 1000, replace = TRUE)
   y <- ifelse(runif(length(rdts)) > 0.5, c(rdts[-1], sample(c("A", "B", "C"), 1)),

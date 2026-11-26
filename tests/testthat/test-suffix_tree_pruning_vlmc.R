@@ -1,4 +1,5 @@
 test_that("the C++ context algorithm selects the same PST as the R implementation", {
+  skip_on_cran()
   withr::local_seed(10)
   for (k in 1:9) {
     x <- sample(0:k, 10000, replace = TRUE)

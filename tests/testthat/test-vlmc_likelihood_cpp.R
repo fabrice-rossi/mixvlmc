@@ -15,6 +15,7 @@ test_that("the likelihood calculations in logLik give identical results for R an
 })
 
 test_that("loglikelihood computes the same values regardless of the backend", {
+  skip_on_cran()
   withr::local_seed(0)
   for (k in 1:9) {
     x <- sample(0:k, 5000 + 500 * k, replace = TRUE)

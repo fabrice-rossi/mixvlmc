@@ -50,6 +50,7 @@ test_that("covlmc predict returns the same value(s) for zero depth model", {
 })
 
 test_that("covlmc predict returns deterministic results", {
+  skip_on_cran()
   for (k in 1:2) {
     for (engine in c("glm", "multinom")) {
       withr::local_options(mixvlmc.predictive = engine)
@@ -67,6 +68,7 @@ test_that("covlmc predict returns deterministic results", {
 })
 
 test_that("covlmc predict returns probabilities", {
+  skip_on_cran()
   for (k in 1:2) {
     for (engine in c("glm", "multinom")) {
       withr::local_options(mixvlmc.predictive = engine)
@@ -85,6 +87,7 @@ test_that("covlmc predict returns probabilities", {
 })
 
 test_that("the semantics of final_pred is respected", {
+  skip_on_cran()
   pc_week_15_16 <- powerconsumption[powerconsumption$week %in% c(15, 16), ]
   elec <- pc_week_15_16$active_power
   elec_rdts <- cut(elec, breaks = c(0, 0.4, 2, 8), labels = c("low", "typical", "high"))

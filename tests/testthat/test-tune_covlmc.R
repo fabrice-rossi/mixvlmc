@@ -73,6 +73,7 @@ test_that("tune_covlmc find a large enough max_depth", {
 })
 
 test_that("tune_covlmc is robust to rounding errors in refitted models", {
+  skip_on_cran()
   ## some BLAS (e.g. MKL) give results that differ in the last digits when the
   ## same logistic model is fitted twice: this is emulated by a small random
   ## perturbation of the log likelihoods of the models
@@ -131,6 +132,7 @@ test_that("tune_vlmc verbosity is adequate", {
 })
 
 test_that("tune_covlmc trimming", {
+  skip_on_cran()
   withr::local_seed(0)
   x <- sample(c("A", "B", "C"), 1000, replace = TRUE)
   y <- ifelse(runif(length(x)) > 0.5, c(x[-1], sample(c("A", "B", "C"), 1)), c(x[-c(1, 2)], sample(c("A", "B", "C"), 2, replace = TRUE)))
@@ -171,6 +173,7 @@ test_that("tune_covlmc selects the best model", {
 })
 
 test_that("tune_covlmc reports the log likelihood used for model selection", {
+  skip_on_cran()
   pc <- powerconsumption[powerconsumption$week %in% 10:11, ]
   dts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(1 / 2, 1))))
   dts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))

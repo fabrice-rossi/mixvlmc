@@ -1,4 +1,5 @@
 test_that("the C++ backend find the same contexts as the R one", {
+  skip_on_cran()
   withr::local_seed(0)
   for (k in 1:9) {
     x <- sample(0:k, 1000, replace = TRUE)
@@ -11,6 +12,7 @@ test_that("the C++ backend find the same contexts as the R one", {
 })
 
 test_that("the C++ backend find the same detailed contexts as the R one (up to ordering)", {
+  skip_on_cran()
   withr::local_seed(0)
   for (k in 1:9) {
     x <- sample(0:k, 500, replace = TRUE)
@@ -33,6 +35,7 @@ test_that("the C++ and R backend agree", {
 })
 
 test_that("the C++ and R backends agree with min_size = 1 and positions", {
+  skip_on_cran()
   ## regression test: the end of the time series was matched incorrectly
   x <- c(0, 1, 1, 0, 1)
   expect_no_warning(cpp_tree <- ctx_tree(x, min_size = 1, backend = "C++"))

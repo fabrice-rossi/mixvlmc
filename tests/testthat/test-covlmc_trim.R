@@ -85,6 +85,7 @@ test_that("trimming removes only what it should remove", {
 })
 
 test_that("trimmed model can be drawn", {
+  skip_on_cran()
   for (engine in c("glm", "multinom")) {
     withr::local_options(mixvlmc.predictive = engine)
     pc <- powerconsumption[powerconsumption$week %in% 5:7, ]

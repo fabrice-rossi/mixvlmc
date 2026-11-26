@@ -1,4 +1,5 @@
 test_that("loglikelihood computes the expected values", {
+  skip_on_cran()
   withr::local_seed(0)
   x <- sample(c("A", "B", "C"), 1000, replace = TRUE)
   y <- ifelse(runif(length(x)) > 0.5, c(x[-1], sample(c("A", "B", "C"), 1)), c(x[-c(1, 2)], sample(c("A", "B", "C"), 2, replace = TRUE)))
@@ -43,6 +44,7 @@ test_that("loglikelihood handles constant models", {
 
 
 test_that("loglikelihood computes the expected values with ignore", {
+  skip_on_cran()
   withr::local_seed(42)
   x <- sample(c("A", "B", "C"), 1000, replace = TRUE)
   y <- ifelse(runif(length(x)) > 0.5, c(x[-1], sample(c("A", "B", "C"), 1)), c(x[-c(1, 2)], sample(c("A", "B", "C"), 2, replace = TRUE)))
@@ -138,6 +140,7 @@ test_that("likelihood calculation on real data with merged models", {
 })
 
 test_that("likelihood calculation artifical data with merged models", {
+  skip_on_cran()
   for (engine in c("glm", "multinom")) {
     withr::local_options(mixvlmc.predictive = engine)
     d_model <- create_demo_covlmc()

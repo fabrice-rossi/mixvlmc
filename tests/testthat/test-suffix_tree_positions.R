@@ -1,4 +1,5 @@
 test_that("the suffix tree finds the positions of a subsequence", {
+  skip_on_cran()
   withr::local_seed(10)
   for (k in 1:10) {
     x <- sample(0:k, 1000, replace = TRUE)

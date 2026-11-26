@@ -37,6 +37,7 @@ test_that("find_sequence handles sequences longer than the end of the time serie
 })
 
 test_that("children are computed correctly at the end of the time series", {
+  skip_on_cran()
   ## regression test: subscript out of bounds in node_children
   dts <- c(0, 1, 1, 0, 1)
   dts_ctree <- ctx_tree(dts, min_size = 1, backend = "C++")

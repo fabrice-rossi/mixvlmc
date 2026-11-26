@@ -1,4 +1,5 @@
 test_that("as_vlmc.tune_covlmc obeys is basic contract", {
+  skip_on_cran()
   pc <- powerconsumption[powerconsumption$week %in% 5:7, ]
   rdts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1))))
   rdts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))

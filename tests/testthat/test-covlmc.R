@@ -85,6 +85,7 @@ test_that("covlmc sequential pruning does not produce NAs", {
 })
 
 test_that("covlmc sequential pruning does not produce NAs with more than 3 states", {
+  skip_on_cran()
   withr::local_seed(0)
   x <- sample(c("A", "B", "C"), 500, replace = TRUE)
   y <- ifelse(runif(length(x)) > 0.5, c(x[-1], sample(c("A", "B", "C"), 1)), c(x[-c(1, 2)], sample(c("A", "B", "C"), 2, replace = TRUE)))

@@ -12,6 +12,7 @@ test_that("the suffix tree extracts contexts of the correct length", {
 
 
 test_that("the suffix tree extracts all contexts and only them", {
+  skip_on_cran()
   withr::local_seed(1)
   for (k in 1:9) {
     x <- sample(0:k, 1000, replace = TRUE)

@@ -103,6 +103,7 @@ test_that("automatic C++ representation restoration works", {
 })
 
 test_that("automatic C++ representation restoration works for pruned models", {
+  skip_on_cran()
   withr::local_seed(4)
   x <- sample(0:2, 500, replace = TRUE)
   model <- vlmc(x, min_size = 5, max_depth = 3, alpha = 0.5, backend = "C++")
@@ -204,6 +205,7 @@ test_that("max_depth = 0 gives a VLMC reduced to its root", {
 })
 
 test_that("the C++ backend handles long repeats", {
+  skip_on_cran()
   ## regression test: recursive functions overflowed the stack
   withr::local_seed(1)
   x <- sample(0:2, 1.2e5, replace = TRUE)
