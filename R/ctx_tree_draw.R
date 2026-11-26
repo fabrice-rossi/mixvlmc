@@ -47,7 +47,7 @@ latex_font_size <- c(
 #' draw(rdts_ctree, control = draw_control(charset = charset_ascii(root = "x")))
 charset_ascii <- function(root = "*",
                           first_node = "+",
-                          next_node = "'",
+                          next_node = "+",
                           final_node = "'",
                           vbranch = "|",
                           hbranch = "--",

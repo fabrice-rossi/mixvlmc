@@ -34,6 +34,9 @@ covariates (see the breaking changes below).
 * the interface of `draw_control()` has been significantly changed (issue #66)
   which should break most customisation code at the level of characters used
   by `draw()` to display a model
+* with the ASCII charset (`charset_ascii()`), the intermediate children of a
+  node are introduced by `+--` like the first one (they were introduced by
+  `'--` like the last one)
 
 ### Estimation and use of models
 * the package now depends on R >= 4.1.0 (this was already implied by its

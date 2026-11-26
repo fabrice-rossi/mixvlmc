@@ -7,7 +7,7 @@
 charset_ascii(
   root = "*",
   first_node = "+",
-  next_node = "'",
+  next_node = "+",
   final_node = "'",
   vbranch = "|",
   hbranch = "--",
