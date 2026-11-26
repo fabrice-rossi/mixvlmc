@@ -37,7 +37,7 @@ before <- function(x) {
 #'
 #' 1) \code{positions}: a list of nb_vals vectors. Component k of the list contains
 #'     the positions of all the k-1 in \code{x} (using C++ convention, positions start at 0)
-#' 2) \code{counts}: a matrix of size nb_vals times nb_vals. Entry [k, l] gives the number of
+#' 2) \code{counts}: a matrix of size nb_vals times nb_vals. Entry `[k, l]` gives the number of
 #'    times k-1 is followed by l-1 in \code{x}
 #'
 #' The function operates in two modes:
@@ -49,9 +49,9 @@ before <- function(x) {
 #'    x = c(0, 1, 0, 1, 0, 1, 0, 1), the function only looks are positions 1 and 3 in x,
 #'    which contain both 1. Thus the positions list will have an empty vector in component 1
 #'    (no occurrence of 0) and c(1, 3) for component 2.
-#'    Entry [k, l] of the counts matrix still counts the occurrences of l following
+#'    Entry `[k, l]` of the counts matrix still counts the occurrences of l following
 #'    an occurrence of k, but with a shift of depth+1. In the previous example, if depth=1,
-#'    we consider positions c(3, 5) and therefore counts[2,2]=2 (all other values are 0).
+#'    we consider positions c(3, 5) and therefore `counts[2, 2] = 2` (all other values are 0).
 #'
 #' @param x the vector in which contexts are searched for.
 #' @param nb_vals defines the interval of expected values from 0 to \code{nb_vals}-1.

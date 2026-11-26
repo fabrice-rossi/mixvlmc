@@ -41,7 +41,7 @@ generate_fake_data <- function(freq, counts, probs, vals) {
 }
 
 
-#' @inherit metrics
+#' @inherit metrics description details seealso references examples
 #' @title Predictive quality metrics for VLMC
 #' @param model a fitted VLMC model.
 #' @param ... additional arguments (not used).

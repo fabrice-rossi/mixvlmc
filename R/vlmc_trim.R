@@ -4,7 +4,6 @@
 #' in the time series (see the `keep_match` parameter of [vlmc()]) have been
 #' removed.
 #'
-#' @inherit trim
 #' @param ct a VLMC.
 #' @param ... additional arguments (not used).
 #' @return a trimmed VLMC.
