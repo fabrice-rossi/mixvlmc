@@ -33,6 +33,7 @@ reference:
   - is_dts
   - dts_data
   - print.dts
+  - dts-operations
   - states
 - title: Context trees
   desc: Build context trees and extract information from them.
@@ -54,6 +55,7 @@ reference:
   - find_sequence
   - find_sequence.covlmc
   - as_sequence
+  - length.ctx_node
   - children
   - covariate_memory
   - counts

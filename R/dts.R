@@ -102,16 +102,51 @@ assertthat::on_failure(is_dts) <- function(call, env) {
   paste0(deparse(call$x), " is not a dts")
 }
 
+#' Basic operations on discrete time series
+#'
+#' These functions implement standard operations on discrete time series
+#' represented by `dts` objects (see [dts()]), preserving their state space.
+#'
+#' @param x a `dts` object.
+#' @param i indices specifying the elements to extract.
+#' @param ... not used.
+#'
+#' @returns
+#' - `x[i]` returns a `dts` object with the selected observations and the same
+#'   state space as `x` (including the states that are absent from the
+#'   selection);
+#' - `x[[i]]` returns the `i`-th observation, as a value of the state space
+#'   (see [states()]);
+#' - `length(x)` returns the number of observations of `x`;
+#' - `rev(x)` returns a `dts` object with the observations of `x` in reverse
+#'   order and the same state space.
+#' @seealso [dts()], [dts_data()], [states()]
+#' @examples
+#' x <- dts(c("A", "B", "C", "A", "A"))
+#' length(x)
+#' x[[2]]
+#' ## the state space is preserved
+#' x_short <- x[1:2]
+#' x_short
+#' states(x_short)
+#' rev(x)
+#' @name dts-operations
+#' @aliases [.dts [[.dts length.dts rev.dts
+NULL
+
+#' @rdname dts-operations
 #' @export
 `[.dts` <- function(x, i, ...) {
   new_dts(x$ix[i, ...], x$vals, x$fx[i, ...])
 }
 
+#' @rdname dts-operations
 #' @export
 `[[.dts` <- function(x, i, ...) {
   x$vals[x$ix[[i, ...]] + 1]
 }
 
+#' @rdname dts-operations
 #' @export
 length.dts <- function(x) {
   length(x$ix)
@@ -207,6 +242,7 @@ convert_with_check <- function(x, vals, var_name = "x") {
   x
 }
 
+#' @rdname dts-operations
 #' @export
 rev.dts <- function(x) {
   new_dts(rev(x$ix), x$vals, rev(x$fx))
