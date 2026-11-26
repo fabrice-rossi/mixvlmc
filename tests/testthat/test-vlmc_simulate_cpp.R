@@ -155,3 +155,30 @@ test_that("C++ simulation can be interrupted", {
   expect_identical(result, "interrupted")
   expect_lt(elapsed, full_time / 2)
 })
+
+test_that("vlmc simulate initialises the random number generator if needed (C++)", {
+  data_set <- build_markov_chain(500, 3, seed = 1)
+  x_vlmc <- vlmc(data_set$x, backend = "C++")
+  withr::local_preserve_seed()
+  if (exists(".Random.seed", envir = globalenv(), inherits = FALSE)) {
+    rm(".Random.seed", envir = globalenv())
+  }
+  xs <- simulate(x_vlmc, 10)
+  expect_true(exists(".Random.seed", envir = globalenv(), inherits = FALSE))
+  expect_type(attr(xs, "seed"), "integer")
+})
+
+test_that("vlmc simulate rejects negative burn in periods (C++)", {
+  data_set <- build_markov_chain(500, 3, seed = 1)
+  x_vlmc <- vlmc(data_set$x, backend = "C++")
+  expect_error(simulate(x_vlmc, 10, burnin = -1), "burnin must be non negative")
+})
+
+test_that("vlmc simulate with the slow method generates a reproducible sample (C++)", {
+  data_set <- build_markov_chain(500, 3, seed = 1)
+  x_vlmc <- vlmc(data_set$x, backend = "C++")
+  xs <- simulate(x_vlmc, 200, seed = 2, sample = "slow")
+  expect_length(xs, 200)
+  expect_true(all(xs %in% states(x_vlmc)))
+  expect_identical(simulate(x_vlmc, 200, seed = 2, sample = "slow"), xs)
+})

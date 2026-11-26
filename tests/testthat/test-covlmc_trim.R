@@ -133,3 +133,23 @@ test_that("trimmed model can be drawn", {
     }
   }
 })
+
+test_that("trimming with keep_model keeps the constant models", {
+  for (engine in c("glm", "multinom")) {
+    withr::local_options(mixvlmc.predictive = engine)
+    withr::local_seed(2)
+    x <- rep(c("a", "b", "c", "c", "c"), 60)
+    z <- data.frame(u = rnorm(length(x)))
+    m_cov <- covlmc(x, z, min_size = 2, max_depth = 3, alpha = 0.5)
+    models <- contexts(m_cov, model = "full")$model
+    constant <- vapply(models, inherits, TRUE, what = "constant_model")
+    expect_true(any(constant))
+    t_m_cov <- trim(m_cov, keep_model = TRUE)
+    t_models <- contexts(t_m_cov, model = "full")$model
+    expect_identical(t_models[constant], models[constant])
+    expect_identical(
+      predict(t_m_cov, x, z, type = "probs"),
+      predict(m_cov, x, z, type = "probs")
+    )
+  }
+})

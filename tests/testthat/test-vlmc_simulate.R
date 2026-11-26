@@ -143,3 +143,21 @@ test_that("simulated time series print as their values", {
     }
   }
 })
+
+test_that("vlmc simulate initialises the random number generator if needed", {
+  data_set <- build_markov_chain(500, 3, seed = 1)
+  x_vlmc <- vlmc(data_set$x, backend = "R")
+  withr::local_preserve_seed()
+  if (exists(".Random.seed", envir = globalenv(), inherits = FALSE)) {
+    rm(".Random.seed", envir = globalenv())
+  }
+  xs <- simulate(x_vlmc, 10)
+  expect_true(exists(".Random.seed", envir = globalenv(), inherits = FALSE))
+  expect_type(attr(xs, "seed"), "integer")
+})
+
+test_that("vlmc simulate rejects negative burn in periods", {
+  data_set <- build_markov_chain(500, 3, seed = 1)
+  x_vlmc <- vlmc(data_set$x, backend = "R")
+  expect_error(simulate(x_vlmc, 10, burnin = -1), "burnin must be non negative")
+})

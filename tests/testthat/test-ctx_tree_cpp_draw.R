@@ -27,3 +27,15 @@ test_that("C++ based context draw produces identical results as the R one", {
     ))
   }
 })
+
+test_that("C++ based context draw reports the frequencies as the R one", {
+  rdts <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 0)
+  r_tree <- ctx_tree(rdts, min_size = 1, max_depth = 2, backend = "R")
+  cpp_tree <- ctx_tree(rdts, min_size = 1, max_depth = 2, backend = "C++")
+  for (frequency in c("total", "detailed")) {
+    expect_identical(
+      format(draw(cpp_tree, frequency = frequency)),
+      format(draw(r_tree, frequency = frequency))
+    )
+  }
+})

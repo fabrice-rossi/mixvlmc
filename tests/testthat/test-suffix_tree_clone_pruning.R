@@ -49,3 +49,42 @@ test_that("the suffix tree clone pruning keeps the root when needed", {
   expect_equal(tree$depth(), 0)
   expect_identical(tree$contexts(1, -1), list(integer()))
 })
+
+test_that("the suffix tree clone pruning limits the depth as direct pruning", {
+  withr::local_seed(10)
+  for (k in 1:5) {
+    x <- sample(0:k, 2000, replace = TRUE)
+    x_rev <- rev(x)
+    for (d in 1:4) {
+      tree <- build_suffix_tree(x_rev[-1], k + 1)
+      tree$compute_counts(x_rev[1], FALSE)
+      pruned_tree <- tree$clone_prune(2, d)
+      tree$prune(2, d)
+      expect_true(compare_ctx(pruned_tree$contexts(1, -1), tree$contexts(1, -1)))
+      expect_equal(pruned_tree$depth(), tree$depth())
+      expect_equal(pruned_tree$nb_contexts(), tree$nb_contexts())
+    }
+  }
+})
+
+test_that("the context clone pruning limits the depth as a direct estimation", {
+  withr::local_seed(10)
+  for (k in 1:4) {
+    x <- sample(0:k, 2000, replace = TRUE)
+    full_model <- vlmc(x, min_size = 2, max_depth = 20, cutoff = 0.01, backend = "C++")
+    for (d in 1:4) {
+      for (cutoff in c(0.5, 2, 4)) {
+        pruned_tree <- full_model$root$clone_prune_context(2, d, cutoff)
+        direct_model <- vlmc(x,
+          min_size = 2, max_depth = d, cutoff = cutoff,
+          backend = "C++"
+        )
+        expect_true(compare_ctx(
+          pruned_tree$contexts(1, -1),
+          direct_model$root$contexts(1, -1)
+        ))
+        expect_equal(pruned_tree$nb_contexts(), context_number(direct_model))
+      }
+    }
+  }
+})
