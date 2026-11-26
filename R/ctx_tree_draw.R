@@ -479,7 +479,7 @@ ctx_tree_node2txt <- function(ct, vals, control) {
   } else {
     if (!is.null(control[["frequency"]])) {
       if (control$frequency == "detailed") {
-        stringr::str_c(ct[["f_by"]], collapse = ",")
+        stringr::str_c(ct[["f_by"]], collapse = ", ")
       } else if (control$frequency == "total") {
         as.character(sum(ct[["f_by"]]))
       } else {

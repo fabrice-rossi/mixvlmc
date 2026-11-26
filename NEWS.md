@@ -37,6 +37,8 @@ covariates (see the breaking changes below).
 * with the ASCII charset (`charset_ascii()`), the intermediate children of a
   node are introduced by `+--` like the first one (they were introduced by
   `'--` like the last one)
+* the counts of `draw.ctx_tree()` (with `frequency = "detailed"`) are
+  separated by `", "` as in `draw.vlmc()` (they were separated by `","`)
 
 ### Estimation and use of models
 * the C++ backend is the default backend of `ctx_tree()`, `vlmc()` and
