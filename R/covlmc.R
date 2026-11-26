@@ -957,7 +957,11 @@ cutoff.covlmc <- function(model, raw = FALSE,
       c(df, tree$p_value, tree$merged_p_value)
     }
   }
-  preres <- recurse_cutoff(model)
+  covlmc_cutoff_values(recurse_cutoff(model), raw, tolerance)
+}
+
+## transforms raw p-values into cut off values (see cutoff.covlmc())
+covlmc_cutoff_values <- function(preres, raw, tolerance) {
   if (is.null(preres)) {
     NULL
   } else {

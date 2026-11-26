@@ -329,3 +329,65 @@ metrics.ctx_node_covlmc <- function(model, ...) {
   structure(res, class = "metrics.covlmc")
 }
 
+#' Cut off values for pruning a node in the context tree of a COVLMC
+#'
+#' This function returns the cut off values associated with a specific node
+#' in the context tree of a VLMC with covariates. The node is represented by a
+#' `ctx_node_covlmc` object as returned by [find_sequence()] or [contexts()].
+#'
+#' The values are the p-values of the likelihood ratio tests associated with
+#' the node (see [cutoff.covlmc()] for details), in quantile scale:
+#'
+#' - for a context, the p-value of the test used to reduce the memory of its
+#'   logistic model (when it can lead to pruning);
+#' - for a context merged with other ones (see [is_merged()]), the p-value of
+#'   the test used to reduce the memory of the shared logistic model;
+#' - for a node with children, the p-values of the tests used to collapse its
+#'   children (i.e. to replace them by the node) and to merge some of its
+#'   children.
+#'
+#' As for [cutoff.covlmc()], the native scale is not available. The values
+#' obtained for all the nodes are those reported by [cutoff.covlmc()] for the
+#' full model.
+#'
+#' @param model a `ctx_node_covlmc` object as returned by [find_sequence()].
+#' @inheritParams cutoff.covlmc
+#' @returns a vector of cut off values in quantile scale (in decreasing order),
+#'   `NULL` if none can be computed.
+#' @seealso [cutoff.covlmc()], [prune.covlmc()]
+#' @examples
+#' pc <- powerconsumption[powerconsumption$week %in% 15:16, ]
+#' rdts <- cut(pc$active_power,
+#'   breaks = c(0, 0.4, 2, 8),
+#'   labels = c("low", "typical", "high")
+#' )
+#' rdts_cov <- data.frame(day = (pc$hour >= 7 & pc$hour <= 18))
+#' m_cov <- covlmc(rdts, rdts_cov, alpha = 1e-7)
+#' draw(m_cov, p_value = TRUE)
+#' ## the root node has a merging p-value
+#' cutoff(find_sequence(m_cov, character()))
+#' ## a node with a collapsing p-value
+#' cutoff(find_sequence(m_cov, c("typical", "typical")))
+#' cutoff(m_cov)
+#' @export
+cutoff.ctx_node_covlmc <- function(model, raw = FALSE,
+                                   tolerance = .Machine$double.eps^0.5, ...) {
+  rlang::check_dots_empty()
+  node <- model$node
+  p_values <- NULL
+  if (!is.null(node[["model"]])) {
+    p_value <- node$model[["p_value"]]
+    if (!is.null(p_value) && !is.na(p_value)) {
+      ## a memory reduction already accepted cannot lead to pruning (except
+      ## for merged models, as in cutoff.covlmc())
+      if (isTRUE(model$merged) || node$model[["hsize"]] > 0 ||
+        p_value <= model$tree$alpha) {
+        p_values <- p_value
+      }
+    }
+  }
+  if (!is.null(node[["children"]])) {
+    p_values <- c(p_values, node[["p_value"]], node[["merged_p_value"]])
+  }
+  covlmc_cutoff_values(p_values, raw, tolerance)
+}

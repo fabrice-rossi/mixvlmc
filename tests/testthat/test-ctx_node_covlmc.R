@@ -133,6 +133,34 @@ test_that("positions of the empty sequence are 0 based", {
   expect_identical(positions(root), 0:(length(dts) - 1L))
 })
 
+test_that("the cut offs of the nodes are the ones of the model", {
+  pc <- powerconsumption[powerconsumption$week %in% 15:16, ]
+  x <- cut(pc$active_power,
+    breaks = c(0, 0.4, 2, 8),
+    labels = c("low", "typical", "high")
+  )
+  cov <- data.frame(day = (pc$hour >= 7 & pc$hour <= 18))
+  for (alpha in c(1e-7, 0.05)) {
+    model <- covlmc(x, cov, alpha = alpha)
+    all_nodes <- function(node) {
+      res <- list(node)
+      for (child in children(node)) {
+        if (!is.null(child)) {
+          expect_s3_class(child, "ctx_node_covlmc")
+          res <- c(res, all_nodes(child))
+        }
+      }
+      res
+    }
+    nodes <- all_nodes(find_sequence(model, character()))
+    node_cutoffs <- unlist(lapply(nodes, cutoff, raw = TRUE))
+    expect_equal(
+      sort(unique(node_cutoffs), decreasing = TRUE),
+      cutoff(model, raw = TRUE)
+    )
+  }
+})
+
 test_that("children of covlmc nodes are covlmc nodes", {
   pc <- powerconsumption[powerconsumption$week %in% 15:16, ]
   x <- cut(pc$active_power,

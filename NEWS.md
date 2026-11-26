@@ -146,6 +146,9 @@ renders the tree and adds the `forest` package to the preamble of the document.
 * `covlmc()` and `tune_covlmc()` are faster (about 15%) and the models they
   return use much less memory (about a third), as the ROC curves of the logistic
   models are not computed and stored any more (their AUC is computed directly)
+* `cutoff()` applied to a node of a VLMC with covariates returns the p-values
+  of the likelihood ratio tests associated with the node (it returned a
+  meaningless VLMC cut off)
 * `metrics()` supports trimmed VLMC with covariates (it reported an error): the
   accuracy and the confusion matrix are computed from the ones of the
   contexts, while the AUC is `NA` (with a warning)

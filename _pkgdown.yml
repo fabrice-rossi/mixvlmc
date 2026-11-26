@@ -60,6 +60,7 @@ reference:
   - covariate_memory
   - counts
   - cutoff.ctx_node
+  - cutoff.ctx_node_covlmc
   - is_context
   - is_merged
   - is_reversed
