@@ -23,6 +23,9 @@ behaviour by perturbing the log likelihoods of the logistic models.
 ## Test environments
 
 * local Ubuntu 24.04.5 LTS, R 4.6.2
+* GitHub Actions: Windows (R release), macOS aarch64 (R release),
+  Ubuntu (R devel, release, oldrel-1)
+* R-hub: Windows (R devel), Fedora Linux with MKL (R devel)
 
 ## Reverse dependencies
 
