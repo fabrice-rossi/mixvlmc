@@ -132,3 +132,26 @@ test_that("positions of the empty sequence are 0 based", {
   root <- find_sequence(m_cov, states(m_cov)[0])
   expect_identical(positions(root), 0:(length(dts) - 1L))
 })
+
+test_that("children of covlmc nodes are covlmc nodes", {
+  pc <- powerconsumption[powerconsumption$week %in% 15:16, ]
+  x <- cut(pc$active_power,
+    breaks = c(0, 0.4, 2, 8),
+    labels = c("low", "typical", "high")
+  )
+  cov <- data.frame(day = (pc$hour >= 7 & pc$hour <= 18))
+  model <- covlmc(x, cov, alpha = 1e-7)
+  node <- find_sequence(model, "typical")
+  kids <- children(node)
+  for (k in seq_along(kids)) {
+    direct <- find_sequence(model, c(names(kids)[k], "typical"))
+    if (is.null(direct)) {
+      expect_null(kids[[k]])
+    } else {
+      expect_identical(kids[[k]]$sequence, direct$sequence)
+      expect_identical(is_merged(kids[[k]]), is_merged(direct))
+      expect_identical(model(kids[[k]]), model(direct))
+    }
+  }
+  expect_true(any(sapply(kids, function(n) !is.null(n) && is_merged(n))))
+})

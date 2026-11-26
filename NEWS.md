@@ -197,6 +197,9 @@ renders the tree and adds the `forest` package to the preamble of the document.
   likelihood function is the truncated one
 
 ### VLMC with covariates
+* `children()` of a node of a VLMC with covariates returns nodes of VLMC with
+  covariates (they were nodes of context trees, without the logistic models
+  and the merged contexts)
 * the coefficients of constant models (contexts followed by a single state)
   with three states or more are expressed with respect to the first state, as
   for the other models: they were expressed with respect to the last state,

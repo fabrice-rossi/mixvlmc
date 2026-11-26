@@ -60,32 +60,60 @@ find_sequence.covlmc <- function(ct, ctx, reverse = FALSE, ...) {
       current <- candidate
     }
     ## last value
-    candidate <- current$children[[1L + nx$ix[length(ctx)]]]
-    if (is.null(candidate)) {
-      return(NULL)
-    }
-    if (is.null(candidate[["model"]])) {
-      if (!is.null(candidate[["children"]])) {
-        ## internal node, not a context
-        new_ctx_node(ctx, ct, candidate, reverse, merged = FALSE, class = "ctx_node_covlmc")
-      } else if (is.null(current[["merged_model"]])) {
-        return(NULL)
+    covlmc_child_node(ctx, ct, current, 1L + nx$ix[length(ctx)], reverse)
+  }
+}
+
+## node of the k-th child of current (a node of the context tree of ct) whose
+## sequence is ctx, taking merged contexts into account (NULL if the child is
+## not in the tree)
+covlmc_child_node <- function(ctx, ct, current, k, reverse) {
+  candidate <- current$children[[k]]
+  if (is.null(candidate)) {
+    return(NULL)
+  }
+  if (is.null(candidate[["model"]])) {
+    if (!is.null(candidate[["children"]])) {
+      ## internal node, not a context
+      new_ctx_node(ctx, ct, candidate, reverse, merged = FALSE, class = "ctx_node_covlmc")
+    } else if (is.null(current[["merged_model"]])) {
+      NULL
+    } else {
+      if (k %in% current$merged) {
+        l_res <- candidate
+        l_res$merged <- current$merged
+        l_res$model <- current$merged_model
+        new_ctx_node(ctx, ct, l_res, reverse,
+          merged = TRUE,
+          parent = current, index = k, class = "ctx_node_covlmc"
+        )
       } else {
-        if ((nx$ix[length(ctx)] + 1L) %in% current$merged) {
-          l_res <- candidate
-          l_res$merged <- current$merged
-          l_res$model <- current$merged_model
-          l_res <- new_ctx_node(ctx, ct, l_res, reverse,
-            merged = TRUE,
-            parent = current, index = nx$ix[length(ctx)] + 1L, class = "ctx_node_covlmc"
-          )
-        } else {
-          return(NULL)
+        NULL
+      }
+    }
+  } else {
+    new_ctx_node(ctx, ct, candidate, reverse, merged = FALSE, class = "ctx_node_covlmc")
+  }
+}
+
+#' @export
+#' @rdname children
+children.ctx_node_covlmc <- function(node) {
+  if (is.null(node$node[["children"]])) {
+    list()
+  } else {
+    res <- vector(mode = "list", length = length(node$node[["children"]]))
+    for (k in seq_along(res)) {
+      if (length(node$node$children[[k]]) > 0) {
+        the_ctx <- append_state(node$sequence, node$tree$vals, k)
+        child <- covlmc_child_node(the_ctx, node$tree, node$node, k, node$rev)
+        if (!is.null(child)) {
+          res[[k]] <- child
         }
       }
-    } else {
-      new_ctx_node(ctx, ct, candidate, reverse, merged = FALSE, class = "ctx_node_covlmc")
     }
+    names(res) <- as.character(node$tree$vals)
+    res
   }
 }
 
@@ -300,3 +328,4 @@ metrics.ctx_node_covlmc <- function(model, ...) {
   res$model <- model
   structure(res, class = "metrics.covlmc")
 }
+
