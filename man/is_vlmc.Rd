@@ -2,7 +2,7 @@
 % Please edit documentation in R/vlmc.R
 \name{is_vlmc}
 \alias{is_vlmc}
-\title{Test if the object is a vlmc model}
+\title{Test if the object is a VLMC model}
 \usage{
 is_vlmc(x)
 }

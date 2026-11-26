@@ -10,11 +10,12 @@
 \method{print}{metrics.covlmc}(x, ...)
 }
 \arguments{
-\item{model}{The context based model on which to compute predictive metrics.}
+\item{model}{a fitted VLMC with covariates (a \code{covlmc} object). Trimmed
+models are not supported (see \code{\link[=trim.covlmc]{trim.covlmc()}}).}
 
-\item{...}{Additional parameters for predictive metrics computation.}
+\item{...}{additional parameters for predictive metrics computation.}
 
-\item{x}{A metrics.covlmc object, results of a call to \code{\link[=metrics.covlmc]{metrics.covlmc()}}}
+\item{x}{a \code{metrics.covlmc} object, result of a call to \code{\link[=metrics.covlmc]{metrics.covlmc()}}.}
 }
 \value{
 An object of class \code{metrics.covlmc} with the following components:
@@ -25,8 +26,8 @@ in rows and true values in columns
 \item \code{auc}: the AUC of the predictive model
 }
 
-The object has a print method that recalls basic information about the model
-together with the values of the components above.
+The object has a print method that recalls basic information about the
+model together with the values of the components above.
 }
 \description{
 This function computes and returns predictive quality metrics for context
@@ -35,33 +36,35 @@ based models such as VLMC and VLMC with covariates.
 \details{
 A context based model computes transition probabilities for its contexts.
 Using a maximum transition probability decision rule, this can be used to
-predict the new state that is the more likely to follow the current one,
-given the context (see \code{\link[=predict.vlmc]{predict.vlmc()}}). The quality of these predictions is
-evaluated using standard metrics including:
+predict the state that is the most likely to follow the current one, given
+the context (see \code{\link[=predict.vlmc]{predict.vlmc()}}). The quality of these predictions on the
+time series used to fit the model is evaluated using standard metrics
+including:
 \itemize{
 \item accuracy
 \item the full confusion matrix
-\item the area under the roc curve (AUC), considering the context based model as
+\item the area under the ROC curve (AUC), considering the context based model as
 a (conditional) probability estimator. We use Hand and Till (2001) multiclass
 AUC in case of a state space with more than 2 states
 }
 }
 \section{Methods (by generic)}{
 \itemize{
-\item \code{print(metrics.covlmc)}: Prints the predictive metrics of the VLMC model with covariates.
+\item \code{print(metrics.covlmc)}: Prints the predictive metrics of the VLMC with
+covariates.
 
 }}
 \section{Extended contexts}{
 
 
-As explained in details in \code{\link[=loglikelihood.covlmc]{loglikelihood.covlmc()}} documentation and in
+As explained in detail in the \code{\link[=loglikelihood.covlmc]{loglikelihood.covlmc()}} documentation and in
 the dedicated \code{vignette("likelihood", package = "mixvlmc")}, the first
 initial values of a time series do not in general have a proper context for
-a COVLMC with a non zero order. In order to predict something meaningful
+a COVLMC with a non-zero order. In order to predict something meaningful
 for those values, we rely on the notion of extended context defined in the
 documents mentioned above. This follows the same logic as using
 \code{\link[=loglikelihood.covlmc]{loglikelihood.covlmc()}} with the parameter \code{initial="extended"}. All
-covlmc functions that need to manipulate initial values with no proper
+COVLMC functions that need to manipulate initial values with no proper
 context use the same approach.
 }
 
@@ -85,5 +88,6 @@ of the Area Under the ROC Curve for Multiple Class Classification Problems."
 \emph{Machine Learning} 45(2), p. 171--186. DOI: \doi{10.1023/A:1010920819831}.
 }
 \seealso{
-\code{\link[=metrics.vlmc]{metrics.vlmc()}}, \code{\link[=metrics.ctx_node]{metrics.ctx_node()}}, \code{\link[=contexts.vlmc]{contexts.vlmc()}}, \code{\link[=predict.vlmc]{predict.vlmc()}}.
+\code{\link[=metrics.vlmc]{metrics.vlmc()}}, \code{\link[=metrics.covlmc]{metrics.covlmc()}}, \code{\link[=metrics.ctx_node]{metrics.ctx_node()}},
+\code{\link[=contexts.vlmc]{contexts.vlmc()}}, \code{\link[=predict.vlmc]{predict.vlmc()}}.
 }

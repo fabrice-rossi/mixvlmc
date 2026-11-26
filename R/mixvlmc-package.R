@@ -1,34 +1,42 @@
 #' @section Package options:
 #'
-#' Mixvlmc uses the following [options()]:
+#' mixvlmc uses the following [options()], which are set when the package is
+#' loaded (unless they are already set):
 #'
-#' - `mixvlmc.maxit`: maximum number of iterations in model fitting for [covlmc()]
+#' - `mixvlmc.maxit`: maximum number of iterations in model fitting for
+#'    [covlmc()] and related functions such as [tune_covlmc()] (default value:
+#'    100). It is used by all the computing engines (see
+#'    `mixvlmc.predictive`).
 #' - `mixvlmc.predictive`: specifies the computing engine used for model fitting
-#'    for [covlmc()]. Two values are supported:
+#'    for [covlmc()] and related functions. Two values are supported:
 #'    - `"glm"` (default value): [covlmc()] uses [stats::glm()] with a binomial
-#'       link ([stats::binomial()]) for a two values state space, and [VGAM::vglm()]
-#'       with a multinomial link ([VGAM::multinomial()]) for a state space with
-#'       three or more values;
+#'       link ([stats::binomial()]) for a two-value state space, and
+#'       [VGAM::vglm()] with a multinomial link ([VGAM::multinomial()]) for a
+#'       state space with three or more values;
 #'    - `"multinom"`: [covlmc()] uses [nnet::multinom()] in all cases.
 #'
-#'    The first option `"glm"` is recommended as both [stats::glm()] and [VGAM::vglm()]
-#'    are able to detect and deal with degeneracy in the data set.
+#'    The first option `"glm"` is recommended as both [stats::glm()] and
+#'    [VGAM::vglm()] are able to detect and deal with degeneracy in the data
+#'    set.
 #' - `mixvlmc.backend`: specifies the implementation used for the context tree
 #'    construction in [ctx_tree()], [vlmc()] and [tune_vlmc()]. Two values are
 #'    supported:
 #'    - `"R"` (default value): this corresponds to the original almost pure R
 #'      implementation.
-#'    - `"C++"`: this corresponds to the experimental C++ implementation. This
-#'      version is significantly faster than the R version, but is still
-#'      considered experimental.
-#'  - `mixvlmc.charset`: specifies the collection of characters used to display
+#'    - `"C++"`: this corresponds to the C++ implementation. This version is
+#'      significantly faster than the R version, but is still considered
+#'      experimental.
+#' - `mixvlmc.charset`: specifies the collection of characters used to display
 #'    context trees in "ascii art" when using the `"text"` format for [draw()]
 #'    and related functions. Two values are supported:
 #'    - `"ascii"`: the collection uses only standard ASCII characters and
 #'      should be compatible with all environments;
-#'    - `"utf8"`: the collection uses UTF-8 symbols and needs a compatible display.
-#'    At loading the option is set based on a call to [cli::is_utf8_output()].
-#'    It defaults to `"utf8"` is this encoding is supported.
+#'    - `"utf8"`: the collection uses UTF-8 symbols and needs a compatible
+#'      display.
+#'
+#'    The default value is `"utf8"` if the output supports UTF-8 (according to
+#'    [cli::is_utf8_output()] when the package is loaded) and `"ascii"`
+#'    otherwise.
 #'
 "_PACKAGE"
 

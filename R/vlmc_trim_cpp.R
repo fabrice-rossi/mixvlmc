@@ -1,6 +1,7 @@
 #' @details
-#' Trimming in the C++ backend is done directly in the `Rcpp` managed memory and
-#' cannot be detected at R level using e.g. [utils::object.size()].
+#' Trimming with the C++ backend is done directly in the memory managed by
+#' `Rcpp` and cannot be detected at the R level using e.g.
+#' [utils::object.size()].
 #'
 #' @inherit trim.vlmc
 #' @export

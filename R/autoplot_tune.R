@@ -2,21 +2,23 @@
 #' selection
 #'
 #' This function prepares a plot of the results of [tune_vlmc()] using ggplot2.
-#' The result can be passed to [print()] to display the result.
+#' The result can be passed to [print()] to display the plot.
 #'
 #' The graphical representation proposed by this function is complete, while the
-#' one produced by [plot.tune_vlmc()] is minimalistic. We use here the faceting
+#' one produced by [plot.tune_vlmc()] is minimalist. We use here the faceting
 #' capabilities of ggplot2 to combine on a single graphical representation the
-#' evolution of multiple characteristics of the VLMC during the pruning process,
-#' while [plot.tune_vlmc()] shows only the selection criterion or the log
-#' likelihood. Each facet of the resulting plot shows a quantity as a function
-#' of the cut off expressed in quantile or native scale.
+#' evolution of multiple characteristics of the VLMC during the pruning process
+#' (depth, number of contexts, log-likelihood and information criteria), while
+#' [plot.tune_vlmc()] shows only the selection criterion or the log-likelihood.
+#' Each facet of the resulting plot shows a quantity as a function of the cut
+#' off expressed in quantile or native scale.
 #'
 #' @param object a `tune_vlmc` object
-#' @param cutoff the scale used for the cut off criterion (default "quantile")
+#' @param cutoff the scale used for the cut off criterion on the x axis, either
+#'   `"quantile"` (default) or `"native"`
 #' @param ... additional parameters (not used currently)
 #' @returns a ggplot object
-#' @examples
+#' @examplesIf requireNamespace("ggplot2", quietly = TRUE)
 #' pc <- powerconsumption[powerconsumption$week %in% 10:11, ]
 #' rdts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1))))
 #' rdts_best_model_tune <- tune_vlmc(rdts, criterion = "BIC")
@@ -24,6 +26,8 @@
 #' print(vlmc_plot)
 #' ## simple post customisation
 #' print(vlmc_plot + ggplot2::geom_point())
+#' ## cut off in native scale
+#' print(ggplot2::autoplot(rdts_best_model_tune, cutoff = "native"))
 #' @exportS3Method ggplot2::autoplot
 autoplot.tune_vlmc <- function(object, cutoff = c("quantile", "native"), ...) {
   rlang::check_dots_empty()
@@ -63,21 +67,23 @@ autoplot.tune_vlmc <- function(object, cutoff = c("quantile", "native"), ...) {
 #' selection
 #'
 #' This function prepares a plot of the results of [tune_covlmc()] using
-#' ggplot2. The result can be passed to [print()] to display the result.
+#' ggplot2. The result can be passed to [print()] to display the plot.
 #'
 #' The graphical representation proposed by this function is complete, while the
-#' one produced by [plot.tune_covlmc()] is minimalistic. We use here the
+#' one produced by [plot.tune_covlmc()] is minimalist. We use here the
 #' faceting capabilities of ggplot2 to combine on a single graphical
-#' representation the evolution of multiple characteristics of the VLMC during
-#' the pruning process, while [plot.tune_covlmc()] shows only the selection
-#' criterion or the log likelihood. Each facet of the resulting plot shows a
-#' quantity as a function of the cut off expressed in quantile or native scale.
+#' representation the evolution of multiple characteristics of the COVLMC during
+#' the pruning process (depth, number of contexts, log-likelihood, covariate
+#' depth and information criteria), while [plot.tune_covlmc()] shows only the
+#' selection criterion or the log-likelihood. Each facet of the resulting plot
+#' shows a quantity as a function of the cut off expressed in quantile scale
+#' (the only scale available for COVLMC).
 #'
 #' @param object a `tune_covlmc` object
 #' @param ... additional parameters (not used currently)
 #' @returns a ggplot object
 #' @exportS3Method ggplot2::autoplot
-#' @examples
+#' @examplesIf requireNamespace("ggplot2", quietly = TRUE)
 #' pc <- powerconsumption[powerconsumption$week %in% 10:12, ]
 #' rdts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1))))
 #' rdts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))

@@ -7,22 +7,25 @@
 \method{logLik}{covlmc}(object, initial = c("truncated", "specific", "extended"), ...)
 }
 \arguments{
-\item{object}{the covlmc representation.}
+\item{object}{a fitted VLMC with covariates (a \code{covlmc} object).}
 
 \item{initial}{specifies the likelihood function, more precisely the way the
 first few observations for which contexts cannot be calculated are
 integrated in the likelihood. Defaults to \code{"truncated"}. See
 \code{\link[=loglikelihood]{loglikelihood()}} for details.}
 
-\item{...}{additional parameters for logLik.}
+\item{...}{additional parameters (not used).}
 }
 \value{
 an object of class \code{logLik}. This is a number, the log-likelihood of
 the (CO)VLMC with the following attributes:
 \itemize{
-\item \code{df}: the number of parameters used by the VLMC for this likelihood calculation
-\item \code{nobs}: the number of observations included in this likelihood calculation
-\item \code{initial}: the value of the \code{initial} parameter used to compute this likelihood
+\item \code{df}: the number of parameters used by the VLMC for this likelihood
+calculation
+\item \code{nobs}: the number of observations included in this likelihood
+calculation
+\item \code{initial}: the value of the \code{initial} parameter used to compute this
+likelihood
 }
 }
 \description{

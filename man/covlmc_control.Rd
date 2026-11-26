@@ -2,7 +2,7 @@
 % Please edit documentation in R/covlmc.R
 \name{covlmc_control}
 \alias{covlmc_control}
-\title{Control for coVLMC fitting}
+\title{Control for COVLMC fitting}
 \usage{
 covlmc_control(pseudo_obs = 1)
 }
@@ -11,18 +11,19 @@ covlmc_control(pseudo_obs = 1)
 observed ones (a positive number, default: 1).}
 }
 \value{
-a list.
+a list with a \code{pseudo_obs} component, to be used as the \code{control}
+parameter of \code{\link[=covlmc]{covlmc()}} or \code{\link[=tune_covlmc]{tune_covlmc()}}.
 }
 \description{
-This function creates a list with parameters used to fine tune the coVLMC
+This function creates a list with parameters used to fine-tune the COVLMC
 fitting algorithm.
 }
 \details{
-\code{pseudo_obs} is used to regularize the probability estimations when a
-context is only observed followed by always the same state. Transition
-probabilities are computed after adding \code{pseudo_obs} pseudo observations
-of each of the states (including the observed one). This corresponds to a
-Bayesian posterior mean estimation with a Dirichlet prior.
+\code{pseudo_obs} is used to regularise the probability estimations when a
+context is always followed by the same state in the observed time series.
+Transition probabilities are then computed after adding \code{pseudo_obs}
+pseudo-observations of each of the states (including the observed one). This
+corresponds to a Bayesian posterior mean estimation with a Dirichlet prior.
 }
 \examples{
 rdts <- rep(c(0, 1), 100)

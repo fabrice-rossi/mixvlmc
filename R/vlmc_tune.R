@@ -1,23 +1,25 @@
 #' Fit an optimal Variable Length Markov Chain (VLMC)
 #'
 #' This function fits a Variable Length Markov Chain (VLMC) to a discrete time
-#' series by optimizing an information criterion (BIC or AIC).
+#' series by optimising an information criterion (BIC or AIC).
 #'
 #' This function automates the process of fitting a large VLMC to a discrete
 #' time series with [vlmc()] and of pruning the tree (with [cutoff()] and
-#' [prune()]) to get an optimal with respect to an information criterion. To
-#' avoid missing long term dependencies, the function uses the `max_depth`
+#' [prune()]) to get an optimal model with respect to an information criterion.
+#' To avoid missing long term dependencies, the function uses the `max_depth`
 #' parameter as an initial guess but then relies on an automatic increase of the
 #' value to make sure the initial context tree is only limited by the `min_size`
 #' parameter. The initial value of the `cutoff` parameter of [vlmc()] is also
 #' set to conservative values (depending on the criterion) to avoid prior
-#' simplification of the context tree. This default value can be overridden
-#' using the `cutoff_init` or `alpha_init` parameter.
+#' simplification of the context tree: in native scale, it is set to
+#' `0.25 * log(n)` for the BIC (where `n` is the length of the time series) and
+#' to 1 for the AIC. This default value can be overridden using the
+#' `cutoff_init` or `alpha_init` parameter.
 #'
 #' Once the initial VLMC is obtained, the [cutoff()] and [prune()] functions are
 #' used to build all the VLMC models that could be generated using larger values
 #' of the initial cut off parameter. The best model is selected from this
-#' collection, including the initial complex tree, as the one that minimizes the
+#' collection, including the initial complex tree, as the one that minimises the
 #' chosen information criterion.
 #'
 #' @param x an object that can be interpreted as a discrete time series, such
@@ -27,47 +29,60 @@
 #'   (default) or `"AIC"` (see details).
 #' @param initial specifies the likelihood function, more precisely the way the
 #'   first few observations for which contexts cannot be calculated are
-#'   integrated in the likelihood. Default to `"truncated"`. See
+#'   integrated in the likelihood. Defaults to `"truncated"`. See
 #'   [loglikelihood()] for details.
 #' @param alpha_init if non `NULL` used as the initial cut off parameter (in
-#'   quantile scale) to build the initial VLMC
-#' @param cutoff_init if non `NULL` used as the initial cut off parameter to
-#'   build the initial VLMC. Takes precedence over `alpha_init` if specified.
+#'   quantile scale) to build the initial VLMC.
+#' @param cutoff_init if non `NULL` used as the initial cut off parameter (in
+#'   native scale) to build the initial VLMC. Takes precedence over
+#'   `alpha_init` if specified.
 #' @param min_size integer >= 1 (default: 2). Minimum number of observations for
 #'   a context in the growing phase of the initial context tree.
 #' @param max_depth integer >= 0 (default: 100). Longest context considered in
-#'   growing phase of the initial context tree (see details).
-#' @param backend backend "R" or "C++" (default: as specified by the
-#'   "mixvlmc.backend" option). Specifies the implementation used to represent
-#'   the context tree and to built it. See [vlmc()] for details.
+#'   the growing phase of the initial context tree (see details).
+#' @param backend "R" or "C++" (default: as specified by the "mixvlmc.backend"
+#'   option). Specifies the implementation used to represent the context tree
+#'   and to build it. See [vlmc()] for details.
 #' @param verbose integer >= 0 (default: 0). Verbosity level of the pruning
 #'   process. The progress is reported with [message()], which can be silenced
 #'   with [suppressMessages()].
-#' @param save specify which BIC models are saved during the pruning process.
+#' @param save specifies which models are saved during the pruning process.
 #'   The default value `"best"` asks the function to keep only the best model
 #'   according to the `criterion`. When `save="initial"` the function keeps *in
 #'   addition* the initial (complex) model which is then pruned during the
 #'   selection process. When `save="all"`, the function returns all the models
 #'   considered during the selection process.
 #'
-#' @returns a list with the following components:
+#' @returns an object of class `tune_vlmc`, a list with the following
+#'   components:
 #'
 #'   - `best_model`: the optimal VLMC
 #'   - `criterion`: the criterion used to select the optimal VLMC
 #'   - `initial`: the likelihood function used to select the optimal VLMC
-#'   - `results`: a data frame with details about the pruning process
+#'   - `results`: a data frame with details about the pruning process, with
+#'   one row per model considered (cut off in native and quantile scales,
+#'   depth, number of contexts, log-likelihood, AIC and BIC)
 #'   - `saved_models`: a list of intermediate VLMCs if `save="initial"` or
 #'   `save="all"`. It contains an `initial` component with the large VLMC
-#'   obtained first and an `all` component with a list of all the *other* VLMC
-#'   obtained by pruning the initial one.
+#'   obtained first and, if `save="all"`, an `all` component with a list of all
+#'   the *other* VLMCs obtained by pruning the initial one.
 #'
 #' @export
-#' @seealso [vlmc()], [cutoff()] and [prune()]
+#' @seealso [vlmc()], [cutoff()] and [prune()], as well as [as_vlmc()],
+#'   [plot.tune_vlmc()] and [autoplot.tune_vlmc()] to use the results.
 #'
 #' @examples
-#' rdts <- sample(as.factor(c("A", "B", "C")), 100, replace = TRUE)
+#' pc <- powerconsumption[powerconsumption$week == 5, ]
+#' rdts <- cut(pc$active_power,
+#'   breaks = c(0, quantile(pc$active_power, probs = c(0.25, 0.5, 0.75, 1)))
+#' )
 #' tune_result <- tune_vlmc(rdts)
-#' draw(tune_result$best_model)
+#' tune_result
+#' draw(as_vlmc(tune_result))
+#' summary(tune_result)
+#' ## selection with the AIC
+#' tune_result_aic <- tune_vlmc(rdts, criterion = "AIC")
+#' draw(as_vlmc(tune_result_aic))
 tune_vlmc <- function(x, criterion = c("BIC", "AIC"),
                       initial = c("truncated", "specific", "extended"),
                       alpha_init = NULL, cutoff_init = NULL,

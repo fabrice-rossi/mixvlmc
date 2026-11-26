@@ -1,9 +1,9 @@
 #' Match a context tree to a new discrete time series
 #'
-#' This is an internal function. It adds to a context tree a new member to each
-#' node, data_f_by. The vector contains the counts of occurrences of symbols
-#' after each of the context of the tree in the time series x. In addition
-#' it truncates the sub tree whose contexts are not matched in the time series.
+#' This is an internal function. It adds a new member, data_f_by, to each node
+#' of a context tree. This vector contains the counts of occurrences of symbols
+#' after each of the contexts of the tree in the time series x. In addition
+#' it removes the subtrees whose contexts are not matched in the time series.
 #'
 #' @param tree a context tree.
 #' @param x a discrete time series in its low level representation.

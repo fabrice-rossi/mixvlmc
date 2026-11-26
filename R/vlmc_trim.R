@@ -1,9 +1,13 @@
-#' This function returns a trimmed VLMC from which match positions have been
+#' Trim a VLMC
+#'
+#' This function returns a trimmed VLMC from which the positions of the contexts
+#' in the time series (see the `keep_match` parameter of [vlmc()]) have been
 #' removed.
 #'
 #' @inherit trim
 #' @param ct a VLMC.
-#' @return a trimmed VLMC
+#' @param ... additional arguments (not used).
+#' @return a trimmed VLMC.
 #' @export
 #' @examples
 #' ## VLMC trimming is generally useless unless match positions were kept

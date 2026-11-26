@@ -34,13 +34,13 @@ charset_utf8(
 
 \item{vbranch}{characters used to represent a branch in a vertical way.}
 
-\item{hbranch}{characters used to represent a branch in a horizontal was.}
+\item{hbranch}{characters used to represent a branch in a horizontal way.}
 
-\item{open_ct}{characters used to start each node specific text
-representation.}
+\item{open_ct}{characters used to start the node specific text
+representation of each node.}
 
-\item{close_ct}{characters used to end each node specific text
-representation.}
+\item{close_ct}{characters used to end the node specific text
+representation of each node.}
 
 \item{level_sep}{characters used to separate levels from models in
 \code{\link[=draw.covlmc]{draw.covlmc()}}.}
@@ -51,13 +51,13 @@ representation.}
 \item{intercept}{characters used to represent the intercept in
 \code{\link[=draw.covlmc]{draw.covlmc()}}.}
 
-\item{intercept_sep}{characters used to the intercept from the other
+\item{intercept_sep}{characters used to separate the intercept from the other
 parameters in \code{\link[=draw.covlmc]{draw.covlmc()}}.}
 
-\item{open_p_value}{characters used as opening delimiters for the p value of
+\item{open_p_value}{characters used as opening delimiters for the p-value of
 a node in \code{\link[=draw.covlmc]{draw.covlmc()}}.}
 
-\item{close_p_value}{characters used as closing delimiters for the p value of
+\item{close_p_value}{characters used as closing delimiters for the p-value of
 a node in \code{\link[=draw.covlmc]{draw.covlmc()}}.}
 
 \item{open_model}{characters used as opening delimiters for the
@@ -67,16 +67,22 @@ representation of a model in \code{\link[=draw.covlmc]{draw.covlmc()}}.}
 representation of a model in \code{\link[=draw.covlmc]{draw.covlmc()}}.}
 }
 \value{
-a list
+a list of character strings, one per parameter.
 }
 \description{
-This function returns a list of UTF-8 characters and symbols used to fine
-tune the \code{\link[=draw]{draw()}} function behaviour when it is used with \code{format="text"}. It
-can be used as is or customised using its parameters.
+This function returns a list of UTF-8 characters and symbols used to
+fine-tune the behaviour of the \code{\link[=draw]{draw()}} function when it is used with
+\code{format="text"}. It can be used as is or customised using its parameters,
+and is generally passed to \code{\link[=draw_control]{draw_control()}} via its \code{charset} parameter.
 }
 \examples{
 charset_utf8(root = "\u27E1")
+rdts <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 0)
+rdts_ctree <- ctx_tree(rdts, min_size = 1, max_depth = 2)
+draw(rdts_ctree,
+  control = draw_control(charset = charset_utf8(root = "\u27E1"))
+)
 }
 \seealso{
-\code{\link[=draw]{draw()}}, \code{\link[=charset_ascii]{charset_ascii()}}.
+\code{\link[=draw]{draw()}}, \code{\link[=draw_control]{draw_control()}}, \code{\link[=charset_ascii]{charset_ascii()}}.
 }

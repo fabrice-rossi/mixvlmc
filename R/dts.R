@@ -32,9 +32,9 @@ new_dts <- function(ix, vals, fx, ..., class = character()) {
   )
 }
 
-#' Convert a vector to a discrete time series.
+#' Convert a vector to a discrete time series
 #'
-#' This function creates a  representation of a discrete time series that
+#' This function creates a representation of a discrete time series that
 #' can be further processed by model estimation functions.
 #'
 #' The discrete time series `x` can be a vector of numeric, character, factor or
@@ -47,18 +47,26 @@ new_dts <- function(ix, vals, fx, ..., class = character()) {
 #'   series (as returned by `sort(unique(x))`).
 #'
 #' If `vals` is specified, the function makes sure that `x` contains only the
-#' specified values.
+#' specified values and reports an error otherwise. The state space `vals` may
+#' include values that do not appear in `x`.
 #'
 #' @param x a discrete time series; can be numeric, character, factor or
 #'   logical.
 #' @param vals the set of values that can be taken by the time series, a.k.a. the
-#'   state space, see details (defaults to `NULL`)
-#' @returns a discrete time series (of class that inherits from `dts`).
+#'   state space, see details (defaults to `NULL`).
+#' @returns a discrete time series (an object of a class that inherits from
+#'   `dts`).
 #' @export
 #'
 #' @examples
+#' set.seed(0)
 #' x_dts <- dts(sample(c("A", "B"), 20, replace = TRUE))
 #' x_dts
+#' ## specifying the state space
+#' x_dts_3 <- dts(sample(c("A", "B"), 20, replace = TRUE),
+#'   vals = c("A", "B", "C")
+#' )
+#' states(x_dts_3)
 dts <- function(x, vals = NULL) {
   pre_res <- validate_dts(x, vals)
   new_dts(pre_res$ix, pre_res$vals, pre_res$fx)
@@ -74,12 +82,14 @@ as_dts <- function(x) {
 
 #' Test if the object is a discrete time series
 #'
-#' This function returns `TRUE` for discrete time series and `FALSE` for other objects.
+#' This function returns `TRUE` for discrete time series (objects of class
+#' `dts`) and `FALSE` for other objects.
 #'
 #' @param x an R object.
 #' @returns `TRUE` for discrete time series.
 #' @export
 #' @examples
+#' set.seed(0)
 #' pre_dts <- sample(c("A", "B"), 20, replace = TRUE)
 #' x_dts <- dts(pre_dts)
 #' is_dts(x_dts)
@@ -110,14 +120,16 @@ length.dts <- function(x) {
 #' Extract the plain discrete time series from a dts object
 #'
 #' This function returns a copy of the discrete time series used to build the
-#' dts object (see [dts()]).
+#' `dts` object (see [dts()]).
 #'
-#' @param x a dts object
+#' @param x a `dts` object.
 #'
-#' @return a vector representing the time seris
+#' @return a vector representing the time series, whose values are taken from
+#'   the state space of `x` (see [states()]).
 #' @export
 #'
 #' @examples
+#' set.seed(0)
 #' raw_dts <- sample(c("A", "B", "C"), 50, replace = TRUE)
 #' odts <- dts(raw_dts)
 #' back_to_raw <- dts_data(odts)
@@ -132,13 +144,15 @@ dts_data <- function(x) {
 #'
 #' This function prints a discrete time series.
 #'
-#' @param x the `dts` object to print
-#' @param n the number of time steps of time series to print (defaults to 5)
-#' @param ... additional arguments for the print function.
-#' @returns the `x` object, invisibly
+#' @param x the `dts` object to print.
+#' @param n the number of time steps of the time series to print (defaults to
+#'   5).
+#' @param ... additional arguments (not used).
+#' @returns the `x` object, invisibly.
 #'
 #' @export
 #' @examples
+#' set.seed(0)
 #' x_dts <- dts(sample(c("A", "B"), 20, replace = TRUE))
 #' print(x_dts, n = 10)
 print.dts <- function(x, n = 5, ...) {
@@ -166,6 +180,7 @@ print.dts <- function(x, n = 5, ...) {
 #' @export
 #' @rdname states
 #' @examples
+#' set.seed(0)
 #' x_dts <- dts(sample(c("A", "B", "C"), 20, replace = TRUE))
 #' ## should be c("A", "B", "C")
 #' states(x_dts)

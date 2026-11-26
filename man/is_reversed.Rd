@@ -10,7 +10,7 @@ is_reversed(node)
 \item{node}{a \code{ctx_node} object as returned by \code{\link[=find_sequence]{find_sequence()}}}
 }
 \value{
-\code{TRUE} if the node \code{node} use a reverse temporal ordering, \code{FALSE}
+\code{TRUE} if the node \code{node} uses a reverse temporal ordering, \code{FALSE}
 when this is not the case
 }
 \description{

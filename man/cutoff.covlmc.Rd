@@ -9,18 +9,19 @@
 \arguments{
 \item{model}{a fitted COVLMC model.}
 
-\item{raw}{specify whether the returned values should be limit values
-computed in the model or modified values that guarantee pruning (see
-details)}
+\item{raw}{specifies whether the returned values should be limit values
+computed in the model or modified values that guarantee pruning (defaults
+to \code{FALSE}, see details).}
 
-\item{tolerance}{specify the minimum separation between two consecutive
-values of the cut off in native mode (before any transformation). See
+\item{tolerance}{specifies the minimum separation between two consecutive
+values of the cut off in quantile scale (before any transformation). See
 details.}
 
 \item{...}{additional arguments for the \code{cutoff} function.}
 }
 \value{
-a vector of cut off values, \code{NULL} if none can be computed
+a vector of cut off values in quantile scale (in decreasing order),
+\code{NULL} if none can be computed
 }
 \description{
 This function returns all the cut off values that should induce a pruning of
@@ -41,14 +42,15 @@ parameter is used to keep only values that are different enough. This is done
 in the quantile scale, before transformations implemented when \code{raw} is
 \code{FALSE}.
 
-Notice that the loglikelihood scale is not directly useful in COVLMC as the
-differences in model sizes are not constant through the pruning process. As a
-consequence, this function does not provide \code{mode} parameter, contrarily to
-\code{\link[=cutoff.vlmc]{cutoff.vlmc()}}.
+Notice that the native scale (log-likelihood ratio) is not directly useful in
+COVLMC as the differences in model sizes are not constant through the
+pruning process. As a consequence, unlike \code{\link[=cutoff.vlmc]{cutoff.vlmc()}}, this function
+does not provide a \code{scale} parameter: values are always given in quantile
+scale (i.e. as p-values of the likelihood ratio tests).
 
-Setting \code{raw} to \code{TRUE} removes the small perturbation that are subtracted
-from the log-likelihood ratio values computed from the COVLMC (in quantile
-scale).
+Setting \code{raw} to \code{TRUE} removes the small perturbations that are subtracted
+from the p-values of the likelihood ratio tests computed from the COVLMC (in
+quantile scale).
 
 As automated model selection is provided by \code{\link[=tune_covlmc]{tune_covlmc()}}, the direct use of
 \code{cutoff} should be reserved to advanced exploration of the set of trees that
@@ -58,10 +60,15 @@ techniques that are not provided by \code{\link[=tune_covlmc]{tune_covlmc()}}.
 \examples{
 pc <- powerconsumption[powerconsumption$week == 5, ]
 rdts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1))))
-m_nocovariate <- vlmc(rdts)
-draw(m_nocovariate)
 rdts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
 m_cov <- covlmc(rdts, rdts_cov, min_size = 5)
 draw(m_cov)
 cutoff(m_cov)
+## raw values are slightly larger than the default ones
+cutoff(m_cov, raw = TRUE) - cutoff(m_cov)
+## pruning with the largest cut off value
+draw(prune(m_cov, alpha = cutoff(m_cov)[1]))
+}
+\seealso{
+\code{\link[=prune.covlmc]{prune.covlmc()}} and \code{\link[=tune_covlmc]{tune_covlmc()}}
 }

@@ -7,16 +7,18 @@
 dts_data(x)
 }
 \arguments{
-\item{x}{a dts object}
+\item{x}{a \code{dts} object.}
 }
 \value{
-a vector representing the time seris
+a vector representing the time series, whose values are taken from
+the state space of \code{x} (see \code{\link[=states]{states()}}).
 }
 \description{
 This function returns a copy of the discrete time series used to build the
-dts object (see \code{\link[=dts]{dts()}}).
+\code{dts} object (see \code{\link[=dts]{dts()}}).
 }
 \examples{
+set.seed(0)
 raw_dts <- sample(c("A", "B", "C"), 50, replace = TRUE)
 odts <- dts(raw_dts)
 back_to_raw <- dts_data(odts)

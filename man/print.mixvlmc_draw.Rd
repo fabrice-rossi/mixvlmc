@@ -37,11 +37,12 @@ printed as standard R output, except for a LaTeX representation
 (\code{format = "latex"}) in a document that produces LaTeX (e.g. a PDF output).
 In this case, the LaTeX code is included as is in the document and the
 \code{forest} LaTeX package is loaded automatically at the end of its preamble
-(with the \code{AtEndPreamble} command of the \code{etoolbox} package), so that the tree is
-rendered. A document can also load \code{forest} in its preamble, possibly with
-options: it is then not loaded a second time.
+(with the \code{AtEndPreamble} command of the \code{etoolbox} package), so that the
+tree is rendered. A document can also load \code{forest} in its preamble,
+possibly with options: it is then not loaded a second time.
 }
 \examples{
+set.seed(0)
 rdts <- sample(c(0, 1), 100, replace = TRUE)
 ctree <- ctx_tree(rdts, min_size = 10, max_depth = 2)
 tree_repr <- draw(ctree)

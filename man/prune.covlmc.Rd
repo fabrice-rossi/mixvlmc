@@ -7,38 +7,40 @@
 \method{prune}{covlmc}(vlmc, alpha = 0.05, cutoff = NULL, ...)
 }
 \arguments{
-\item{vlmc}{a fitted VLMC model with covariates.}
+\item{vlmc}{a fitted VLMC with covariates (a \code{covlmc} object).}
 
-\item{alpha}{number in (0,1] (default: 0.05) cutoff value in quantile scale
+\item{alpha}{number in (0,1] (default: 0.05) cut off value in quantile scale
 for pruning. A warning is issued if it is larger than the \code{alpha} of the
 model, as the result may then differ from a model built directly with
 this value.}
 
-\item{cutoff}{not supported by the vlmc with covariates.}
+\item{cutoff}{not supported for VLMC with covariates (must be \code{NULL}):
+pruning is specified only with \code{alpha}.}
 
 \item{...}{additional arguments for the prune function.}
 }
 \value{
-a pruned covlmc.
+a pruned \code{covlmc} object.
 }
 \description{
-This function prunes a vlmc with covariates. This model must have been
-estimated with \code{keep_data=TRUE} to enable the pruning.
+This function prunes a VLMC with covariates. This model must have been
+estimated with \code{keep_data=TRUE} to enable the pruning (and must not have
+been trimmed, see \code{\link[=trim.covlmc]{trim.covlmc()}}).
 }
 \details{
-Post pruning a VLMC with covariates is not as straightforward as the same
+Post-pruning a VLMC with covariates is not as straightforward as the same
 procedure applied to \code{\link[=vlmc]{vlmc()}} (see \code{\link[=cutoff.vlmc]{cutoff.vlmc()}} and \code{\link[=prune.vlmc]{prune.vlmc()}}). For
 efficiency reasons, \code{\link[=covlmc]{covlmc()}} estimates only the logistic models that are
-considered useful for a given set construction parameters. With a more
+considered useful for a given set of construction parameters. With a more
 aggressive pruning threshold, some contexts become leaves of the context tree
 and new logistic models must be estimated. Thus the pruning opportunities
 given by \code{\link[=cutoff.covlmc]{cutoff.covlmc()}} are only a subset of interesting cut offs for a
-given covlmc.
+given COVLMC.
 
-Nevertheless, \code{covlmc} share with \code{\link[=vlmc]{vlmc()}} the principle that post pruning a
-covlmc should give the same model as buidling directly the covlmc, provided
-that the post pruning alpha is smaller than the alpha used to build the
-initial model.
+Nevertheless, \code{\link[=covlmc]{covlmc()}} shares with \code{\link[=vlmc]{vlmc()}} the principle that
+post-pruning a COVLMC should give the same model as building the COVLMC
+directly, provided that the post-pruning alpha is smaller than the alpha
+used to build the initial model.
 }
 \examples{
 pc <- powerconsumption[powerconsumption$week == 5, ]
@@ -47,6 +49,6 @@ rdts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
 m_cov <- covlmc(rdts, rdts_cov, min_size = 5, keep_data = TRUE)
 draw(m_cov)
 m_cov_cuts <- cutoff(m_cov)
-p_cov <- prune(m_cov, m_cov_cuts[1])
+p_cov <- prune(m_cov, alpha = m_cov_cuts[1])
 draw(p_cov)
 }

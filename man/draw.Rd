@@ -12,22 +12,25 @@ draw(ct, format, control = draw_control(), ...)
 \item{format}{a character string that specifies the output format of the
 function. Possible values are \code{"text"} (default) and \code{"latex"}. See details.}
 
-\item{control}{a list of low level control parameters of the text
+\item{control}{a list of low level control parameters of the
 representation. See details and \code{\link[=draw_control]{draw_control()}}.}
 
-\item{...}{additional arguments for draw.}
+\item{...}{additional arguments for the methods of \code{draw()}.}
 }
 \value{
 an object of class \code{mixvlmc_draw} that contains the representation
-of the context tree. It is printed automatically when it is not assigned
-to a variable (see \code{\link[=print.mixvlmc_draw]{print.mixvlmc_draw()}}).
+of the context tree. As for other R objects, it is printed automatically
+when it is not assigned to a variable at top level (for instance when
+\code{draw(model)} is called in the console), but not inside a function or a
+loop where it must be printed explicitly with \code{print(draw(model))} (see
+\code{\link[=print.mixvlmc_draw]{print.mixvlmc_draw()}}).
 }
 \description{
 This function 'draws' a context tree as a text.
 }
 \details{
 The function uses different text based formats (plain "ascii art" and LaTeX)
-to represent the context tree. Fine tuning of the representation can be done
+to represent the context tree. Fine-tuning of the representation can be done
 via the \code{\link[=draw_control]{draw_control()}} function.
 
 In addition to the structure of the context tree, \code{draw()} can represent
@@ -48,12 +51,12 @@ of \code{\link[=draw_control]{draw_control()}}. By default, they are UTF-8 chara
 supports them and ASCII characters otherwise (see the \code{mixvlmc.charset}
 option in \link{mixvlmc-package}).
 
-With the \code{latex} value, the output is produced in LaTeX, leveraging the
-\href{https://ctan.org/pkg/forest}{forest} Latex package (see
+With the \code{"latex"} value, the output is produced in LaTeX, leveraging the
+\href{https://ctan.org/pkg/forest}{forest} LaTeX package (see
 \url{https://ctan.org/pkg/forest}). Each call to \code{draw()} produces a full
 \code{forest} LaTeX environment. This can be included as is in a LaTeX document,
 provided the \code{forest} package is loaded in the preamble of the document.
-The LaTeX output is sanitized to avoid potential problems induced by
+The LaTeX output is sanitised to avoid potential problems induced by
 special characters in the names of the states of the context tree.
 
 In a knitr document (R Markdown, Quarto, ...) that produces LaTeX (e.g. a
@@ -65,6 +68,7 @@ the document loads it, possibly with options): calling
 }
 
 \examples{
+set.seed(0)
 rdts <- sample(c(0, 1), 100, replace = TRUE)
 ctree <- ctx_tree(rdts, min_size = 10, max_depth = 2)
 draw(ctree)

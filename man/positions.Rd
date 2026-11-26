@@ -4,7 +4,7 @@
 \alias{positions}
 \alias{positions.ctx_node}
 \alias{positions.ctx_node_cpp}
-\title{Report the positions of a sequence associated to a node}
+\title{Report the positions of a sequence associated with a node}
 \usage{
 positions(node)
 
@@ -16,23 +16,25 @@ positions(node)
 \item{node}{a \code{ctx_node} object as returned by \code{\link[=find_sequence]{find_sequence()}}}
 }
 \value{
-positions of the sequence represented by \code{node} is the original
-time series as a integer vector
+positions of the sequence represented by \code{node} in the original
+time series, as an integer vector
 }
 \description{
 This function returns the positions of the sequence represented by \code{node}
 in the time series used to build the context tree in which the sequence is
-represented. This is only possible is those positions were saved during the
-construction of the context tree. In positions were not saved, a call to this
-function produces an error.
+represented. This is only possible if those positions were saved during the
+construction of the context tree (see the \code{keep_position} parameter of
+\code{\link[=ctx_tree]{ctx_tree()}}). If positions were not saved, a call to this function produces
+an error.
 }
 \details{
 A position of a sequence \code{ctx} in the time series \code{x} is an index value \code{t}
-such that the sequence ends with \code{x[t]}. Thus \code{x[t+1]} is after the context.
+such that the sequence ends with \code{x[t]}. Thus \code{x[t+1]} is after the sequence.
 For instance if \code{x=c(0, 0, 1, 1)} and \code{ctx=c(0, 1)} (in standard state
 order), then the position of \code{ctx} in \code{x} is 3.
 }
 \examples{
+set.seed(0)
 rdts <- sample(as.factor(c("A", "B", "C")), 100, replace = TRUE)
 rdts_tree <- ctx_tree(rdts, max_depth = 3, min_size = 5)
 subseq <- find_sequence(rdts_tree, factor(c("B", "A"), levels = c("A", "B", "C")))

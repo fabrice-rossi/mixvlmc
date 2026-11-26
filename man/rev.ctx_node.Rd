@@ -10,8 +10,8 @@
 \item{x}{a \code{ctx_node} object as returned by \code{\link[=find_sequence]{find_sequence()}}}
 }
 \value{
-a \code{ctx_node} using the opposite ordering convention as the parameter
-of the function
+a \code{ctx_node} using the opposite ordering convention to the one of
+the parameter of the function
 }
 \description{
 This function reverses the order in which the sequence represented by the

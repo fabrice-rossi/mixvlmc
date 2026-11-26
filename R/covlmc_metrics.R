@@ -19,6 +19,8 @@ covlmc_predictive_extractor <- function(tree, path, ct, vals, control, is_leaf, 
 
 #' @inherit metrics
 #' @title Predictive quality metrics for VLMC with covariates
+#' @param model a fitted VLMC with covariates (a `covlmc` object). Trimmed
+#'   models are not supported (see [trim.covlmc()]).
 #' @returns An object of class `metrics.covlmc` with the following components:
 #'
 #'  - `accuracy`: the accuracy of the predictions
@@ -26,8 +28,8 @@ covlmc_predictive_extractor <- function(tree, path, ct, vals, control, is_leaf, 
 #'    in rows and true values in columns
 #'  - `auc`: the AUC of the predictive model
 #'
-#'  The object has a print method that recalls basic information about the model
-#'  together with the values of the components above.
+#'  The object has a print method that recalls basic information about the
+#'  model together with the values of the components above.
 #' @examples
 #' pc <- powerconsumption[powerconsumption$week == 5, ]
 #' breaks <- c(
@@ -80,8 +82,9 @@ metrics.covlmc <- function(model, ...) {
   structure(res, class = "metrics.covlmc")
 }
 
-#' @describeIn metrics.covlmc Prints the predictive metrics of the VLMC model with covariates.
-#' @param x A metrics.covlmc object, results of a call to [metrics.covlmc()]
+#' @describeIn metrics.covlmc Prints the predictive metrics of the VLMC with
+#'   covariates.
+#' @param x a `metrics.covlmc` object, result of a call to [metrics.covlmc()].
 #' @exportS3Method
 print.metrics.covlmc <- function(x, ...) {
   print(x$model)

@@ -7,20 +7,23 @@
 covariate_depth(model)
 }
 \arguments{
-\item{model}{a covlmc object}
+\item{model}{a fitted VLMC with covariates (a \code{covlmc} object)}
 }
 \value{
-the longest covariate memory of this model
+the longest covariate memory of this model (an integer, 0 when
+no logistic model uses the covariates)
 }
 \description{
-This function return the longest covariate memory used by a VLMC
-with covariates.
+This function returns the longest covariate memory used by a VLMC
+with covariates, i.e. the largest number of past values of the covariates
+used by the logistic models of its contexts (see \code{\link[=covariate_memory]{covariate_memory()}}).
 }
 \examples{
 pc <- powerconsumption[powerconsumption$week == 5, ]
 rdts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1))))
-m_nocovariate <- vlmc(rdts)
 rdts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
 m_cov <- covlmc(rdts, rdts_cov, min_size = 10)
 covariate_depth(m_cov)
+## memory of each context
+sapply(contexts(m_cov), covariate_memory)
 }

@@ -2,50 +2,52 @@
 % Please edit documentation in R/vlmc_simulate.R
 \name{simulate.vlmc}
 \alias{simulate.vlmc}
-\title{Simulate a discrete time series for a vlmc}
+\title{Simulate a discrete time series for a VLMC}
 \usage{
 \method{simulate}{vlmc}(object, nsim = 1L, seed = NULL, init = NULL, burnin = 0L, ...)
 }
 \arguments{
-\item{object}{a fitted vlmc object.}
+\item{object}{a fitted VLMC.}
 
 \item{nsim}{length of the simulated time series (defaults to 1).}
 
 \item{seed}{an optional random seed (see the dedicated section).}
 
-\item{init}{an optional initial sequence for the time series given by an object
-that can be interpreted as a discrete time series.}
+\item{init}{an optional initial sequence for the time series given by an
+object that can be interpreted as a discrete time series, with values in
+the state space of the model.}
 
 \item{burnin}{number of initial observations to discard or \code{"auto"} (see the
-dedicated section).}
+dedicated section). Defaults to 0.}
 
-\item{...}{additional arguments.}
+\item{...}{additional arguments (not used).}
 }
 \value{
 a simulated discrete time series of the same type as the one used to
-build the vlmc with a \code{seed} attribute (see the Random seed section). The
-results has also the \code{dts_simulated} class to hide the \code{seed} attribute when using
-\code{print} or similar function.
+build the VLMC with a \code{seed} attribute (see the Random seed section). The
+result has also the \code{dts_simulated} class to hide the \code{seed} attribute when
+using \code{print()} or similar functions.
 }
 \description{
 This function simulates a time series from the distribution estimated by the
-given vlmc object.
+given VLMC.
 }
 \details{
 The time series can be initiated by a fixed sequence specified via the \code{init}
-parameter.
+parameter: the simulated time series then starts with this sequence (whose
+length counts in the \code{nsim + burnin} values, see below).
 }
 \section{Burn in (Warm up) period}{
 
 
 When using a VLMC for simulation purposes, we are generally interested in
 the stationary distribution of the corresponding Markov chain. To reduce
-the dependence of the samples from the initial values and get closer to
+the dependence of the samples on the initial values and get closer to
 this stationary distribution (if it exists), it is recommended to discard
 the first samples which are produced in a so-called "burn in" (or "warm
 up") period. The \code{burnin} parameter can be used to implement this approach.
 The VLMC is used to produce a sample of size \code{burnin + nsim} but the first
-\code{burnin} values are discarded. Notice that this burn in values can be
+\code{burnin} values are discarded. Notice that these burn in values can be
 partially given by the \code{init} parameter if it is specified.
 
 If \code{burnin} is set to \code{"auto"}, the \code{burnin} period is set to \code{64 * context_number(object)}, following the heuristic proposed in Mächler and
@@ -55,15 +57,18 @@ Bühlmann (2004).
 \section{Random seed}{
 
 
-This function reproduce the behaviour of \code{\link[stats:simulate]{stats::simulate()}}. If \code{seed} is
-\code{NULL} the function does not change the random generator state and returns
-the value of \link{.Random.seed} as a \code{seed} attribute in the return value. This
+This function reproduces the behaviour of \code{\link[stats:simulate]{stats::simulate()}}. If \code{seed} is
+\code{NULL}, the simulation uses the current state of the random number
+generator (which is therefore modified) and the value of \link{.Random.seed}
+before the simulation is returned as a \code{seed} attribute of the result. This
 can be used to reproduce exactly the simulation results by setting
-\link{.Random.seed} to this value. Notice that if the random seed has not be
+\link{.Random.seed} to this value. Otherwise, \code{seed} is used to initialise the
+random number generator for the simulation, and the state of the generator
+is restored afterwards. Notice that if the random seed has not been
 initialised by R so far, the function issues a call to \code{runif(1)} to
 perform this initialisation (as is done in \code{\link[stats:simulate]{stats::simulate()}}).
 
-It \code{seed} is an integer, it is used in a call to \code{\link[=set.seed]{set.seed()}} before the
+If \code{seed} is an integer, it is used in a call to \code{\link[=set.seed]{set.seed()}} before the
 simulation takes place. The integer is saved as a \code{seed} attribute in the
 return value. The integer seed is completed by an attribute \code{kind} which
 contains the value \verb{as.list([RNGkind()])} exactly as with
@@ -74,14 +79,14 @@ value at the end of the call.
 \section{Extended contexts}{
 
 
-As explained in details in \code{\link[=loglikelihood.vlmc]{loglikelihood.vlmc()}} documentation and in the
-dedicated \code{vignette("likelihood", package = "mixvlmc")}, the first initial
+As explained in detail in the \code{\link[=loglikelihood.vlmc]{loglikelihood.vlmc()}} documentation and in
+the dedicated \code{vignette("likelihood", package = "mixvlmc")}, the first
 values of a time series do not in general have a proper context for a VLMC
-with a non zero order. In order to simulate something meaningful for those
+of non zero depth. In order to simulate something meaningful for those
 values when \code{init} is not provided, we rely on the notion of extended
 context defined in the documents mentioned above. This follows the same
 logic as using \code{\link[=loglikelihood.vlmc]{loglikelihood.vlmc()}} with the parameter
-\code{initial="extended"}. All vlmc functions that need to manipulate initial
+\code{initial="extended"}. All VLMC functions that need to manipulate initial
 values with no proper context use the same approach.
 }
 
@@ -94,8 +99,13 @@ rdts <- cut(pc$active_power,
 )
 model <- vlmc(rdts, min_size = 5)
 new_rdts <- simulate(model, 500, seed = 0)
+head(new_rdts, 10)
+## the simulation starts with the init sequence
 new_rdts_2 <- simulate(model, 500, seed = 0, init = rdts[1:5])
+head(new_rdts_2, 10)
 new_rdts_3 <- simulate(model, 500, seed = 0, burnin = 500)
+## automatic burn in period
+new_rdts_4 <- simulate(model, 500, seed = 0, burnin = "auto")
 }
 \references{
 Mächler, M. and Bühlmann, P. (2004) "Variable Length Markov

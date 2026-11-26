@@ -13,26 +13,31 @@ as_vlmc(x, ...)
 \method{as_vlmc}{tune_vlmc}(x, ...)
 }
 \arguments{
-\item{x}{an object to convert into a vlmc.}
+\item{x}{an object to convert into a VLMC.}
 
 \item{...}{additional arguments for conversion functions.}
 
 \item{alpha}{cut off parameter applied during the conversion, quantile scale
-(if specified)}
+(if specified).}
 
 \item{cutoff}{cut off parameter applied during the conversion, native scale
-(if specified)}
+(if specified). Takes precedence over \code{alpha} if both are specified.}
 }
 \value{
-a vlmc
+a VLMC.
 }
 \description{
-This generic function converts an object into a vlmc.
+This generic function converts an object into a VLMC.
 }
 \details{
-This function converts a context tree into a VLMC. If \code{alpha} or
-\code{cutoff} is specified, it is used to reduce the complexity of the tree as in
-a direct call to \code{\link[=vlmc]{vlmc()}} (\code{\link[=prune]{prune()}}).
+When \code{x} is a context tree, the function converts it into a VLMC.
+If \code{alpha} or \code{cutoff} is specified, it is used to reduce the complexity of
+the tree as in a direct call to \code{\link[=vlmc]{vlmc()}} (see also \code{\link[=prune]{prune()}}). Otherwise,
+the tree is converted without pruning (the cut off of the resulting VLMC
+is 0 in native scale, i.e. 1 in quantile scale).
+
+When \code{x} is the result of \code{\link[=tune_vlmc]{tune_vlmc()}}, the function returns the best
+model selected by \code{\link[=tune_vlmc]{tune_vlmc()}}.
 }
 \examples{
 ## conversion from a context tree
@@ -42,8 +47,14 @@ draw(rdts_ctree)
 rdts_vlmc <- as_vlmc(rdts_ctree)
 class(rdts_vlmc)
 draw(rdts_vlmc)
-## conversion from the result of tune_vlmc
-rdts <- sample(as.factor(c("A", "B", "C")), 100, replace = TRUE)
+## conversion with pruning
+rdts_pruned_vlmc <- as_vlmc(rdts_ctree, alpha = 0.25)
+draw(rdts_pruned_vlmc)
+## conversion from the result of tune_vlmc()
+pc <- powerconsumption[powerconsumption$week == 5, ]
+rdts <- cut(pc$active_power,
+  breaks = c(0, quantile(pc$active_power, probs = c(0.25, 0.5, 0.75, 1)))
+)
 tune_result <- tune_vlmc(rdts)
 tune_result
 rdts_best_vlmc <- as_vlmc(tune_result)

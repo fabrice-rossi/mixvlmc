@@ -14,11 +14,14 @@
 )
 }
 \arguments{
-\item{object}{a fitted covlmc object.}
+\item{object}{a fitted VLMC with covariates (a \code{covlmc} object). Fully
+trimmed models are not supported (see \code{\link[=trim.covlmc]{trim.covlmc()}}).}
 
-\item{newdata}{a time series adapted to the covlmc object.}
+\item{newdata}{a discrete time series with the same state space as the one
+used to fit \code{object}.}
 
-\item{newcov}{a data frame with the new values for the covariates.}
+\item{newcov}{a data frame with the new values for the covariates, with one
+row per observation in \code{newdata}.}
 
 \item{type}{character indicating the type of prediction required. The default
 \code{"raw"} returns actual predictions in the form of a new time series. The
@@ -33,21 +36,22 @@ When \code{FALSE} this final prediction is not included.}
 }
 \value{
 A vector of predictions if \code{type="raw"} or a matrix of state
-probabilities if \code{type="probs"}.
+probabilities if \code{type="probs"}. The number of predictions (or of rows of
+the matrix) is the length of \code{newdata}, plus one if \code{final_pred=TRUE}.
 }
 \description{
-This function computes one step ahead predictions for a discrete time series
+This function computes one-step-ahead predictions for a discrete time series
 based on a VLMC with covariates.
 }
 \details{
 Given a time series \code{X}, at time step \code{t}, a context is computed using
 observations from \code{X[1]} to \code{X[t-1]} (see the dedicated section). The
-prediction is then the most probable state for \code{X[t]} given this logistic
+prediction is then the most probable state for \code{X[t]} given the logistic
 model of the context and the corresponding values of the covariates. The time
 series of predictions is returned by the function when \code{type="raw"} (default
 case).
 
-When \code{type="probs"}, the function returns of the probabilities of each state
+When \code{type="probs"}, the function returns the probabilities of each state
 for \code{X[t]} as estimated by the logistic models. Those probabilities are
 returned as a matrix of probabilities with column names given by the state
 names.
@@ -55,14 +59,14 @@ names.
 \section{Extended contexts}{
 
 
-As explained in details in \code{\link[=loglikelihood.covlmc]{loglikelihood.covlmc()}} documentation and in
+As explained in detail in the \code{\link[=loglikelihood.covlmc]{loglikelihood.covlmc()}} documentation and in
 the dedicated \code{vignette("likelihood", package = "mixvlmc")}, the first
 initial values of a time series do not in general have a proper context for
-a COVLMC with a non zero order. In order to predict something meaningful
+a COVLMC with a non-zero order. In order to predict something meaningful
 for those values, we rely on the notion of extended context defined in the
 documents mentioned above. This follows the same logic as using
 \code{\link[=loglikelihood.covlmc]{loglikelihood.covlmc()}} with the parameter \code{initial="extended"}. All
-covlmc functions that need to manipulate initial values with no proper
+COVLMC functions that need to manipulate initial values with no proper
 context use the same approach.
 }
 
@@ -72,7 +76,10 @@ rdts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0
 rdts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
 m_cov <- covlmc(rdts, rdts_cov, min_size = 5, alpha = 0.5)
 rdts_probs <- predict(m_cov, rdts[1:144], rdts_cov[1:144, , drop = FALSE], type = "probs")
+head(rdts_probs)
 rdts_preds <- predict(m_cov, rdts[1:144], rdts_cov[1:144, , drop = FALSE],
   type = "raw", final_pred = FALSE
 )
+## comparison between the predictions and the actual values
+table(rdts_preds, rdts[1:144])
 }

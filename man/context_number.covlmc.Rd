@@ -2,12 +2,12 @@
 % Please edit documentation in R/covlmc_contexts.R
 \name{context_number.covlmc}
 \alias{context_number.covlmc}
-\title{Contexts number of a VLMC with covariates}
+\title{Number of contexts of a VLMC with covariates}
 \usage{
 \method{context_number}{covlmc}(ct)
 }
 \arguments{
-\item{ct}{a fitted covlmc model.}
+\item{ct}{a fitted VLMC with covariates (a \code{covlmc} object).}
 }
 \value{
 the number of contexts present in the VLMC with covariates.

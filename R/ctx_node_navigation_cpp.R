@@ -7,7 +7,10 @@
 #' ctx_00 <- find_sequence(rdts_ctree, c(0, 0))
 #' ## the parent sequence/node corresponds to the 0 context
 #' parent(ctx_00)
-#' identical(parent(ctx_00), find_sequence(rdts_ctree, c(0)))
+#' identical(
+#'   as_sequence(parent(ctx_00)),
+#'   as_sequence(find_sequence(rdts_ctree, c(0)))
+#' )
 parent.ctx_node_cpp <- function(node) {
   restore_ctx_node_cpp(node)
   if (length(node$sequence) >= 1) {

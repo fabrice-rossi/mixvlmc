@@ -2,7 +2,7 @@
 % Please edit documentation in R/covlmc.R
 \name{covlmc}
 \alias{covlmc}
-\title{Fit a Variable Length Markov Chain with Covariates (coVLMC)}
+\title{Fit a Variable Length Markov Chain with Covariates (COVLMC)}
 \usage{
 covlmc(
   x,
@@ -20,9 +20,10 @@ covlmc(
 as an integer vector or a \code{dts} object (see \code{\link[=dts]{dts()}}). Its state space must
 contain at least two states.}
 
-\item{covariate}{a data frame of covariates.}
+\item{covariate}{a data frame of covariates, with one row per observation
+of \code{x}, at least one column and no missing values.}
 
-\item{alpha}{number in (0,1) (default: 0.05) cut off value in the pruning
+\item{alpha}{number in (0,1] (default: 0.05) cut off value in the pruning
 phase (in quantile scale).}
 
 \item{min_size}{number >= 1 (default: 5). Tune the minimum number of
@@ -30,10 +31,10 @@ observations for a context in the growing phase of the context tree (see
 below for details).}
 
 \item{max_depth}{integer >= 0 (default: 100). Longest context considered in
-growing phase of the context tree.}
+the growing phase of the context tree.}
 
 \item{keep_data}{logical (defaults to \code{TRUE}). If \code{TRUE}, the original data
-are stored in the resulting object to enable post pruning (see
+are stored in the resulting object to enable post-pruning (see
 \code{\link[=prune.covlmc]{prune.covlmc()}}).}
 
 \item{control}{a list with control parameters, see \code{\link[=covlmc_control]{covlmc_control()}}.}
@@ -41,10 +42,10 @@ are stored in the resulting object to enable post pruning (see
 \item{...}{arguments passed to \code{\link[=covlmc_control]{covlmc_control()}}.}
 }
 \value{
-a fitted covlmc model.
+a fitted VLMC with covariates, an object of class \code{covlmc}.
 }
 \description{
-This function fits a  Variable Length Markov Chain with covariates (coVLMC)
+This function fits a Variable Length Markov Chain with covariates (COVLMC)
 to a discrete time series coupled with a time series of covariates.
 }
 \details{
@@ -54,19 +55,19 @@ for the \code{\link[=vlmc]{vlmc()}} approach, the algorithm builds first a conte
 of observations per context in the growing phase of the tree. It is computed
 as \code{min_size*(1+p*d)*(s-1)} where \code{d} is the length of the context (a.k.a.
 the depth in the tree), \code{s} is the number of states and \code{p} is the number of
-parameters associated to one time step of the covariates (one per numerical
+parameters associated with one time step of the covariates (one per numerical
 or logical covariate, and the number of levels minus one per factor). This
-corresponds to ensuring min_size observations per parameter of the logistic
-regression during the estimation phase.
+corresponds to ensuring \code{min_size} observations per parameter of the
+logistic regression during the estimation phase.
 
-Then logistic models are adjusted in the leaves at the tree: the goal of each
+Then logistic models are fitted in the leaves of the tree: the goal of each
 logistic model is to estimate the conditional distribution of the next state
-of the times series given the context (the recent past of the time series)
+of the time series given the context (the recent past of the time series)
 and delayed versions of the covariates. A pruning strategy is used to
-simplified the models (mainly to reduce the time window associated to the
+simplify the models (mainly to reduce the time window associated with the
 covariates) and the tree itself.
 
-Parameters specified by \code{control} are used to fine tune the behaviour of the
+Parameters specified by \code{control} are used to fine-tune the behaviour of the
 algorithm.
 }
 \section{Logistic models}{
@@ -76,14 +77,14 @@ By default, \code{covlmc} uses two different computing \emph{engines} for logist
 models:
 \itemize{
 \item when the time series has only two states, \code{covlmc} uses \code{\link[stats:glm]{stats::glm()}}
-with a binomial link (\code{\link[stats:family]{stats::binomial()}});
+with the binomial family (\code{\link[stats:family]{stats::binomial()}});
 \item when the time series has at least three
-states, \code{covlmc} use \code{\link[VGAM:vglm]{VGAM::vglm()}} with a multinomial link
+states, \code{covlmc} uses \code{\link[VGAM:vglm]{VGAM::vglm()}} with the multinomial family
 (\code{\link[VGAM:multinomial]{VGAM::multinomial()}}).
 }
 
 Both engines are able to detect degenerate cases and lead to more robust
-results that using \code{\link[nnet:multinom]{nnet::multinom()}}. It is nevertheless possible to
+results than using \code{\link[nnet:multinom]{nnet::multinom()}}. It is nevertheless possible to
 replace \code{\link[stats:glm]{stats::glm()}} and \code{\link[VGAM:vglm]{VGAM::vglm()}} with \code{\link[nnet:multinom]{nnet::multinom()}} by setting
 the global option \code{mixvlmc.predictive} to \code{"multinom"} (the default value is
 \code{"glm"}). Notice that while results should be comparable, there is no
@@ -114,5 +115,6 @@ with exogenous covariates." J. Time Ser. Anal., 43 (2)
 }
 }
 \seealso{
-\code{\link[=cutoff.covlmc]{cutoff.covlmc()}} and \code{\link[=prune.covlmc]{prune.covlmc()}} for post-pruning.
+\code{\link[=cutoff.covlmc]{cutoff.covlmc()}} and \code{\link[=prune.covlmc]{prune.covlmc()}} for post-pruning,
+\code{\link[=tune_covlmc]{tune_covlmc()}} for automatic model selection.
 }

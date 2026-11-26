@@ -10,22 +10,25 @@
 \method{logLik}{vlmc_cpp}(object, initial = c("truncated", "specific", "extended"), ...)
 }
 \arguments{
-\item{object}{the vlmc representation.}
+\item{object}{a fitted VLMC.}
 
 \item{initial}{specifies the likelihood function, more precisely the way the
 first few observations for which contexts cannot be calculated are
 integrated in the likelihood. Defaults to \code{"truncated"}. See
 \code{\link[=loglikelihood]{loglikelihood()}} for details.}
 
-\item{...}{additional parameters for logLik.}
+\item{...}{additional parameters (not used).}
 }
 \value{
 an object of class \code{logLik}. This is a number, the log-likelihood of
 the (CO)VLMC with the following attributes:
 \itemize{
-\item \code{df}: the number of parameters used by the VLMC for this likelihood calculation
-\item \code{nobs}: the number of observations included in this likelihood calculation
-\item \code{initial}: the value of the \code{initial} parameter used to compute this likelihood
+\item \code{df}: the number of parameters used by the VLMC for this likelihood
+calculation
+\item \code{nobs}: the number of observations included in this likelihood
+calculation
+\item \code{initial}: the value of the \code{initial} parameter used to compute this
+likelihood
 }
 }
 \description{
@@ -45,6 +48,11 @@ m_nocovariate <- vlmc(rdts)
 ll <- logLik(m_nocovariate)
 ll
 attributes(ll)
+## log-likelihood with the extended likelihood function
+logLik(m_nocovariate, initial = "extended")
+## logLik() enables the use of AIC() and BIC()
+AIC(m_nocovariate)
+BIC(m_nocovariate)
 }
 \seealso{
 \code{\link[=loglikelihood]{loglikelihood()}}

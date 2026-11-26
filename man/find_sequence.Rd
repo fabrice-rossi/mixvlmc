@@ -17,7 +17,7 @@ find_sequence(ct, ctx, reverse = FALSE, ...)
 
 \item{ctx}{a sequence to search in the context tree}
 
-\item{reverse}{specifies whether the sequence \code{ctx} is given the
+\item{reverse}{specifies whether the sequence \code{ctx} is given in the
 temporal order (\code{FALSE}, default value) or in the reverse temporal order
 (\code{TRUE}). See the dedicated section.}
 
@@ -29,9 +29,9 @@ in the context tree, \code{NULL} when this is not the case.
 }
 \description{
 This function checks whether the sequence \code{ctx} is represented in the context
-tree \code{ct}. If this is the case, it returns a description of matching node, an
-object of class \code{ctx_node}. If the sequence is not represented in the tree,
-the function return \code{NULL}.
+tree \code{ct}. If this is the case, it returns a description of the matching
+node, an object of class \code{ctx_node}. If the sequence is not represented in
+the tree, the function returns \code{NULL}.
 }
 \details{
 The function looks for sequences in general. The \code{\link[=is_context]{is_context()}} function can
@@ -39,12 +39,13 @@ be used on the resulting object to test if the sequence is in addition a
 proper context.
 }
 \section{State order in a sequence}{
- sequence are given by default
+ sequences are given by default
 in the temporal order and not in the "reverse" order used by many VLMC
 research papers: older values are on the left. For instance, the context
 \code{c(1, 0)} is reported if the sequence 0, then 1 appeared in the time series
 used to build the context tree. In the present function, \code{reverse} refers
-both to the order used for the \code{ctx} parameter and for the default order used by the resulting \code{ctx_node} object.
+both to the order used for the \code{ctx} parameter and to the default order
+used by the resulting \code{ctx_node} object.
 }
 
 \examples{
@@ -53,4 +54,6 @@ rdts_tree <- ctx_tree(rdts, max_depth = 3)
 find_sequence(rdts_tree, "A")
 ## returns NULL as "A" "C" does not appear in rdts
 find_sequence(rdts_tree, c("A", "C"))
+## "A", "B" in temporal order is "B", "A" in reverse order
+find_sequence(rdts_tree, c("B", "A"), reverse = TRUE)
 }

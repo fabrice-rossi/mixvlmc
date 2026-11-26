@@ -10,33 +10,35 @@ A data frame with 52704 rows and 15 variables:
 \item{month}{month of 2008}
 \item{month_day}{day of the month}
 \item{hour}{hour (0 to 23)}
-\item{minute}{starting minute of the 10 minutes period of this row}
-\item{active_power}{global average active power on the 10 minute period
+\item{minute}{starting minute of the 10 minute period of this row}
+\item{active_power}{global average active power over the 10 minute period
 (in kilowatt)}
-\item{reactive_power}{global average reactive power on the 10 minute
+\item{reactive_power}{global average reactive power over the 10 minute
 period (in kilowatt)}
-\item{voltage}{Average voltage on the 10 minute period (in volt)}
-\item{intensity}{global average current intensity  on the 10 minute
+\item{voltage}{average voltage over the 10 minute period (in volt)}
+\item{intensity}{global average current intensity over the 10 minute
 period (in ampere)}
 \item{sub_metering_1}{energy sub-metering No. 1 (in watt-hour of active
-energy averaged over the 10 minute period). It corresponds to the kitchen,
-containing mainly a dishwasher, an oven and a microwave (hot plates are
-not electric but gas powered)}
+energy averaged over the 10 minute period). It corresponds to the
+kitchen, containing mainly a dishwasher, an oven and a microwave (hot
+plates are not electric but gas powered).}
 \item{sub_metering_2}{energy sub-metering No. 2 (in watt-hour of active
 energy averaged over the 10 minute period). It corresponds to the laundry
-room, containing a washing-machine, a tumble-drier, a refrigerator and a light.}
-\item{sub_metering_3}{energy sub-metering No. 3 (in watt-hour of active energy
-averaged over the 10 minute period). It corresponds to an electric
-water-heater and an air-conditioner.}
-\item{week}{week number}
+room, containing a washing-machine, a tumble-drier, a refrigerator and a
+light.}
+\item{sub_metering_3}{energy sub-metering No. 3 (in watt-hour of active
+energy averaged over the 10 minute period). It corresponds to an
+electric water-heater and an air-conditioner.}
+\item{week}{week of the year, from 1 to 53 (week 1 consists of the first
+seven days of the year, week 2 of the next seven days, etc.)}
 \item{week_day}{day of the week from 1 = Sunday to 7 = Saturday}
 \item{year_day}{day of the year from 1 to 366 (2008 is a leap year)}
-\item{date_time}{Date and time in POSIXct format}
+\item{date_time}{date and time in POSIXct format}
 }
 }
 \source{
-Individual household electric power consumption, 2012, G. Hebrail and A. Berard,
-UC Irvine Machine Learning repository.
+Individual household electric power consumption, 2012, G. Hebrail and
+A. Berard, UC Irvine Machine Learning repository.
 \doi{10.24432/C58K54}
 }
 \usage{
@@ -44,21 +46,37 @@ powerconsumption
 }
 \description{
 A data set containing measurements of the electric power consumption of one
-household with a time resolution of 10 minutes for the full year of 2008.
+household with a time resolution of 10 minutes for the full year 2008.
 }
 \details{
 This is a simplified version of the full data available on the UCI Machine
 Learning Repository under a
 \href{https://creativecommons.org/licenses/by/4.0/legalcode}{Creative Commons
-Attribution 4.0 International} (CC BY 4.0) license, and provided by Georges
+Attribution 4.0 International} (CC BY 4.0) licence, and provided by Georges
 Hebrail and Alice Berard.
 
-The original data have been averaged over a 10 minute time period (discarding
-missing data in each period). The data set contains only
-the measurements from year 2008.
+The original data (one measurement per minute) have been averaged over 10
+minute periods (discarding missing data in each period). The measurements of
+a period in which all the original data are missing are coded as \code{NA}. The
+data set contains only the measurements from year 2008.
 
-Notice that the different variables are expressed in the adapted units.
-In particular, the sub-meters are measuring active energy (in watt-hour) while
-the global active power is expressed in kilowatt.
+Notice that the variables are expressed in different units. In particular,
+the sub-meters measure active energy (in watt-hour) while the global active
+power is expressed in kilowatt.
+}
+\examples{
+## active power during the fifth week of 2008
+pc <- powerconsumption[powerconsumption$week == 5, ]
+summary(pc$active_power)
+plot(pc$date_time, pc$active_power,
+  type = "l", xlab = "Time", ylab = "Active power (kW)"
+)
+## discretisation into four levels using the quartiles
+power_dts <- dts(cut(pc$active_power,
+  breaks = c(0, quantile(pc$active_power, probs = c(0.25, 0.5, 0.75, 1)))
+))
+power_dts
+model <- vlmc(power_dts)
+draw(model)
 }
 \keyword{datasets}

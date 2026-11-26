@@ -7,10 +7,10 @@
 \method{metrics}{ctx_node_covlmc}(model, ...)
 }
 \arguments{
-\item{model}{A \code{ctx_node_covlmc} object as returned by \code{\link[=find_sequence]{find_sequence()}} or
-\code{\link[=contexts.covlmc]{contexts.covlmc()}}}
+\item{model}{A \code{ctx_node_covlmc} object as returned by
+\code{\link[=find_sequence.covlmc]{find_sequence.covlmc()}} or \code{\link[=contexts.covlmc]{contexts.covlmc()}}}
 
-\item{...}{Additional parameters for predictive metrics computation.}
+\item{...}{additional parameters for predictive metrics computation.}
 }
 \value{
 an object of class \code{metrics.covlmc} with the following components:
@@ -23,13 +23,13 @@ in rows and true values in columns
 }
 \description{
 This function computes and returns predictive quality metrics for a node
-(\code{ctx_node_covlmc}) extracted from a covlmc
+(\code{ctx_node_covlmc}) extracted from a VLMC with covariates.
 }
 \details{
 Compared to \code{\link[=metrics.covlmc]{metrics.covlmc()}}, this function focuses on a single context and
 assesses the quality of its predictions, disregarding observations that have
 other contexts. Apart from this limited scope, the function operates as
-\code{\link[=metrics.covlmc]{metrics.covlmc()}}.
+\code{\link[=metrics.covlmc]{metrics.covlmc()}}. The node must be a context (see \code{\link[=is_context]{is_context()}}).
 }
 \examples{
 pc <- powerconsumption[powerconsumption$week == 5, ]
@@ -52,5 +52,6 @@ of the Area Under the ROC Curve for Multiple Class Classification Problems."
 \emph{Machine Learning} 45(2), p. 171--186. DOI: \doi{10.1023/A:1010920819831}.
 }
 \seealso{
-\code{\link[=metrics.vlmc]{metrics.vlmc()}}, \code{\link[=metrics.ctx_node]{metrics.ctx_node()}}, \code{\link[=contexts.vlmc]{contexts.vlmc()}}, \code{\link[=predict.vlmc]{predict.vlmc()}}.
+\code{\link[=metrics.vlmc]{metrics.vlmc()}}, \code{\link[=metrics.covlmc]{metrics.covlmc()}}, \code{\link[=metrics.ctx_node]{metrics.ctx_node()}},
+\code{\link[=contexts.vlmc]{contexts.vlmc()}}, \code{\link[=predict.vlmc]{predict.vlmc()}}.
 }

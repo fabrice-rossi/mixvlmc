@@ -8,7 +8,7 @@
 #' @param newdata optional new data
 #' @param lev original levels of the target variable
 #'
-#' @return a matrix of predicted probabilities is the target variable has at
+#' @return a matrix of predicted probabilities if the target variable has at
 #' least three levels or a vector of predicted probabilities of the positive
 #' class for a target variable with only two levels.
 #' @noRd

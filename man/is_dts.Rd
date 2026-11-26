@@ -13,9 +13,11 @@ is_dts(x)
 \code{TRUE} for discrete time series.
 }
 \description{
-This function returns \code{TRUE} for discrete time series and \code{FALSE} for other objects.
+This function returns \code{TRUE} for discrete time series (objects of class
+\code{dts}) and \code{FALSE} for other objects.
 }
 \examples{
+set.seed(0)
 pre_dts <- sample(c("A", "B"), 20, replace = TRUE)
 x_dts <- dts(pre_dts)
 is_dts(x_dts)

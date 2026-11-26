@@ -2,7 +2,7 @@
 % Please edit documentation in R/dts.R
 \name{dts}
 \alias{dts}
-\title{Convert a vector to a discrete time series.}
+\title{Convert a vector to a discrete time series}
 \usage{
 dts(x, vals = NULL)
 }
@@ -11,13 +11,14 @@ dts(x, vals = NULL)
 logical.}
 
 \item{vals}{the set of values that can be taken by the time series, a.k.a. the
-state space, see details (defaults to \code{NULL})}
+state space, see details (defaults to \code{NULL}).}
 }
 \value{
-a discrete time series (of class that inherits from \code{dts}).
+a discrete time series (an object of a class that inherits from
+\code{dts}).
 }
 \description{
-This function creates a  representation of a discrete time series that
+This function creates a representation of a discrete time series that
 can be further processed by model estimation functions.
 }
 \details{
@@ -32,9 +33,16 @@ series (as returned by \code{sort(unique(x))}).
 }
 
 If \code{vals} is specified, the function makes sure that \code{x} contains only the
-specified values.
+specified values and reports an error otherwise. The state space \code{vals} may
+include values that do not appear in \code{x}.
 }
 \examples{
+set.seed(0)
 x_dts <- dts(sample(c("A", "B"), 20, replace = TRUE))
 x_dts
+## specifying the state space
+x_dts_3 <- dts(sample(c("A", "B"), 20, replace = TRUE),
+  vals = c("A", "B", "C")
+)
+states(x_dts_3)
 }

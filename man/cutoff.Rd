@@ -2,14 +2,14 @@
 % Please edit documentation in R/cutoff.R
 \name{cutoff}
 \alias{cutoff}
-\title{Cut off values for VLMC like model}
+\title{Cut off values for VLMC-like models}
 \usage{
 cutoff(model, ...)
 }
 \arguments{
 \item{model}{a model.}
 
-\item{...}{additional arguments for the cutoff function implementations}
+\item{...}{additional arguments for the implementations of \code{cutoff()}.}
 }
 \value{
 a cut off value or a vector of cut off values.
@@ -21,8 +21,9 @@ procedure is applied (in general a tree pruning operation as provided by
 \code{\link[=prune]{prune()}}).
 }
 \details{
-The exact definition of what is a cut off value depends on the model type and
-is documented in concrete implementation of the function.
+The exact definition of a cut off value depends on the model type and is
+documented in the concrete implementations of the function (see e.g.
+\code{\link[=cutoff.vlmc]{cutoff.vlmc()}} and \code{\link[=cutoff.covlmc]{cutoff.covlmc()}}).
 }
 \examples{
 pc <- powerconsumption[powerconsumption$week == 5, ]

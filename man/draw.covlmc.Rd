@@ -2,7 +2,7 @@
 % Please edit documentation in R/covlmc_draw.R
 \name{draw.covlmc}
 \alias{draw.covlmc}
-\title{Text based representation of a covlmc model}
+\title{Text based representation of a VLMC with covariates}
 \usage{
 \method{draw}{covlmc}(
   ct,
@@ -16,45 +16,45 @@
 )
 }
 \arguments{
-\item{ct}{a fitted covlmc model.}
+\item{ct}{a fitted VLMC with covariates (a \code{covlmc} object).}
 
 \item{format}{a character string that specifies the output format of the
 function. Possible values are \code{"text"} (default) and \code{"latex"}. See details.}
 
-\item{control}{a list of low level control parameters of the text
+\item{control}{a list of low level control parameters of the
 representation. See details and \code{\link[=draw_control]{draw_control()}}.}
 
 \item{model}{this parameter controls the display of logistic models
-associated to nodes (accepted values: \code{"coeff"}, \code{"full"} and \code{NULL}). The
-interpretation of the parameter depends on the format, see below for
-details.}
+associated with nodes (accepted values: \code{"coef"} (default), \code{"full"} and
+\code{NULL}). The interpretation of the parameter depends on the format, see
+below for details.}
 
 \item{p_value}{specifies whether the p-values of the likelihood ratio tests
-conducted during the covlmc construction must be included in the
+conducted during the construction of the model must be included in the
 representation (defaults to \code{FALSE}).}
 
-\item{with_state}{specifies whether to display the state associated to each
-dimension of the logistic model (see details).}
+\item{with_state}{specifies whether to display the state associated with
+each dimension of the logistic model (defaults to \code{FALSE}, see details).}
 
 \item{constant_as_prob}{specifies how to represent constant logistic models
 for \code{format="text"} (defaults to \code{TRUE}, see details). Disregarded when
 \code{format="latex"}.}
 
-\item{...}{additional arguments for draw.}
+\item{...}{additional arguments for the methods of \code{draw()}.}
 }
 \value{
 an object of class \code{mixvlmc_draw} (see \code{\link[=print.mixvlmc_draw]{print.mixvlmc_draw()}}).
 }
 \description{
-This function 'draws' a covlmc as a text.
+This function 'draws' a VLMC with covariates (a \code{covlmc} object) as text.
 }
 \details{
 The function uses different text based formats (plain "ascii art" and LaTeX)
-to represent the context tree. Fine tuning of the representation can be done
+to represent the context tree. Fine-tuning of the representation can be done
 via the \code{\link[=draw_control]{draw_control()}} function.
 
-Contrarily to \code{\link[=draw]{draw()}} functions adapted to context trees \code{\link[=draw.ctx_tree]{draw.ctx_tree()}}
-and VLMC \code{\link[=draw.vlmc]{draw.vlmc()}}, the present function does not try to produce similar
+Unlike the \code{\link[=draw]{draw()}} methods adapted to context trees (\code{\link[=draw.ctx_tree]{draw.ctx_tree()}})
+and VLMC (\code{\link[=draw.vlmc]{draw.vlmc()}}), the present function does not try to produce similar
 results for the \code{"text"} format and the \code{"latex"} format as the \code{"text"}
 format is intrinsically more limited in terms of model representations. This
 is detailed below.
@@ -67,11 +67,11 @@ With the default value \code{"text"} the output is produced in "ascii art" using
 the charset specified by the global option \code{mixvlmc.charset}.
 
 With the \code{latex} value, the output is produced in LaTeX, leveraging the
-\href{https://ctan.org/pkg/forest}{forest} Latex package (see
+\href{https://ctan.org/pkg/forest}{forest} LaTeX package (see
 \url{https://ctan.org/pkg/forest}). Each call to \code{draw.covlmc()} produces a full
 \code{forest} LaTeX environment. This can be included as is in a LaTeX document,
-provided the \code{forest} package  is loaded in the preamble of the document.
-The LaTeX output is sanitized to avoid potential problems induced by
+provided the \code{forest} package is loaded in the preamble of the document.
+The LaTeX output is sanitised to avoid potential problems induced by
 special characters in the names of the states of the context tree.
 }
 
@@ -82,10 +82,10 @@ special characters in the names of the states of the context tree.
 When \code{format="text"} the parameters are interpreted as follows:
 \itemize{
 \item \code{model}: the default \code{model="coef"} represents only the \emph{coefficients}
-of the logistic models associated to each context. \code{model="full"} includes
-the name of the variables in the representation. Setting \code{model=NULL}
-removes the model representations. Additional parameters can be used to
-tweak model representations (see below).
+of the logistic models associated with each context. \code{model="full"}
+includes the names of the variables in the representation. Setting
+\code{model=NULL} removes the model representations. Additional parameters can
+be used to tweak model representations (see below).
 \item \code{constant_as_prob}: specifies whether to represent logistic models that
 do not use covariates (a.k.a. constant models) using the probability
 distributions they induce on the state space (default behaviour with
@@ -93,15 +93,15 @@ distributions they induce on the state space (default behaviour with
 not taken into account when \code{model} is not set to \code{"coef"}.
 \item fields of the \code{control} list (including the charset):
 \itemize{
-\item \code{intercept} : character(s) used to represent the intercept when
+\item \code{intercept}: character(s) used to represent the intercept when
 \code{model="full"}
 \item \code{intercept_sep}: character(s) used to separate the intercept from
 the other coefficients in model representation.
 \item \code{time_sep}: character(s) used to split the coefficients list by blocks
-associated to time delays in the covariate inclusion into the logistic
+associated with time delays in the covariate inclusion into the logistic
 model. The first block contains the intercept(s), the second block the
-covariate values a time t-1, the third block at time t-2, etc.
-\item \code{level_sep}: character(s) used separate levels from model, see below.
+covariate values at time t-1, the third block at time t-2, etc.
+\item \code{level_sep}: character(s) used to separate levels from model, see below.
 \item \code{open_p_value} and \code{close_p_value}: delimiters used around the p-values
 when \code{p_value=TRUE}
 \item \code{open_model} and \code{close_model}: delimiters around the model when \code{model}
@@ -113,13 +113,13 @@ is not \code{NULL}
 \subsection{State representation}{
 
 When \code{model} is not \code{NULL}, the coefficients of the logistic models are
-presented, organized in rows associated to states. One state is used as the
-reference state and the logistic model aims at predicting the ratio of
+presented, organised in rows associated with states. One state is used as
+the reference state and the logistic model aims at predicting the ratio of
 probability between another state and the reference one (in log scale).
 When \code{with_state} is \code{TRUE}, the display includes for each row of
 coefficients the target state. This is useful when using e.g. \code{VGAM::vglm()}
 as unused levels of the target variable will be automatically dropped from
-the model, leading to a reduce number of rows. The reference state is
+the model, leading to a reduced number of rows. The reference state is
 either shown on the first row if \code{model} is \code{"full"} or after the state on
 each row if \code{model} is \code{"coef"}. States are separated from the model
 representation by the character(s) specified in \code{level_sep} in the
@@ -158,8 +158,8 @@ states and for the models, see \code{\link[=draw_control]{draw_control()}} for d
 \subsection{State representation}{
 
 When \code{model} is not \code{NULL}, the coefficients of the logistic models are
-presented, organized in rows or in columns (depending \code{tab_orientation}) on
-associated to states. One state is used as the reference state and the
+presented, organised in rows or in columns (depending on \code{tab_orientation})
+associated with states. One state is used as the reference state and the
 logistic model aims at predicting the ratio of probability between another
 state and the reference one (in log scale). When \code{with_state} is \code{TRUE},
 the display includes for each row/column of coefficients the target state.
@@ -171,11 +171,11 @@ The reference state is shown on the first row/column.
 
 
 When the representation includes the names of the variables used by the
-logistic models, they are the one generated by the underlying logistic model,
-e.g. \code{\link[stats:glm]{stats::glm()}}. Numerical variable names are used as is, while factors
-have levels appended. The intercept is denoted by the \code{intercept} member
-of the \code{control} list when\code{format="text"} (as part of the charset). It is
-always represented by \code{(I)} when \code{format="latex"}.
+logistic models, they are the ones generated by the underlying logistic
+model, e.g. \code{\link[stats:glm]{stats::glm()}}. Numerical variable names are used as is, while
+factors have levels appended. The intercept is denoted by the \code{intercept}
+member of the \code{control} list when \code{format="text"} (as part of the charset).
+It is always represented by \code{(I)} when \code{format="latex"}.
 
 When \code{format="text"}, the time delays are represented by an underscore
 followed by the time delay. For instance if the model uses the numerical
@@ -198,5 +198,7 @@ draw(m_cov, model = NULL)
 draw(m_cov, p_value = TRUE)
 draw(m_cov, p_value = FALSE, control = draw_control(digits = 2))
 draw(m_cov, model = "full", control = draw_control(digits = 3))
+draw(m_cov, model = "full", with_state = TRUE)
+draw(m_cov, constant_as_prob = FALSE)
 draw(m_cov, format = "latex", control = draw_control(orientation = "h"))
 }

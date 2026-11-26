@@ -1,35 +1,38 @@
 #' Next state prediction in a discrete time series for a VLMC with covariates
 #'
-#' This function computes one step ahead predictions for a discrete time series
+#' This function computes one-step-ahead predictions for a discrete time series
 #' based on a VLMC with covariates.
 #'
 #' Given a time series `X`, at time step `t`, a context is computed using
 #' observations from `X[1]` to `X[t-1]` (see the dedicated section). The
-#' prediction is then the most probable state for `X[t]` given this logistic
+#' prediction is then the most probable state for `X[t]` given the logistic
 #' model of the context and the corresponding values of the covariates. The time
 #' series of predictions is returned by the function when `type="raw"` (default
 #' case).
 #'
-#' When `type="probs"`, the function returns of the probabilities of each state
+#' When `type="probs"`, the function returns the probabilities of each state
 #' for `X[t]` as estimated by the logistic models. Those probabilities are
 #' returned as a matrix of probabilities with column names given by the state
 #' names.
 #'
 #' @section Extended contexts:
 #'
-#'   As explained in details in [loglikelihood.covlmc()] documentation and in
+#'   As explained in detail in the [loglikelihood.covlmc()] documentation and in
 #'   the dedicated `vignette("likelihood", package = "mixvlmc")`, the first
 #'   initial values of a time series do not in general have a proper context for
-#'   a COVLMC with a non zero order. In order to predict something meaningful
+#'   a COVLMC with a non-zero order. In order to predict something meaningful
 #'   for those values, we rely on the notion of extended context defined in the
 #'   documents mentioned above. This follows the same logic as using
 #'   [loglikelihood.covlmc()] with the parameter `initial="extended"`. All
-#'   covlmc functions that need to manipulate initial values with no proper
+#'   COVLMC functions that need to manipulate initial values with no proper
 #'   context use the same approach.
 #'
-#' @param object a fitted covlmc object.
-#' @param newdata a time series adapted to the covlmc object.
-#' @param newcov a data frame with the new values for the covariates.
+#' @param object a fitted VLMC with covariates (a `covlmc` object). Fully
+#'   trimmed models are not supported (see [trim.covlmc()]).
+#' @param newdata a discrete time series with the same state space as the one
+#'   used to fit `object`.
+#' @param newcov a data frame with the new values for the covariates, with one
+#'   row per observation in `newdata`.
 #' @param type character indicating the type of prediction required. The default
 #'   `"raw"` returns actual predictions in the form of a new time series. The
 #'   alternative `"probs"` returns a matrix of prediction probabilities (see
@@ -40,7 +43,8 @@
 #' @param ... additional arguments.
 #'
 #' @returns A vector of predictions if `type="raw"` or a matrix of state
-#'   probabilities if `type="probs"`.
+#'   probabilities if `type="probs"`. The number of predictions (or of rows of
+#'   the matrix) is the length of `newdata`, plus one if `final_pred=TRUE`.
 #' @export
 #' @examples
 #' pc <- powerconsumption[powerconsumption$week == 10, ]
@@ -48,9 +52,12 @@
 #' rdts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
 #' m_cov <- covlmc(rdts, rdts_cov, min_size = 5, alpha = 0.5)
 #' rdts_probs <- predict(m_cov, rdts[1:144], rdts_cov[1:144, , drop = FALSE], type = "probs")
+#' head(rdts_probs)
 #' rdts_preds <- predict(m_cov, rdts[1:144], rdts_cov[1:144, , drop = FALSE],
 #'   type = "raw", final_pred = FALSE
 #' )
+#' ## comparison between the predictions and the actual values
+#' table(rdts_preds, rdts[1:144])
 predict.covlmc <- function(object, newdata, newcov, type = c("raw", "probs"),
                            final_pred = TRUE, ...) {
   rlang::check_dots_empty()

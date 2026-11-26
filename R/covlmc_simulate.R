@@ -28,51 +28,61 @@ match_context_co <- function(tree, ctx) {
 }
 
 
-#' Simulate a discrete time series for a covlmc
+#' Simulate a discrete time series for a VLMC with covariates
 #'
 #' This function simulates a time series from the distribution estimated by the
-#' given covlmc object.
+#' given VLMC with covariates (a `covlmc` object).
 #'
-#' A VLMC with covariates model needs covariates to compute its transition
+#' A VLMC with covariates needs covariates to compute its transition
 #' probabilities. The covariates must be submitted as a data frame using the
-#' `covariate` argument. In addition,  the time series can be initiated by a
+#' `covariate` argument. In addition, the time series can be initiated by a
 #' fixed sequence specified via the `init` parameter.
 #'
-#' @param object a fitted covlmc object.
+#' @param object a fitted VLMC with covariates (a `covlmc` object). Fully
+#'   trimmed models are not supported (see [trim.covlmc()]).
 #' @param nsim length of the simulated time series (defaults to 1).
 #' @param seed an optional random seed (see the dedicated section).
-#' @param covariate values of the covariates.
-#' @param init an optional initial sequence for the time series given by an object
-#'  that can be interpreted as a discrete time series.
+#' @param covariate a data frame with the values of the covariates, with at
+#'   least `nsim` rows.
+#' @param init an optional initial sequence for the time series given by an
+#'   object that can be interpreted as a discrete time series. Its length must
+#'   not exceed `nsim`.
 #' @param ... additional arguments.
 #'
 #' @section Extended contexts:
 #'
-#'   As explained in details in [loglikelihood.covlmc()] documentation and in
+#'   As explained in detail in the [loglikelihood.covlmc()] documentation and in
 #'   the dedicated `vignette("likelihood", package = "mixvlmc")`, the first
 #'   initial values of a time series do not in general have a proper context for
-#'   a COVLMC with a non zero order. In order to simulate something meaningful
+#'   a COVLMC with a non-zero order. In order to simulate something meaningful
 #'   for those values, we rely on the notion of extended context defined in the
 #'   documents mentioned above. This follows the same logic as using
 #'   [loglikelihood.covlmc()] with the parameter `initial="extended"`. All
-#'   covlmc functions that need to manipulate initial values with no proper
+#'   COVLMC functions that need to manipulate initial values with no proper
 #'   context use the same approach.
 #' @inheritSection simulate.vlmc Random seed
 #' @returns a simulated discrete time series of the same type as the one used to
-#'   build the covlmc with a `seed` attribute (see the Random seed section). The
-#'   results has also the `dts_simulated` class to hide the `seed` attribute when using
-#'   `print` or similar function.
-#' @seealso [stats::simulate()] for details and examples on the random number generator setting
+#'   build the model, with a `seed` attribute (see the Random seed section). The
+#'   result also has the `dts_simulated` class to hide the `seed` attribute when
+#'   using `print` or similar functions.
+#' @seealso [stats::simulate()] for details and examples on the random number
+#'   generator setting.
 #' @export
 #' @examples
 #' pc <- powerconsumption[powerconsumption$week == 5, ]
 #' rdts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1))))
 #' rdts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
 #' m_cov <- covlmc(rdts, rdts_cov, min_size = 5)
-#' # new week with day light from 6:00 to 18:00
-#' new_cov <- data.frame(day_night = rep(c(rep(FALSE, 59), rep(TRUE, 121), rep(FALSE, 60)), times = 7))
+#' # new week with daylight from 6:00 to 18:00 (144 observations per day, one
+#' # every 10 minutes)
+#' new_cov <- data.frame(
+#'   day_night = rep(c(rep(FALSE, 36), rep(TRUE, 72), rep(FALSE, 36)), times = 7)
+#' )
 #' new_rdts <- simulate(m_cov, nrow(new_cov), seed = 0, covariate = new_cov)
+#' table(new_rdts)
 #' new_rdts_2 <- simulate(m_cov, nrow(new_cov), seed = 0, covariate = new_cov, init = rdts[1:10])
+#' ## the simulated time series starts with the initial values
+#' identical(as.character(new_rdts_2[1:10]), as.character(rdts[1:10]))
 simulate.covlmc <- function(object, nsim = 1, seed = NULL, covariate, init = NULL, ...) {
   rlang::check_dots_empty()
   if (isTRUE(object$trimmed == "full")) {

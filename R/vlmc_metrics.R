@@ -43,7 +43,10 @@ generate_fake_data <- function(freq, counts, probs, vals) {
 
 #' @inherit metrics
 #' @title Predictive quality metrics for VLMC
-#' @returns An object of class `metrics.vlmc` with the following components:
+#' @param model a fitted VLMC model.
+#' @param ... additional arguments (not used).
+#' @returns An object of class `metrics.vlmc` with (at least) the following
+#'   components:
 #'
 #'  - `accuracy`: the accuracy of the predictions
 #'  - `conf_mat`: the confusion matrix of the predictions, with predicted values
@@ -99,7 +102,7 @@ metrics.vlmc <- function(model, ...) {
 }
 
 #' @describeIn metrics.vlmc Prints the predictive metrics of the VLMC model.
-#' @param x A metrics.vlmc object, results of a call to [metrics.vlmc()]
+#' @param x a `metrics.vlmc` object, result of a call to [metrics.vlmc()].
 #' @exportS3Method
 print.metrics.vlmc <- function(x, ...) {
   print(x$model)

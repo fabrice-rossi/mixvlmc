@@ -10,7 +10,8 @@ selection}
 \arguments{
 \item{object}{a \code{tune_vlmc} object}
 
-\item{cutoff}{the scale used for the cut off criterion (default "quantile")}
+\item{cutoff}{the scale used for the cut off criterion on the x axis, either
+\code{"quantile"} (default) or \code{"native"}}
 
 \item{...}{additional parameters (not used currently)}
 }
@@ -19,18 +20,20 @@ a ggplot object
 }
 \description{
 This function prepares a plot of the results of \code{\link[=tune_vlmc]{tune_vlmc()}} using ggplot2.
-The result can be passed to \code{\link[=print]{print()}} to display the result.
+The result can be passed to \code{\link[=print]{print()}} to display the plot.
 }
 \details{
 The graphical representation proposed by this function is complete, while the
-one produced by \code{\link[=plot.tune_vlmc]{plot.tune_vlmc()}} is minimalistic. We use here the faceting
+one produced by \code{\link[=plot.tune_vlmc]{plot.tune_vlmc()}} is minimalist. We use here the faceting
 capabilities of ggplot2 to combine on a single graphical representation the
-evolution of multiple characteristics of the VLMC during the pruning process,
-while \code{\link[=plot.tune_vlmc]{plot.tune_vlmc()}} shows only the selection criterion or the log
-likelihood. Each facet of the resulting plot shows a quantity as a function
-of the cut off expressed in quantile or native scale.
+evolution of multiple characteristics of the VLMC during the pruning process
+(depth, number of contexts, log-likelihood and information criteria), while
+\code{\link[=plot.tune_vlmc]{plot.tune_vlmc()}} shows only the selection criterion or the log-likelihood.
+Each facet of the resulting plot shows a quantity as a function of the cut
+off expressed in quantile or native scale.
 }
 \examples{
+\dontshow{if (requireNamespace("ggplot2", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 pc <- powerconsumption[powerconsumption$week \%in\% 10:11, ]
 rdts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1))))
 rdts_best_model_tune <- tune_vlmc(rdts, criterion = "BIC")
@@ -38,4 +41,7 @@ vlmc_plot <- ggplot2::autoplot(rdts_best_model_tune)
 print(vlmc_plot)
 ## simple post customisation
 print(vlmc_plot + ggplot2::geom_point())
+## cut off in native scale
+print(ggplot2::autoplot(rdts_best_model_tune, cutoff = "native"))
+\dontshow{\}) # examplesIf}
 }

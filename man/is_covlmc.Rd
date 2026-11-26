@@ -2,7 +2,7 @@
 % Please edit documentation in R/covlmc.R
 \name{is_covlmc}
 \alias{is_covlmc}
-\title{Test if the object is a covlmc model}
+\title{Test if the object is a VLMC with covariates}
 \usage{
 is_covlmc(x)
 }
@@ -10,10 +10,11 @@ is_covlmc(x)
 \item{x}{an R object.}
 }
 \value{
-\code{TRUE} for VLMC models with covariates.
+\code{TRUE} for VLMC with covariates, \code{FALSE} for other objects.
 }
 \description{
-This function returns \code{TRUE} for VLMC models with covariates and \code{FALSE} for other objects.
+This function returns \code{TRUE} for VLMC with covariates (\code{covlmc} objects)
+and \code{FALSE} for other objects.
 }
 \examples{
 pc <- powerconsumption[powerconsumption$week == 5, ]

@@ -3,25 +3,28 @@
 \name{as_covlmc}
 \alias{as_covlmc}
 \alias{as_covlmc.tune_covlmc}
-\title{Convert an object to a Variable Length Markov Chain with covariates (coVLMC)}
+\title{Convert an object to a Variable Length Markov Chain with covariates (COVLMC)}
 \usage{
 as_covlmc(x, ...)
 
 \method{as_covlmc}{tune_covlmc}(x, ...)
 }
 \arguments{
-\item{x}{an object to convert into a covlmc.}
+\item{x}{an object to convert into a \code{covlmc} object, for instance the
+result of \code{\link[=tune_covlmc]{tune_covlmc()}}.}
 
 \item{...}{additional arguments for conversion functions.}
 }
 \value{
-a covlmc
+a \code{covlmc} object. For a \code{tune_covlmc} object, this is the best
+model selected by \code{\link[=tune_covlmc]{tune_covlmc()}}.
 }
 \description{
-This generic function converts an object into a covlmc.
+This generic function converts an object into a VLMC with covariates (a
+\code{covlmc} object).
 }
 \examples{
-## conversion from the results of tune_covlmc
+## conversion from the results of tune_covlmc()
 pc <- powerconsumption[powerconsumption$week == 5, ]
 rdts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1))))
 rdts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))

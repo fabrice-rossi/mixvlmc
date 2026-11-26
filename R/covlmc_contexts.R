@@ -1,8 +1,8 @@
-#' Contexts number of a VLMC with covariates
+#' Number of contexts of a VLMC with covariates
 #'
 #' This function returns the total number of contexts of a VLMC with covariates.
 #'
-#' @param ct a fitted covlmc model.
+#' @param ct a fitted VLMC with covariates (a `covlmc` object).
 #' @returns the number of contexts present in the VLMC with covariates.
 #'
 #' @examples
@@ -119,26 +119,27 @@ covlmc_node_content_extractor <- function(tree, path, ct, vals, control, is_leaf
 #' @returns A list of class `contexts` containing the contexts represented in
 #'   this tree (as `ctx_node_covlmc`) or a data.frame.
 #' @inherit contexts.ctx_tree
-#' @param model specifies whether to include the model associated to a each
+#' @param model specifies whether to include the model associated with each
 #'   context. The default result with `model=NULL` does not include any model.
 #'   Setting `model` to `"coef"` adds the coefficients of the models in a `coef`
-#'   column, while `"full"` include the models themselves (as R objects) in a
-#'   `model` column.
-#' @param hsize if TRUE, adds a `hsize` column to the result data frame that
+#'   column, while `"full"` includes the models themselves (as R objects) in a
+#'   `model` column (not supported by fully trimmed models, see
+#'   [trim.covlmc()]).
+#' @param hsize if `TRUE`, adds a `hsize` column to the result data frame that
 #'   gives for each context the size of the history of covariates used by the
-#'   model.
-#' @param ct a fitted covlmc model.
+#'   model (see [covariate_memory()]).
+#' @param ct a fitted VLMC with covariates (a `covlmc` object).
 #' @param local specifies how the counts reported by `frequency` are computed.
 #'   When `local` is `FALSE` (default value) the counts include both counts that
 #'   are specific to the context (if any) and counts from the descendants of the
 #'   context in the tree. When `local` is `TRUE` the counts include only the
 #'   number of times the context appears without being the last part of a longer
 #'   context.
-#' @param metrics if TRUE, adds predictive metrics for each context (see
+#' @param metrics if `TRUE`, adds predictive metrics for each context (see
 #'   [metrics()] for the definition of predictive metrics).
-#' @param merging if TRUE, adds a `merged` column to the result data frame. For
-#'   a normal context, the value of `merged` is FALSE. Contexts that share the
-#'   same model have a TRUE `merged` value.
+#' @param merging if `TRUE`, adds a `merged` column to the result data frame.
+#'   For a normal context, the value of `merged` is `FALSE`. Contexts that share
+#'   the same model have a `TRUE` `merged` value (see [is_merged()]).
 #' @details The default behaviour of the function is to return a list of all the
 #'   contexts using `ctx_node_covlmc` objects (as returned by
 #'   [find_sequence.covlmc()]). The properties of the contexts can then be
@@ -148,15 +149,16 @@ covlmc_node_content_extractor <- function(tree, path, ct, vals, control, is_leaf
 #'
 #'   When `sequence=TRUE` the method returns a data.frame whose first column,
 #'   named `context`, contains the contexts as vectors (i.e. the value returned
-#'   by `as_sequence()` applied to a `ctx_node` object). Other columns contain
+#'   by [as_sequence()] applied to a `ctx_node` object). Other columns contain
 #'   context specific values specified by the additional parameters. Setting any
-#'   of those parameters to a value that ask for reporting information will
+#'   of those parameters to a value that asks for reporting information will
 #'   toggle the result type of the function to `data.frame`.
 #'
 #'   See [contexts.ctx_tree()] for details about the `frequency` parameter. When
 #'   `model` is non `NULL`, the resulting `data.frame` contains the models
-#'   associated to each context (either the full R model or its coefficients).
-#'   Other columns are added is the corresponding parameters are set to `TRUE`.
+#'   associated with each context (either the full R model or its
+#'   coefficients). Other columns are added if the corresponding parameters are
+#'   set to `TRUE`.
 #' @examples
 #' pc <- powerconsumption[powerconsumption$week == 5, ]
 #' breaks <- c(0, median(pc$active_power), max(pc$active_power))
@@ -172,6 +174,7 @@ covlmc_node_content_extractor <- function(tree, path, ct, vals, control, is_leaf
 #' ## data.frame interface
 #' contexts(m_cov, model = "coef")
 #' contexts(m_cov, model = "full", hsize = TRUE)
+#' contexts(m_cov, metrics = TRUE, merging = TRUE)
 #' @export
 contexts.covlmc <- function(ct, sequence = FALSE, reverse = FALSE, frequency = NULL,
                             positions = FALSE, local = FALSE,

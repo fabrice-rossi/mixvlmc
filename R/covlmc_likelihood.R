@@ -149,7 +149,7 @@ rec_loglikelihood_covlmc_newdata <- function(tree, d, nb_vals, y, cov, verbose =
 #' This function evaluates the log-likelihood of a VLMC with covariates
 #' fitted on a discrete time series.
 #'
-#' @param object the covlmc representation.
+#' @param object a fitted VLMC with covariates (a `covlmc` object).
 #' @inherit logLik.vlmc
 #' @examples
 #'
@@ -178,17 +178,20 @@ logLik.covlmc <- function(object, initial = c("truncated", "specific", "extended
 #' Log-Likelihood of a VLMC with covariates
 #'
 #' This function evaluates the log-likelihood of a VLMC with covariates fitted
-#' on a discrete time series. When the optional arguments `newdata` is
+#' on a discrete time series. When the optional argument `newdata` is
 #' provided, the function evaluates instead the log-likelihood for this (new)
 #' discrete time series on the new covariates which must be provided through the
 #' `newcov` parameter.
 #'
 #' The definition of the likelihood function depends on the value of the
-#' `initial` parameters, see the section below as well as the dedicated
+#' `initial` parameter, see the section below as well as the dedicated
 #' vignette: `vignette("likelihood", package = "mixvlmc")`.
 #'
-#' @param vlmc the covlmc representation.
-#' @param newcov an optional data frame with the new values for the covariates.
+#' @param vlmc a fitted VLMC with covariates (a `covlmc` object).
+#' @param newcov an optional data frame with the new values for the covariates
+#'   (mandatory when `newdata` is provided, with one row per observation in
+#'   `newdata`). Evaluating the likelihood on new data is not supported by
+#'   fully trimmed models (see [trim.covlmc()]).
 #' @inherit loglikelihood
 #' @examples
 #'
@@ -215,6 +218,12 @@ logLik.covlmc <- function(object, initial = c("truncated", "specific", "extended
 #' ll_new <- loglikelihood(m_cov, newdata = rdts_new, newcov = rdts_cov_new)
 #' ll_new
 #' attributes(ll_new)
+#' ## extended likelihood on the same data
+#' ll_new_extended <- loglikelihood(m_cov,
+#'   newdata = rdts_new, newcov = rdts_cov_new,
+#'   initial = "extended"
+#' )
+#' attributes(ll_new_extended)
 #'
 #' @export
 loglikelihood.covlmc <- function(vlmc, newdata,

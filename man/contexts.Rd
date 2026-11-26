@@ -10,9 +10,10 @@ contexts(ct, sequence = FALSE, reverse = FALSE, ...)
 \item{ct}{a context tree.}
 
 \item{sequence}{if \code{TRUE} the function returns its results as a \code{data.frame},
-if \code{FALSE} (default) as a list of \code{ctx_node} objects. (see details)}
+if \code{FALSE} (default) as a list of \code{ctx_node} objects (see details).}
 
-\item{reverse}{logical (defaults to \code{FALSE}). See details.}
+\item{reverse}{logical (defaults to \code{FALSE}). If \code{TRUE}, contexts are given
+in reverse temporal order. See the dedicated section.}
 
 \item{...}{additional arguments for the contexts function.}
 }
@@ -31,27 +32,28 @@ contained in the tree using \code{ctx_node} objects (as returned by e.g.
 then be explored using adapted functions such as \code{\link[=counts]{counts()}} and
 \code{\link[=positions]{positions()}}. The result list is of class \code{contexts}. When \code{sequence=TRUE},
 the method returns a data.frame whose first column, named \code{context}, contains
-the contexts as vectors (i.e. the value returned by \code{as_sequence()} applied
+the contexts as vectors (i.e. the value returned by \code{\link[=as_sequence]{as_sequence()}} applied
 to a \code{ctx_node} object). Other columns contain context specific values which
 depend on the actual class of the tree and on additional parameters. In all
-implementations of \code{contexts()}, setting the additional parameters to any no
-default value leads to a \code{data.frame} result.
+implementations of \code{contexts()}, setting the additional parameters to any
+non-default value leads to a \code{data.frame} result.
 }
 \section{State order in a context}{
  Notice that contexts are given by default
 in the temporal order and not in the "reverse" order used by many VLMC
 research papers: older values are on the left. For instance, the context
 \code{c(1, 0)} is reported if the sequence 0, then 1 appeared in the time series
-used to build the context tree. Set reverse to \code{TRUE} for the reverse
+used to build the context tree. Set \code{reverse} to \code{TRUE} for the reverse
 convention which is somewhat easier to relate to the way the context trees
-are represented by \code{\link[=draw]{draw()}} (i.e. recent values at the top the tree).
+are represented by \code{\link[=draw]{draw()}} (i.e. recent values at the top of the tree).
 }
 
 \examples{
+set.seed(0)
 rdts <- sample(as.factor(c("A", "B", "C")), 100, replace = TRUE)
 rdts_tree <- ctx_tree(rdts, max_depth = 3, min_size = 5)
 contexts(rdts_tree)
-contexts(rdts_tree, TRUE, TRUE)
+contexts(rdts_tree, sequence = TRUE, reverse = TRUE)
 }
 \seealso{
 \code{\link[=find_sequence]{find_sequence()}} and \code{\link[=find_sequence.covlmc]{find_sequence.covlmc()}} for direct access to

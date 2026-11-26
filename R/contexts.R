@@ -26,19 +26,21 @@ path_df_extractor <- function(tree, path, ct, vals, control, is_leaf, p_summary)
 #' @param extractor extractor function, see details
 #' @param control control parameter for the extractor function, see details
 #' @param p_summary summary of the parent of the current node
-#' @param summarize summarizing function to compute the summary submitted to the children
+#' @param summarize summarising function to compute the summary submitted to
+#'   the children
 #'
 #' @returns a list or a data frame with the contexts and additional information
 #' @details the contexts extractor proceeds as follows:
 #'   1. if the ct has children:
-#'      1. it applies the summarize function to itself (summarize(ct)).
-#'      2. it calls itself recursively on each child and gather the results.
+#'      1. it applies the `summarize` function to itself (`summarize(ct)`).
+#'      2. it calls itself recursively on each child and gathers the results.
 #'         A `NULL` result is discarded.
 #'   2. it calls `extractor` on the current node `extractor(tree, path, ct, vals, control, TRUE/FALSE, p_summary)`
 #'      the fourth parameter is TRUE for a leaf node (no children) and FALSE for another node.
 #'   3. the result is aggregated with sub results if available
 #'
-#'   `extractor` should only return a non NULL result if valid contexts can be extracted from the ct.
+#'   `extractor` should only return a non `NULL` result if valid contexts can
+#'   be extracted from the ct.
 #' @noRd
 rec_contexts_extractor <- function(tree, path, ct, vals, extractor, control, summarize, p_summary) {
   if (is.null(ct$children)) {
@@ -108,33 +110,35 @@ contexts_extractor <- function(ct, reverse, extractor, control, summarize = no_s
 #' then be explored using adapted functions such as [counts()] and
 #' [positions()]. The result list is of class `contexts`. When `sequence=TRUE`,
 #' the method returns a data.frame whose first column, named `context`, contains
-#' the contexts as vectors (i.e. the value returned by `as_sequence()` applied
+#' the contexts as vectors (i.e. the value returned by [as_sequence()] applied
 #' to a `ctx_node` object). Other columns contain context specific values which
 #' depend on the actual class of the tree and on additional parameters. In all
-#' implementations of `contexts()`, setting the additional parameters to any no
-#' default value leads to a `data.frame` result.
+#' implementations of `contexts()`, setting the additional parameters to any
+#' non-default value leads to a `data.frame` result.
 #'
 #' @section State order in a context: Notice that contexts are given by default
 #'   in the temporal order and not in the "reverse" order used by many VLMC
 #'   research papers: older values are on the left. For instance, the context
 #'   `c(1, 0)` is reported if the sequence 0, then 1 appeared in the time series
-#'   used to build the context tree. Set reverse to `TRUE` for the reverse
+#'   used to build the context tree. Set `reverse` to `TRUE` for the reverse
 #'   convention which is somewhat easier to relate to the way the context trees
-#'   are represented by [draw()] (i.e. recent values at the top the tree).
+#'   are represented by [draw()] (i.e. recent values at the top of the tree).
 #'
 #' @param ct a context tree.
 #' @param sequence if `TRUE` the function returns its results as a `data.frame`,
-#'   if `FALSE` (default) as a list of `ctx_node` objects. (see details)
-#' @param reverse logical (defaults to `FALSE`). See details.
+#'   if `FALSE` (default) as a list of `ctx_node` objects (see details).
+#' @param reverse logical (defaults to `FALSE`). If `TRUE`, contexts are given
+#'   in reverse temporal order. See the dedicated section.
 #' @param ... additional arguments for the contexts function.
 #'
 #' @returns A list of class `contexts` containing the contexts represented in
 #'   this tree (as `ctx_node`) or a data.frame.
 #' @examples
+#' set.seed(0)
 #' rdts <- sample(as.factor(c("A", "B", "C")), 100, replace = TRUE)
 #' rdts_tree <- ctx_tree(rdts, max_depth = 3, min_size = 5)
 #' contexts(rdts_tree)
-#' contexts(rdts_tree, TRUE, TRUE)
+#' contexts(rdts_tree, sequence = TRUE, reverse = TRUE)
 #' @seealso [find_sequence()] and [find_sequence.covlmc()] for direct access to
 #'   a specific context, and [contexts.ctx_tree()], [contexts.vlmc()] and
 #'   [contexts.covlmc()] for concrete implementations of `contexts()`.

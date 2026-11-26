@@ -107,8 +107,8 @@ grow_ctx_tree <- function(x, vals, min_size, max_depth, covsize = 0L, keep_match
 #'
 #' This function builds a context tree for a time series.
 #'
-#' The tree represents all the sequences of symbols/states of length smaller
-#' than `max_depth` that appear at least `min_size` times in the time series and
+#' The tree represents all the sequences of symbols/states of length at most
+#' `max_depth` that appear at least `min_size` times in the time series and
 #' stores the frequencies of the states that follow each context. Optionally,
 #' the positions of the contexts in the time series can be stored in the tree.
 #'
@@ -119,28 +119,28 @@ grow_ctx_tree <- function(x, vals, min_size, max_depth, covsize = 0L, keep_match
 #'   a context to be included in the tree.
 #' @param max_depth integer >= 0 (default: 100). Maximum length of a context to
 #'   be included in the tree.
-#' @param keep_position logical (default: TRUE). Should the context tree keep
-#'   the position of the contexts.
+#' @param keep_position logical (default: `TRUE`). Specifies whether the context
+#'   tree should keep the positions of the contexts in the time series.
 #' @param backend "R" or "C++" (default: as specified by the "mixvlmc.backend"
 #'   option). Specifies the implementation used to represent the context tree
-#'   and to built it. See details.
-#' @param ... additional parameters
+#'   and to build it. See the "Back ends" section.
+#' @param ... additional parameters (not used).
 #' @section Back ends:
 #'
 #'   Two back ends are available to compute context trees:
 #'
-#' - the "R" back end represents the tree in pure R data structures (nested lists)
-#'   that be easily processed further in pure R (C++ helper functions are used
-#'   to speed up the construction).
+#' - the "R" back end represents the tree in pure R data structures (nested
+#'   lists) that can be easily processed further in pure R (C++ helper functions
+#'   are used to speed up the construction).
 #' - the "C++" back end represents the tree with C++ classes. This back end is
 #'   considered experimental. The tree is built with an optimised suffix tree
-#'   algorithm which speeds up the construction by at least a factor 10 in
-#'   standard settings. As the tree is kept outside of R direct reach, context
-#'   trees built with the C++ back end must be restored after a
+#'   algorithm which speeds up the construction by a factor of at least 10 in
+#'   standard settings. As the tree is kept outside of the direct reach of R,
+#'   context trees built with the C++ back end must be restored after a
 #'   `saveRDS()`/`readRDS()` sequence. This is done automatically by recomputing
-#'   completely the context tree.
+#'   the context tree completely.
 #'
-#' @returns a context tree (of class that inherits from `ctx_tree`).
+#' @returns a context tree (an object of a class that inherits from `ctx_tree`).
 #' @export
 #'
 #' @examples
@@ -148,13 +148,18 @@ grow_ctx_tree <- function(x, vals, min_size, max_depth, covsize = 0L, keep_match
 #' ## get all contexts of length 2
 #' rdts_ctree <- ctx_tree(rdts, min_size = 1, max_depth = 2)
 #' draw(rdts_ctree)
+#' ## with the C++ back end
+#' rdts_ctree_cpp <- ctx_tree(rdts,
+#'   min_size = 1, max_depth = 2, backend = "C++"
+#' )
+#' draw(rdts_ctree_cpp)
 ctx_tree <- function(x, min_size = 2L, max_depth = 100L, keep_position = TRUE,
                      backend = getOption("mixvlmc.backend", "R"), ...) {
   UseMethod("ctx_tree")
 }
 
 #' @export
-#' @param x a numeric, character, factor or logical vector
+#' @param x a numeric, character, factor or logical vector.
 #' @inherit ctx_tree
 ctx_tree.default <- function(x, min_size = 2L, max_depth = 100L,
                              keep_position = TRUE,
@@ -170,7 +175,7 @@ ctx_tree.default <- function(x, min_size = 2L, max_depth = 100L,
 
 #' @export
 #' @param x a discrete time series represented by a `dts` object as created by
-#'   [dts()]
+#'   [dts()].
 #' @inherit ctx_tree
 #' @examples
 #' x_dts <- dts(c(0, 1, 1, 1, 0, 0, 1, 0, 1, 0))
@@ -267,10 +272,10 @@ print.ctx_tree <- function(x, ...) {
 #' State space of an object
 #'
 #' This function returns the state space of an object for which this is
-#' meaningful such as a discrete time series or a context tree.
+#' meaningful, such as a discrete time series or a context tree.
 #'
 #' @param x an object with a state space.
-#' @returns the state space of the context tree.
+#' @returns the state space of the object.
 #'
 #' @export
 #' @examples

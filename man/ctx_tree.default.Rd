@@ -14,7 +14,7 @@
 )
 }
 \arguments{
-\item{x}{a numeric, character, factor or logical vector}
+\item{x}{a numeric, character, factor or logical vector.}
 
 \item{min_size}{integer >= 1 (default: 2). Minimum number of observations for
 a context to be included in the tree.}
@@ -22,24 +22,24 @@ a context to be included in the tree.}
 \item{max_depth}{integer >= 0 (default: 100). Maximum length of a context to
 be included in the tree.}
 
-\item{keep_position}{logical (default: TRUE). Should the context tree keep
-the position of the contexts.}
+\item{keep_position}{logical (default: \code{TRUE}). Specifies whether the context
+tree should keep the positions of the contexts in the time series.}
 
 \item{backend}{"R" or "C++" (default: as specified by the "mixvlmc.backend"
 option). Specifies the implementation used to represent the context tree
-and to built it. See details.}
+and to build it. See the "Back ends" section.}
 
-\item{...}{additional parameters}
+\item{...}{additional parameters (not used).}
 }
 \value{
-a context tree (of class that inherits from \code{ctx_tree}).
+a context tree (an object of a class that inherits from \code{ctx_tree}).
 }
 \description{
 This function builds a context tree for a time series.
 }
 \details{
-The tree represents all the sequences of symbols/states of length smaller
-than \code{max_depth} that appear at least \code{min_size} times in the time series and
+The tree represents all the sequences of symbols/states of length at most
+\code{max_depth} that appear at least \code{min_size} times in the time series and
 stores the frequencies of the states that follow each context. Optionally,
 the positions of the contexts in the time series can be stored in the tree.
 }
@@ -48,16 +48,16 @@ the positions of the contexts in the time series can be stored in the tree.
 
 Two back ends are available to compute context trees:
 \itemize{
-\item the "R" back end represents the tree in pure R data structures (nested lists)
-that be easily processed further in pure R (C++ helper functions are used
-to speed up the construction).
+\item the "R" back end represents the tree in pure R data structures (nested
+lists) that can be easily processed further in pure R (C++ helper functions
+are used to speed up the construction).
 \item the "C++" back end represents the tree with C++ classes. This back end is
 considered experimental. The tree is built with an optimised suffix tree
-algorithm which speeds up the construction by at least a factor 10 in
-standard settings. As the tree is kept outside of R direct reach, context
-trees built with the C++ back end must be restored after a
+algorithm which speeds up the construction by a factor of at least 10 in
+standard settings. As the tree is kept outside of the direct reach of R,
+context trees built with the C++ back end must be restored after a
 \code{saveRDS()}/\code{readRDS()} sequence. This is done automatically by recomputing
-completely the context tree.
+the context tree completely.
 }
 }
 
@@ -66,4 +66,9 @@ rdts <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 0)
 ## get all contexts of length 2
 rdts_ctree <- ctx_tree(rdts, min_size = 1, max_depth = 2)
 draw(rdts_ctree)
+## with the C++ back end
+rdts_ctree_cpp <- ctx_tree(rdts,
+  min_size = 1, max_depth = 2, backend = "C++"
+)
+draw(rdts_ctree_cpp)
 }

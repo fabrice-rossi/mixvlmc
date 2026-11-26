@@ -7,15 +7,15 @@
 is_merged(node)
 }
 \arguments{
-\item{node}{A \code{ctx_node_covlmc} object as returned by \code{\link[=find_sequence]{find_sequence()}} or
-\code{\link[=contexts.covlmc]{contexts.covlmc()}}}
+\item{node}{A \code{ctx_node_covlmc} object as returned by
+\code{\link[=find_sequence.covlmc]{find_sequence.covlmc()}} or \code{\link[=contexts.covlmc]{contexts.covlmc()}}}
 }
 \value{
-TRUE or FALSE, depending on the nature of the context
+\code{TRUE} or \code{FALSE}, depending on the nature of the context
 }
 \description{
 The function returns \code{TRUE} if the context represented by this node is merged
-with at least another one and \code{FALSE} if this is not the case.
+with at least one other context and \code{FALSE} if this is not the case.
 }
 \details{
 When a COVLMC is built on a time series with at least three distinct states,

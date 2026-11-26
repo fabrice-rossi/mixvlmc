@@ -10,13 +10,13 @@ assertthat::on_failure(is_ctx_node_covlmc) <- function(call, env) {
 #'
 #' This function checks whether the sequence `ctx` is represented in the context
 #' tree of the COVLMC model `ct`. If this is the case, it returns a description
-#' of matching node, an object of class `ctx_node_covlmc`. If the sequence is
-#' not represented in the tree, the function return `NULL`.
+#' of the matching node, an object of class `ctx_node_covlmc`. If the sequence
+#' is not represented in the tree, the function returns `NULL`.
 #'
 #' @export
 #' @inherit find_sequence
-#' @returns an object of class `ctx_node_covlmc` if the sequence `ctx` is represented
-#'   in the context tree, `NULL` when this is not the case
+#' @returns an object of class `ctx_node_covlmc` if the sequence `ctx` is
+#'   represented in the context tree, `NULL` when this is not the case
 #' @examples
 #' pc <- powerconsumption[powerconsumption$week == 5, ]
 #' rdts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1))))
@@ -92,22 +92,23 @@ find_sequence.covlmc <- function(ct, ctx, reverse = FALSE, ...) {
 
 #' Logistic model of a COVLMC context
 #'
-#' This function returns a representation of the logistic model associated to a
-#' COVLMC context from its node in the associated context tree.
+#' This function returns a representation of the logistic model associated with
+#' a COVLMC context from its node in the associated context tree.
 #'
-#' Full model extraction is only possible if the COVLMC model what not fully
+#' Full model extraction is only possible if the COVLMC model was not fully
 #' trimmed (see [trim.covlmc()]). Notice that [find_sequence.covlmc()] can
-#' produce node that are not context: in this case this function return `NULL`.
+#' produce nodes that are not contexts: in this case this function returns
+#' `NULL`.
 #'
-#' @param node A `ctx_node_covlmc` object as returned by [find_sequence()] or
-#'   [contexts.covlmc()]
+#' @param node A `ctx_node_covlmc` object as returned by
+#'   [find_sequence.covlmc()] or [contexts.covlmc()]
 #' @param type specifies the model information to return, either the
-#'   coefficients only (`type="coef"` default case) or the full model object
+#'   coefficients only (`type="coef"`, default case) or the full model object
 #'   (`type="full"`)
 #' @export
 #' @returns if `node` is a context, the coefficients of the logistic model (as a
 #'   vector or a matrix depending on the size of the state space) or a logistic
-#'   model as a R object. If `node` is not a context, `NULL`.
+#'   model as an R object. If `node` is not a context, `NULL`.
 #' @examples
 #' pc <- powerconsumption[powerconsumption$week == 5, ]
 #' rdts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1))))
@@ -139,7 +140,7 @@ model <- function(node, type = c("coef", "full")) {
 #' Merging status of a COVLMC context
 #'
 #' The function returns `TRUE` if the context represented by this node is merged
-#' with at least another one and `FALSE` if this is not the case.
+#' with at least one other context and `FALSE` if this is not the case.
 #'
 #' When a COVLMC is built on a time series with at least three distinct states,
 #' some contexts can be merged: they use the same logistic model, leading to a
@@ -148,10 +149,10 @@ model <- function(node, type = c("coef", "full")) {
 #' to detect such merging, while [merged_with()] can be used to recover the
 #' other contexts.
 #'
-#' @param node A `ctx_node_covlmc` object as returned by [find_sequence()] or
-#'   [contexts.covlmc()]
+#' @param node A `ctx_node_covlmc` object as returned by
+#'   [find_sequence.covlmc()] or [contexts.covlmc()]
 #' @seealso [merged_with()]
-#' @returns TRUE or FALSE, depending on the nature of the context
+#' @returns `TRUE` or `FALSE`, depending on the nature of the context
 #' @export
 #' @examples
 #' pc <- powerconsumption[powerconsumption$week == 15, ]
@@ -176,16 +177,16 @@ is_merged <- function(node) {
 #' element in the state space (see [states()]). The value is `NULL` if the
 #' corresponding context is not merged with the `node` context, while it is a
 #' `ctx_node_covlmc` object in the other case. A context merged with `node`
-#' differs from the context represented by `node` only in its last value (in
-#' temporal order) which is used as its name in the list. For instance, if the
-#' context `ABC` is merged only with `CBC` (when represented in temporal
-#' ordering), then the resulting list is of the form `list("A" = NULL, "B" =
-#' NULL, "C"= ctx_node_covlmc(CBX))`.
+#' differs from the context represented by `node` only in its oldest value
+#' (i.e. its first value in temporal order) which is used as its name in the
+#' list. For instance, if the context `ABC` is merged only with `CBC` (when
+#' represented in temporal ordering), then the resulting list is of the form
+#' `list("A" = NULL, "B" = NULL, "C" = ctx_node_covlmc(CBC))`.
 #'
-#' @param node A `ctx_node_covlmc` object as returned by [find_sequence()] or
-#'   [contexts.covlmc()]
+#' @param node A `ctx_node_covlmc` object as returned by
+#'   [find_sequence.covlmc()] or [contexts.covlmc()]
 #' @seealso [is_merged()]
-#' @returns NULL or a list of contexts merged with `node` represented by
+#' @returns `NULL` or a list of contexts merged with `node` represented by
 #'   `ctx_node_covlmc` objects
 #' @export
 #' @examples
@@ -231,13 +232,15 @@ merged_with <- function(node) {
 
 #' Covariate memory length for a COVLMC context
 #'
-#' This function returns the length of the memory of a COVLMC context represented
-#' by a `ctx_node_covlmc` object.
+#' This function returns the length of the covariate memory of a COVLMC context
+#' represented by a `ctx_node_covlmc` object, i.e. the number of past values of
+#' the covariates used by the logistic model of the context.
 #'
-#' @param node A `ctx_node_covlmc` object as returned by [find_sequence()] or
-#'   [contexts.covlmc()]
+#' @param node A `ctx_node_covlmc` object as returned by
+#'   [find_sequence.covlmc()] or [contexts.covlmc()]
 #' @export
-#' @returns the memory length, an integer
+#' @seealso [covariate_depth()]
+#' @returns the memory length, an integer (`NULL` if `node` is not a context)
 #' @examples
 #' pc <- powerconsumption[powerconsumption$week == 5, ]
 #' rdts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1))))
@@ -254,15 +257,15 @@ covariate_memory <- function(node) {
 #' Predictive quality metrics for a node of a COVLMC context tree
 #'
 #' This function computes and returns predictive quality metrics for a node
-#' (`ctx_node_covlmc`) extracted from a covlmc
+#' (`ctx_node_covlmc`) extracted from a VLMC with covariates.
 #'
 #' Compared to [metrics.covlmc()], this function focuses on a single context and
 #' assesses the quality of its predictions, disregarding observations that have
 #' other contexts. Apart from this limited scope, the function operates as
-#' [metrics.covlmc()].
+#' [metrics.covlmc()]. The node must be a context (see [is_context()]).
 #'
-#' @param model A `ctx_node_covlmc` object as returned by [find_sequence()] or
-#'   [contexts.covlmc()]
+#' @param model A `ctx_node_covlmc` object as returned by
+#'   [find_sequence.covlmc()] or [contexts.covlmc()]
 #' @inherit metrics
 #' @examples
 #' pc <- powerconsumption[powerconsumption$week == 5, ]

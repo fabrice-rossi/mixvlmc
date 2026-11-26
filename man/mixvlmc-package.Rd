@@ -6,35 +6,40 @@
 \alias{mixvlmc-package}
 \title{mixvlmc: Variable Length Markov Chains with Covariates}
 \description{
-Estimates Variable Length Markov Chains (VLMC) models and VLMC with covariates models from discrete sequences. Supports model selection via information criteria and simulation of new sequences from an estimated model. See Bühlmann, P. and Wyner, A. J. (1999) \doi{10.1214/aos/1018031204} for VLMC and Zanin Zambom, A., Kim, S. and Lopes Garcia, N. (2022) \doi{10.1111/jtsa.12615} for VLMC with covariates.
+Estimates Variable Length Markov Chains (VLMC) and VLMC with covariates from discrete sequences. Supports model selection via information criteria, likelihood computation, prediction and simulation of new sequences from an estimated model. See Bühlmann, P. and Wyner, A. J. (1999) \doi{10.1214/aos/1018031204} for VLMC and Zanin Zambom, A., Kim, S. and Lopes Garcia, N. (2022) \doi{10.1111/jtsa.12615} for VLMC with covariates.
 }
 \section{Package options}{
 
 
-Mixvlmc uses the following \code{\link[=options]{options()}}:
+mixvlmc uses the following \code{\link[=options]{options()}}, which are set when the package is
+loaded (unless they are already set):
 \itemize{
-\item \code{mixvlmc.maxit}: maximum number of iterations in model fitting for \code{\link[=covlmc]{covlmc()}}
+\item \code{mixvlmc.maxit}: maximum number of iterations in model fitting for
+\code{\link[=covlmc]{covlmc()}} and related functions such as \code{\link[=tune_covlmc]{tune_covlmc()}} (default value:
+100). It is used by all the computing engines (see
+\code{mixvlmc.predictive}).
 \item \code{mixvlmc.predictive}: specifies the computing engine used for model fitting
-for \code{\link[=covlmc]{covlmc()}}. Two values are supported:
+for \code{\link[=covlmc]{covlmc()}} and related functions. Two values are supported:
 \itemize{
 \item \code{"glm"} (default value): \code{\link[=covlmc]{covlmc()}} uses \code{\link[stats:glm]{stats::glm()}} with a binomial
-link (\code{\link[stats:family]{stats::binomial()}}) for a two values state space, and \code{\link[VGAM:vglm]{VGAM::vglm()}}
-with a multinomial link (\code{\link[VGAM:multinomial]{VGAM::multinomial()}}) for a state space with
-three or more values;
+link (\code{\link[stats:family]{stats::binomial()}}) for a two-value state space, and
+\code{\link[VGAM:vglm]{VGAM::vglm()}} with a multinomial link (\code{\link[VGAM:multinomial]{VGAM::multinomial()}}) for a
+state space with three or more values;
 \item \code{"multinom"}: \code{\link[=covlmc]{covlmc()}} uses \code{\link[nnet:multinom]{nnet::multinom()}} in all cases.
 }
 
-The first option \code{"glm"} is recommended as both \code{\link[stats:glm]{stats::glm()}} and \code{\link[VGAM:vglm]{VGAM::vglm()}}
-are able to detect and deal with degeneracy in the data set.
+The first option \code{"glm"} is recommended as both \code{\link[stats:glm]{stats::glm()}} and
+\code{\link[VGAM:vglm]{VGAM::vglm()}} are able to detect and deal with degeneracy in the data
+set.
 \item \code{mixvlmc.backend}: specifies the implementation used for the context tree
 construction in \code{\link[=ctx_tree]{ctx_tree()}}, \code{\link[=vlmc]{vlmc()}} and \code{\link[=tune_vlmc]{tune_vlmc()}}. Two values are
 supported:
 \itemize{
 \item \code{"R"} (default value): this corresponds to the original almost pure R
 implementation.
-\item \code{"C++"}: this corresponds to the experimental C++ implementation. This
-version is significantly faster than the R version, but is still
-considered experimental.
+\item \code{"C++"}: this corresponds to the C++ implementation. This version is
+significantly faster than the R version, but is still considered
+experimental.
 }
 \item \code{mixvlmc.charset}: specifies the collection of characters used to display
 context trees in "ascii art" when using the \code{"text"} format for \code{\link[=draw]{draw()}}
@@ -42,10 +47,13 @@ and related functions. Two values are supported:
 \itemize{
 \item \code{"ascii"}: the collection uses only standard ASCII characters and
 should be compatible with all environments;
-\item \code{"utf8"}: the collection uses UTF-8 symbols and needs a compatible display.
-At loading the option is set based on a call to \code{\link[cli:is_utf8_output]{cli::is_utf8_output()}}.
-It defaults to \code{"utf8"} is this encoding is supported.
+\item \code{"utf8"}: the collection uses UTF-8 symbols and needs a compatible
+display.
 }
+
+The default value is \code{"utf8"} if the output supports UTF-8 (according to
+\code{\link[cli:is_utf8_output]{cli::is_utf8_output()}} when the package is loaded) and \code{"ascii"}
+otherwise.
 }
 }
 

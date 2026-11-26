@@ -10,14 +10,15 @@
 \method{print}{metrics.vlmc}(x, ...)
 }
 \arguments{
-\item{model}{The context based model on which to compute predictive metrics.}
+\item{model}{a fitted VLMC model.}
 
-\item{...}{Additional parameters for predictive metrics computation.}
+\item{...}{additional arguments (not used).}
 
-\item{x}{A metrics.vlmc object, results of a call to \code{\link[=metrics.vlmc]{metrics.vlmc()}}}
+\item{x}{a \code{metrics.vlmc} object, result of a call to \code{\link[=metrics.vlmc]{metrics.vlmc()}}.}
 }
 \value{
-An object of class \code{metrics.vlmc} with the following components:
+An object of class \code{metrics.vlmc} with (at least) the following
+components:
 \itemize{
 \item \code{accuracy}: the accuracy of the predictions
 \item \code{conf_mat}: the confusion matrix of the predictions, with predicted values
@@ -35,13 +36,14 @@ based models such as VLMC and VLMC with covariates.
 \details{
 A context based model computes transition probabilities for its contexts.
 Using a maximum transition probability decision rule, this can be used to
-predict the new state that is the more likely to follow the current one,
-given the context (see \code{\link[=predict.vlmc]{predict.vlmc()}}). The quality of these predictions is
-evaluated using standard metrics including:
+predict the state that is the most likely to follow the current one, given
+the context (see \code{\link[=predict.vlmc]{predict.vlmc()}}). The quality of these predictions on the
+time series used to fit the model is evaluated using standard metrics
+including:
 \itemize{
 \item accuracy
 \item the full confusion matrix
-\item the area under the roc curve (AUC), considering the context based model as
+\item the area under the ROC curve (AUC), considering the context based model as
 a (conditional) probability estimator. We use Hand and Till (2001) multiclass
 AUC in case of a state space with more than 2 states
 }
@@ -54,13 +56,13 @@ AUC in case of a state space with more than 2 states
 \section{Extended contexts}{
 
 
-As explained in details in \code{\link[=loglikelihood.vlmc]{loglikelihood.vlmc()}} documentation and in the
-dedicated \code{vignette("likelihood", package = "mixvlmc")}, the first initial
+As explained in detail in the \code{\link[=loglikelihood.vlmc]{loglikelihood.vlmc()}} documentation and in
+the dedicated \code{vignette("likelihood", package = "mixvlmc")}, the first
 values of a time series do not in general have a proper context for a VLMC
-with a non zero order. In order to predict something meaningful for those
+of non zero depth. In order to predict something meaningful for those
 values, we rely on the notion of extended context defined in the documents
 mentioned above. This follows the same logic as using
-\code{\link[=loglikelihood.vlmc]{loglikelihood.vlmc()}} with the parameter \code{initial="extended"}. All vlmc
+\code{\link[=loglikelihood.vlmc]{loglikelihood.vlmc()}} with the parameter \code{initial="extended"}. All VLMC
 functions that need to manipulate initial values with no proper context use
 the same approach.
 }
@@ -84,5 +86,6 @@ of the Area Under the ROC Curve for Multiple Class Classification Problems."
 \emph{Machine Learning} 45(2), p. 171--186. DOI: \doi{10.1023/A:1010920819831}.
 }
 \seealso{
-\code{\link[=metrics.vlmc]{metrics.vlmc()}}, \code{\link[=metrics.ctx_node]{metrics.ctx_node()}}, \code{\link[=contexts.vlmc]{contexts.vlmc()}}, \code{\link[=predict.vlmc]{predict.vlmc()}}.
+\code{\link[=metrics.vlmc]{metrics.vlmc()}}, \code{\link[=metrics.covlmc]{metrics.covlmc()}}, \code{\link[=metrics.ctx_node]{metrics.ctx_node()}},
+\code{\link[=contexts.vlmc]{contexts.vlmc()}}, \code{\link[=predict.vlmc]{predict.vlmc()}}.
 }

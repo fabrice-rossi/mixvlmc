@@ -7,15 +7,16 @@
 covariate_memory(node)
 }
 \arguments{
-\item{node}{A \code{ctx_node_covlmc} object as returned by \code{\link[=find_sequence]{find_sequence()}} or
-\code{\link[=contexts.covlmc]{contexts.covlmc()}}}
+\item{node}{A \code{ctx_node_covlmc} object as returned by
+\code{\link[=find_sequence.covlmc]{find_sequence.covlmc()}} or \code{\link[=contexts.covlmc]{contexts.covlmc()}}}
 }
 \value{
-the memory length, an integer
+the memory length, an integer (\code{NULL} if \code{node} is not a context)
 }
 \description{
-This function returns the length of the memory of a COVLMC context represented
-by a \code{ctx_node_covlmc} object.
+This function returns the length of the covariate memory of a COVLMC context
+represented by a \code{ctx_node_covlmc} object, i.e. the number of past values of
+the covariates used by the logistic model of the context.
 }
 \examples{
 pc <- powerconsumption[powerconsumption$week == 5, ]
@@ -25,4 +26,7 @@ m_cov <- covlmc(rdts, rdts_cov, min_size = 10)
 ctxs <- contexts(m_cov)
 ## get all the memory lengths
 sapply(ctxs, covariate_memory)
+}
+\seealso{
+\code{\link[=covariate_depth]{covariate_depth()}}
 }

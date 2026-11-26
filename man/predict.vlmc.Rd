@@ -10,9 +10,11 @@
 \method{predict}{vlmc_cpp}(object, newdata, type = c("raw", "probs"), final_pred = TRUE, ...)
 }
 \arguments{
-\item{object}{a fitted vlmc object.}
+\item{object}{a fitted VLMC.}
 
-\item{newdata}{a time series adapted to the vlmc object.}
+\item{newdata}{an object that can be interpreted as a discrete time series
+(for instance a \code{dts} object), with values in the state space of the
+model.}
 
 \item{type}{character indicating the type of prediction required. The default
 \code{"raw"} returns actual predictions in the form of a new time series. The
@@ -23,11 +25,13 @@ details).}
 prediction step, made by computing the context of the full time series.
 When \code{FALSE} this final prediction is not included.}
 
-\item{...}{additional arguments.}
+\item{...}{additional arguments (not used).}
 }
 \value{
 A vector of predictions if \code{type="raw"} or a matrix of state
-probabilities if \code{type="probs"}.
+probabilities if \code{type="probs"}. The number of predictions (or of rows of
+the matrix) is the length of \code{newdata}, plus one if \code{final_pred} is
+\code{TRUE}.
 }
 \description{
 This function computes one step ahead predictions for a discrete time series
@@ -36,26 +40,26 @@ based on a VLMC.
 \details{
 Given a time series \code{X}, at time step \code{t}, a context is computed using
 observations from \code{X[1]} to \code{X[t-1]} (see the dedicated section). The
-prediction is then the most probable state for \code{X[t]} given this contexts.
+prediction is then the most probable state for \code{X[t]} given this context.
 Ties are broken according to the natural order in the state space, favouring
 "small" values. The time series of predictions is returned by the function
 when \code{type="raw"} (default case).
 
-When \code{type="probs"}, each \code{X[t]} is associated to the conditional
-probabilities of the next state given the context. Those probabilities are
-returned as a matrix of probabilities with column names given by the state
-names.
+When \code{type="probs"}, each \code{X[t]} is associated with the conditional
+probabilities of its possible values given its context. Those probabilities
+are returned as a matrix of probabilities with column names given by the
+state names.
 }
 \section{Extended contexts}{
 
 
-As explained in details in \code{\link[=loglikelihood.vlmc]{loglikelihood.vlmc()}} documentation and in the
-dedicated \code{vignette("likelihood", package = "mixvlmc")}, the first initial
+As explained in detail in the \code{\link[=loglikelihood.vlmc]{loglikelihood.vlmc()}} documentation and in
+the dedicated \code{vignette("likelihood", package = "mixvlmc")}, the first
 values of a time series do not in general have a proper context for a VLMC
-with a non zero order. In order to predict something meaningful for those
+of non zero depth. In order to predict something meaningful for those
 values, we rely on the notion of extended context defined in the documents
 mentioned above. This follows the same logic as using
-\code{\link[=loglikelihood.vlmc]{loglikelihood.vlmc()}} with the parameter \code{initial="extended"}. All vlmc
+\code{\link[=loglikelihood.vlmc]{loglikelihood.vlmc()}} with the parameter \code{initial="extended"}. All VLMC
 functions that need to manipulate initial values with no proper context use
 the same approach.
 }
@@ -70,6 +74,8 @@ rdts <- cut(pc$active_power,
 model <- vlmc(rdts, min_size = 5)
 predict(model, rdts[1:5])
 predict(model, rdts[1:5], "probs")
+## without the final prediction
+predict(model, rdts[1:5], final_pred = FALSE)
 ## C++ backend
 pc <- powerconsumption[powerconsumption$week == 5, ]
 rdts <- cut(pc$active_power,

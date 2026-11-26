@@ -1,19 +1,20 @@
-#' Sampling from Logistic Model
+#' Sampling from a logistic model
 #'
 #' This generic function provides a unified interface for sampling by logistic
 #' models, regardless of the back-end (`glm`, `vglm` and `multinom`). Degenerate
 #' models are supported.
 #'
-#' For binary model, sampling is done directly on binary values and the function
-#' return 0 or 1. For categorical models with more than 2 values, sampling is
-#' done on value indexes, starting at 0.
+#' For binary models, sampling is done directly on binary values and the
+#' function returns 0 or 1. For categorical models with more than 2 values,
+#' sampling is done on value indexes, starting at 0.
 #'
 #' @param model a logistic model
 #' @param newdata new data
 #' @param lev original levels of the target variable
 #'
-#' @return a single (index) value obtained by sampling according to the distribution
-#'   predicted by the logistic model based on the provided observation
+#' @return a single (index) value obtained by sampling according to the
+#'   distribution predicted by the logistic model based on the provided
+#'   observation
 #' @noRd
 glm_sample_one <- function(model, newdata, lev) {
   UseMethod("glm_sample_one")

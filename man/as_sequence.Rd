@@ -11,8 +11,8 @@ as_sequence(node, reverse)
 
 \item{reverse}{specifies whether the sequence should be reported in reverse
 temporal order (\code{TRUE}) or in the temporal order (\code{FALSE}). Defaults to the
-order associated to the \code{ctx_node} which is determined by the parameters of
-the call to \code{\link[=contexts]{contexts()}} or \code{\link[=find_sequence]{find_sequence()}}.}
+order associated with the \code{ctx_node} which is determined by the parameters
+of the call to \code{\link[=contexts]{contexts()}} or \code{\link[=find_sequence]{find_sequence()}} (see \code{\link[=is_reversed]{is_reversed()}}).}
 }
 \value{
 the sequence represented by the \code{node} object, a vector
@@ -23,6 +23,7 @@ This function returns the sequence represented by the \code{node} object.
 \examples{
 rdts <- c("A", "B", "C", "A", "A", "B", "B", "C", "C", "A")
 rdts_tree <- ctx_tree(rdts, max_depth = 3)
-res <- find_sequence(rdts_tree, "A")
+res <- find_sequence(rdts_tree, c("A", "B"))
 as_sequence(res)
+as_sequence(res, reverse = TRUE)
 }

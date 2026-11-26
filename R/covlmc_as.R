@@ -1,11 +1,14 @@
-#' Convert an object to a Variable Length Markov Chain with covariates (coVLMC)
+#' Convert an object to a Variable Length Markov Chain with covariates (COVLMC)
 #'
-#' This generic function converts an object into a covlmc.
+#' This generic function converts an object into a VLMC with covariates (a
+#' `covlmc` object).
 #'
-#' @param x an object to convert into a covlmc.
+#' @param x an object to convert into a `covlmc` object, for instance the
+#'   result of [tune_covlmc()].
 #' @param ... additional arguments for conversion functions.
 #'
-#' @returns a covlmc
+#' @returns a `covlmc` object. For a `tune_covlmc` object, this is the best
+#'   model selected by [tune_covlmc()].
 #' @export
 as_covlmc <- function(x, ...) {
   UseMethod("as_covlmc")
@@ -15,7 +18,7 @@ as_covlmc <- function(x, ...) {
 #' @rdname as_covlmc
 #' @seealso [tune_covlmc()]
 #' @examples
-#' ## conversion from the results of tune_covlmc
+#' ## conversion from the results of tune_covlmc()
 #' pc <- powerconsumption[powerconsumption$week == 5, ]
 #' rdts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1))))
 #' rdts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))

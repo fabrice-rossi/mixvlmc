@@ -5,27 +5,29 @@
 #'
 #' A context based model computes transition probabilities for its contexts.
 #' Using a maximum transition probability decision rule, this can be used to
-#' predict the new state that is the more likely to follow the current one,
-#' given the context (see [predict.vlmc()]). The quality of these predictions is
-#' evaluated using standard metrics including:
+#' predict the state that is the most likely to follow the current one, given
+#' the context (see [predict.vlmc()]). The quality of these predictions on the
+#' time series used to fit the model is evaluated using standard metrics
+#' including:
 #'
 #' - accuracy
 #' - the full confusion matrix
-#' - the area under the roc curve (AUC), considering the context based model as
+#' - the area under the ROC curve (AUC), considering the context based model as
 #' a (conditional) probability estimator. We use Hand and Till (2001) multiclass
 #' AUC in case of a state space with more than 2 states
 #'
-#' @param model The context based model on which to compute predictive metrics.
-#' @param ... Additional parameters for predictive metrics computation.
+#' @param model the context based model on which to compute predictive metrics.
+#' @param ... additional parameters for predictive metrics computation.
 #'
-#' @returns The returned value is guaranteed to have at least three components
+#' @returns The returned value is guaranteed to have at least three components:
 #'
 #'  - `accuracy`: the accuracy of the predictions
 #'  - `conf_mat`: the confusion matrix of the predictions, with predicted values
 #'   in rows and true values in columns
 #'  - `auc`: the AUC of the predictive model
 #'
-#' @seealso [metrics.vlmc()], [metrics.ctx_node()], [contexts.vlmc()], [predict.vlmc()].
+#' @seealso [metrics.vlmc()], [metrics.covlmc()], [metrics.ctx_node()],
+#'   [contexts.vlmc()], [predict.vlmc()].
 #' @references David J. Hand and Robert J. Till (2001). "A Simple Generalisation
 #' of the Area Under the ROC Curve for Multiple Class Classification Problems."
 #' _Machine Learning_ 45(2), p. 171--186. DOI: \doi{10.1023/A:1010920819831}.
@@ -64,7 +66,7 @@ metrics_fix_names <- function(cm) {
 #'
 #' The `target` parameter gives the true label, while `probs` provides predicted
 #' probabilities. In the case of binary classification, `target` should take 0
-#' and 1 values, and `probs` is an estimation of the probablity of 1. In the
+#' and 1 values, and `probs` is an estimation of the probability of 1. In the
 #' general case `probs` must be a matrix with as many columns as there are
 #' classes.
 #'
@@ -76,7 +78,8 @@ metrics_fix_names <- function(cm) {
 #' curves. This is much faster and gives the same value as [pROC::auc()].
 #'
 #' @param target A vector of true classes.
-#' @param probs A matrix/vector providing estimates of the probabilities of each class.
+#' @param probs A matrix/vector providing estimates of the probabilities of
+#'   each class.
 #' @param roc If `TRUE`, the ROC curve(s) are computed with `pROC` and returned
 #'   in the `roc` component of the result.
 #'

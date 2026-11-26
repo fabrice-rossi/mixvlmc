@@ -16,17 +16,18 @@ states(x)
 \item{x}{an object with a state space.}
 }
 \value{
-the state space of the context tree.
+the state space of the object.
 }
 \description{
 This function returns the state space of an object for which this is
-meaningful such as a discrete time series or a context tree.
+meaningful, such as a discrete time series or a context tree.
 }
 \examples{
 rdts <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 0)
 rdts_ctree <- ctx_tree(rdts, min_size = 1, max_depth = 2)
 ## should be c(0, 1)
 states(rdts_ctree)
+set.seed(0)
 x_dts <- dts(sample(c("A", "B", "C"), 20, replace = TRUE))
 ## should be c("A", "B", "C")
 states(x_dts)

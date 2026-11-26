@@ -6,42 +6,45 @@ latex_font_size <- c(
 
 #' ASCII character set for context tree text representation
 #'
-#' This function returns a list of ASCII characters used to fine tune the [draw()]
-#' function behaviour when it is used with `format="text"`. It can be used
-#' as is or customised using its parameters.
+#' This function returns a list of ASCII characters used to fine-tune the
+#' behaviour of the [draw()] function when it is used with `format="text"`. It
+#' can be used as is or customised using its parameters, and is generally
+#' passed to [draw_control()] via its `charset` parameter.
 #'
 #' @param root character used for the root node.
 #' @param first_node characters used for the first child of a node.
 #' @param next_node characters used for intermediate children of a node.
 #' @param final_node characters used for the last child of a node.
 #' @param vbranch characters used to represent a branch in a vertical way.
-#' @param hbranch characters used to represent a branch in a horizontal was.
-#' @param open_ct characters used to start each node specific text
-#'   representation.
-#' @param close_ct characters used to end each node specific text
-#'   representation.
+#' @param hbranch characters used to represent a branch in a horizontal way.
+#' @param open_ct characters used to start the node specific text
+#'   representation of each node.
+#' @param close_ct characters used to end the node specific text
+#'   representation of each node.
 #' @param level_sep characters used to separate levels from models in
 #'   [draw.covlmc()].
 #' @param time_sep characters used to separate temporal blocks in
 #'   [draw.covlmc()].
 #' @param intercept characters used to represent the intercept in
 #'   [draw.covlmc()].
-#' @param intercept_sep characters used to the intercept from the other
+#' @param intercept_sep characters used to separate the intercept from the other
 #'   parameters in [draw.covlmc()].
-#' @param open_p_value characters used as opening delimiters for the p value of
+#' @param open_p_value characters used as opening delimiters for the p-value of
 #'   a node in [draw.covlmc()].
-#' @param close_p_value characters used as closing delimiters for the p value of
+#' @param close_p_value characters used as closing delimiters for the p-value of
 #'   a node in [draw.covlmc()].
 #' @param open_model characters used as opening delimiters for the
 #'   representation of a model in [draw.covlmc()].
 #' @param close_model characters used as closing delimiters for the
 #'   representation of a model in [draw.covlmc()].
-#' @returns a list
-#' @seealso [draw()], [charset_utf8()].
+#' @returns a list of character strings, one per parameter.
+#' @seealso [draw()], [draw_control()], [charset_utf8()].
 #' @export
 #' @examples
 #' charset_ascii(root = "x")
-#'
+#' rdts <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 0)
+#' rdts_ctree <- ctx_tree(rdts, min_size = 1, max_depth = 2)
+#' draw(rdts_ctree, control = draw_control(charset = charset_ascii(root = "x")))
 charset_ascii <- function(root = "*",
                           first_node = "+",
                           next_node = "'",
@@ -80,41 +83,47 @@ charset_ascii <- function(root = "*",
 
 #' UTF-8 character set for context tree text representation
 #'
-#' This function returns a list of UTF-8 characters and symbols used to fine
-#' tune the [draw()] function behaviour when it is used with `format="text"`. It
-#' can be used as is or customised using its parameters.
+#' This function returns a list of UTF-8 characters and symbols used to
+#' fine-tune the behaviour of the [draw()] function when it is used with
+#' `format="text"`. It can be used as is or customised using its parameters,
+#' and is generally passed to [draw_control()] via its `charset` parameter.
 #'
 #' @param root character used for the root node.
 #' @param first_node characters used for the first child of a node.
 #' @param next_node characters used for intermediate children of a node.
 #' @param final_node characters used for the last child of a node.
 #' @param vbranch characters used to represent a branch in a vertical way.
-#' @param hbranch characters used to represent a branch in a horizontal was.
-#' @param open_ct characters used to start each node specific text
-#'   representation.
-#' @param close_ct characters used to end each node specific text
-#'   representation.
+#' @param hbranch characters used to represent a branch in a horizontal way.
+#' @param open_ct characters used to start the node specific text
+#'   representation of each node.
+#' @param close_ct characters used to end the node specific text
+#'   representation of each node.
 #' @param level_sep characters used to separate levels from models in
 #'   [draw.covlmc()].
 #' @param time_sep characters used to separate temporal blocks in
 #'   [draw.covlmc()].
 #' @param intercept characters used to represent the intercept in
 #'   [draw.covlmc()].
-#' @param intercept_sep characters used to the intercept from the other
+#' @param intercept_sep characters used to separate the intercept from the other
 #'   parameters in [draw.covlmc()].
-#' @param open_p_value characters used as opening delimiters for the p value of
+#' @param open_p_value characters used as opening delimiters for the p-value of
 #'   a node in [draw.covlmc()].
-#' @param close_p_value characters used as closing delimiters for the p value of
+#' @param close_p_value characters used as closing delimiters for the p-value of
 #'   a node in [draw.covlmc()].
 #' @param open_model characters used as opening delimiters for the
 #'   representation of a model in [draw.covlmc()].
 #' @param close_model characters used as closing delimiters for the
 #'   representation of a model in [draw.covlmc()].
-#' @returns a list
-#' @seealso [draw()], [charset_ascii()].
+#' @returns a list of character strings, one per parameter.
+#' @seealso [draw()], [draw_control()], [charset_ascii()].
 #' @export
 #' @examples
 #' charset_utf8(root = "\u27E1")
+#' rdts <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 0)
+#' rdts_ctree <- ctx_tree(rdts, min_size = 1, max_depth = 2)
+#' draw(rdts_ctree,
+#'   control = draw_control(charset = charset_utf8(root = "\u27E1"))
+#' )
 charset_utf8 <- function(root = "\u25AA", # ▪
                          first_node = "\u251C", # ├
                          next_node = "\u251C", # ├ ,
@@ -153,39 +162,40 @@ charset_utf8 <- function(root = "\u25AA", # ▪
   )
 }
 
-#' Control parameters for `draw`
+#' Control parameters for `draw()`
 #'
-#' This function returns a list used to fine tune the [draw()] function
-#' behaviour.
+#' This function returns a list used to fine-tune the behaviour of the [draw()]
+#' function.
 #'
 #' Parameters are generally specific to the `format` used for [draw()]. If this
 #' is the case, the format is given at the end of the parameter description.
-#' Some parameters are also specific to some functions inheriting from [draw()].
+#' Some parameters are also specific to some methods of [draw()].
 #'
-#' @param digits numerical parameters and p-values are represented using the
-#'   [base::signif()] function, using the number of significant digits specified
-#'   with this parameter (defaults to 4).
-#' @param charset specifies the characters used for the "ascii art" represention
-#'   when the format is "text", see details.
+#' @param digits numerical parameters, probabilities and p-values are
+#'   represented using the [base::signif()] function, using the number of
+#'   significant digits specified with this parameter (defaults to 4).
+#' @param charset specifies the characters used for the "ascii art"
+#'   representation when the format is "text", see the "Charset" section.
 #' @param orientation specifies the global orientation of the tree, either
 #'   "vertical" (default) or "horizontal" ("latex").
-#' @param tabular if TRUE (default value), the "latex" format will use tables
+#' @param tabular if `TRUE` (default value), the "latex" format will use tables
 #'   for each node, with one row for the state value and other rows for
-#'   additional information (such as the conditional probability associated to
-#'   the context). Notice that [draw.covlmc()] always uses tables regardless
-#'   of the value of `tabular`.
+#'   additional information (such as the conditional probability associated
+#'   with the context). Notice that [draw.covlmc()] always uses tables
+#'   regardless of the value of `tabular`.
 #' @param tab_orientation specifies the way the models are represented when used
 #'   by [draw.covlmc()] ("latex"). The default value is `"vertical"`: this is
 #'   well adapted to models with long covariate dependencies (see
-#'   `covariate_depth()`). The other possible value is `"horizontal"`.
-#' @param decoration specifies node decoration in the "latex" format, see
-#'   details.
+#'   [covariate_depth()]). The other possible value is `"horizontal"`.
+#' @param decoration specifies node decoration in the "latex" format, see the
+#'   "Decoration" section.
 #' @param fontsize font size for the state names in the "latex" format (using
-#'   latex standard font size, default to `"normalsize"`).
+#'   LaTeX standard font sizes such as `"small"` or `"large"`, defaults to
+#'   `"normalsize"`).
 #' @param prob_fontsize font size for the context counts, probabilities or
-#'   models in the "latex" format (using latex standard font size, defaults to
+#'   models in the "latex" format (using LaTeX standard font sizes, defaults to
 #'   `"small"`).
-#' @returns a list
+#' @returns a list of control parameters.
 #' @export
 #'
 #' @section Decoration:
@@ -210,16 +220,28 @@ charset_utf8 <- function(root = "\u25AA", # ▪
 #'   it:
 #'
 #'   - `"ascii"`: the collection uses only standard ASCII characters and
-#'      should be compatible with all environments;
+#'     should be compatible with all environments;
+#'   - `"utf8"`: the collection uses UTF-8 symbols and needs a compatible
+#'     display.
 #'
-#'  - `"utf8"`: the collection uses UTF-8 symbols and needs a compatible display.
-#'
-#'  Finally, `charset` can a user supplied list of characters as the one returned
-#'  by [charset_ascii()] and [charset_utf8()].
+#'   Finally, `charset` can be a user supplied list of characters such as the
+#'   ones returned by [charset_ascii()] and [charset_utf8()].
 #'
 #' @seealso [draw()], [charset_ascii()] and [charset_utf8()].
 #' @examples
 #' draw_control(digits = 2, tabular = FALSE)
+#' pc <- powerconsumption[powerconsumption$week == 5, ]
+#' rdts <- cut(pc$active_power,
+#'   breaks = c(0, quantile(pc$active_power, probs = c(0.25, 0.5, 0.75, 1)))
+#' )
+#' model <- vlmc(rdts, max_depth = 2)
+#' draw(model, control = draw_control(digits = 2, charset = "ascii"))
+#' draw(model, "latex",
+#'   control = draw_control(
+#'     orientation = "horizontal",
+#'     decoration = "rectangle"
+#'   )
+#' )
 draw_control <- function(digits = 4,
                          charset = NULL,
                          orientation = c("vertical", "horizontal"),
@@ -293,9 +315,9 @@ format_ctx_tree <- function(ct, control, node2txt) {
 
 #' Format a context tree
 #'
-#' This is a recursive function
+#' This is a recursive function.
 #'
-#' @param label the label of the current node (initialy set to the root)
+#' @param label the label of the current node (initially set to the root)
 #' @param prefix the current prefix that should be added to all the lines
 #'   produced for the current node
 #' @param ct the current node
@@ -389,7 +411,7 @@ rec_format_ctx_tree <- function(label, prefix, ct, vals, control, node2txt) {
 #' This function 'draws' a context tree as a text.
 #'
 #' The function uses different text based formats (plain "ascii art" and LaTeX)
-#' to represent the context tree. Fine tuning of the representation can be done
+#' to represent the context tree. Fine-tuning of the representation can be done
 #' via the [draw_control()] function.
 #'
 #' In addition to the structure of the context tree, `draw()` can represent
@@ -403,13 +425,17 @@ rec_format_ctx_tree <- function(label, prefix, ct, vals, control, node2txt) {
 #' @param ct a context tree.
 #' @param format a character string that specifies the output format of the
 #'   function. Possible values are `"text"` (default) and `"latex"`. See details.
-#' @param control a list of low level control parameters of the text
+#' @param control a list of low level control parameters of the
 #'   representation. See details and [draw_control()].
-#' @param ... additional arguments for draw.
+#' @param ... additional arguments for the methods of `draw()`.
 #' @returns an object of class `mixvlmc_draw` that contains the representation
-#'   of the context tree. It is printed automatically when it is not assigned
-#'   to a variable (see [print.mixvlmc_draw()]).
+#'   of the context tree. As for other R objects, it is printed automatically
+#'   when it is not assigned to a variable at top level (for instance when
+#'   `draw(model)` is called in the console), but not inside a function or a
+#'   loop where it must be printed explicitly with `print(draw(model))` (see
+#'   [print.mixvlmc_draw()]).
 #' @examples
+#' set.seed(0)
 #' rdts <- sample(c(0, 1), 100, replace = TRUE)
 #' ctree <- ctx_tree(rdts, min_size = 10, max_depth = 2)
 #' draw(ctree)
@@ -427,12 +453,12 @@ rec_format_ctx_tree <- function(label, prefix, ct, vals, control, node2txt) {
 #'   supports them and ASCII characters otherwise (see the `mixvlmc.charset`
 #'   option in [mixvlmc-package]).
 #'
-#'   With the `latex` value, the output is produced in LaTeX, leveraging the
-#'   [forest](https://ctan.org/pkg/forest) Latex package (see
+#'   With the `"latex"` value, the output is produced in LaTeX, leveraging the
+#'   [forest](https://ctan.org/pkg/forest) LaTeX package (see
 #'   <https://ctan.org/pkg/forest>). Each call to `draw()` produces a full
 #'   `forest` LaTeX environment. This can be included as is in a LaTeX document,
 #'   provided the `forest` package is loaded in the preamble of the document.
-#'   The LaTeX output is sanitized to avoid potential problems induced by
+#'   The LaTeX output is sanitised to avoid potential problems induced by
 #'   special characters in the names of the states of the context tree.
 #'
 #'   In a knitr document (R Markdown, Quarto, ...) that produces LaTeX (e.g. a
@@ -494,6 +520,7 @@ draw_format_control <- function(format, control, user_env = rlang::caller_env(2)
 #'   (partial) context of the node, while `"detailed"` includes the frequency of
 #'   the states that follow the context (as in [contexts.ctx_tree()]).
 #' @examples
+#' set.seed(0)
 #' rdts_c <- sample(c("A", "B", "CD"), 100, replace = TRUE)
 #' ctree_c <- ctx_tree(rdts_c, min_size = 10, max_depth = 2)
 #' draw(ctree_c, frequency = "total")
@@ -502,7 +529,7 @@ draw_format_control <- function(format, control, user_env = rlang::caller_env(2)
 #' draw(ctree_c, "latex", frequency = "detailed")
 #' rdts_c <- sample(c("A$", "_{B", "{C}_{D}"), 100, replace = TRUE)
 #' ctree_c <- ctx_tree(rdts_c, min_size = 10, max_depth = 2)
-#' ## the LaTeX output is sanitized
+#' ## the LaTeX output is sanitised
 #' draw(ctree_c, "latex", frequency = "detailed")
 #' @export
 draw.ctx_tree <- function(ct, format, control = draw_control(),

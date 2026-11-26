@@ -2,66 +2,72 @@
 % Please edit documentation in R/covlmc_simulate.R
 \name{simulate.covlmc}
 \alias{simulate.covlmc}
-\title{Simulate a discrete time series for a covlmc}
+\title{Simulate a discrete time series for a VLMC with covariates}
 \usage{
 \method{simulate}{covlmc}(object, nsim = 1, seed = NULL, covariate, init = NULL, ...)
 }
 \arguments{
-\item{object}{a fitted covlmc object.}
+\item{object}{a fitted VLMC with covariates (a \code{covlmc} object). Fully
+trimmed models are not supported (see \code{\link[=trim.covlmc]{trim.covlmc()}}).}
 
 \item{nsim}{length of the simulated time series (defaults to 1).}
 
 \item{seed}{an optional random seed (see the dedicated section).}
 
-\item{covariate}{values of the covariates.}
+\item{covariate}{a data frame with the values of the covariates, with at
+least \code{nsim} rows.}
 
-\item{init}{an optional initial sequence for the time series given by an object
-that can be interpreted as a discrete time series.}
+\item{init}{an optional initial sequence for the time series given by an
+object that can be interpreted as a discrete time series. Its length must
+not exceed \code{nsim}.}
 
 \item{...}{additional arguments.}
 }
 \value{
 a simulated discrete time series of the same type as the one used to
-build the covlmc with a \code{seed} attribute (see the Random seed section). The
-results has also the \code{dts_simulated} class to hide the \code{seed} attribute when using
-\code{print} or similar function.
+build the model, with a \code{seed} attribute (see the Random seed section). The
+result also has the \code{dts_simulated} class to hide the \code{seed} attribute when
+using \code{print} or similar functions.
 }
 \description{
 This function simulates a time series from the distribution estimated by the
-given covlmc object.
+given VLMC with covariates (a \code{covlmc} object).
 }
 \details{
-A VLMC with covariates model needs covariates to compute its transition
+A VLMC with covariates needs covariates to compute its transition
 probabilities. The covariates must be submitted as a data frame using the
-\code{covariate} argument. In addition,  the time series can be initiated by a
+\code{covariate} argument. In addition, the time series can be initiated by a
 fixed sequence specified via the \code{init} parameter.
 }
 \section{Extended contexts}{
 
 
-As explained in details in \code{\link[=loglikelihood.covlmc]{loglikelihood.covlmc()}} documentation and in
+As explained in detail in the \code{\link[=loglikelihood.covlmc]{loglikelihood.covlmc()}} documentation and in
 the dedicated \code{vignette("likelihood", package = "mixvlmc")}, the first
 initial values of a time series do not in general have a proper context for
-a COVLMC with a non zero order. In order to simulate something meaningful
+a COVLMC with a non-zero order. In order to simulate something meaningful
 for those values, we rely on the notion of extended context defined in the
 documents mentioned above. This follows the same logic as using
 \code{\link[=loglikelihood.covlmc]{loglikelihood.covlmc()}} with the parameter \code{initial="extended"}. All
-covlmc functions that need to manipulate initial values with no proper
+COVLMC functions that need to manipulate initial values with no proper
 context use the same approach.
 }
 
 \section{Random seed}{
 
 
-This function reproduce the behaviour of \code{\link[stats:simulate]{stats::simulate()}}. If \code{seed} is
-\code{NULL} the function does not change the random generator state and returns
-the value of \link{.Random.seed} as a \code{seed} attribute in the return value. This
+This function reproduces the behaviour of \code{\link[stats:simulate]{stats::simulate()}}. If \code{seed} is
+\code{NULL}, the simulation uses the current state of the random number
+generator (which is therefore modified) and the value of \link{.Random.seed}
+before the simulation is returned as a \code{seed} attribute of the result. This
 can be used to reproduce exactly the simulation results by setting
-\link{.Random.seed} to this value. Notice that if the random seed has not be
+\link{.Random.seed} to this value. Otherwise, \code{seed} is used to initialise the
+random number generator for the simulation, and the state of the generator
+is restored afterwards. Notice that if the random seed has not been
 initialised by R so far, the function issues a call to \code{runif(1)} to
 perform this initialisation (as is done in \code{\link[stats:simulate]{stats::simulate()}}).
 
-It \code{seed} is an integer, it is used in a call to \code{\link[=set.seed]{set.seed()}} before the
+If \code{seed} is an integer, it is used in a call to \code{\link[=set.seed]{set.seed()}} before the
 simulation takes place. The integer is saved as a \code{seed} attribute in the
 return value. The integer seed is completed by an attribute \code{kind} which
 contains the value \verb{as.list([RNGkind()])} exactly as with
@@ -74,11 +80,18 @@ pc <- powerconsumption[powerconsumption$week == 5, ]
 rdts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1))))
 rdts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
 m_cov <- covlmc(rdts, rdts_cov, min_size = 5)
-# new week with day light from 6:00 to 18:00
-new_cov <- data.frame(day_night = rep(c(rep(FALSE, 59), rep(TRUE, 121), rep(FALSE, 60)), times = 7))
+# new week with daylight from 6:00 to 18:00 (144 observations per day, one
+# every 10 minutes)
+new_cov <- data.frame(
+  day_night = rep(c(rep(FALSE, 36), rep(TRUE, 72), rep(FALSE, 36)), times = 7)
+)
 new_rdts <- simulate(m_cov, nrow(new_cov), seed = 0, covariate = new_cov)
+table(new_rdts)
 new_rdts_2 <- simulate(m_cov, nrow(new_cov), seed = 0, covariate = new_cov, init = rdts[1:10])
+## the simulated time series starts with the initial values
+identical(as.character(new_rdts_2[1:10]), as.character(rdts[1:10]))
 }
 \seealso{
-\code{\link[stats:simulate]{stats::simulate()}} for details and examples on the random number generator setting
+\code{\link[stats:simulate]{stats::simulate()}} for details and examples on the random number
+generator setting.
 }

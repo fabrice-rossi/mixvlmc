@@ -7,19 +7,21 @@
 \method{print}{dts}(x, n = 5, ...)
 }
 \arguments{
-\item{x}{the \code{dts} object to print}
+\item{x}{the \code{dts} object to print.}
 
-\item{n}{the number of time steps of time series to print (defaults to 5)}
+\item{n}{the number of time steps of the time series to print (defaults to
+5).}
 
-\item{...}{additional arguments for the print function.}
+\item{...}{additional arguments (not used).}
 }
 \value{
-the \code{x} object, invisibly
+the \code{x} object, invisibly.
 }
 \description{
 This function prints a discrete time series.
 }
 \examples{
+set.seed(0)
 x_dts <- dts(sample(c("A", "B"), 20, replace = TRUE))
 print(x_dts, n = 10)
 }

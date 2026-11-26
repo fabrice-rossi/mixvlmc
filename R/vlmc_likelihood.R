@@ -63,18 +63,21 @@ rec_loglikelihood_vlmc <- function(tree, node_as_ctx = FALSE, verbose = FALSE) {
 #' This function evaluates the log-likelihood of a VLMC fitted on a discrete
 #' time series.
 #'
-#' @param object the vlmc representation.
+#' @param object a fitted VLMC.
 #' @param initial specifies the likelihood function, more precisely the way the
 #'   first few observations for which contexts cannot be calculated are
 #'   integrated in the likelihood. Defaults to `"truncated"`. See
 #'   [loglikelihood()] for details.
-#' @param ... additional parameters for logLik.
+#' @param ... additional parameters (not used).
 #' @seealso [loglikelihood()]
 #' @returns an object of class `logLik`. This is a number, the log-likelihood of
 #'   the (CO)VLMC with the following attributes:
-#'  - `df`: the number of parameters used by the VLMC for this likelihood calculation
-#'  - `nobs`: the number of observations included in this likelihood calculation
-#'  - `initial`: the value of the `initial` parameter used to compute this likelihood
+#'  - `df`: the number of parameters used by the VLMC for this likelihood
+#'    calculation
+#'  - `nobs`: the number of observations included in this likelihood
+#'    calculation
+#'  - `initial`: the value of the `initial` parameter used to compute this
+#'    likelihood
 #' @examples
 #' pc <- powerconsumption[powerconsumption$week == 5, ]
 #' breaks <- c(
@@ -88,6 +91,11 @@ rec_loglikelihood_vlmc <- function(tree, node_as_ctx = FALSE, verbose = FALSE) {
 #' ll <- logLik(m_nocovariate)
 #' ll
 #' attributes(ll)
+#' ## log-likelihood with the extended likelihood function
+#' logLik(m_nocovariate, initial = "extended")
+#' ## logLik() enables the use of AIC() and BIC()
+#' AIC(m_nocovariate)
+#' BIC(m_nocovariate)
 #' @export
 logLik.vlmc <- function(object, initial = c("truncated", "specific", "extended"), ...) {
   rlang::check_dots_empty()
@@ -103,15 +111,15 @@ logLik.vlmc <- function(object, initial = c("truncated", "specific", "extended")
 #' evaluates instead the log-likelihood for this (new) discrete time series.
 #'
 #' The definition of the likelihood function depends on the value of the
-#' `initial` parameters, see the section below as well as the dedicated
+#' `initial` parameter, see the section below as well as the dedicated
 #' vignette: `vignette("likelihood", package = "mixvlmc")`.
 #'
 #' For VLMC objects, the method `loglikelihood.vlmc` will be used. For VLMC with
-#' covariables, `loglikelihood.covlmc` will instead be called. For more
-#' informations on `loglikelihood` methods, use `methods(loglikelihood)` and
+#' covariates, `loglikelihood.covlmc` will instead be called. For more
+#' information on `loglikelihood` methods, use `methods(loglikelihood)` and
 #' their associated documentation.
 #'
-#' @section likelihood calculation:
+#' @section Likelihood calculation:
 #'
 #' In a (CO)VLMC of [depth()]=k, we need k past values in order to compute the
 #' context of a given observation. As a consequence, in a time series `x`, the
@@ -121,24 +129,25 @@ logLik.vlmc <- function(object, initial = c("truncated", "specific", "extended")
 #'   `x[(k+1):length(x)]`
 #' * `initial=="specific"`: the likelihood is computed on the full time series
 #'   using a specific context for the initial values, `x[1]` to `x[k]`. Each of
-#'   the specific context is unique, leading to a perfect likelihood of 1 (0 in
-#'   log scale). Thus the numerical value of the likelihood is identical as the
+#'   the specific contexts is unique, leading to a perfect likelihood of 1 (0 in
+#'   log scale). Thus the numerical value of the likelihood is identical to the
 #'   one obtained with `initial=="truncated"` but it is computed on `length(x)`
-#'   with a model with more parameters than in this previous case.
+#'   observations with a model with more parameters than in this previous case.
 #' * `initial=="extended"`: the likelihood is computed on the full time series
 #'   using an extended context matching for the initial values, `x[1]` to `x[k]`.
-#'   This can be seen as a compromised between the two other possibilities:
+#'   This can be seen as a compromise between the two other possibilities:
 #'   the relaxed context matching needs in general to turn internal nodes
-#'   of the context tree into actual context, increasing the number of parameters,
-#'   but not as much as with "specific". However, the likelihood of say `x[1]`
-#'   with an empty context is generally not 1 and thus the full likelihood is
-#'   smaller than the one computed with "specific".
+#'   of the context tree into actual contexts, increasing the number of
+#'   parameters, but not as much as with "specific". However, the likelihood of
+#'   say `x[1]` with an empty context is generally not 1 and thus the full
+#'   likelihood is smaller than the one computed with "specific".
 #'
-#' In all cases, the `ignore` first values of the time series are not included
-#' in the computed likelihood, but still used to compute contexts. If `ignore`
-#' is not specified, it is set to the minimal possible value, that is k for the
-#' `truncated` likelihood and 0 for the other ones. If it is specified, it must
-#' be larger or equal to k for `truncated`.
+#' In all cases, the first `ignore` values of the time series are not included
+#' in the computed likelihood, but are still used to compute contexts. If
+#' `ignore` is not specified, it is set to the minimal possible value, that is k
+#' for the `truncated` likelihood and 0 for the other ones. If it is specified,
+#' it must be larger than or equal to k for `truncated`. When `newdata` is not
+#' specified, `ignore` cannot be larger than k.
 #'
 #' When `newdata` contains a transition that has a zero probability according to
 #' the model (in a context or, for the `extended` likelihood, in an extended
@@ -147,22 +156,27 @@ logLik.vlmc <- function(object, initial = c("truncated", "specific", "extended")
 #' See the dedicated vignette for a more mathematically oriented discussion:
 #' `vignette("likelihood", package = "mixvlmc")`.
 #'
-#' @param vlmc the vlmc representation.
+#' @param vlmc a fitted VLMC.
 #' @param newdata an optional object that can be interpreted as a discrete time
-#'  series (for instance a `dts` object).
+#'  series (for instance a `dts` object), with values in the state space of the
+#'  model.
 #' @param initial specifies the likelihood function, more precisely the way the
-#'   first few observations for which contexts cannot be calculated are integrated
-#'   in the likelihood. Defaults to `"truncated"`. See below for details.
-#' @param ignore specifies the number of initial values for which the loglikelihood
-#'   will not be computed. The minimal number depends on the likelihood function as
-#'   detailed below.
-#' @param ... additional parameters for loglikelihood.
+#'   first few observations for which contexts cannot be calculated are
+#'   integrated in the likelihood. Defaults to `"truncated"`. See below for
+#'   details.
+#' @param ignore specifies the number of initial values for which the
+#'   log-likelihood will not be computed. The minimal number depends on the
+#'   likelihood function as detailed below.
+#' @param ... additional parameters (not used).
 #'
 #' @returns an object of class `logLikMixVLMC` and `logLik`. This is a number,
 #' the log-likelihood of the (CO)VLMC with the following attributes:
-#'  - `df`: the number of parameters used by the VLMC for this likelihood calculation
-#'  - `nobs`: the number of observations included in this likelihood calculation
-#'  - `initial`: the value of the `initial` parameter used to compute this likelihood
+#'  - `df`: the number of parameters used by the VLMC for this likelihood
+#'    calculation
+#'  - `nobs`: the number of observations included in this likelihood
+#'    calculation
+#'  - `initial`: the value of the `initial` parameter used to compute this
+#'    likelihood
 #' @seealso [stats::logLik()]
 #'
 #' @examples
@@ -187,10 +201,16 @@ logLik.vlmc <- function(object, initial = c("truncated", "specific", "extended")
 #' ll_new <- loglikelihood(m_nocovariate, newdata = rdts_new)
 #' ll_new
 #' attributes(ll_new)
-#' ll_new_specific <- loglikelihood(m_nocovariate, initial = "specific", newdata = rdts_new)
+#' ll_new_specific <- loglikelihood(m_nocovariate,
+#'   initial = "specific",
+#'   newdata = rdts_new
+#' )
 #' ll_new_specific
 #' attributes(ll_new_specific)
-#' ll_new_extended <- loglikelihood(m_nocovariate, initial = "extended", newdata = rdts_new)
+#' ll_new_extended <- loglikelihood(m_nocovariate,
+#'   initial = "extended",
+#'   newdata = rdts_new
+#' )
 #' ll_new_extended
 #' attributes(ll_new_extended)
 #'

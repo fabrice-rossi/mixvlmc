@@ -1,17 +1,17 @@
 #' Cut off value for pruning a node in the context tree of a VLMC
 #'
-#' This function returns the cut off value associated to a specific node in the
-#' context tree interpreted as a VLMC. The node is represented by a `ctx_node`
-#' object as returned by [find_sequence()] or [contexts()]. For details, see
-#' [cutoff.vlmc()].
+#' This function returns the cut off value associated with a specific node in
+#' the context tree interpreted as a VLMC. The node is represented by a
+#' `ctx_node` object as returned by [find_sequence()] or [contexts()]. For
+#' details, see [cutoff.vlmc()].
 #'
 #' @param model a `ctx_node` object as returned by [find_sequence()]
-#' @param scale specify whether the results should be "native" log likelihood
+#' @param scale specifies whether the results should be "native" log-likelihood
 #'   ratio values or expressed in a "quantile" scale of a chi-squared
 #'   distribution (defaults to "quantile").
-#' @param raw specify whether the returned values should be limit values
-#'   computed in the model or modified values that guarantee pruning (see
-#'   details in [cutoff.vlmc()])
+#' @param raw specifies whether the returned values should be limit values
+#'   computed in the model or modified values that guarantee pruning (defaults
+#'   to `FALSE`, see details in [cutoff.vlmc()])
 #' @param ... additional arguments for the `cutoff` function.
 #' @returns a cut off value
 #' @export

@@ -60,7 +60,7 @@ assertthat::on_failure(is_ctx_node) <- function(call, env) {
 #' and `FALSE` in the other case.
 #'
 #' @param node a `ctx_node` object as returned by [find_sequence()]
-#' @returns `TRUE` if the node `node` use a reverse temporal ordering, `FALSE`
+#' @returns `TRUE` if the node `node` uses a reverse temporal ordering, `FALSE`
 #'   when this is not the case
 #' @examples
 #' rdts <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 0)
@@ -81,8 +81,8 @@ is_reversed <- function(node) {
 #' [as_sequence()].
 #'
 #' @param x a `ctx_node` object as returned by [find_sequence()]
-#' @returns a `ctx_node` using the opposite ordering convention as the parameter
-#'   of the function
+#' @returns a `ctx_node` using the opposite ordering convention to the one of
+#'   the parameter of the function
 #' @export
 #' @examples
 #' rdts <- c("A", "B", "C", "A", "A", "B", "B", "C", "C", "A")
@@ -105,8 +105,8 @@ rev.ctx_node <- function(x) {
 #' @param node a `ctx_node` object as returned by [find_sequence()]
 #' @param reverse specifies whether the sequence should be reported in reverse
 #'   temporal order (`TRUE`) or in the temporal order (`FALSE`). Defaults to the
-#'   order associated to the `ctx_node` which is determined by the parameters of
-#'   the call to [contexts()] or [find_sequence()].
+#'   order associated with the `ctx_node` which is determined by the parameters
+#'   of the call to [contexts()] or [find_sequence()] (see [is_reversed()]).
 #'
 #' @returns the sequence represented by the `node` object, a vector
 #' @export
@@ -114,8 +114,9 @@ rev.ctx_node <- function(x) {
 #' @examples
 #' rdts <- c("A", "B", "C", "A", "A", "B", "B", "C", "C", "A")
 #' rdts_tree <- ctx_tree(rdts, max_depth = 3)
-#' res <- find_sequence(rdts_tree, "A")
+#' res <- find_sequence(rdts_tree, c("A", "B"))
 #' as_sequence(res)
+#' as_sequence(res, reverse = TRUE)
 as_sequence <- function(node, reverse) {
   assertthat::assert_that(is_ctx_node(node))
   if (missing(reverse)) {
@@ -131,9 +132,9 @@ as_sequence <- function(node, reverse) {
 #' Find the node of a sequence in a context tree
 #'
 #' This function checks whether the sequence `ctx` is represented in the context
-#' tree `ct`. If this is the case, it returns a description of matching node, an
-#' object of class `ctx_node`. If the sequence is not represented in the tree,
-#' the function return `NULL`.
+#' tree `ct`. If this is the case, it returns a description of the matching
+#' node, an object of class `ctx_node`. If the sequence is not represented in
+#' the tree, the function returns `NULL`.
 #'
 #' The function looks for sequences in general. The [is_context()] function can
 #' be used on the resulting object to test if the sequence is in addition a
@@ -141,24 +142,27 @@ as_sequence <- function(node, reverse) {
 #'
 #' @param ct a context tree.
 #' @param ctx a sequence to search in the context tree
-#' @param reverse specifies whether the sequence `ctx` is given the
+#' @param reverse specifies whether the sequence `ctx` is given in the
 #'   temporal order (`FALSE`, default value) or in the reverse temporal order
 #'   (`TRUE`). See the dedicated section.
 #' @param ... additional parameters for the find_sequence function
 #' @returns an object of class `ctx_node` if the sequence `ctx` is represented
 #'   in the context tree, `NULL` when this is not the case.
-#' @section State order in a sequence: sequence are given by default
+#' @section State order in a sequence: sequences are given by default
 #'   in the temporal order and not in the "reverse" order used by many VLMC
 #'   research papers: older values are on the left. For instance, the context
 #'   `c(1, 0)` is reported if the sequence 0, then 1 appeared in the time series
 #'   used to build the context tree. In the present function, `reverse` refers
-#'   both to the order used for the `ctx` parameter and for the default order used by the resulting `ctx_node` object.
+#'   both to the order used for the `ctx` parameter and to the default order
+#'   used by the resulting `ctx_node` object.
 #' @examples
 #' rdts <- c("A", "B", "C", "A", "A", "B", "B", "C", "C", "A")
 #' rdts_tree <- ctx_tree(rdts, max_depth = 3)
 #' find_sequence(rdts_tree, "A")
 #' ## returns NULL as "A" "C" does not appear in rdts
 #' find_sequence(rdts_tree, c("A", "C"))
+#' ## "A", "B" in temporal order is "B", "A" in reverse order
+#' find_sequence(rdts_tree, c("B", "A"), reverse = TRUE)
 #' @export
 find_sequence <- function(ct, ctx, reverse = FALSE, ...) {
   UseMethod("find_sequence")
@@ -214,26 +218,28 @@ is_context <- function(node) {
   node$is_context
 }
 
-#' Report the positions of a sequence associated to a node
+#' Report the positions of a sequence associated with a node
 #'
 #' This function returns the positions of the sequence represented by `node`
 #' in the time series used to build the context tree in which the sequence is
-#' represented. This is only possible is those positions were saved during the
-#' construction of the context tree. In positions were not saved, a call to this
-#' function produces an error.
+#' represented. This is only possible if those positions were saved during the
+#' construction of the context tree (see the `keep_position` parameter of
+#' [ctx_tree()]). If positions were not saved, a call to this function produces
+#' an error.
 #'
 #' A position of a sequence `ctx` in the time series `x` is an index value `t`
-#' such that the sequence ends with `x[t]`. Thus `x[t+1]` is after the context.
+#' such that the sequence ends with `x[t]`. Thus `x[t+1]` is after the sequence.
 #' For instance if `x=c(0, 0, 1, 1)` and `ctx=c(0, 1)` (in standard state
 #' order), then the position of `ctx` in `x` is 3.
 #'
 #' @param node a `ctx_node` object as returned by [find_sequence()]
 #'
-#' @returns positions of the sequence represented by `node` is the original
-#'   time series as a integer vector
+#' @returns positions of the sequence represented by `node` in the original
+#'   time series, as an integer vector
 #' @export
 #'
 #' @examples
+#' set.seed(0)
 #' rdts <- sample(as.factor(c("A", "B", "C")), 100, replace = TRUE)
 #' rdts_tree <- ctx_tree(rdts, max_depth = 3, min_size = 5)
 #' subseq <- find_sequence(rdts_tree, factor(c("B", "A"), levels = c("A", "B", "C")))
@@ -258,15 +264,15 @@ positions.ctx_node <- function(node) {
 #' This function reports the number of occurrences of the sequence represented
 #' by `node` in the original time series used to build the associated context
 #' tree (not including a possible final occurrence not followed by any value at
-#' the end of the original time series). In addition if `frequency=="detailed"`,
-#' the function reports the frequencies of each of the possible value of the
-#' time series when they appear just after the sequence.
+#' the end of the original time series). In addition if `frequency="detailed"`
+#' (default), the function reports the frequencies of each of the possible
+#' values of the time series when they appear just after the sequence.
 #'
 #' @param node a `ctx_node` object as returned by [find_sequence()]
 #' @param frequency specifies the counts to be included in the result. `"total"`
 #'   gives the number of occurrences of the sequence in the original sequence.
-#'   `"detailed"` includes in addition the break down of these occurrences into
-#'   all the possible states.
+#'   `"detailed"` (default) includes in addition the breakdown of these
+#'   occurrences into all the possible states.
 #' @param local specifies how the counts are computed. When `local` is `FALSE`
 #'   (default value) the counts include both counts that are specific to the
 #'   context (if any) and counts from the descendants of the context in the
@@ -275,16 +281,20 @@ positions.ctx_node <- function(node) {
 #' @returns either an integer when `frequency="total"` which gives the total
 #'   number of occurrences of the sequence represented by `node` or a
 #'   `data.frame` with a `total` column with the same value and a column for
-#'   each of the possible value of the original time series, reporting counts in
-#'   each column (see the description above).
+#'   each of the possible values of the original time series, reporting counts
+#'   in each column (see the description above).
 #' @export
 #' @seealso [contexts()] and [contexts.ctx_tree()]
 #' @examples
+#' set.seed(0)
 #' rdts <- sample(as.factor(c("A", "B", "C")), 100, replace = TRUE)
 #' rdts_tree <- ctx_tree(rdts, max_depth = 3, min_size = 5)
 #' subseq <- find_sequence(rdts_tree, factor(c("A", "A"), levels = c("A", "B", "C")))
 #' if (!is.null(subseq)) {
-#'   counts(subseq)
+#'   print(counts(subseq))
+#'   print(counts(subseq, frequency = "total"))
+#'   ## counts of "A", "A" when it is not the end of a longer context
+#'   print(counts(subseq, local = TRUE))
 #' }
 counts <- function(node,
                    frequency = c("detailed", "total"),

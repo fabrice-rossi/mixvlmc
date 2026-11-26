@@ -23,48 +23,48 @@ contain at least two states.}
 \item{alpha}{number in (0,1] (default: 0.05) cut off value in quantile scale
 in the pruning phase.}
 
-\item{cutoff}{non negative number: cut off value in native (likelihood ratio)
-scale in the pruning phase. Defaults to the value obtained from \code{alpha}.
-Takes precedence over \code{alpha} is specified.}
+\item{cutoff}{non negative number: cut off value in native (log likelihood
+ratio) scale in the pruning phase. Defaults to the value obtained from
+\code{alpha}. Takes precedence over \code{alpha} if specified.}
 
 \item{min_size}{integer >= 1 (default: 2). Minimum number of observations for
 a context in the growing phase of the context tree.}
 
 \item{max_depth}{integer >= 0 (default: 100). Longest context considered in
-growing phase of the context tree.}
+the growing phase of the context tree.}
 
-\item{prune}{logical: specify whether the context tree should be pruned
-(default behaviour).}
+\item{prune}{logical: specifies whether the context tree should be pruned
+(default: \code{TRUE}).}
 
-\item{keep_match}{logical: specify whether to keep the context matches
-(default to FALSE)}
+\item{keep_match}{logical: specifies whether to keep the positions of the
+contexts in the time series (default: \code{FALSE}).}
 
 \item{backend}{"R" or "C++" (default: as specified by the "mixvlmc.backend"
 option). Specifies the implementation used to represent the context tree
-and to built it. See details.}
+and to build it. See the "Back ends" section.}
 }
 \value{
-a fitted vlmc model.
+a fitted VLMC model.
 }
 \description{
-This function fits a  Variable Length Markov Chain (VLMC) to a discrete time
+This function fits a Variable Length Markov Chain (VLMC) to a discrete time
 series.
 }
 \details{
-The VLMC is built using Bühlmann and Wyner's algorithm which consists in
+The VLMC is built using Bühlmann and Wyner's algorithm which consists of
 fitting a context tree (see \code{\link[=ctx_tree]{ctx_tree()}}) to a time series and then pruning
-it in such as way that the conditional distribution of the next state of the
+it in such a way that the conditional distribution of the next state of the
 time series given the context is significantly different from the
 distribution given a truncated version of the context.
 
 The construction of the context tree is controlled by \code{min_size} and
-\code{max_depth}, exactly as in \code{\link[=ctx_tree]{ctx_tree()}}. Significativity is measured using a
-likelihood ratio test (threshold can be specified in terms of the ratio
-itself with \code{cutoff}) or in quantile scale with \code{alpha}.
+\code{max_depth}, exactly as in \code{\link[=ctx_tree]{ctx_tree()}}. Significance is measured using a
+likelihood ratio test whose threshold can be specified either in terms of
+the ratio itself with \code{cutoff} or in quantile scale with \code{alpha}.
 
 Pruning can be postponed by setting \code{prune=FALSE}. Using a combination of
 \code{\link[=cutoff]{cutoff()}} and \code{\link[=prune]{prune()}}, the complexity of the VLMC can then be adjusted.
-Any VLMC model can be pruned after construction, \code{prune=FALSE} is a
+Any VLMC model can be pruned after construction: \code{prune=FALSE} is a
 convenience parameter to avoid setting \code{alpha=1} (which essentially prevents
 any pruning). Automated model selection is provided by \code{\link[=tune_vlmc]{tune_vlmc()}}.
 }
@@ -73,16 +73,16 @@ any pruning). Automated model selection is provided by \code{\link[=tune_vlmc]{t
 
 Two back ends are available to compute context trees:
 \itemize{
-\item the "R" back end represents the tree in pure R data structures (nested lists)
-that be easily processed further in pure R (C++ helper functions are used
-to speed up the construction).
+\item the "R" back end represents the tree in pure R data structures (nested
+lists) that can be easily processed further in pure R (C++ helper functions
+are used to speed up the construction).
 \item the "C++" back end represents the tree with C++ classes. This back end is
 considered experimental. The tree is built with an optimised suffix tree
-algorithm which speeds up the construction by at least a factor 10 in
-standard settings. As the tree is kept outside of R direct reach, context
-trees built with the C++ back end must be restored after a
+algorithm which speeds up the construction by a factor of at least 10 in
+standard settings. As the tree is kept outside of the direct reach of R,
+context trees built with the C++ back end must be restored after a
 \code{saveRDS()}/\code{readRDS()} sequence. This is done automatically by recomputing
-completely the context tree.
+the context tree completely.
 }
 }
 
@@ -104,7 +104,7 @@ draw(robust_model)
 }
 \references{
 Bühlmann, P. and Wyner, A. J. (1999), "Variable length Markov
-chains. Ann. Statist." 27 (2) 480-513 \doi{10.1214/aos/1018031204}
+chains." Ann. Statist. 27 (2) 480-513 \doi{10.1214/aos/1018031204}
 }
 \seealso{
 \code{\link[=cutoff]{cutoff()}}, \code{\link[=prune]{prune()}} and \code{\link[=tune_vlmc]{tune_vlmc()}}

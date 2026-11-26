@@ -9,19 +9,24 @@ trim(ct, ...)
 \arguments{
 \item{ct}{a context tree.}
 
-\item{...}{additional arguments for the trim function.}
+\item{...}{additional arguments for the \code{trim()} methods.}
 }
 \value{
 a trimmed context tree.
 }
 \description{
-This function returns a trimmed context tree from which match positions
-have been removed.
+This function returns a trimmed context tree from which the positions of the
+contexts in the time series (see the \code{keep_position} parameter of
+\code{\link[=ctx_tree]{ctx_tree()}}) have been removed.
 }
 \examples{
 ## context tree trimming
+set.seed(0)
 rdts <- sample(as.factor(c("A", "B", "C")), 1000, replace = TRUE)
-rdts_tree <- ctx_tree(rdts, max_depth = 10, min_size = 5, keep_position = TRUE)
+rdts_tree <- ctx_tree(rdts,
+  max_depth = 10, min_size = 5,
+  keep_position = TRUE
+)
 print(object.size(rdts_tree))
 rdts_tree <- trim(rdts_tree)
 print(object.size(rdts_tree))

@@ -24,19 +24,19 @@
 \arguments{
 \item{model}{a fitted VLMC model.}
 
-\item{scale}{specify whether the results should be "native" log likelihood
+\item{scale}{specifies whether the results should be "native" log likelihood
 ratio values or expressed in a "quantile" scale of a chi-squared
 distribution (defaults to "quantile").}
 
-\item{raw}{specify whether the returned values should be limit values
-computed in the model or modified values that guarantee pruning (see
-details)}
+\item{raw}{specifies whether the returned values should be limit values
+computed in the model or modified values that guarantee pruning (defaults
+to \code{FALSE}, see details).}
 
-\item{tolerance}{specify the minimum separation between two consecutive
-values of the cut off in native mode (before any transformation). See
+\item{tolerance}{specifies the minimum separation between two consecutive
+values of the cut off in native scale (before any transformation). See
 details.}
 
-\item{...}{additional arguments for the cutoff function.}
+\item{...}{additional arguments (not used).}
 }
 \value{
 a vector of cut off values.
@@ -59,15 +59,15 @@ build the reference model (or smaller values of the \code{alpha} parameter in
 Setting the \code{raw} parameter to \code{TRUE} removes this operation on the values
 and asks the function to return the relevant log likelihood ratios.
 
-For large VLMC, some log likelihood ratios can be almost identical, with a
+For large VLMCs, some log likelihood ratios can be almost identical, with a
 difference of the order of the machine epsilon value. The \code{tolerance}
 parameter is used to keep only values that are different enough. This is done
 in the native scale, before transformations implemented when \code{raw} is
 \code{FALSE}.
 
 As automated model selection is provided by \code{\link[=tune_vlmc]{tune_vlmc()}}, the direct use of
-\code{cutoff} should be reserved to advanced exploration of the set of trees that
-can be obtained from a complex one, e.g. to implement model selection
+\code{cutoff()} should be reserved to advanced exploration of the set of trees
+that can be obtained from a complex one, e.g. to implement model selection
 techniques that are not provided by \code{\link[=tune_vlmc]{tune_vlmc()}}.
 }
 \examples{

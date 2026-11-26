@@ -7,11 +7,11 @@
 merged_with(node)
 }
 \arguments{
-\item{node}{A \code{ctx_node_covlmc} object as returned by \code{\link[=find_sequence]{find_sequence()}} or
-\code{\link[=contexts.covlmc]{contexts.covlmc()}}}
+\item{node}{A \code{ctx_node_covlmc} object as returned by
+\code{\link[=find_sequence.covlmc]{find_sequence.covlmc()}} or \code{\link[=contexts.covlmc]{contexts.covlmc()}}}
 }
 \value{
-NULL or a list of contexts merged with \code{node} represented by
+\code{NULL} or a list of contexts merged with \code{node} represented by
 \code{ctx_node_covlmc} objects
 }
 \description{
@@ -24,10 +24,11 @@ If the context is merged, the function returns a list with one value for each
 element in the state space (see \code{\link[=states]{states()}}). The value is \code{NULL} if the
 corresponding context is not merged with the \code{node} context, while it is a
 \code{ctx_node_covlmc} object in the other case. A context merged with \code{node}
-differs from the context represented by \code{node} only in its last value (in
-temporal order) which is used as its name in the list. For instance, if the
-context \code{ABC} is merged only with \code{CBC} (when represented in temporal
-ordering), then the resulting list is of the form \code{list("A" = NULL, "B" = NULL, "C"= ctx_node_covlmc(CBX))}.
+differs from the context represented by \code{node} only in its oldest value
+(i.e. its first value in temporal order) which is used as its name in the
+list. For instance, if the context \code{ABC} is merged only with \code{CBC} (when
+represented in temporal ordering), then the resulting list is of the form
+\code{list("A" = NULL, "B" = NULL, "C" = ctx_node_covlmc(CBC))}.
 }
 \examples{
 pc_week_15_16 <- powerconsumption[powerconsumption$week \%in\% c(15, 16), ]

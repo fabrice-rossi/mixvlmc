@@ -38,20 +38,21 @@ vlmc_context_extractor <-
 #' some associated data.
 #'
 #' @inherit contexts.ctx_tree
-#' @param cutoff specifies whether to include the cut off value associated to
+#' @param cutoff specifies whether to include the cut off value associated with
 #'   each context (see [cutoff()] and [prune()]). The default result with
-#'   `cutoff=NULL` does not include those values. Setting `cutoff` to `quantile`
-#'   adds the cut off values in quantile scale, while `cutoff="native"` adds
-#'   them in the native scale. The returned values are directly based on the log
-#'   likelihood ratio computed in the context tree and are not modified to
-#'   ensure pruning (as when [cutoff()] is called by  `raw=TRUE`).
+#'   `cutoff=NULL` does not include those values. Setting `cutoff` to
+#'   `"quantile"` adds the cut off values in quantile scale, while
+#'   `cutoff="native"` adds them in the native scale. The returned values are
+#'   directly based on the log likelihood ratio computed in the context tree
+#'   and are not modified to ensure pruning (as when [cutoff()] is called with
+#'   `raw=TRUE`).
 #' @param local specifies how the counts reported by `frequency` are computed.
 #'   When `local` is `FALSE` (default value) the counts include both counts that
 #'   are specific to the context (if any) and counts from the descendants of the
 #'   context in the tree. When `local` is `TRUE` the counts include only the
 #'   number of times the context appears without being the last part of a longer
 #'   context.
-#' @param metrics if TRUE, adds predictive metrics for each context (see
+#' @param metrics if `TRUE`, adds predictive metrics for each context (see
 #'   [metrics()] for the definition of predictive metrics).
 #' @details The default behaviour of the function is to return a list of all the
 #'   contexts using `ctx_node` objects (as returned by [find_sequence()]). The
@@ -63,30 +64,32 @@ vlmc_context_extractor <-
 #'   named `context`, contains the contexts as vectors (i.e. the value returned
 #'   by `as_sequence()` applied to a `ctx_node` object). Other columns contain
 #'   context specific values specified by the additional parameters. Setting any
-#'   of those parameters to a value that ask for reporting information will
+#'   of those parameters to a value that asks for reporting information will
 #'   toggle the result type of the function to `data.frame`.
 #'
-#'   The `frequency` parameter is described in details in the documentation of
+#'   The `frequency` parameter is described in detail in the documentation of
 #'   [contexts.ctx_tree()]. When `cutoff` is non `NULL`, the resulting
 #'   `data.frame` contains a `cutoff` column with the cut off values, either in
 #'   quantile or in native scale. See [cutoff.vlmc()] and [prune.vlmc()] for the
 #'   definitions of cut off values and of the two scales.
-#' @section Cut off values: The cut off values reported by `contexts.vlmc` can
-#'   be different from the ones reported by [cutoff.vlmc()] for three reasons:
+#' @section Cut off values: The cut off values reported by `contexts.vlmc()`
+#'   can be different from the ones reported by [cutoff.vlmc()] for three
+#'   reasons:
 #'
 #'   1. [cutoff.vlmc()] reports only useful cut off values, i.e., cut off values
 #'   that should induce a simplification of the VLMC when used in [prune()].
-#'   This exclude cut off values associated to simple contexts that are smaller
-#'   than the ones of their descendants in the context tree. Those values are
-#'   reported by `context.vlmc`.
+#'   This excludes cut off values associated with simple contexts that are
+#'   smaller than the ones of their descendants in the context tree. Those
+#'   values are reported by `contexts.vlmc()`.
 #'
-#'   2. `context.vlmc` reports only cut off values of actual contexts, while
+#'   2. `contexts.vlmc()` reports only cut off values of actual contexts, while
 #'   [cutoff.vlmc()] reports cut off values for all nodes of the context tree.
 #'
-#'   3. values are not modified to induce pruning, contrarily to the default
-#'   behaviour of [cutoff.vlmc()]
+#'   3. values are not modified to induce pruning, unlike the default
+#'   behaviour of [cutoff.vlmc()].
 #'
 #' @examples
+#' set.seed(0)
 #' rdts <- sample(as.factor(c("A", "B", "C")), 100, replace = TRUE)
 #' model <- vlmc(rdts, alpha = 0.5)
 #' ## direct representation with ctx_node objects

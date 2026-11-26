@@ -12,22 +12,27 @@ vlmc_node2txt <- function(ct, vals, control) {
   }
 }
 
-#' Text based representation of a vlmc
+#' Text based representation of a VLMC
 #'
 #' @inherit draw
-#' @param ct a fitted vlmc.
+#' @param ct a fitted VLMC.
 #' @param prob this parameter controls the display of node level information in
 #'   the tree. The default `prob=TRUE` represents the conditional distribution
-#'   of the states given the (partial) context associated to the node. Setting
-#'   `prob=FALSE` replaces the conditional distribution by the frequency of the
-#'   states that follow the context as in [draw.ctx_tree()]. Setting `prob=NULL`
-#'   removes all additional information.
+#'   of the states given the (partial) context associated with the node.
+#'   Setting `prob=FALSE` replaces the conditional distribution by the frequency
+#'   of the states that follow the context as in [draw.ctx_tree()]. Setting
+#'   `prob=NULL` removes all additional information.
 #' @examples
-#' rdts <- sample(c("A", "B", "C"), 500, replace = TRUE)
-#' model <- vlmc(rdts, alpha = 0.05)
+#' pc <- powerconsumption[powerconsumption$week == 5, ]
+#' rdts <- cut(pc$active_power,
+#'   breaks = c(0, quantile(pc$active_power, probs = c(0.25, 0.5, 0.75, 1)))
+#' )
+#' model <- vlmc(rdts, max_depth = 3)
 #' draw(model)
 #' draw(model, prob = FALSE)
 #' draw(model, prob = NULL)
+#' ## LaTeX output
+#' draw(model, "latex")
 #' @export
 draw.vlmc <- function(ct, format, control = draw_control(), prob = TRUE, ...) {
   format_control <- draw_format_control(format, control)

@@ -17,7 +17,7 @@ parent(node)
 \item{node}{a \code{ctx_node} object as returned by \code{\link[=find_sequence]{find_sequence()}}}
 }
 \value{
-a \code{ctx_node} object if \code{node} does correspond to the empty
+a \code{ctx_node} object if \code{node} does not correspond to the empty
 sequence or \code{NULL} when this is not the case
 }
 \description{
@@ -30,8 +30,8 @@ Each node of a context tree represents a sequence. When \code{\link[=find_sequen
 called with success, the returned object represents the corresponding node in
 the context tree. Unless the original sequence is empty, this node has a
 parent node which is returned as a \code{ctx_node} object by the present function.
-Another interpretation is that the function returns the \code{node} object
-associated to the sequence obtained by removing the oldest value from the
+Another interpretation is that the function returns the \code{ctx_node} object
+associated with the sequence obtained by removing the oldest value from the
 original sequence.
 }
 \examples{
@@ -47,5 +47,8 @@ rdts_ctree <- ctx_tree(rdts, min_size = 1, max_depth = 3, backend = "C++")
 ctx_00 <- find_sequence(rdts_ctree, c(0, 0))
 ## the parent sequence/node corresponds to the 0 context
 parent(ctx_00)
-identical(parent(ctx_00), find_sequence(rdts_ctree, c(0)))
+identical(
+  as_sequence(parent(ctx_00)),
+  as_sequence(find_sequence(rdts_ctree, c(0)))
+)
 }

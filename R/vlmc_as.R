@@ -1,23 +1,28 @@
 #' Convert an object to a Variable Length Markov Chain (VLMC)
 #'
-#' This generic function converts an object into a vlmc.
+#' This generic function converts an object into a VLMC.
 #'
-#' @param x an object to convert into a vlmc.
+#' @param x an object to convert into a VLMC.
 #' @param ... additional arguments for conversion functions.
 #'
-#' @returns a vlmc
+#' @returns a VLMC.
 #' @export
 as_vlmc <- function(x, ...) {
   UseMethod("as_vlmc")
 }
 
 #' @param alpha cut off parameter applied during the conversion, quantile scale
-#'  (if specified)
+#'  (if specified).
 #' @param cutoff cut off parameter applied during the conversion, native scale
-#'  (if specified)
-#' @details This function converts a context tree into a VLMC. If `alpha` or
-#'  `cutoff` is specified, it is used to reduce the complexity of the tree as in
-#'  a direct call to [vlmc()] ([prune()]).
+#'  (if specified). Takes precedence over `alpha` if both are specified.
+#' @details When `x` is a context tree, the function converts it into a VLMC.
+#'  If `alpha` or `cutoff` is specified, it is used to reduce the complexity of
+#'  the tree as in a direct call to [vlmc()] (see also [prune()]). Otherwise,
+#'  the tree is converted without pruning (the cut off of the resulting VLMC
+#'  is 0 in native scale, i.e. 1 in quantile scale).
+#'
+#'  When `x` is the result of [tune_vlmc()], the function returns the best
+#'  model selected by [tune_vlmc()].
 #' @export
 #' @rdname as_vlmc
 #' @seealso [ctx_tree()]
@@ -29,6 +34,9 @@ as_vlmc <- function(x, ...) {
 #' rdts_vlmc <- as_vlmc(rdts_ctree)
 #' class(rdts_vlmc)
 #' draw(rdts_vlmc)
+#' ## conversion with pruning
+#' rdts_pruned_vlmc <- as_vlmc(rdts_ctree, alpha = 0.25)
+#' draw(rdts_pruned_vlmc)
 as_vlmc.ctx_tree <- function(x, alpha, cutoff, ...) {
   rlang::check_dots_empty()
   if (missing(alpha) && missing(cutoff)) {
@@ -73,8 +81,11 @@ as_vlmc.ctx_tree <- function(x, alpha, cutoff, ...) {
 #' @rdname as_vlmc
 #' @seealso [tune_vlmc()]
 #' @examples
-#' ## conversion from the result of tune_vlmc
-#' rdts <- sample(as.factor(c("A", "B", "C")), 100, replace = TRUE)
+#' ## conversion from the result of tune_vlmc()
+#' pc <- powerconsumption[powerconsumption$week == 5, ]
+#' rdts <- cut(pc$active_power,
+#'   breaks = c(0, quantile(pc$active_power, probs = c(0.25, 0.5, 0.75, 1)))
+#' )
 #' tune_result <- tune_vlmc(rdts)
 #' tune_result
 #' rdts_best_vlmc <- as_vlmc(tune_result)

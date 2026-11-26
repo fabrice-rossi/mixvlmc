@@ -31,28 +31,33 @@ loglikelihood(
 )
 }
 \arguments{
-\item{vlmc}{the vlmc representation.}
+\item{vlmc}{a fitted VLMC.}
 
 \item{newdata}{an optional object that can be interpreted as a discrete time
-series (for instance a \code{dts} object).}
+series (for instance a \code{dts} object), with values in the state space of the
+model.}
 
 \item{initial}{specifies the likelihood function, more precisely the way the
-first few observations for which contexts cannot be calculated are integrated
-in the likelihood. Defaults to \code{"truncated"}. See below for details.}
+first few observations for which contexts cannot be calculated are
+integrated in the likelihood. Defaults to \code{"truncated"}. See below for
+details.}
 
-\item{ignore}{specifies the number of initial values for which the loglikelihood
-will not be computed. The minimal number depends on the likelihood function as
-detailed below.}
+\item{ignore}{specifies the number of initial values for which the
+log-likelihood will not be computed. The minimal number depends on the
+likelihood function as detailed below.}
 
-\item{...}{additional parameters for loglikelihood.}
+\item{...}{additional parameters (not used).}
 }
 \value{
 an object of class \code{logLikMixVLMC} and \code{logLik}. This is a number,
 the log-likelihood of the (CO)VLMC with the following attributes:
 \itemize{
-\item \code{df}: the number of parameters used by the VLMC for this likelihood calculation
-\item \code{nobs}: the number of observations included in this likelihood calculation
-\item \code{initial}: the value of the \code{initial} parameter used to compute this likelihood
+\item \code{df}: the number of parameters used by the VLMC for this likelihood
+calculation
+\item \code{nobs}: the number of observations included in this likelihood
+calculation
+\item \code{initial}: the value of the \code{initial} parameter used to compute this
+likelihood
 }
 }
 \description{
@@ -62,15 +67,15 @@ evaluates instead the log-likelihood for this (new) discrete time series.
 }
 \details{
 The definition of the likelihood function depends on the value of the
-\code{initial} parameters, see the section below as well as the dedicated
+\code{initial} parameter, see the section below as well as the dedicated
 vignette: \code{vignette("likelihood", package = "mixvlmc")}.
 
 For VLMC objects, the method \code{loglikelihood.vlmc} will be used. For VLMC with
-covariables, \code{loglikelihood.covlmc} will instead be called. For more
-informations on \code{loglikelihood} methods, use \code{methods(loglikelihood)} and
+covariates, \code{loglikelihood.covlmc} will instead be called. For more
+information on \code{loglikelihood} methods, use \code{methods(loglikelihood)} and
 their associated documentation.
 }
-\section{likelihood calculation}{
+\section{Likelihood calculation}{
 
 
 In a (CO)VLMC of \code{\link[=depth]{depth()}}=k, we need k past values in order to compute the
@@ -82,25 +87,26 @@ different likelihood functions are used to tackle this difficulty:
 \code{x[(k+1):length(x)]}
 \item \code{initial=="specific"}: the likelihood is computed on the full time series
 using a specific context for the initial values, \code{x[1]} to \code{x[k]}. Each of
-the specific context is unique, leading to a perfect likelihood of 1 (0 in
-log scale). Thus the numerical value of the likelihood is identical as the
+the specific contexts is unique, leading to a perfect likelihood of 1 (0 in
+log scale). Thus the numerical value of the likelihood is identical to the
 one obtained with \code{initial=="truncated"} but it is computed on \code{length(x)}
-with a model with more parameters than in this previous case.
+observations with a model with more parameters than in this previous case.
 \item \code{initial=="extended"}: the likelihood is computed on the full time series
 using an extended context matching for the initial values, \code{x[1]} to \code{x[k]}.
-This can be seen as a compromised between the two other possibilities:
+This can be seen as a compromise between the two other possibilities:
 the relaxed context matching needs in general to turn internal nodes
-of the context tree into actual context, increasing the number of parameters,
-but not as much as with "specific". However, the likelihood of say \code{x[1]}
-with an empty context is generally not 1 and thus the full likelihood is
-smaller than the one computed with "specific".
+of the context tree into actual contexts, increasing the number of
+parameters, but not as much as with "specific". However, the likelihood of
+say \code{x[1]} with an empty context is generally not 1 and thus the full
+likelihood is smaller than the one computed with "specific".
 }
 
-In all cases, the \code{ignore} first values of the time series are not included
-in the computed likelihood, but still used to compute contexts. If \code{ignore}
-is not specified, it is set to the minimal possible value, that is k for the
-\code{truncated} likelihood and 0 for the other ones. If it is specified, it must
-be larger or equal to k for \code{truncated}.
+In all cases, the first \code{ignore} values of the time series are not included
+in the computed likelihood, but are still used to compute contexts. If
+\code{ignore} is not specified, it is set to the minimal possible value, that is k
+for the \code{truncated} likelihood and 0 for the other ones. If it is specified,
+it must be larger than or equal to k for \code{truncated}. When \code{newdata} is not
+specified, \code{ignore} cannot be larger than k.
 
 When \code{newdata} contains a transition that has a zero probability according to
 the model (in a context or, for the \code{extended} likelihood, in an extended
@@ -132,10 +138,16 @@ rdts_new <- cut(pc_new$active_power, breaks = breaks, labels = labels)
 ll_new <- loglikelihood(m_nocovariate, newdata = rdts_new)
 ll_new
 attributes(ll_new)
-ll_new_specific <- loglikelihood(m_nocovariate, initial = "specific", newdata = rdts_new)
+ll_new_specific <- loglikelihood(m_nocovariate,
+  initial = "specific",
+  newdata = rdts_new
+)
 ll_new_specific
 attributes(ll_new_specific)
-ll_new_extended <- loglikelihood(m_nocovariate, initial = "extended", newdata = rdts_new)
+ll_new_extended <- loglikelihood(m_nocovariate,
+  initial = "extended",
+  newdata = rdts_new
+)
 ll_new_extended
 attributes(ll_new_extended)
 

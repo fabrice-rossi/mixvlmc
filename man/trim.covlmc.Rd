@@ -7,29 +7,35 @@
 \method{trim}{covlmc}(ct, keep_model = FALSE, ...)
 }
 \arguments{
-\item{ct}{a context tree.}
+\item{ct}{a fitted VLMC with covariates (a \code{covlmc} object).}
 
-\item{keep_model}{specifies whether to keep the internal models (or not)}
+\item{keep_model}{specifies whether to keep the internal models (or not).
+Defaults to \code{FALSE}.}
 
 \item{...}{additional arguments for the trim function.}
 }
 \value{
-a trimmed context tree.
+a trimmed \code{covlmc} object.
 }
 \description{
-This function returns a trimmed COVLMC from which cached data have been removed.
+This function returns a trimmed COVLMC from which cached data have been
+removed.
 }
 \details{
-Called with \code{keep_model} set to \code{FALSE} (default case), the trimming is maximal and reduces
-further usability of the model. In particular \code{\link[=loglikelihood.covlmc]{loglikelihood.covlmc()}} cannot be used
-for new data, \code{\link[=contexts.covlmc]{contexts.covlmc()}} do not support model extraction, and
-\code{\link[=simulate.covlmc]{simulate.covlmc()}}, \code{\link[=metrics.covlmc]{metrics.covlmc()}}  and \code{\link[=prune.covlmc]{prune.covlmc()}} cannot be used at all.
+Called with \code{keep_model} set to \code{FALSE} (default case), the trimming is
+maximal and reduces further usability of the model. In particular
+\code{\link[=loglikelihood.covlmc]{loglikelihood.covlmc()}} cannot be used for new data, \code{\link[=contexts.covlmc]{contexts.covlmc()}}
+and \code{\link[=model]{model()}} do not support full model extraction, and \code{\link[=predict.covlmc]{predict.covlmc()}},
+\code{\link[=simulate.covlmc]{simulate.covlmc()}}, \code{\link[=metrics.covlmc]{metrics.covlmc()}} and \code{\link[=prune.covlmc]{prune.covlmc()}} cannot be used
+at all.
 
-Called with \code{keep_model} set to \code{TRUE}, the trimming process is less complete. In
-particular internal models are simplified using \code{\link[butcher:butcher]{butcher::butcher()}} and some
-additional minor reductions. This saves less memory but enables the use of
-\code{\link[=loglikelihood.covlmc]{loglikelihood.covlmc()}} for new data as
-well as the use of \code{\link[=simulate.covlmc]{simulate.covlmc()}}.
+Called with \code{keep_model} set to \code{TRUE}, the trimming process is less
+complete. In particular internal models are simplified using
+\code{\link[butcher:butcher]{butcher::butcher()}} and some additional minor reductions. This saves less
+memory but enables the use of \code{\link[=loglikelihood.covlmc]{loglikelihood.covlmc()}} for new data, of
+\code{\link[=predict.covlmc]{predict.covlmc()}} and of \code{\link[=simulate.covlmc]{simulate.covlmc()}}, as well as full model
+extraction. \code{\link[=metrics.covlmc]{metrics.covlmc()}} and \code{\link[=prune.covlmc]{prune.covlmc()}} cannot be used on the
+trimmed model.
 }
 \examples{
 pc <- powerconsumption[powerconsumption$week \%in\% 5:7, ]
@@ -41,6 +47,9 @@ t_m_cov_model <- trim(m_cov, keep_model = TRUE)
 print(object.size(t_m_cov_model), units = "Mb")
 t_m_cov <- trim(m_cov)
 print(object.size(t_m_cov), units = "Mb")
+## the fully trimmed model can still be used e.g. to compute the likelihood
+## on the original data
+logLik(t_m_cov)
 }
 \seealso{
 \code{\link[=tune_covlmc]{tune_covlmc()}}

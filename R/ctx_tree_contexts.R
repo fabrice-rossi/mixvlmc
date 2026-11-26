@@ -55,13 +55,14 @@ frequency_context_extractor <-
 #' @param frequency specifies the counts to be included in the result
 #'   data.frame. The default value of `NULL` does not include anything.
 #'   `"total"` gives the number of occurrences of each context in the original
-#'   sequence. `"detailed"` includes in addition the break down of these
+#'   sequence. `"detailed"` includes in addition the breakdown of these
 #'   occurrences into all the possible states.
-#' @param positions logical (defaults to FALSE). Specify whether the positions
-#'   of each context in the time series used to build the context tree should be
-#'   reported in a `positions` column of the result data frame. The availability
-#'   of the positions depends on the way the context tree was built. See details
-#'   for the definition of a position.
+#' @param positions logical (defaults to `FALSE`). Specifies whether the
+#'   positions of each context in the time series used to build the context tree
+#'   should be reported in a `positions` column of the result data frame. The
+#'   availability of the positions depends on the way the context tree was built
+#'   (see the `keep_position` parameter of [ctx_tree()]). See the dedicated
+#'   section for the definition of a position.
 #'
 #' @details The default behaviour of the function is to return a list of all the
 #'   contexts using `ctx_node` objects (as returned by [find_sequence()]). The
@@ -70,9 +71,9 @@ frequency_context_extractor <-
 #'
 #'   When `sequence=TRUE` the method returns a data.frame whose first column,
 #'   named `context`, contains the contexts as vectors (i.e. the value returned
-#'   by `as_sequence()` applied to a `ctx_node` object). Other columns contain
+#'   by [as_sequence()] applied to a `ctx_node` object). Other columns contain
 #'   context specific values specified by the additional parameters. Setting any
-#'   of those parameters to a value that ask for reporting information will
+#'   of those parameters to a value that asks for reporting information will
 #'   toggle the result type of the function to `data.frame`.
 #'
 #'   If `frequency="total"`, an additional column named `freq` gives the number
@@ -87,6 +88,7 @@ frequency_context_extractor <-
 #'   standard state order), then the position of `ctx` in `x` is 3.
 #'
 #' @examples
+#' set.seed(0)
 #' rdts <- sample(as.factor(c("A", "B", "C")), 100, replace = TRUE)
 #' rdts_tree <- ctx_tree(rdts, max_depth = 3, min_size = 5)
 #' ## direct representation with ctx_node objects
@@ -95,6 +97,7 @@ frequency_context_extractor <-
 #' contexts(rdts_tree, sequence = TRUE)
 #' contexts(rdts_tree, frequency = "total")
 #' contexts(rdts_tree, frequency = "detailed")
+#' contexts(rdts_tree, frequency = "total", positions = TRUE)
 #' @export
 contexts.ctx_tree <- function(ct, sequence = FALSE,
                               reverse = FALSE, frequency = NULL,

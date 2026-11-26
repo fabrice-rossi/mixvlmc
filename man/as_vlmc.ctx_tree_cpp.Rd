@@ -7,26 +7,31 @@
 \method{as_vlmc}{ctx_tree_cpp}(x, alpha, cutoff, ...)
 }
 \arguments{
-\item{x}{an object to convert into a vlmc.}
+\item{x}{an object to convert into a VLMC.}
 
 \item{alpha}{cut off parameter applied during the conversion, quantile scale
-(if specified)}
+(if specified).}
 
 \item{cutoff}{cut off parameter applied during the conversion, native scale
-(if specified)}
+(if specified). Takes precedence over \code{alpha} if both are specified.}
 
 \item{...}{additional arguments for conversion functions.}
 }
 \value{
-a vlmc
+a VLMC.
 }
 \description{
-This generic function converts an object into a vlmc.
+This generic function converts an object into a VLMC.
 }
 \details{
-This function converts a context tree into a VLMC. If \code{alpha} or
-\code{cutoff} is specified, it is used to reduce the complexity of the tree as in
-a direct call to \code{\link[=vlmc]{vlmc()}} (\code{\link[=prune]{prune()}}).
+When \code{x} is a context tree, the function converts it into a VLMC.
+If \code{alpha} or \code{cutoff} is specified, it is used to reduce the complexity of
+the tree as in a direct call to \code{\link[=vlmc]{vlmc()}} (see also \code{\link[=prune]{prune()}}). Otherwise,
+the tree is converted without pruning (the cut off of the resulting VLMC
+is 0 in native scale, i.e. 1 in quantile scale).
+
+When \code{x} is the result of \code{\link[=tune_vlmc]{tune_vlmc()}}, the function returns the best
+model selected by \code{\link[=tune_vlmc]{tune_vlmc()}}.
 }
 \examples{
 ## conversion from a context tree

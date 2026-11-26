@@ -7,26 +7,27 @@
 model(node, type = c("coef", "full"))
 }
 \arguments{
-\item{node}{A \code{ctx_node_covlmc} object as returned by \code{\link[=find_sequence]{find_sequence()}} or
-\code{\link[=contexts.covlmc]{contexts.covlmc()}}}
+\item{node}{A \code{ctx_node_covlmc} object as returned by
+\code{\link[=find_sequence.covlmc]{find_sequence.covlmc()}} or \code{\link[=contexts.covlmc]{contexts.covlmc()}}}
 
 \item{type}{specifies the model information to return, either the
-coefficients only (\code{type="coef"} default case) or the full model object
+coefficients only (\code{type="coef"}, default case) or the full model object
 (\code{type="full"})}
 }
 \value{
 if \code{node} is a context, the coefficients of the logistic model (as a
 vector or a matrix depending on the size of the state space) or a logistic
-model as a R object. If \code{node} is not a context, \code{NULL}.
+model as an R object. If \code{node} is not a context, \code{NULL}.
 }
 \description{
-This function returns a representation of the logistic model associated to a
-COVLMC context from its node in the associated context tree.
+This function returns a representation of the logistic model associated with
+a COVLMC context from its node in the associated context tree.
 }
 \details{
-Full model extraction is only possible if the COVLMC model what not fully
+Full model extraction is only possible if the COVLMC model was not fully
 trimmed (see \code{\link[=trim.covlmc]{trim.covlmc()}}). Notice that \code{\link[=find_sequence.covlmc]{find_sequence.covlmc()}} can
-produce node that are not context: in this case this function return \code{NULL}.
+produce nodes that are not contexts: in this case this function returns
+\code{NULL}.
 }
 \examples{
 pc <- powerconsumption[powerconsumption$week == 5, ]

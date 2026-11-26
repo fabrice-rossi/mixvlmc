@@ -2,7 +2,7 @@
 % Please edit documentation in R/covlmc_tune.R
 \name{tune_covlmc}
 \alias{tune_covlmc}
-\title{Fit an optimal Variable Length Markov Chain with Covariates (coVLMC)}
+\title{Fit an optimal Variable Length Markov Chain with Covariates (COVLMC)}
 \usage{
 tune_covlmc(
   x,
@@ -31,12 +31,14 @@ contain at least two states.}
 
 \item{initial}{specifies the likelihood function, more precisely the way the
 first few observations for which contexts cannot be calculated are
-integrated in the likelihood. See \code{\link[=loglikelihood]{loglikelihood()}} for details.}
+integrated in the likelihood. Defaults to \code{"truncated"}. See
+\code{\link[=loglikelihood]{loglikelihood()}} for details.}
 
-\item{alpha_init}{if non \code{NULL} used as the initial cut off parameter (in
-quantile scale) to build the initial VLMC}
+\item{alpha_init}{if non \code{NULL}, used as the initial cut off parameter (in
+quantile scale, in (0,1]) to build the initial COVLMC. The default \code{NULL}
+corresponds to 0.5 (see details).}
 
-\item{min_size}{integer >= 1 (default: 5). Tune the minimum number of
+\item{min_size}{number >= 1 (default: 5). Tune the minimum number of
 observations for a context in the growing phase of the context tree (see
 \code{\link[=covlmc]{covlmc()}} for details).}
 
@@ -47,18 +49,20 @@ growing phase of the initial context tree (see details).}
 process. The progress is reported with \code{\link[=message]{message()}}, which can be silenced
 with \code{\link[=suppressMessages]{suppressMessages()}}.}
 
-\item{save}{specify which BIC models are saved during the pruning process.
+\item{save}{specifies which models are saved during the pruning process.
 The default value \code{"best"} asks the function to keep only the best model
 according to the \code{criterion}. When \code{save="initial"} the function keeps \emph{in
 addition} the initial (complex) model which is then pruned during the
 selection process. When \code{save="all"}, the function returns all the models
 considered during the selection process. See details for memory occupation.}
 
-\item{trimming}{specify the type of trimming used when saving the
-intermediate models, see details.}
+\item{trimming}{specifies the type of trimming used when saving the
+intermediate models: \code{"full"} (default), \code{"partial"} or \code{"none"} (see
+the Memory occupation section).}
 
-\item{best_trimming}{specify the type of trimming used when saving the best
-model and the initial one (see details).}
+\item{best_trimming}{specifies the type of trimming used when saving the
+best model and the initial one: \code{"none"} (default), \code{"partial"} or
+\code{"full"} (see the Memory occupation section).}
 
 \item{control}{a list with control parameters used to fit the models, see
 \code{\link[=covlmc_control]{covlmc_control()}}.}
@@ -67,25 +71,27 @@ model and the initial one (see details).}
 a list with the following components:
 \itemize{
 \item \code{best_model}: the optimal COVLMC
-\item \code{criterion}: the criterion used to select the optimal VLMC
-\item \code{initial}: the likelihood function used to select the optimal VLMC
-\item \code{results}: a data frame with details about the pruning process
+\item \code{criterion}: the criterion used to select the optimal COVLMC
+\item \code{initial}: the likelihood function used to select the optimal COVLMC
+\item \code{results}: a data frame with details about the pruning process, with
+one row per model and the columns \code{alpha}, \code{depth}, \code{nb_contexts},
+\code{loglikelihood}, \code{cov_depth}, \code{AIC} and \code{BIC}
 \item \code{saved_models}: a list of intermediate COVLMCs if \code{save="initial"} or
-\code{save="all"}. It contains an \code{initial} component with the large coVLMC
-obtained first and an \code{all} component with a list of all the \emph{other} coVLMC
-obtained by pruning the initial one.
+\code{save="all"}. It contains an \code{initial} component with the large COVLMC
+obtained first and, when \code{save="all"}, an \code{all} component with a list of
+all the \emph{other} COVLMCs obtained by pruning the initial one.
 }
 }
 \description{
-This function fits a Variable Length Markov Chain with Covariates (coVLMC) to
-a discrete time series coupled with a time series of covariates by optimizing
+This function fits a Variable Length Markov Chain with Covariates (COVLMC) to
+a discrete time series coupled with a time series of covariates by optimising
 an information criterion (BIC or AIC).
 }
 \details{
-This function automates the process of fitting a large coVLMC to a discrete
+This function automates the process of fitting a large COVLMC to a discrete
 time series with \code{\link[=covlmc]{covlmc()}} and of pruning the tree (with \code{\link[=cutoff]{cutoff()}} and
-\code{\link[=prune]{prune()}}) to get an optimal with respect to an information criterion. To
-avoid missing long term dependencies, the function uses the \code{max_depth}
+\code{\link[=prune]{prune()}}) to get an optimal model with respect to an information criterion.
+To avoid missing long-term dependencies, the function uses the \code{max_depth}
 parameter as an initial guess but then relies on an automatic increase of the
 value to make sure the initial context tree is only limited by the \code{min_size}
 parameter. The initial value of the \code{alpha} parameter of \code{\link[=covlmc]{covlmc()}} is also
@@ -93,10 +99,10 @@ set to a conservative value (0.5) to avoid prior simplification of the
 context tree. This can be overridden by setting the \code{alpha_init} parameter to
 a more adapted value.
 
-Once the initial coVLMC is obtained, the \code{\link[=cutoff]{cutoff()}} and \code{\link[=prune]{prune()}} functions
-are used to build all the coVLMC models that could be generated using smaller
+Once the initial COVLMC is obtained, the \code{\link[=cutoff]{cutoff()}} and \code{\link[=prune]{prune()}} functions
+are used to build all the COVLMC models that could be generated using smaller
 values of the alpha parameter. The best model is selected from this
-collection, including the initial complex tree, as the one that minimizes the
+collection, including the initial complex tree, as the one that minimises the
 chosen information criterion.
 }
 \section{Memory occupation}{
@@ -104,12 +110,12 @@ chosen information criterion.
 
 \code{covlmc} objects tend to be large and saving all the models during the
 search for the optimal model can lead to an unreasonable use of memory. To
-avoid this problem, models are kept in trimmed form only using
-\code{\link[=trim.covlmc]{trim.covlmc()}} with \code{keep_model=FALSE}. Both the initial model and the
-best one are saved untrimmed. This default behaviour corresponds to
+avoid this problem, intermediate models are kept only in trimmed form
+using \code{\link[=trim.covlmc]{trim.covlmc()}} with \code{keep_model=FALSE}. Both the initial model and
+the best one are saved untrimmed. This default behaviour corresponds to
 \code{trimming="full"}. Setting \code{trimming="partial"} asks the function to use
 \code{keep_model=TRUE} in \code{\link[=trim.covlmc]{trim.covlmc()}} for intermediate models. Finally,
-\code{trimming="none"} turns off trimming, which is discouraged expected for
+\code{trimming="none"} turns off trimming, which is discouraged except for
 small data sets.
 
 In parallel processing contexts (e.g. using \link[foreach:foreach]{foreach::\%dopar\%}), the memory
@@ -125,7 +131,13 @@ pc <- powerconsumption[powerconsumption$week \%in\% 6:7, ]
 rdts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1))))
 rdts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
 rdts_best_model_tune <- tune_covlmc(rdts, rdts_cov)
+rdts_best_model_tune
 draw(as_covlmc(rdts_best_model_tune))
+## details of the pruning process
+rdts_best_model_tune$results
+## selection with the AIC, keeping all the (trimmed) intermediate models
+rdts_aic_tune <- tune_covlmc(rdts, rdts_cov, criterion = "AIC", save = "all")
+length(rdts_aic_tune$saved_models$all)
 }
 \seealso{
 \code{\link[=covlmc]{covlmc()}}, \code{\link[=cutoff]{cutoff()}} and \code{\link[=prune]{prune()}}

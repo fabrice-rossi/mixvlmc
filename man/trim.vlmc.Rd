@@ -2,22 +2,22 @@
 % Please edit documentation in R/vlmc_trim.R
 \name{trim.vlmc}
 \alias{trim.vlmc}
-\title{This function returns a trimmed VLMC from which match positions have been
-removed.}
+\title{Trim a VLMC}
 \usage{
 \method{trim}{vlmc}(ct, ...)
 }
 \arguments{
 \item{ct}{a VLMC.}
 
-\item{...}{additional arguments for the trim function.}
+\item{...}{additional arguments (not used).}
 }
 \value{
-a trimmed VLMC
+a trimmed VLMC.
 }
 \description{
-This function returns a trimmed context tree from which match positions
-have been removed.
+This function returns a trimmed VLMC from which the positions of the contexts
+in the time series (see the \code{keep_match} parameter of \code{\link[=vlmc]{vlmc()}}) have been
+removed.
 }
 \examples{
 ## VLMC trimming is generally useless unless match positions were kept

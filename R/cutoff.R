@@ -32,18 +32,19 @@ relaxed_unique <- function(x, tol = .Machine$double.eps^0.5) {
   x[c(TRUE, abs(diff(x)) >= tol)]
 }
 
-#' Cut off values for VLMC like model
+#' Cut off values for VLMC-like models
 #'
 #' This generic function returns one or more cut off values that are guaranteed
 #' to have an effect on the `model` passed to the function when a simplification
 #' procedure is applied (in general a tree pruning operation as provided by
 #' [prune()]).
 #'
-#' The exact definition of what is a cut off value depends on the model type and
-#' is documented in concrete implementation of the function.
+#' The exact definition of a cut off value depends on the model type and is
+#' documented in the concrete implementations of the function (see e.g.
+#' [cutoff.vlmc()] and [cutoff.covlmc()]).
 #'
 #' @param model a model.
-#' @param ... additional arguments for the cutoff function implementations
+#' @param ... additional arguments for the implementations of `cutoff()`.
 #' @returns a cut off value or a vector of cut off values.
 #' @examples
 #' pc <- powerconsumption[powerconsumption$week == 5, ]

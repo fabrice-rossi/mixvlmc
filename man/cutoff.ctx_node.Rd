@@ -9,13 +9,13 @@
 \arguments{
 \item{model}{a \code{ctx_node} object as returned by \code{\link[=find_sequence]{find_sequence()}}}
 
-\item{scale}{specify whether the results should be "native" log likelihood
+\item{scale}{specifies whether the results should be "native" log-likelihood
 ratio values or expressed in a "quantile" scale of a chi-squared
 distribution (defaults to "quantile").}
 
-\item{raw}{specify whether the returned values should be limit values
-computed in the model or modified values that guarantee pruning (see
-details in \code{\link[=cutoff.vlmc]{cutoff.vlmc()}})}
+\item{raw}{specifies whether the returned values should be limit values
+computed in the model or modified values that guarantee pruning (defaults
+to \code{FALSE}, see details in \code{\link[=cutoff.vlmc]{cutoff.vlmc()}})}
 
 \item{...}{additional arguments for the \code{cutoff} function.}
 }
@@ -23,10 +23,10 @@ details in \code{\link[=cutoff.vlmc]{cutoff.vlmc()}})}
 a cut off value
 }
 \description{
-This function returns the cut off value associated to a specific node in the
-context tree interpreted as a VLMC. The node is represented by a \code{ctx_node}
-object as returned by \code{\link[=find_sequence]{find_sequence()}} or \code{\link[=contexts]{contexts()}}. For details, see
-\code{\link[=cutoff.vlmc]{cutoff.vlmc()}}.
+This function returns the cut off value associated with a specific node in
+the context tree interpreted as a VLMC. The node is represented by a
+\code{ctx_node} object as returned by \code{\link[=find_sequence]{find_sequence()}} or \code{\link[=contexts]{contexts()}}. For
+details, see \code{\link[=cutoff.vlmc]{cutoff.vlmc()}}.
 }
 \examples{
 pc <- powerconsumption[powerconsumption$week == 5, ]

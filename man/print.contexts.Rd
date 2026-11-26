@@ -4,15 +4,15 @@
 \alias{print.contexts}
 \title{Print a context list}
 \usage{
-\method{print}{contexts}(x, reverse = TRUE, ...)
+\method{print}{contexts}(x, reverse = NULL, ...)
 }
 \arguments{
 \item{x}{the \code{contexts} object to print}
 
 \item{reverse}{specifies whether the contexts should be reported in
-temporal order (\code{FALSE}, default value) or in reverse temporal order (\code{TRUE}).
-If the parameter is not specified, the contexts are displayed in order
-specified by the call to \code{contexts()} used to build the context list.}
+temporal order (\code{FALSE}) or in reverse temporal order (\code{TRUE}). If the
+parameter is \code{NULL} (default), the contexts are displayed in the order
+specified by the call to \code{\link[=contexts]{contexts()}} used to build the context list.}
 
 \item{...}{additional arguments for the print function.}
 }
@@ -27,6 +27,7 @@ This function prints a list of contexts i.e. a \code{contexts} object listing
 rdts <- c("A", "B", "C", "A", "A", "B", "B", "C", "C", "A")
 rdts_tree <- ctx_tree(rdts, max_depth = 3)
 print(contexts(rdts_tree))
+print(contexts(rdts_tree), reverse = TRUE)
 }
 \seealso{
 \code{\link[=contexts]{contexts()}}

@@ -33,21 +33,23 @@
 \item{ct}{a context tree.}
 
 \item{sequence}{if \code{TRUE} the function returns its results as a \code{data.frame},
-if \code{FALSE} (default) as a list of \code{ctx_node} objects. (see details)}
+if \code{FALSE} (default) as a list of \code{ctx_node} objects (see details).}
 
-\item{reverse}{logical (defaults to \code{FALSE}). See details.}
+\item{reverse}{logical (defaults to \code{FALSE}). If \code{TRUE}, contexts are given
+in reverse temporal order. See the dedicated section.}
 
 \item{frequency}{specifies the counts to be included in the result
 data.frame. The default value of \code{NULL} does not include anything.
 \code{"total"} gives the number of occurrences of each context in the original
-sequence. \code{"detailed"} includes in addition the break down of these
+sequence. \code{"detailed"} includes in addition the breakdown of these
 occurrences into all the possible states.}
 
-\item{positions}{logical (defaults to FALSE). Specify whether the positions
-of each context in the time series used to build the context tree should be
-reported in a \code{positions} column of the result data frame. The availability
-of the positions depends on the way the context tree was built. See details
-for the definition of a position.}
+\item{positions}{logical (defaults to \code{FALSE}). Specifies whether the
+positions of each context in the time series used to build the context tree
+should be reported in a \code{positions} column of the result data frame. The
+availability of the positions depends on the way the context tree was built
+(see the \code{keep_position} parameter of \code{\link[=ctx_tree]{ctx_tree()}}). See the dedicated
+section for the definition of a position.}
 
 \item{local}{specifies how the counts reported by \code{frequency} are computed.
 When \code{local} is \code{FALSE} (default value) the counts include both counts that
@@ -56,15 +58,16 @@ context in the tree. When \code{local} is \code{TRUE} the counts include only th
 number of times the context appears without being the last part of a longer
 context.}
 
-\item{cutoff}{specifies whether to include the cut off value associated to
+\item{cutoff}{specifies whether to include the cut off value associated with
 each context (see \code{\link[=cutoff]{cutoff()}} and \code{\link[=prune]{prune()}}). The default result with
-\code{cutoff=NULL} does not include those values. Setting \code{cutoff} to \code{quantile}
-adds the cut off values in quantile scale, while \code{cutoff="native"} adds
-them in the native scale. The returned values are directly based on the log
-likelihood ratio computed in the context tree and are not modified to
-ensure pruning (as when \code{\link[=cutoff]{cutoff()}} is called by  \code{raw=TRUE}).}
+\code{cutoff=NULL} does not include those values. Setting \code{cutoff} to
+\code{"quantile"} adds the cut off values in quantile scale, while
+\code{cutoff="native"} adds them in the native scale. The returned values are
+directly based on the log likelihood ratio computed in the context tree
+and are not modified to ensure pruning (as when \code{\link[=cutoff]{cutoff()}} is called with
+\code{raw=TRUE}).}
 
-\item{metrics}{if TRUE, adds predictive metrics for each context (see
+\item{metrics}{if \code{TRUE}, adds predictive metrics for each context (see
 \code{\link[=metrics]{metrics()}} for the definition of predictive metrics).}
 
 \item{...}{additional arguments for the contexts function.}
@@ -88,28 +91,29 @@ When \code{sequence=TRUE} the method returns a data.frame whose first column,
 named \code{context}, contains the contexts as vectors (i.e. the value returned
 by \code{as_sequence()} applied to a \code{ctx_node} object). Other columns contain
 context specific values specified by the additional parameters. Setting any
-of those parameters to a value that ask for reporting information will
+of those parameters to a value that asks for reporting information will
 toggle the result type of the function to \code{data.frame}.
 
-The \code{frequency} parameter is described in details in the documentation of
+The \code{frequency} parameter is described in detail in the documentation of
 \code{\link[=contexts.ctx_tree]{contexts.ctx_tree()}}. When \code{cutoff} is non \code{NULL}, the resulting
 \code{data.frame} contains a \code{cutoff} column with the cut off values, either in
 quantile or in native scale. See \code{\link[=cutoff.vlmc]{cutoff.vlmc()}} and \code{\link[=prune.vlmc]{prune.vlmc()}} for the
 definitions of cut off values and of the two scales.
 }
 \section{Cut off values}{
- The cut off values reported by \code{contexts.vlmc} can
-be different from the ones reported by \code{\link[=cutoff.vlmc]{cutoff.vlmc()}} for three reasons:
+ The cut off values reported by \code{contexts.vlmc()}
+can be different from the ones reported by \code{\link[=cutoff.vlmc]{cutoff.vlmc()}} for three
+reasons:
 \enumerate{
 \item \code{\link[=cutoff.vlmc]{cutoff.vlmc()}} reports only useful cut off values, i.e., cut off values
 that should induce a simplification of the VLMC when used in \code{\link[=prune]{prune()}}.
-This exclude cut off values associated to simple contexts that are smaller
-than the ones of their descendants in the context tree. Those values are
-reported by \code{context.vlmc}.
-\item \code{context.vlmc} reports only cut off values of actual contexts, while
+This excludes cut off values associated with simple contexts that are
+smaller than the ones of their descendants in the context tree. Those
+values are reported by \code{contexts.vlmc()}.
+\item \code{contexts.vlmc()} reports only cut off values of actual contexts, while
 \code{\link[=cutoff.vlmc]{cutoff.vlmc()}} reports cut off values for all nodes of the context tree.
-\item values are not modified to induce pruning, contrarily to the default
-behaviour of \code{\link[=cutoff.vlmc]{cutoff.vlmc()}}
+\item values are not modified to induce pruning, unlike the default
+behaviour of \code{\link[=cutoff.vlmc]{cutoff.vlmc()}}.
 }
 }
 
@@ -125,12 +129,13 @@ standard state order), then the position of \code{ctx} in \code{x} is 3.
 in the temporal order and not in the "reverse" order used by many VLMC
 research papers: older values are on the left. For instance, the context
 \code{c(1, 0)} is reported if the sequence 0, then 1 appeared in the time series
-used to build the context tree. Set reverse to \code{TRUE} for the reverse
+used to build the context tree. Set \code{reverse} to \code{TRUE} for the reverse
 convention which is somewhat easier to relate to the way the context trees
-are represented by \code{\link[=draw]{draw()}} (i.e. recent values at the top the tree).
+are represented by \code{\link[=draw]{draw()}} (i.e. recent values at the top of the tree).
 }
 
 \examples{
+set.seed(0)
 rdts <- sample(as.factor(c("A", "B", "C")), 100, replace = TRUE)
 model <- vlmc(rdts, alpha = 0.5)
 ## direct representation with ctx_node objects

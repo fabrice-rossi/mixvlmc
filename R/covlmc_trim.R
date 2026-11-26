@@ -56,24 +56,30 @@ rec_trim_covlmc <- function(ct, keep_model, vals) {
 
 #' Trim a COVLMC
 #'
-#' This function returns a trimmed COVLMC from which cached data have been removed.
+#' This function returns a trimmed COVLMC from which cached data have been
+#' removed.
 #'
-#' Called with `keep_model` set to `FALSE` (default case), the trimming is maximal and reduces
-#' further usability of the model. In particular [loglikelihood.covlmc()] cannot be used
-#' for new data, [contexts.covlmc()] do not support model extraction, and
-#' [simulate.covlmc()], [metrics.covlmc()]  and [prune.covlmc()] cannot be used at all.
+#' Called with `keep_model` set to `FALSE` (default case), the trimming is
+#' maximal and reduces further usability of the model. In particular
+#' [loglikelihood.covlmc()] cannot be used for new data, [contexts.covlmc()]
+#' and [model()] do not support full model extraction, and [predict.covlmc()],
+#' [simulate.covlmc()], [metrics.covlmc()] and [prune.covlmc()] cannot be used
+#' at all.
 #'
-#' Called with `keep_model` set to `TRUE`, the trimming process is less complete. In
-#' particular internal models are simplified using [butcher::butcher()] and some
-#' additional minor reductions. This saves less memory but enables the use of
-#' [loglikelihood.covlmc()] for new data as
-#' well as the use of [simulate.covlmc()].
+#' Called with `keep_model` set to `TRUE`, the trimming process is less
+#' complete. In particular internal models are simplified using
+#' [butcher::butcher()] and some additional minor reductions. This saves less
+#' memory but enables the use of [loglikelihood.covlmc()] for new data, of
+#' [predict.covlmc()] and of [simulate.covlmc()], as well as full model
+#' extraction. [metrics.covlmc()] and [prune.covlmc()] cannot be used on the
+#' trimmed model.
 #'
-#' @param ct a context tree.
-#' @param keep_model specifies whether to keep the internal models (or not)
+#' @param ct a fitted VLMC with covariates (a `covlmc` object).
+#' @param keep_model specifies whether to keep the internal models (or not).
+#'   Defaults to `FALSE`.
 #' @param ... additional arguments for the trim function.
 #'
-#' @returns a trimmed context tree.
+#' @returns a trimmed `covlmc` object.
 #' @export
 #' @seealso [tune_covlmc()]
 #'
@@ -87,6 +93,9 @@ rec_trim_covlmc <- function(ct, keep_model, vals) {
 #' print(object.size(t_m_cov_model), units = "Mb")
 #' t_m_cov <- trim(m_cov)
 #' print(object.size(t_m_cov), units = "Mb")
+#' ## the fully trimmed model can still be used e.g. to compute the likelihood
+#' ## on the original data
+#' logLik(t_m_cov)
 trim.covlmc <- function(ct, keep_model = FALSE, ...) {
   rlang::check_dots_empty()
   pre_res <- rec_trim_covlmc(ct, keep_model, ct$vals)

@@ -1,8 +1,8 @@
 #' Format a context tree (C++ backend)
 #'
-#' This is a recursive function
+#' This is a recursive function.
 #'
-#' @param label the label of the current node (initialy set to the root)
+#' @param label the label of the current node (initially set to the root)
 #' @param prefix the current prefix that should be added to all the lines
 #'   produced for the current node
 #' @param tree the full tree (R representation)

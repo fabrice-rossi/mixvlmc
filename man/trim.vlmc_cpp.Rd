@@ -2,26 +2,27 @@
 % Please edit documentation in R/vlmc_trim_cpp.R
 \name{trim.vlmc_cpp}
 \alias{trim.vlmc_cpp}
-\title{This function returns a trimmed VLMC from which match positions have been
-removed.}
+\title{Trim a VLMC}
 \usage{
 \method{trim}{vlmc_cpp}(ct, ...)
 }
 \arguments{
 \item{ct}{a VLMC.}
 
-\item{...}{additional arguments for the trim function.}
+\item{...}{additional arguments (not used).}
 }
 \value{
-a trimmed VLMC
+a trimmed VLMC.
 }
 \description{
-This function returns a trimmed context tree from which match positions
-have been removed.
+This function returns a trimmed VLMC from which the positions of the contexts
+in the time series (see the \code{keep_match} parameter of \code{\link[=vlmc]{vlmc()}}) have been
+removed.
 }
 \details{
-Trimming in the C++ backend is done directly in the \code{Rcpp} managed memory and
-cannot be detected at R level using e.g. \code{\link[utils:object.size]{utils::object.size()}}.
+Trimming with the C++ backend is done directly in the memory managed by
+\code{Rcpp} and cannot be detected at the R level using e.g.
+\code{\link[utils:object.size]{utils::object.size()}}.
 }
 \examples{
 ## VLMC trimming is generally useless unless match positions were kept

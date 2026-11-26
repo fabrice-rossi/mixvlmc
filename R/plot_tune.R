@@ -2,16 +2,17 @@
 #'
 #' This function plots the results of [tune_vlmc()] or [tune_covlmc()].
 #'
-#' The standard plot consists in showing the evolution of the criterion
-#' used to select the model ([AIC()] or [BIC()]) as a function of the
-#' cut off criterion expressed in the quantile scale (the quantile is used
-#' by default to offer a common default behaviour between [vlmc()] and
-#' [covlmc()]). Parameters can be used to display instead the [loglikelihood()]
-#' of the model (by setting `value="likelihood"`) and to use the native
-#' scale for the cut off when available (by setting `cutoff="native"`).
+#' The standard plot shows the evolution of the criterion used to select the
+#' model ([AIC()] or [BIC()]) as a function of the cut off criterion expressed
+#' in the quantile scale (the quantile scale is used by default to offer a
+#' common default behaviour between [vlmc()] and [covlmc()]). Parameters can be
+#' used to display instead the [loglikelihood()] of the model (by setting
+#' `value="likelihood"`) and to use the native scale for the cut off when
+#' available (by setting `cutoff="native"`, which is not supported for
+#' [tune_covlmc()] results).
 #'
 #' @section Customisation:
-#' The function sets several default before calling [base::plot()], namely:
+#' The function sets several defaults before calling [base::plot()], namely:
 #' - `type`: "l" by default to use a line representation;
 #' - `xlab`: "Cut off (quantile scale)" by default, adapted to the actual
 #'  scale;
@@ -21,16 +22,24 @@
 #' the function. All parameters specified in addition to `x`, `value` and
 #' `cutoff` are passed to [base::plot()].
 #'
-#' @param x a `tune_vlmc` object
-#' @param value the criterion to plot (default "criterion").
-#' @param cutoff the scale used for the cut off criterion (default "quantile")
-#' @param ... additional parameters passed to [base::plot()]
-#' @returns the `tune_vlmc` object invisibly
+#' @param x a `tune_vlmc` or a `tune_covlmc` object.
+#' @param value the value to plot: either `"criterion"` (default) for the
+#'   information criterion used for model selection or `"likelihood"` for the
+#'   log likelihood.
+#' @param cutoff the scale used for the cut off criterion: either `"quantile"`
+#'   (default) or `"native"` (only for `tune_vlmc` objects).
+#' @param ... additional parameters passed to [base::plot()].
+#' @returns the `x` object, invisibly.
 #' @examples
-#' rdts <- sample(as.factor(c("A", "B", "C")), 100, replace = TRUE)
+#' pc <- powerconsumption[powerconsumption$week == 5, ]
+#' rdts <- cut(pc$active_power,
+#'   breaks = c(0, quantile(pc$active_power, probs = c(0.25, 0.5, 0.75, 1)))
+#' )
 #' tune_result <- tune_vlmc(rdts)
 #' ## default plot
 #' plot(tune_result)
+#' ## native scale for the cut off
+#' plot(tune_result, cutoff = "native")
 #' ## likelihood
 #' plot(tune_result, value = "likelihood")
 #' ## parameters overriding
@@ -78,7 +87,9 @@ plot.tune_vlmc <- function(x,
 #' @rdname plot.tune_vlmc
 #' @examples
 #' pc <- powerconsumption[powerconsumption$week %in% 10:12, ]
-#' rdts <- cut(pc$active_power, breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1))))
+#' rdts <- cut(pc$active_power,
+#'   breaks = c(0, quantile(pc$active_power, probs = c(0.5, 1)))
+#' )
 #' rdts_cov <- data.frame(day_night = (pc$hour >= 7 & pc$hour <= 17))
 #' rdts_best_model_tune <- tune_covlmc(rdts, rdts_cov, criterion = "AIC")
 #' plot(rdts_best_model_tune)

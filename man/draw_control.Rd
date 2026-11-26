@@ -2,7 +2,7 @@
 % Please edit documentation in R/ctx_tree_draw.R
 \name{draw_control}
 \alias{draw_control}
-\title{Control parameters for \code{draw}}
+\title{Control parameters for \code{draw()}}
 \usage{
 draw_control(
   digits = 4,
@@ -16,48 +16,49 @@ draw_control(
 )
 }
 \arguments{
-\item{digits}{numerical parameters and p-values are represented using the
-\code{\link[base:Round]{base::signif()}} function, using the number of significant digits specified
-with this parameter (defaults to 4).}
+\item{digits}{numerical parameters, probabilities and p-values are
+represented using the \code{\link[base:Round]{base::signif()}} function, using the number of
+significant digits specified with this parameter (defaults to 4).}
 
-\item{charset}{specifies the characters used for the "ascii art" represention
-when the format is "text", see details.}
+\item{charset}{specifies the characters used for the "ascii art"
+representation when the format is "text", see the "Charset" section.}
 
 \item{orientation}{specifies the global orientation of the tree, either
 "vertical" (default) or "horizontal" ("latex").}
 
-\item{tabular}{if TRUE (default value), the "latex" format will use tables
+\item{tabular}{if \code{TRUE} (default value), the "latex" format will use tables
 for each node, with one row for the state value and other rows for
-additional information (such as the conditional probability associated to
-the context). Notice that \code{\link[=draw.covlmc]{draw.covlmc()}} always uses tables regardless
-of the value of \code{tabular}.}
+additional information (such as the conditional probability associated
+with the context). Notice that \code{\link[=draw.covlmc]{draw.covlmc()}} always uses tables
+regardless of the value of \code{tabular}.}
 
 \item{tab_orientation}{specifies the way the models are represented when used
 by \code{\link[=draw.covlmc]{draw.covlmc()}} ("latex"). The default value is \code{"vertical"}: this is
 well adapted to models with long covariate dependencies (see
-\code{covariate_depth()}). The other possible value is \code{"horizontal"}.}
+\code{\link[=covariate_depth]{covariate_depth()}}). The other possible value is \code{"horizontal"}.}
 
-\item{decoration}{specifies node decoration in the "latex" format, see
-details.}
+\item{decoration}{specifies node decoration in the "latex" format, see the
+"Decoration" section.}
 
 \item{fontsize}{font size for the state names in the "latex" format (using
-latex standard font size, default to \code{"normalsize"}).}
+LaTeX standard font sizes such as \code{"small"} or \code{"large"}, defaults to
+\code{"normalsize"}).}
 
 \item{prob_fontsize}{font size for the context counts, probabilities or
-models in the "latex" format (using latex standard font size, defaults to
+models in the "latex" format (using LaTeX standard font sizes, defaults to
 \code{"small"}).}
 }
 \value{
-a list
+a list of control parameters.
 }
 \description{
-This function returns a list used to fine tune the \code{\link[=draw]{draw()}} function
-behaviour.
+This function returns a list used to fine-tune the behaviour of the \code{\link[=draw]{draw()}}
+function.
 }
 \details{
 Parameters are generally specific to the \code{format} used for \code{\link[=draw]{draw()}}. If this
 is the case, the format is given at the end of the parameter description.
-Some parameters are also specific to some functions inheriting from \code{\link[=draw]{draw()}}.
+Some parameters are also specific to some methods of \code{\link[=draw]{draw()}}.
 }
 \section{Decoration}{
 
@@ -85,15 +86,28 @@ it:
 \itemize{
 \item \code{"ascii"}: the collection uses only standard ASCII characters and
 should be compatible with all environments;
-\item \code{"utf8"}: the collection uses UTF-8 symbols and needs a compatible display.
+\item \code{"utf8"}: the collection uses UTF-8 symbols and needs a compatible
+display.
 }
 
-Finally, \code{charset} can a user supplied list of characters as the one returned
-by \code{\link[=charset_ascii]{charset_ascii()}} and \code{\link[=charset_utf8]{charset_utf8()}}.
+Finally, \code{charset} can be a user supplied list of characters such as the
+ones returned by \code{\link[=charset_ascii]{charset_ascii()}} and \code{\link[=charset_utf8]{charset_utf8()}}.
 }
 
 \examples{
 draw_control(digits = 2, tabular = FALSE)
+pc <- powerconsumption[powerconsumption$week == 5, ]
+rdts <- cut(pc$active_power,
+  breaks = c(0, quantile(pc$active_power, probs = c(0.25, 0.5, 0.75, 1)))
+)
+model <- vlmc(rdts, max_depth = 2)
+draw(model, control = draw_control(digits = 2, charset = "ascii"))
+draw(model, "latex",
+  control = draw_control(
+    orientation = "horizontal",
+    decoration = "rectangle"
+  )
+)
 }
 \seealso{
 \code{\link[=draw]{draw()}}, \code{\link[=charset_ascii]{charset_ascii()}} and \code{\link[=charset_utf8]{charset_utf8()}}.

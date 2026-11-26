@@ -17,8 +17,8 @@ counts(node, frequency = c("detailed", "total"), local = FALSE)
 
 \item{frequency}{specifies the counts to be included in the result. \code{"total"}
 gives the number of occurrences of the sequence in the original sequence.
-\code{"detailed"} includes in addition the break down of these occurrences into
-all the possible states.}
+\code{"detailed"} (default) includes in addition the breakdown of these
+occurrences into all the possible states.}
 
 \item{local}{specifies how the counts are computed. When \code{local} is \code{FALSE}
 (default value) the counts include both counts that are specific to the
@@ -30,23 +30,27 @@ the context appears without being the last part of a longer context.}
 either an integer when \code{frequency="total"} which gives the total
 number of occurrences of the sequence represented by \code{node} or a
 \code{data.frame} with a \code{total} column with the same value and a column for
-each of the possible value of the original time series, reporting counts in
-each column (see the description above).
+each of the possible values of the original time series, reporting counts
+in each column (see the description above).
 }
 \description{
 This function reports the number of occurrences of the sequence represented
 by \code{node} in the original time series used to build the associated context
 tree (not including a possible final occurrence not followed by any value at
-the end of the original time series). In addition if \code{frequency=="detailed"},
-the function reports the frequencies of each of the possible value of the
-time series when they appear just after the sequence.
+the end of the original time series). In addition if \code{frequency="detailed"}
+(default), the function reports the frequencies of each of the possible
+values of the time series when they appear just after the sequence.
 }
 \examples{
+set.seed(0)
 rdts <- sample(as.factor(c("A", "B", "C")), 100, replace = TRUE)
 rdts_tree <- ctx_tree(rdts, max_depth = 3, min_size = 5)
 subseq <- find_sequence(rdts_tree, factor(c("A", "A"), levels = c("A", "B", "C")))
 if (!is.null(subseq)) {
-  counts(subseq)
+  print(counts(subseq))
+  print(counts(subseq, frequency = "total"))
+  ## counts of "A", "A" when it is not the end of a longer context
+  print(counts(subseq, local = TRUE))
 }
 }
 \seealso{
