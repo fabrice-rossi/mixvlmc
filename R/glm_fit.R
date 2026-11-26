@@ -77,6 +77,12 @@ multinom_rank <- function(model, mm, nb_outputs) {
 }
 
 fit_glm <- function(target, mm, nb_vals, control) {
+  ## the engines keep the environment of their formula (this function): an
+  ## unforced argument would keep its whole chain of calling frames
+  force(target)
+  force(mm)
+  force(nb_vals)
+  force(control)
   assertthat::assert_that(nrow(mm) > 0)
   engine <- getOption("mixvlmc.predictive")
   assertthat::assert_that(engine %in% c("glm", "multinom"))

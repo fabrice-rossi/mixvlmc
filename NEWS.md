@@ -174,6 +174,10 @@ renders the tree and adds the `forest` package to the preamble of the document.
   likelihood function is the truncated one
 
 ### VLMC with covariates
+* the logistic models of a `covlmc` do not keep references to the functions
+  that fitted them: saved models (e.g. with `saveRDS()`) were several times
+  larger than the models themselves, up to 20 times for the models returned
+  by `tune_covlmc()`
 * the logistic models without covariates (intercept only) obey the
   `mixvlmc.maxit` option with the `glm` and `multinom` engines
 * the `mixvlmc.maxit` option is used by `VGAM::vglm()` (three states or more
