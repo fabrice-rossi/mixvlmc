@@ -72,6 +72,28 @@ test_that("tune_covlmc find a large enough max_depth", {
   expect_equal(bt_covlmc, bt_covlmc_auto)
 })
 
+test_that("tune_covlmc is robust to rounding errors in refitted models", {
+  ## some BLAS (e.g. MKL) give results that differ in the last digits when the
+  ## same logistic model is fitted twice: this is emulated by a small random
+  ## perturbation of the log likelihoods of the models
+  exact_glm_likelihood <- glm_likelihood
+  for (seed in 1:5) {
+    withr::local_seed(seed)
+    x <- sample(c("A", "B", "C"), 500, replace = TRUE)
+    y <- ifelse(runif(length(x)) > 0.5, c(x[-1], sample(c("A", "B", "C"), 1)), c(x[-c(1, 2)], sample(c("A", "B", "C"), 2, replace = TRUE)))
+    y <- as.factor(ifelse(runif(length(x)) > 0.2, y, sample(c("A", "B", "C"), 500, replace = TRUE)))
+    df_y <- data.frame(y = y, z = runif(length(y)))
+    bt_covlmc <- tune_covlmc(x, df_y, criterion = "BIC", max_depth = 2)
+    local({
+      local_mocked_bindings(glm_likelihood = function(...) {
+        exact_glm_likelihood(...) + stats::runif(1, -1e-12, 1e-12)
+      })
+      bt_covlmc_noisy <- tune_covlmc(x, df_y, criterion = "BIC", max_depth = 2)
+      expect_equal(bt_covlmc_noisy$results, bt_covlmc$results)
+    })
+  }
+})
+
 test_that("print works as expected", {
   withr::local_seed(0)
   x <- sample(c("A", "B", "C"), 500, replace = TRUE)

@@ -203,6 +203,13 @@ renders the tree and adds the `forest` package to the preamble of the document.
   likelihood function is the truncated one
 
 ### VLMC with covariates
+* the cut off values given by `cutoff.covlmc()` (with `raw = FALSE`) are
+  smaller than the p-values by a relative margin, so that pruning with them
+  has an effect even when the p-values recomputed by `prune.covlmc()` differ in
+  the last digits from the ones stored in the model, as with some linear
+  algebra libraries (e.g. MKL). `tune_covlmc()` could report models identical
+  to the previous one and return different results for different values of
+  `max_depth`
 * `children()` of a node of a VLMC with covariates returns nodes of VLMC with
   covariates (they were nodes of context trees, without the logistic models
   and the merged contexts)

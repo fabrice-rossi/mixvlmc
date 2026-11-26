@@ -48,9 +48,16 @@ pruning process. As a consequence, unlike \code{\link[=cutoff.vlmc]{cutoff.vlmc(
 does not provide a \code{scale} parameter: values are always given in quantile
 scale (i.e. as p-values of the likelihood ratio tests).
 
-Setting \code{raw} to \code{TRUE} removes the small perturbations that are subtracted
-from the p-values of the likelihood ratio tests computed from the COVLMC (in
-quantile scale).
+By default (\code{raw = FALSE}), the values are slightly smaller than the
+p-values of the likelihood ratio tests computed from the COVLMC (in quantile
+scale): they are reduced by a relative margin of \code{tolerance / 2} (and by at
+least the smallest representable amount). \code{\link[=prune.covlmc]{prune.covlmc()}} estimates new
+logistic models and recomputes the likelihood ratio tests, whose p-values
+can differ in the last digits from the ones stored in the model, depending
+on the linear algebra library used by R. The margin ensures that pruning
+with a cut off value does have an effect on the model. As consecutive values
+differ by at least \code{tolerance}, the margin keeps each value larger than the
+next one. Setting \code{raw} to \code{TRUE} returns the p-values themselves.
 
 As automated model selection is provided by \code{\link[=tune_covlmc]{tune_covlmc()}}, the direct use of
 \code{cutoff} should be reserved to advanced exploration of the set of trees that

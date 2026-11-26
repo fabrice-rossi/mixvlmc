@@ -892,9 +892,16 @@ assertthat::on_failure(is_covlmc) <- function(call, env) {
 #' does not provide a `scale` parameter: values are always given in quantile
 #' scale (i.e. as p-values of the likelihood ratio tests).
 #'
-#' Setting `raw` to `TRUE` removes the small perturbations that are subtracted
-#' from the p-values of the likelihood ratio tests computed from the COVLMC (in
-#' quantile scale).
+#' By default (`raw = FALSE`), the values are slightly smaller than the
+#' p-values of the likelihood ratio tests computed from the COVLMC (in quantile
+#' scale): they are reduced by a relative margin of `tolerance / 2` (and by at
+#' least the smallest representable amount). [prune.covlmc()] estimates new
+#' logistic models and recomputes the likelihood ratio tests, whose p-values
+#' can differ in the last digits from the ones stored in the model, depending
+#' on the linear algebra library used by R. The margin ensures that pruning
+#' with a cut off value does have an effect on the model. As consecutive values
+#' differ by at least `tolerance`, the margin keeps each value larger than the
+#' next one. Setting `raw` to `TRUE` returns the p-values themselves.
 #'
 #' As automated model selection is provided by [tune_covlmc()], the direct use of
 #' `cutoff` should be reserved to advanced exploration of the set of trees that
@@ -967,7 +974,12 @@ covlmc_cutoff_values <- function(preres, raw, tolerance) {
   } else {
     preres <- relaxed_unique(sort(preres, decreasing = TRUE), tolerance)
     if (!raw) {
-      preres <- before(preres)
+      ## prune.covlmc() recomputes the p-values, which can differ from the
+      ## stored ones by rounding errors (e.g. with some BLAS such as MKL): a
+      ## relative margin guarantees that pruning with the cut off values has an
+      ## effect. As consecutive values differ by at least tolerance and
+      ## p-values are at most 1, the margin keeps the order of the values
+      preres <- pmin(before(preres), preres * (1 - tolerance / 2))
       preres[preres < 0] <- 0
     }
     if (length(preres) == 1 && preres[1] == 0) {
