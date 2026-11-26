@@ -107,7 +107,6 @@ tune_covlmc <- function(x, covariate, criterion = c("BIC", "AIC"),
   initial <- match.arg(initial)
   best_trimming <- match.arg(best_trimming)
   save <- match.arg(save)
-  criterion <- match.arg(criterion)
   trimming <- match.arg(trimming)
   ## make sure that x is a dts
   if (!is_dts(x)) {

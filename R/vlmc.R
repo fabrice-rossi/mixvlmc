@@ -394,7 +394,7 @@ vlmc_internal <- function(ix, vals, alpha, cutoff, min_size, max_depth,
     alpha <- to_quantile(cutoff, length(vals))
   }
   if (length(vals) > max(10, 0.05 * length(ix))) {
-    warning(paste0("x as numerous unique values (", length(vals), ")"))
+    warning(paste0("x has numerous unique values (", length(vals), ")"))
   }
   if (backend == "R") {
     ctx_tree <- grow_ctx_tree(ix, vals,

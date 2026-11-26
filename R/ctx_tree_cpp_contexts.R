@@ -21,7 +21,7 @@ contexts.ctx_tree_cpp <- function(ct, sequence = FALSE,
     sequence <- wants_df
   } else {
     if (!sequence && wants_df) {
-      stop("sequence = 'FALSE' is incompatible with with the other requested values")
+      stop("sequence = 'FALSE' is incompatible with the other requested values")
     }
   }
   if (!sequence) {

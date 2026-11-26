@@ -199,7 +199,7 @@ ctx_tree_internal <- function(ix,
   assert_max_depth(max_depth)
   assert_state_space(vals)
   if (length(vals) > max(10, 0.05 * length(ix))) {
-    warning(paste0("x as numerous unique values (", length(vals), ")"))
+    warning(paste0("x has numerous unique values (", length(vals), ")"))
   }
   if (backend == "R") {
     result <- grow_ctx_tree(ix, vals,

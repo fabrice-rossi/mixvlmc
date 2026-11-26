@@ -753,7 +753,7 @@ covlmc_internal <- function(ix, fx, vals, covariate, alpha, min_size, max_depth,
   }
   assert_state_space(vals)
   if (length(vals) > max(10, 0.05 * length(ix))) {
-    warning(paste0("x as numerous unique values (", length(vals), ")"))
+    warning(paste0("x has numerous unique values (", length(vals), ")"))
   }
   ## covariate preparation
   desc <- covariate_description(covariate)

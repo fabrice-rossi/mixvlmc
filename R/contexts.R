@@ -154,9 +154,9 @@ new_context_list <- function(ctx_list, ..., class = character()) {
 #'
 #' @param x the `contexts` object to print
 #' @param reverse specifies whether the contexts should be reported in
-#'   temporal order (`FALSE`, default value) or in reverse temporal order (`TRUE`).
-#'   If the parameter is not specified, the contexts are displayed in order
-#'   specified by the call to `contexts()` used to build the context list.
+#'   temporal order (`FALSE`) or in reverse temporal order (`TRUE`). If the
+#'   parameter is `NULL` (default), the contexts are displayed in the order
+#'   specified by the call to [contexts()] used to build the context list.
 #' @param ... additional arguments for the print function.
 #' @returns the `x` object, invisibly
 #' @seealso [contexts()]
@@ -165,9 +165,10 @@ new_context_list <- function(ctx_list, ..., class = character()) {
 #' rdts <- c("A", "B", "C", "A", "A", "B", "B", "C", "C", "A")
 #' rdts_tree <- ctx_tree(rdts, max_depth = 3)
 #' print(contexts(rdts_tree))
-print.contexts <- function(x, reverse = TRUE, ...) {
+#' print(contexts(rdts_tree), reverse = TRUE)
+print.contexts <- function(x, reverse = NULL, ...) {
   cat("Contexts:\n")
-  if (missing(reverse)) {
+  if (is.null(reverse)) {
     for (i in seq_along(x)) {
       the_seq <- as_sequence(x[[i]])
       cat(" ", paste(the_seq, collapse = ", "), "\n", sep = "")

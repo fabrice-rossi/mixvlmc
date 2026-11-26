@@ -42,7 +42,7 @@ draw.vlmc <- function(ct, format, control = draw_control(), prob = TRUE, ...) {
     } else {
       res <- format_ctx_tree(
         ct,
-        c(control, list(prob = prob, list(...))),
+        c(control, list(prob = prob), list(...)),
         vlmc_node2txt
       )
     }
