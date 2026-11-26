@@ -105,6 +105,11 @@ Useful links:
 **Maintainer**: Fabrice Rossi <Fabrice.Rossi@apiacoa.org>
 ([ORCID](https://orcid.org/0000-0003-4638-1286)) \[copyright holder\]
 
+Authors:
+
+- Fabrice Rossi <Fabrice.Rossi@apiacoa.org>
+  ([ORCID](https://orcid.org/0000-0003-4638-1286)) \[copyright holder\]
+
 Other contributors:
 
 - Hugo Le Picard <lepicardhugo@gmail.com>
