@@ -68,7 +68,8 @@ and are not modified to ensure pruning (as when \code{\link[=cutoff]{cutoff()}} 
 \code{raw=TRUE}).}
 
 \item{metrics}{if \code{TRUE}, adds predictive metrics for each context (see
-\code{\link[=metrics]{metrics()}} for the definition of predictive metrics).}
+\code{\link[=metrics]{metrics()}} for the definition of predictive metrics). As in
+\code{\link[=metrics.ctx_node]{metrics.ctx_node()}}, the AUC of a context is \code{NA}.}
 
 \item{...}{additional arguments for the contexts function.}
 }

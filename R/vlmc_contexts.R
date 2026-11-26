@@ -26,6 +26,8 @@ vlmc_context_extractor <-
         fake_data <- generate_fake_data(lres$freq, lres[, 3:(2 + length(vals)), drop = FALSE], probs, vals)
         local_m <- main_metrics(fake_data$response, fake_data$predictor, roc = FALSE)
         local_m$conf_mat <- NULL
+        ## the predictions of a context are constant: the AUC is not defined
+        local_m$auc <- NA_real_
         res <- cbind(res, as.data.frame(local_m))
       }
       res
@@ -53,7 +55,8 @@ vlmc_context_extractor <-
 #'   number of times the context appears without being the last part of a longer
 #'   context.
 #' @param metrics if `TRUE`, adds predictive metrics for each context (see
-#'   [metrics()] for the definition of predictive metrics).
+#'   [metrics()] for the definition of predictive metrics). As in
+#'   [metrics.ctx_node()], the AUC of a context is `NA`.
 #' @details The default behaviour of the function is to return a list of all the
 #'   contexts using `ctx_node` objects (as returned by [find_sequence()]). The
 #'   properties of the contexts can then be explored using adapted functions

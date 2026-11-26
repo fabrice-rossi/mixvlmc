@@ -75,6 +75,8 @@ contexts.vlmc_cpp <- function(ct, sequence = FALSE, reverse = FALSE, frequency =
         )
         local_m <- main_metrics(fake_data$response, fake_data$predictor, roc = FALSE)
         local_m$conf_mat <- NULL
+        ## the predictions of a context are constant: the AUC is not defined
+        local_m$auc <- NA_real_
         if (is.null(the_metrics)) {
           the_metrics <- local_m
           for (p in 1:length(the_metrics)) {

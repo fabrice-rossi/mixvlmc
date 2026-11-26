@@ -56,6 +56,10 @@ cutoff.ctx_node <- function(model, scale = c("quantile", "native"), raw = FALSE,
 #' other contexts. Apart from this limited scope, the function operates as
 #' [metrics.vlmc()]. The node must be a context (see [is_context()]).
 #'
+#' As the transition probabilities are the same for all the occurrences of a
+#' context, the predictions of a context are constant and the AUC is not
+#' informative: it is always `NA`.
+#'
 #' @param model a `ctx_node` object as returned by [find_sequence()].
 #' @inherit metrics
 #' @examples
@@ -82,7 +86,9 @@ metrics.ctx_node <- function(model, ...) {
     c_probs,
     model$tree$vals
   )
-  res <- main_metrics(fake_data$response, fake_data$predictor)
+  res <- main_metrics(fake_data$response, fake_data$predictor, roc = FALSE)
+  ## the predictions of a context are constant: the AUC is not defined
+  res$auc <- NA_real_
   rownames(res$conf_mat) <- model$tree$vals
   colnames(res$conf_mat) <- model$tree$vals
   res$fake_data <- fake_data

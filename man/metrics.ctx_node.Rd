@@ -29,6 +29,10 @@ Compared to \code{\link[=metrics.vlmc]{metrics.vlmc()}}, this function focuses o
 assesses the quality of its predictions, disregarding observations that have
 other contexts. Apart from this limited scope, the function operates as
 \code{\link[=metrics.vlmc]{metrics.vlmc()}}. The node must be a context (see \code{\link[=is_context]{is_context()}}).
+
+As the transition probabilities are the same for all the occurrences of a
+context, the predictions of a context are constant and the AUC is not
+informative: it is always \code{NA}.
 }
 \examples{
 pc <- powerconsumption[powerconsumption$week == 5, ]

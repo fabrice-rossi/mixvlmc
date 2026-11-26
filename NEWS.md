@@ -170,6 +170,9 @@ renders the tree and adds the `forest` package to the preamble of the document.
   degenerate model with the R backend and to an error with the C++ backend)
 
 ### VLMC
+* the AUC of a context of a VLMC (`metrics()` of a node and
+  `contexts(metrics = TRUE)`) is `NA`: as the predictions of a context are
+  constant, it was always 0.5 or `NA`
 * the time series produced by `simulate()` (for VLMC and VLMC with
   covariates) do not print their class as an attribute any more
 * `children()` and `merged_with()` report the states of models fitted on a

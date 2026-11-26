@@ -72,3 +72,15 @@ test_that("contexts() accepts the default values of the data frame parameters", 
     )
   }
 })
+
+test_that("the AUC of a context is NA", {
+  withr::local_seed(0)
+  x <- sample(c("a", "b", "c"), 300, replace = TRUE)
+  for (backend in c("R", "C++")) {
+    model <- vlmc(x, alpha = 0.5, backend = backend)
+    ctxs <- contexts(model, metrics = TRUE)
+    expect_true(all(is.na(ctxs$auc)))
+    node_metrics <- metrics(contexts(model)[[1]])
+    expect_identical(node_metrics$auc, NA_real_)
+  }
+})
