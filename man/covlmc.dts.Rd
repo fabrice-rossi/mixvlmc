@@ -111,9 +111,11 @@ The engine used to estimate a COVLMC is recorded in the model: it is also
 used to estimate the new logistic models needed by \code{\link[=prune.covlmc]{prune.covlmc()}}, even
 if the option has been changed in between (with a warning).
 
-As a consequence of the last point of the list above, the number of
-parameters of a COVLMC, used by \code{\link[stats:AIC]{stats::AIC()}} and \code{\link[stats:BIC]{stats::BIC()}} (see
-\code{\link[=loglikelihood.covlmc]{loglikelihood.covlmc()}}), does not depend on the engine.
+The number of parameters of a COVLMC, used by \code{\link[stats:AIC]{stats::AIC()}} and
+\code{\link[stats:BIC]{stats::BIC()}}, counts the coefficients of the covariates actually
+estimated by the engine (as a consequence of the last point of the list
+above) and all the intercepts: it does not depend on the engine (see the
+"Number of parameters" section of \code{\link[=loglikelihood.covlmc]{loglikelihood.covlmc()}}).
 }
 
 \examples{

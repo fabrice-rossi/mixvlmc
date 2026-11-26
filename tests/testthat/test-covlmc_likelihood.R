@@ -240,7 +240,7 @@ test_that("loglikelihood ignores impossible transitions in the ignored observati
   }
 })
 
-test_that("the number of parameters is the one estimated by the engines", {
+test_that("the number of parameters counts the coefficients estimated by the engines", {
   ## the covariate can take the value "c" only after state 0: this level is
   ## absent from the data of the contexts that do not start with 0. State 2
   ## never follows state 1: it is absent from the data of the contexts that
@@ -264,19 +264,19 @@ test_that("the number of parameters is the one estimated by the engines", {
     }
   }
   cov <- data.frame(z = factor(z))
-  ## parameters of a model: one per column of the design matrix (without the
-  ## unused levels) and per observed state but one
+  ## parameters of a model: one intercept per state but one, and one parameter
+  ## per covariate column of the design matrix (without the unused levels) and
+  ## per observed state but one
   model_df <- function(model) {
     target <- model$data$target
     mm <- droplevels(model$data$local_mm)
     k <- length(unique(target))
-    if (k == 1L) {
-      0
-    } else if (ncol(mm) == 0) {
-      k - 1
+    if (ncol(mm) == 0) {
+      q <- 1
     } else {
-      (k - 1) * ncol(stats::model.matrix(~., data = mm))
+      q <- ncol(stats::model.matrix(~., data = mm))
     }
+    2 + (k - 1) * (q - 1)
   }
   all_models <- function(model, with_extended) {
     rec <- function(ct, d) {

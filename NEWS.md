@@ -59,13 +59,15 @@ covariates (see the breaking changes below).
 * the `multinom` engine of `covlmc()` detects rank deficient models (e.g. 
   collinear covariates) consistently with the `glm` engine
 * the number of parameters of a `covlmc` (used by AIC and BIC, in particular in
-  `tune_covlmc()`) is the number of parameters estimated by its logistic
-  models: states and levels of factor covariates absent from the data of a
-  context are not counted, and the model of a context followed by a single
-  state has no parameter (it had one per state but one). The number does not
-  depend on the computing engine any more (the `multinom` engine, and the `glm`
-  engine with two states, counted the unused levels of factor covariates). The
-  likelihood ratio tests still use the nominal number of parameters
+  `tune_covlmc()`) does not depend on the computing engine any more (the
+  `multinom` engine, and the `glm` engine with two states, counted the unused
+  levels of factor covariates, while the `glm` engine with three states or
+  more ignored the states absent from the data of a context). Each context
+  counts one intercept per state but one, as for VLMC, and the coefficients of
+  the covariates actually estimated by the logistic model, which ignores the
+  states that do not follow the context and the unused levels of factors (see
+  `loglikelihood.covlmc()`). The likelihood ratio tests still use the nominal
+  number of parameters
 * the models associated with the root of the context tree of a `covlmc` (depth 0
   models, extended model used for the first observation) use all the
   observations (the first one was ignored)

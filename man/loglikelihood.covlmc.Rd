@@ -63,22 +63,34 @@ vignette: \code{vignette("likelihood", package = "mixvlmc")}.
 \section{Number of parameters}{
 
 
-The \code{df} attribute of the result is the number of parameters estimated by
-the logistic models of the contexts (see \code{\link[=covlmc]{covlmc()}}). The model of a
-context followed by \code{k} different states in the data has \code{(k-1)*q}
-parameters, where \code{q} is the number of parameters of its covariates: an
-intercept, and for each time step of the memory of the model, one
-parameter per numerical or logical covariate and the number of levels
-minus one per factor covariate, counting only the levels present in the
-data of the context. In particular, the model of a context followed by a
-single state has no parameter. This number does not depend on the
-computing engine (see the \code{mixvlmc.predictive} option in
-\link{mixvlmc-package}).
+The \code{df} attribute of the result is the number of parameters of the
+logistic models of the contexts (see \code{\link[=covlmc]{covlmc()}}), used by \code{\link[stats:AIC]{stats::AIC()}}
+and \code{\link[stats:BIC]{stats::BIC()}}. With \code{s} states, the model of a context has:
+\itemize{
+\item \code{s-1} intercepts, as the transition probabilities of a context of a VLMC
+(see \code{\link[=loglikelihood.vlmc]{loglikelihood.vlmc()}}), even if some states never follow the context
+in the data;
+\item \code{(k-1)*p} coefficients for the covariates, where \code{k} is the number of
+different states that follow the context in the data and \code{p} is the number
+of parameters of the covariates: for each time step of the memory of the
+model, one parameter per numerical or logical covariate and the number of
+levels minus one per factor covariate, counting only the levels present
+in the data of the context.
+}
+
+The second term is the number of coefficients actually estimated by the
+computing engines (see the "Logistic models" section of \code{\link[=covlmc]{covlmc()}}),
+which ignore the states that do not follow the context and the unused
+levels of the factors: it does not depend on the engine. For instance, a
+context followed by a single state has a constant model with \code{s-1}
+parameters. Counting all the intercepts ensures that each context has a
+cost in AIC and BIC, as in the theory of context tree selection: otherwise
+contexts followed by a single state would have no cost, favouring overly
+complex models.
 
 The likelihood ratio tests used to build the model (see \code{\link[=covlmc]{covlmc()}}) use
-instead the nominal number of parameters, \code{(s-1)*q} where \code{s} is the number
-of states and \code{q} counts all the levels of the factor covariates, as in
-the original algorithm.
+instead the nominal number of parameters, \code{(s-1)*(1+p)} where \code{p} counts
+all the levels of the factor covariates, as in the original algorithm.
 }
 
 \section{Likelihood calculation}{
