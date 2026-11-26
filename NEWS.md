@@ -160,6 +160,8 @@ renders the tree and adds the `forest` package to the preamble of the document.
   degenerate model with the R backend and to an error with the C++ backend)
 
 ### VLMC
+* the time series produced by `simulate()` (for VLMC and VLMC with
+  covariates) do not print their class as an attribute any more
 * `children()` and `merged_with()` report the states of models fitted on a
   factor (they reported their integer codes when the sequence of the node had
   been given as a character vector, e.g. to `find_sequence()`)

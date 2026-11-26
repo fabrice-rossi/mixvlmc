@@ -120,3 +120,26 @@ test_that("the burn in period discards the correct number of values", {
     }
   }
 })
+
+test_that("simulated time series print as their values", {
+  withr::local_seed(0)
+  for (x in list(
+    factor(sample(c("a", "b"), 100, replace = TRUE)),
+    sample(c("a", "b"), 100, replace = TRUE),
+    sample(0:1, 100, replace = TRUE)
+  )) {
+    for (backend in c("R", "C++")) {
+      model <- vlmc(x, backend = backend)
+      sim <- simulate(model, 10, seed = 1)
+      out <- utils::capture.output(res <- print(sim))
+      expect_identical(res, sim)
+      expect_false(any(grepl("attr(", out, fixed = TRUE)))
+      if (is.factor(sim)) {
+        values <- factor(as.character(sim), levels = levels(sim))
+      } else {
+        values <- as.vector(sim)
+      }
+      expect_identical(out, utils::capture.output(print(values)))
+    }
+  }
+})

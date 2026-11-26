@@ -160,6 +160,14 @@ simulate.vlmc <- function(object, nsim = 1L, seed = NULL, init = NULL, burnin = 
 
 #' @export
 print.dts_simulated <- function(x, ...) {
-  attr(x, "seed") <- NULL
-  NextMethod()
+  y <- x
+  attr(y, "seed") <- NULL
+  ## remove the class (NextMethod() would print it as an attribute)
+  y_class <- setdiff(oldClass(y), "dts_simulated")
+  if (length(y_class) == 0L || identical(y_class, class(unclass(y)))) {
+    y_class <- NULL
+  }
+  oldClass(y) <- y_class
+  print(y, ...)
+  invisible(x)
 }
