@@ -37,18 +37,24 @@ vgam_warning_ignore <- function(w) {
 multinom_warning_ignore_generator <- function(target, target_dist) {
   missing <- levels(target)[target_dist == 0L]
   if (length(missing) > 0) {
-    the_msg <- stringr::fixed(
-      stringr::str_replace(
-        ngettext(length(missing),
+    ## the messages of nnet are translated only once it is loaded
+    loadNamespace("nnet")
+    the_missing <- paste(sQuote(missing), collapse = " ")
+    the_msgs <- vapply(c(TRUE, FALSE), function(translated) {
+      if (translated) {
+        msg <- ngettext(length(missing),
           "group %s is empty",
           "groups %s are empty",
           domain = "R-nnet"
-        ), stringr::fixed("%s"),
-        paste(sQuote(missing), collapse = " ")
-      )
-    )
+        )
+      } else {
+        ## keep the English text to circumvent inconsistency in locale setting
+        msg <- if (length(missing) == 1L) "group %s is empty" else "groups %s are empty"
+      }
+      stringr::str_replace(msg, stringr::fixed("%s"), the_missing)
+    }, "")
     function(w) {
-      if (stringr::str_detect(conditionMessage(w), the_msg)) {
+      if (any(stringr::str_detect(conditionMessage(w), stringr::fixed(the_msgs)))) {
         rlang::cnd_muffle(w)
       }
     }
