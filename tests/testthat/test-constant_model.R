@@ -90,3 +90,18 @@ test_that("glm_to_probs gives the probabilities of the states in order", {
   expect_equal(probs, predict(model)[1, ])
   expect_equal(which.max(probs), 2L)
 })
+
+test_that("constant models use the first state as reference", {
+  target <- factor(rep("b", 6), levels = c("a", "b", "c"))
+  mm <- data.frame(row.names = 1:6)
+  model <- constant_model(target, mm, 3, pseudo_obs = 1)
+  ## smoothed distribution (1, 7, 1) / 9, logits with respect to "a" as in
+  ## the vglm models
+  expect_equal(model$coefficients, log(c(7, 1)))
+  expect_equal(as.vector(predict(model, data.frame(row.names = 1))), c(1, 7, 1) / 9)
+  expect_equal(glm_to_probs(model, levels(target)), c(1, 7, 1) / 9)
+  ## models estimated before mixvlmc 0.3.0 used the last state as reference
+  model$ref_level <- NULL
+  model$coefficients <- log(c(1, 7))
+  expect_equal(as.vector(predict(model, data.frame(row.names = 1))), c(1, 7, 1) / 9)
+})

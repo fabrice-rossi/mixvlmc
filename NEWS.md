@@ -185,6 +185,11 @@ renders the tree and adds the `forest` package to the preamble of the document.
   likelihood function is the truncated one
 
 ### VLMC with covariates
+* the coefficients of constant models (contexts followed by a single state)
+  with three states or more are expressed with respect to the first state, as
+  for the other models: they were expressed with respect to the last state,
+  so that `draw()` (with `constant_as_prob = FALSE`) and `contexts()` (with
+  `model = "coef"`) reported them under the wrong states
 * the logistic models of a `covlmc` do not keep references to the functions
   that fitted them: saved models (e.g. with `saveRDS()`) were several times
   larger than the models themselves, up to 20 times for the models returned

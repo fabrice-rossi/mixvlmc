@@ -23,13 +23,16 @@ constant_model <- function(target, mm, nb_vals, pseudo_obs = 1) {
   } else {
     target_dist <- table(target)
     f_target_dist <- target_dist + pseudo_obs
-    coeffs[1:(nb_vals - 1)] <- VGAM::multilogitlink(matrix(f_target_dist, nrow = 1))
+    ## the first state is the reference one, as in the vglm models
+    coeffs[1:(nb_vals - 1)] <- VGAM::multilogitlink(matrix(f_target_dist, nrow = 1),
+      refLevel = 1
+    )
     probs <- f_target_dist / sum(f_target_dist)
     ll <- sum(target_dist * log(probs))
     attr(ll, "df") <- nb_coeffs
     attr(ll, "nobs") <- sum(target_dist)
     class(ll) <- "logLik"
-    structure(list(coefficients = coeffs, ll = ll, rank = nb_vals - 1, target = which(target_dist > 0) - 1, cov_desc = cov_desc), class = "constant_model")
+    structure(list(coefficients = coeffs, ll = ll, rank = nb_vals - 1, target = which(target_dist > 0) - 1, cov_desc = cov_desc, ref_level = 1L), class = "constant_model")
   }
 }
 
@@ -62,7 +65,7 @@ predict.constant_model <- function(object, newdata = NULL, ...) {
   if (object$rank == 1) {
     rep(stats::binomial()$linkinv(object$coefficients[1]), nobs)
   } else {
-    base_prob <- VGAM::multilogitlink(matrix(object$coefficients[1:object$rank], ncol = object$rank), inverse = TRUE)[1, ]
+    base_prob <- constant_model_probs(object)
     matrix(base_prob, ncol = object$rank + 1, nrow = nobs, byrow = TRUE)
   }
 }
@@ -118,7 +121,7 @@ glm_to_probs.constant_model <- function(model, lev) {
     probs <- stats::binomial()$linkinv(model$coefficients[1])
     c(1 - probs, probs)
   } else {
-    VGAM::multilogitlink(matrix(model$coefficients[1:model$rank], ncol = model$rank), inverse = TRUE)[1, ]
+    constant_model_probs(model)
   }
 }
 
@@ -126,4 +129,16 @@ glm_to_probs.constant_model <- function(model, lev) {
 #' @exportS3Method
 glm_nb_parameters.constant_model <- function(model) {
   0L
+}
+
+## probabilities of a constant model with at least three states; models
+## estimated before mixvlmc 0.3.0 use the last state as the reference one
+constant_model_probs <- function(model) {
+  ref_level <- model[["ref_level"]]
+  if (is.null(ref_level)) {
+    ref_level <- "(Last)"
+  }
+  VGAM::multilogitlink(matrix(model$coefficients[1:model$rank], ncol = model$rank),
+    refLevel = ref_level, inverse = TRUE
+  )[1, ]
 }
