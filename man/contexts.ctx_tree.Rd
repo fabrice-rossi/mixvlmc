@@ -76,9 +76,17 @@ followed by the corresponding value in the original series.
 }
 \section{Positions}{
  A position of a context \code{ctx} in the time series \code{x} is
-an index value \code{t} such that the context ends with \code{x[t]}. Thus \code{x[t+1]} is
-after the context. For instance if \code{x=c(0, 0, 1, 1)} and \code{ctx=c(0, 1)} (in
-standard state order), then the position of \code{ctx} in \code{x} is 3.
+an index value \code{t} such that the context ends with \code{x[t]}. Thus \code{x[t+1]},
+when it exists, is the value that follows the context. For instance if
+\code{x=c(0, 0, 1, 1)} and \code{ctx=c(0, 1)} (in standard state order), then the
+position of \code{ctx} in \code{x} is 3.
+
+Positions include all the occurrences of a context, including an
+occurrence at the end of the time series (\code{t=length(x)}), which is not
+followed by any value. Such an occurrence is not included in the
+frequencies, which count the values that follow the context: the
+number of positions of a context can therefore exceed its frequency by
+one.
 }
 
 \section{State order in a context}{

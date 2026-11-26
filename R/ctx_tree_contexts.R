@@ -83,9 +83,17 @@ frequency_context_extractor <-
 #'   followed by the corresponding value in the original series.
 #'
 #' @section Positions: A position of a context `ctx` in the time series `x` is
-#'   an index value `t` such that the context ends with `x[t]`. Thus `x[t+1]` is
-#'   after the context. For instance if `x=c(0, 0, 1, 1)` and `ctx=c(0, 1)` (in
-#'   standard state order), then the position of `ctx` in `x` is 3.
+#'   an index value `t` such that the context ends with `x[t]`. Thus `x[t+1]`,
+#'   when it exists, is the value that follows the context. For instance if
+#'   `x=c(0, 0, 1, 1)` and `ctx=c(0, 1)` (in standard state order), then the
+#'   position of `ctx` in `x` is 3.
+#'
+#'   Positions include all the occurrences of a context, including an
+#'   occurrence at the end of the time series (`t=length(x)`), which is not
+#'   followed by any value. Such an occurrence is not included in the
+#'   frequencies, which count the values that follow the context: the
+#'   number of positions of a context can therefore exceed its frequency by
+#'   one.
 #'
 #' @examples
 #' set.seed(0)

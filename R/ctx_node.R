@@ -228,9 +228,16 @@ is_context <- function(node) {
 #' an error.
 #'
 #' A position of a sequence `ctx` in the time series `x` is an index value `t`
-#' such that the sequence ends with `x[t]`. Thus `x[t+1]` is after the sequence.
-#' For instance if `x=c(0, 0, 1, 1)` and `ctx=c(0, 1)` (in standard state
-#' order), then the position of `ctx` in `x` is 3.
+#' such that the sequence ends with `x[t]`. Thus `x[t+1]`, when it exists, is
+#' the value that follows the sequence. For instance if `x=c(0, 0, 1, 1)` and
+#' `ctx=c(0, 1)` (in standard state order), then the position of `ctx` in `x`
+#' is 3.
+#'
+#' Positions include all the occurrences of the sequence, including an
+#' occurrence at the end of the time series (`t=length(x)`), which is not
+#' followed by any value. Such an occurrence is not taken into account by
+#' [counts()], which reports the values that follow the sequence: the number of
+#' positions can therefore exceed the total count by one.
 #'
 #' @param node a `ctx_node` object as returned by [find_sequence()]
 #'

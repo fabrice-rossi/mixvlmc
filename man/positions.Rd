@@ -29,9 +29,16 @@ an error.
 }
 \details{
 A position of a sequence \code{ctx} in the time series \code{x} is an index value \code{t}
-such that the sequence ends with \code{x[t]}. Thus \code{x[t+1]} is after the sequence.
-For instance if \code{x=c(0, 0, 1, 1)} and \code{ctx=c(0, 1)} (in standard state
-order), then the position of \code{ctx} in \code{x} is 3.
+such that the sequence ends with \code{x[t]}. Thus \code{x[t+1]}, when it exists, is
+the value that follows the sequence. For instance if \code{x=c(0, 0, 1, 1)} and
+\code{ctx=c(0, 1)} (in standard state order), then the position of \code{ctx} in \code{x}
+is 3.
+
+Positions include all the occurrences of the sequence, including an
+occurrence at the end of the time series (\code{t=length(x)}), which is not
+followed by any value. Such an occurrence is not taken into account by
+\code{\link[=counts]{counts()}}, which reports the values that follow the sequence: the number of
+positions can therefore exceed the total count by one.
 }
 \examples{
 set.seed(0)
