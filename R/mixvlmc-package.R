@@ -22,11 +22,13 @@
 #' - `mixvlmc.backend`: specifies the implementation used for the context tree
 #'    construction in [ctx_tree()], [vlmc()] and [tune_vlmc()]. Two values are
 #'    supported:
-#'    - `"R"` (default value): this corresponds to the original almost pure R
-#'      implementation.
-#'    - `"C++"`: this corresponds to the C++ implementation. This version is
-#'      significantly faster than the R version, but is still considered
-#'      experimental.
+#'    - `"C++"` (default value): this corresponds to the C++ implementation,
+#'      which is significantly faster than the R implementation.
+#'    - `"R"`: this corresponds to the original almost pure R implementation,
+#'      whose context trees are nested lists that can be processed in R.
+#'
+#'    Both implementations give the same models. [covlmc()] and
+#'    [tune_covlmc()] always use the R implementation.
 #' - `mixvlmc.charset`: specifies the collection of characters used to display
 #'    context trees in "ascii art" when using the `"text"` format for [draw()]
 #'    and related functions. Two values are supported:

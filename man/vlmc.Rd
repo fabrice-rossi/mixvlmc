@@ -12,7 +12,7 @@ vlmc(
   max_depth = 100L,
   prune = TRUE,
   keep_match = FALSE,
-  backend = getOption("mixvlmc.backend", "R")
+  backend = getOption("mixvlmc.backend", "C++")
 )
 }
 \arguments{
@@ -76,9 +76,8 @@ Two back ends are available to compute context trees:
 \item the "R" back end represents the tree in pure R data structures (nested
 lists) that can be easily processed further in pure R (C++ helper functions
 are used to speed up the construction).
-\item the "C++" back end represents the tree with C++ classes. This back end is
-considered experimental. The tree is built with an optimised suffix tree
-algorithm which speeds up the construction by a factor of at least 10 in
+\item the "C++" back end (the default one) represents the tree with C++
+classes. The tree is built with an optimised suffix tree algorithm which speeds up the construction by a factor of at least 10 in
 standard settings. As the tree is kept outside of the direct reach of R,
 context trees built with the C++ back end must be restored after a
 \code{saveRDS()}/\code{readRDS()} sequence. This is done automatically by recomputing

@@ -34,7 +34,8 @@ knitr::opts_chunk$set(
 [VLMC](https://cran.r-project.org/package=VLMC) and [PST](https://cran.r-project.org/package=PST). The main advantages of `mixvlmc` are
 the support of time varying covariates with COVLMC and the introduction of 
 post-pruning of the models that enables fast model selection via information 
-criteria.
+criteria. Context trees and VLMC are built by default with a fast C++
+implementation based on suffix trees.
 
 ## Installation
 

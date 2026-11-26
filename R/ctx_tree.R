@@ -132,9 +132,8 @@ grow_ctx_tree <- function(x, vals, min_size, max_depth, covsize = 0L, keep_match
 #' - the "R" back end represents the tree in pure R data structures (nested
 #'   lists) that can be easily processed further in pure R (C++ helper functions
 #'   are used to speed up the construction).
-#' - the "C++" back end represents the tree with C++ classes. This back end is
-#'   considered experimental. The tree is built with an optimised suffix tree
-#'   algorithm which speeds up the construction by a factor of at least 10 in
+#' - the "C++" back end (the default one) represents the tree with C++
+#'   classes. The tree is built with an optimised suffix tree algorithm which speeds up the construction by a factor of at least 10 in
 #'   standard settings. As the tree is kept outside of the direct reach of R,
 #'   context trees built with the C++ back end must be restored after a
 #'   `saveRDS()`/`readRDS()` sequence. This is done automatically by recomputing
@@ -154,7 +153,7 @@ grow_ctx_tree <- function(x, vals, min_size, max_depth, covsize = 0L, keep_match
 #' )
 #' draw(rdts_ctree_cpp)
 ctx_tree <- function(x, min_size = 2L, max_depth = 100L, keep_position = TRUE,
-                     backend = getOption("mixvlmc.backend", "R"), ...) {
+                     backend = getOption("mixvlmc.backend", "C++"), ...) {
   UseMethod("ctx_tree")
 }
 
@@ -163,7 +162,7 @@ ctx_tree <- function(x, min_size = 2L, max_depth = 100L, keep_position = TRUE,
 #' @inherit ctx_tree
 ctx_tree.default <- function(x, min_size = 2L, max_depth = 100L,
                              keep_position = TRUE,
-                             backend = getOption("mixvlmc.backend", "R"),
+                             backend = getOption("mixvlmc.backend", "C++"),
                              ...) {
   rlang::check_dots_empty()
   x_dts <- dts(x)
@@ -184,7 +183,7 @@ ctx_tree.default <- function(x, min_size = 2L, max_depth = 100L,
 #' draw(ctree)
 ctx_tree.dts <- function(x, min_size = 2L, max_depth = 100L,
                          keep_position = TRUE,
-                         backend = getOption("mixvlmc.backend", "R"),
+                         backend = getOption("mixvlmc.backend", "C++"),
                          ...) {
   rlang::check_dots_empty()
   ctx_tree_internal(

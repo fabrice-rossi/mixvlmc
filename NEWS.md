@@ -39,6 +39,11 @@ covariates (see the breaking changes below).
   `'--` like the last one)
 
 ### Estimation and use of models
+* the C++ backend is the default backend of `ctx_tree()`, `vlmc()` and
+  `tune_vlmc()` (option `mixvlmc.backend`) and is not considered experimental
+  any more. It gives the same models as the R backend, which remains
+  available with `backend = "R"` or `options(mixvlmc.backend = "R")`, e.g. to
+  process context trees in R. `covlmc()` is not concerned
 * the package now depends on R >= 4.1.0 (this was already implied by its
   dependencies)
 * the degrees of freedom of the likelihood ratio tests used by `covlmc()` and

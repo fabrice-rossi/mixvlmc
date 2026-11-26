@@ -327,7 +327,7 @@ prune.vlmc <- function(vlmc, alpha = 0.05, cutoff = NULL, ...) {
 #'   chains." Ann. Statist. 27 (2) 480-513 \doi{10.1214/aos/1018031204}
 vlmc <- function(x, alpha = 0.05, cutoff = NULL, min_size = 2L, max_depth = 100L,
                  prune = TRUE, keep_match = FALSE,
-                 backend = getOption("mixvlmc.backend", "R")) {
+                 backend = getOption("mixvlmc.backend", "C++")) {
   UseMethod("vlmc")
 }
 
@@ -336,7 +336,7 @@ vlmc <- function(x, alpha = 0.05, cutoff = NULL, min_size = 2L, max_depth = 100L
 #' @inherit vlmc
 vlmc.default <- function(x, alpha = 0.05, cutoff = NULL, min_size = 2L, max_depth = 100L,
                          prune = TRUE, keep_match = FALSE,
-                         backend = getOption("mixvlmc.backend", "R")) {
+                         backend = getOption("mixvlmc.backend", "C++")) {
   x_dts <- dts(x)
   vlmc_internal(
     x_dts$ix, x_dts$vals, alpha, cutoff, min_size, max_depth,
@@ -366,7 +366,7 @@ vlmc.default <- function(x, alpha = 0.05, cutoff = NULL, min_size = 2L, max_dept
 #' draw(robust_model)
 vlmc.dts <- function(x, alpha = 0.05, cutoff = NULL, min_size = 2L, max_depth = 100L,
                      prune = TRUE, keep_match = FALSE,
-                     backend = getOption("mixvlmc.backend", "R")) {
+                     backend = getOption("mixvlmc.backend", "C++")) {
   vlmc_internal(
     x$ix, x$vals, alpha, cutoff, min_size, max_depth,
     prune, keep_match,

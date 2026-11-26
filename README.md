@@ -29,7 +29,8 @@ length Markov chains with covariates (COVLMC), as described in:
 [PST](https://cran.r-project.org/package=PST). The main advantages of
 `mixvlmc` are the support of time varying covariates with COVLMC and the
 introduction of post-pruning of the models that enables fast model
-selection via information criteria.
+selection via information criteria. Context trees and VLMC are built by
+default with a fast C++ implementation based on suffix trees.
 
 ## Installation
 
@@ -91,7 +92,7 @@ set.seed(0)
 x <- sample(c(0L, 1L), 200, replace = TRUE)
 model <- vlmc(x)
 model
-#> VLMC context tree on 0, 1 
+#> VLMC context tree on 0, 1 [C++]
 #>  cutoff: 1.921 (quantile: 0.05)
 #>  Number of contexts: 11 
 #>  Maximum context length: 6
@@ -177,7 +178,7 @@ We fit automatically an optimal VLMC as follows:
 ``` r
 sun_model_tune <- tune_vlmc(sun_activity)
 sun_model_tune
-#> VLMC context tree on high, low 
+#> VLMC context tree on high, low [C++]
 #>  cutoff: 2.306 (quantile: 0.03175)
 #>  Number of contexts: 9 
 #>  Maximum context length: 5 

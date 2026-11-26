@@ -36,12 +36,14 @@ section of \code{\link[=covlmc]{covlmc()}}.
 construction in \code{\link[=ctx_tree]{ctx_tree()}}, \code{\link[=vlmc]{vlmc()}} and \code{\link[=tune_vlmc]{tune_vlmc()}}. Two values are
 supported:
 \itemize{
-\item \code{"R"} (default value): this corresponds to the original almost pure R
-implementation.
-\item \code{"C++"}: this corresponds to the C++ implementation. This version is
-significantly faster than the R version, but is still considered
-experimental.
+\item \code{"C++"} (default value): this corresponds to the C++ implementation,
+which is significantly faster than the R implementation.
+\item \code{"R"}: this corresponds to the original almost pure R implementation,
+whose context trees are nested lists that can be processed in R.
 }
+
+Both implementations give the same models. \code{\link[=covlmc]{covlmc()}} and
+\code{\link[=tune_covlmc]{tune_covlmc()}} always use the R implementation.
 \item \code{mixvlmc.charset}: specifies the collection of characters used to display
 context trees in "ascii art" when using the \code{"text"} format for \code{\link[=draw]{draw()}}
 and related functions. Two values are supported:

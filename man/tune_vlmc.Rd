@@ -12,7 +12,7 @@ tune_vlmc(
   cutoff_init = NULL,
   min_size = 2L,
   max_depth = 100L,
-  backend = getOption("mixvlmc.backend", "R"),
+  backend = getOption("mixvlmc.backend", "C++"),
   verbose = 0,
   save = c("best", "initial", "all")
 )

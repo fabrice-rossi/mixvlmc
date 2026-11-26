@@ -87,7 +87,7 @@ tune_vlmc <- function(x, criterion = c("BIC", "AIC"),
                       initial = c("truncated", "specific", "extended"),
                       alpha_init = NULL, cutoff_init = NULL,
                       min_size = 2L, max_depth = 100L,
-                      backend = getOption("mixvlmc.backend", "R"),
+                      backend = getOption("mixvlmc.backend", "C++"),
                       verbose = 0,
                       save = c("best", "initial", "all")) {
   criterion <- match.arg(criterion)
