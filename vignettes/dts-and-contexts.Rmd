@@ -1,0 +1,696 @@
+---
+title: "Discrete time series and contexts of models"
+output:
+  rmarkdown::html_vignette:
+    df_print: kable
+vignette: >
+  %\VignetteIndexEntry{Discrete time series and contexts of models}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options:
+  markdown:
+    wrap: 80
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(mixvlmc)
+```
+
+This vignette covers two complementary aspects of `mixvlmc`: the
+representation of the discrete time series used to estimate models, and the
+detailed exploration of the contexts of fitted models. It assumes some
+familiarity with the notions introduced in `vignette("context-trees")`
+(contexts, context trees, `contexts()` with `frequency`, and the basic node
+functions `find_sequence()`, `is_context()`, `children()`, `counts()` and
+`positions()`), in `vignette("variable-length-markov-chains")` and in
+`vignette("covlmc")`.
+
+## Discrete time series
+
+### Creating a discrete time series
+
+Since version 0.3.0, `mixvlmc` represents discrete time series by objects of
+class `dts`, created by the `dts()` function. A `dts` stores the time series
+together with its _state space_, i.e. the set of values that the series can
+take. A `dts` can be built from a numeric, character, factor or logical vector.
+When the state space is not specified, it is computed from the vector in a way
+that depends on its type. For numeric and character vectors, the state space
+consists of the unique values of the series, in increasing order:
+
+```{r}
+x_num <- dts(c(3, 1, 2, 2, 1, 3))
+x_num
+states(x_num)
+x_chr <- dts(c("b", "a", "c", "a", "b"))
+states(x_chr)
+```
+
+For a factor, the state space is given by the levels of the factor, including
+levels that do not appear in the series, and in the order of the levels:
+
+```{r}
+x_fct <- dts(factor(c("low", "high", "low"),
+  levels = c("low", "medium", "high")
+))
+x_fct
+```
+
+For a logical vector, the state space is always `c(FALSE, TRUE)`:
+
+```{r}
+x_lgl <- dts(c(TRUE, TRUE, TRUE))
+states(x_lgl)
+```
+
+By default, only the first 5 values of the series are printed, but this can be
+changed with the `n` parameter of `print()`:
+
+```{r}
+set.seed(0)
+x_long <- dts(sample(c("A", "B", "C"), 50, replace = TRUE))
+x_long
+print(x_long, n = 15)
+```
+
+`is_dts()` tests whether an object is a discrete time series, `states()`
+returns its state space and `dts_data()` recovers the original series as a
+vector (of the same type as the state space):
+
+```{r}
+is_dts(x_chr)
+is_dts(c("b", "a", "c"))
+dts_data(x_chr)
+dts_data(x_fct)
+```
+
+The length of a `dts` is given by `length()` and a `dts` can be subsetted with
+`[`. The result is a `dts` with the same state space, even if some states do
+not appear in the subset:
+
+```{r}
+length(x_long)
+x_long[1:2]
+```
+
+Discrete time series cannot contain missing values:
+
+```{r}
+try(dts(c("a", NA, "b")))
+```
+
+### Specifying the state space
+
+The state space can be given explicitly with the `vals` parameter of `dts()`.
+This has two uses. First, it sets the order of the states, which is the order
+used by all the functions of the package (for instance to order the columns of
+the results of `contexts()` or `predict()`, or the probabilities displayed by
+`draw()`). Second, the state space can include states that do not appear in
+the series:
+
+```{r}
+x_abc <- dts(c("b", "a", "b"), vals = c("c", "b", "a"))
+x_abc
+```
+
+When `vals` is given, `dts()` checks that the series only contains values of
+the state space:
+
+```{r}
+try(dts(c("a", "d"), vals = c("a", "b", "c")))
+```
+
+### Why use a discrete time series object?
+
+All the estimation functions of the package (`ctx_tree()`, `vlmc()`,
+`covlmc()`, `tune_vlmc()` and `tune_covlmc()`) accept either a plain vector or
+a `dts`. In the former case, the vector is converted with `dts()` using the
+default state space. Using a `dts` directly is useful mainly when the state
+space of the model cannot be deduced reliably from the series used to
+estimate it, a common situation when several series are analysed with the same
+state space.
+
+Let us consider the household electricity consumption data set
+`powerconsumption`. As in `vignette("covlmc")`, the active power is discretised
+into three levels. The following function extracts the discretised series of
+some weeks of the data set (as a character vector):
+
+```{r}
+power_levels <- c("low", "typical", "high")
+power_weeks <- function(weeks) {
+  pc <- powerconsumption[powerconsumption$week %in% weeks, ]
+  as.character(cut(pc$active_power,
+    breaks = c(0, 0.4, 2, 8),
+    labels = power_levels
+  ))
+}
+week_33 <- power_weeks(33)
+week_35 <- power_weeks(35)
+table(week_33)
+table(week_35)
+```
+
+The consumption is very low during week 33, in August (probably because of
+holidays), and the `high` level is never observed. A model estimated on this
+week from the character vector has therefore only two states and it cannot be
+used on week 35:
+
+```{r}
+model_33_raw <- vlmc(week_33)
+states(model_33_raw)
+try(loglikelihood(model_33_raw, newdata = week_35))
+```
+
+If we specify the state space with a `dts`, the model knows that the `high`
+level exists:
+
+```{r}
+week_33_dts <- dts(week_33, vals = power_levels)
+model_33 <- vlmc(week_33_dts)
+model_33
+loglikelihood(model_33, newdata = week_35)
+```
+
+The log likelihood is now computed, and its value, $-\infty$, tells us that
+week 35 is impossible according to the model of week 33, as the `high` level
+was never observed during that week. The predicted probabilities include all
+the states of the state space, in the specified order (the last row is the
+prediction of the state that follows the series, see `predict.vlmc()`):
+
+```{r}
+predict(model_33, newdata = week_35[1:5], type = "probs")
+```
+
+Notice that the new data (`newdata` in `loglikelihood()` and `predict()`, `init`
+in `simulate()` or the sequence given to `find_sequence()`) can be given as a
+plain vector or as a `dts`. In both cases, it is interpreted in the state space
+of the model: a `dts` with a different state space is accepted provided its
+values belong to the state space of the model. For instance, the following call
+computes the log likelihood of week 34, in which the `high` level is also
+absent, with the model of week 33:
+
+```{r}
+week_34_dts <- dts(power_weeks(34))
+states(week_34_dts)
+loglikelihood(model_33, newdata = week_34_dts)
+```
+
+When the series is a factor, its levels define the state space, so
+discretising directly with `cut()` (without the conversion to character used
+above) also gives a model with three states:
+
+```{r}
+states(vlmc(factor(week_33, levels = power_levels)))
+```
+
+Finally, `simulate()` does not return a `dts` but a vector of the same type as
+the state space of the model (here a character vector), whose values are taken
+from this state space. It can be converted into a `dts` with the same state
+space as follows:
+
+```{r}
+sim_33 <- simulate(model_33, 20, seed = 0)
+sim_33
+dts(sim_33, vals = states(model_33))
+```
+
+## Contexts of a VLMC
+
+In the rest of this vignette, we use a VLMC estimated on week 5 of the
+electricity consumption data set. We keep the positions of the contexts in the
+time series with `keep_match = TRUE` (they are not kept by default). The model
+is estimated with the default C++ backend (see `vlmc()`), but all the functions
+described below work in the same way with the R backend (`backend = "R"`).
+
+```{r}
+week_5 <- dts(power_weeks(5), vals = power_levels)
+model_5 <- vlmc(week_5, keep_match = TRUE)
+model_5
+draw(model_5)
+```
+
+### Two representations
+
+`contexts()` gives two representations of the contexts of a model. By
+default, it returns a list of `ctx_node` objects, one per context, which can
+be explored with the node functions described in the next section:
+
+```{r}
+ctxs_5 <- contexts(model_5)
+ctxs_5
+```
+
+With `sequence = TRUE`, or as soon as additional information is requested
+(see below), the function returns a data frame with one row per context. Its
+first column, `context`, is a list: each element is a vector of states (of the
+same type as `states(model_5)`) that represents a context. As the default
+printing of such a column is truncated, we define a small helper function that
+replaces each context by a character string, only for display purposes:
+
+```{r}
+flat_contexts <- function(ctx_df) {
+  ctx_df$context <- vapply(ctx_df$context, paste, character(1), collapse = ", ")
+  ctx_df
+}
+ctx_df_5 <- contexts(model_5, sequence = TRUE)
+ctx_df_5$context[[1]]
+```
+
+Contexts are written by default in temporal order (the most recent state is on
+the right), while `reverse = TRUE` uses the reverse order of Bühlmann and Wyner
+(the most recent state is on the left), which corresponds to the paths from the
+root in the representation of `draw()`:
+
+```{r}
+head(flat_contexts(contexts(model_5, sequence = TRUE, reverse = TRUE)))
+```
+
+The parameter `reverse` has the same effect on the list representation and can
+also be given to the `print()` function of a list of contexts
+(`print(ctxs_5, reverse = TRUE)`).
+
+The additional columns depend on the parameters of `contexts()` and on the
+class of the model, as summarised below (`contexts()` accepts the same
+parameters for both backends of `ctx_tree()` and `vlmc()`, but the order of the
+contexts may differ from one backend to the other).
+
+| parameter | `ctx_tree` | `vlmc` | `covlmc` | columns |
+|-----------|:----------:|:------:|:--------:|---------|
+| `frequency` | yes | yes | yes | `freq`, one per state if `"detailed"` |
+| `positions` | yes | yes | yes | `positions` |
+| `local` | no | yes | yes | (modifies the counts) |
+| `cutoff` | no | yes | no | `cutoff` |
+| `metrics` | no | yes | yes | `accuracy`, `auc` |
+| `model` | no | no | yes | `coef` or `model` |
+| `hsize` | no | no | yes | `hsize` |
+| `merging` | no | no | yes | `merged` |
+
+### Counts
+
+As for context trees, `frequency = "total"` adds a `freq` column with the
+number of occurrences of each context in the time series (not including a
+possible final occurrence not followed by any state), while
+`frequency = "detailed"` adds in addition one column per state with the number
+of times the context is followed by this state:
+
+```{r}
+flat_contexts(contexts(model_5, frequency = "detailed"))
+```
+
+These counts are the ones used to estimate the transition probabilities of the
+model shown by `draw()`: for instance, the probabilities associated with the
+context `low` are obtained by dividing the counts of the `low` row by its
+`freq` value.
+
+In a VLMC, a context can be the suffix of longer contexts. For instance,
+`high, high` is the last part of `high, high, high`. The counts above include
+all the occurrences of `high, high`, including the ones that are the last part
+of an occurrence of `high, high, high`. With `local = TRUE`, the counts
+include only the occurrences of the context that are not the last part of a
+longer context, that is the time steps at which the context is the one actually
+used by the model to predict the next state:
+
+```{r}
+ctx_local_5 <- contexts(model_5, frequency = "detailed", local = TRUE)
+flat_contexts(ctx_local_5)
+```
+
+Each time step is associated with at most one context, so that the sum of the
+local counts, `r sum(ctx_local_5$freq)`, is smaller than the length of the time
+series, `r length(week_5)` (the first time steps do not have a long enough past
+and the last state is not followed by any state). Some contexts have zero local
+counts. For instance, the context `high` exists only because the model must
+define a next state distribution after the sequence `low, high`, which never
+appears in the time series: the context `high` is used only for this
+unobserved sequence, while all the actual occurrences of `high` are covered by
+longer contexts.
+
+### Cut off values
+
+For a VLMC, `cutoff` adds a `cutoff` column that summarises, for each
+context, the likelihood ratio test that compares the next state distribution of
+the context with the one of its parent, the context obtained by removing its
+oldest state. With `cutoff = "native"` the value is the log likelihood ratio,
+while `cutoff = "quantile"` gives it in the quantile scale (the p-value of the
+test). See `cutoff()`, `prune()`, `vignette("variable-length-markov-chains")`
+and `vignette("model-selection")` for details on these two scales.
+
+```{r}
+flat_contexts(contexts(model_5, cutoff = "quantile"))
+```
+
+The model was estimated with the default `alpha = 0.05` and a context with a
+quantile value lower than `alpha` is significantly different from its parent.
+Some contexts have larger values: they are kept in the model because one of
+their descendants in the context tree is significant (for instance a context
+`low, low, low, low, low, low, low, low` is kept because its extension `typical,
+low, low, low, low, low, low, low, low` is significant). Notice that those
+values are not those reported by `cutoff(model_5)` (see the dedicated section
+in the documentation of `contexts.vlmc()`).
+
+### Predictive metrics
+
+With `metrics = TRUE`, `contexts()` adds predictive quality metrics for each
+context, computed on the time steps at which the context is used by the model
+(i.e. the ones counted by `local = TRUE`):
+
+```{r}
+flat_contexts(contexts(model_5,
+  frequency = "total", local = TRUE,
+  metrics = TRUE
+))
+```
+
+The `accuracy` column gives the proportion of those time steps at which the
+most probable state according to the context is the observed next state (it is
+not defined when the local count is zero). For a VLMC, the predicted
+probabilities are identical for all the time steps of a context: the `auc`
+column is therefore not informative (it is either 0.5 or missing when some
+states never follow the context). It is more useful for a VLMC with covariates,
+see below. The metrics of the whole model are given by `metrics(model_5)` (see
+`vignette("prediction")`).
+
+### Positions
+
+With `positions = TRUE`, a `positions` column gives for each context the list
+of its positions in the time series. A position of a context is the index $t$
+of its last state, so that $x_{t+1}$ is the state that follows the context.
+Positions are available only if they have been kept during the estimation
+(`keep_match = TRUE` for `vlmc()`, `keep_position = TRUE`, the default, for
+`ctx_tree()`, always for `covlmc()`). As the positions are numerous, the column
+is better explored programmatically:
+
+```{r}
+ctx_pos_5 <- contexts(model_5, frequency = "total", positions = TRUE)
+head(ctx_pos_5$positions[[1]])
+```
+
+Positions cover all the occurrences of a context, not only the local ones.
+Unlike the counts, they include a possible final occurrence of the context, at
+the end of the time series, which is not followed by any state. Here the series
+ends with a sequence of `low` states, so the last time step,
+`r length(week_5)`, is a position of several contexts, which have therefore one
+more position than their count:
+
+```{r}
+at_end <- sapply(ctx_pos_5$positions, function(pos) length(week_5) %in% pos)
+ctx_pos_end <- flat_contexts(ctx_pos_5[at_end, c("context", "freq")])
+ctx_pos_end$nb_positions <- lengths(ctx_pos_5$positions[at_end])
+ctx_pos_end
+```
+
+## Contexts of a VLMC with covariates
+
+We use now the data of `vignette("covlmc")`: weeks 15 and 16 of the
+electricity consumption data set, with a covariate that indicates whether the
+observation is made during the day or during the night.
+
+```{r}
+elec_dts <- dts(power_weeks(c(15, 16)), vals = power_levels)
+pc_15_16 <- powerconsumption[powerconsumption$week %in% c(15, 16), ]
+elec_cov <- data.frame(day = (pc_15_16$hour >= 7 & pc_15_16$hour <= 18))
+elec_model <- covlmc(elec_dts, elec_cov)
+elec_model
+draw(elec_model)
+```
+
+`contexts()` supports for COVLMC the `frequency`, `local`, `positions` and
+`metrics` parameters with the same meaning as for a VLMC. As the transition
+probabilities of a COVLMC depend on the covariates, the `auc` column is now
+informative: for a context whose model uses the covariates, it measures how
+well the probabilities computed by its model separate the possible next states.
+The parameter `hsize` adds a column that gives the number of past values of the
+covariates used by the model of each context (0 for a context whose model does
+not use the covariates).
+
+```{r}
+flat_contexts(contexts(elec_model,
+  frequency = "detailed", hsize = TRUE,
+  metrics = TRUE
+))
+```
+
+The models themselves can be included in the data frame, either as their
+coefficients (`model = "coef"`) or as the R objects produced by the estimation
+engine (`model = "full"`, see `covlmc()` and the article [Computing engines and
+control of VLMC with
+covariates](https://fabrice-rossi.github.io/mixvlmc/articles/covlmc-engines.html)
+for details about the engines). As for contexts, the corresponding column is a
+list:
+
+```{r}
+ctx_coef <- contexts(elec_model, model = "coef")
+ctx_coef$coef[[1]]
+```
+
+Finally, when the state space has at least three states, some contexts of a
+COVLMC can be _merged_: they share a single model. This happens for instance
+with a stricter cut off:
+
+```{r}
+elec_model_merged <- covlmc(elec_dts, elec_cov, alpha = 1e-7)
+draw(elec_model_merged)
+```
+
+In this representation (see the article [Drawing context trees and
+models](https://fabrice-rossi.github.io/mixvlmc/articles/drawing.html)), the
+leaf `low, high` denotes the two merged contexts `low, typical` and
+`high, typical`. `contexts()` reports merged contexts individually;
+`merging = TRUE` adds a `merged` column that identifies them:
+
+```{r}
+flat_contexts(contexts(elec_model_merged,
+  frequency = "total", merging = TRUE,
+  metrics = TRUE
+))
+```
+
+As merged contexts share their model, they share also their metrics, computed
+on all the time steps of the merged contexts.
+
+## Navigating the contexts of a fitted model
+
+### Nodes of a VLMC
+
+The function `find_sequence()` described in `vignette("context-trees")` also
+applies to fitted models. It returns `NULL` when the sequence is not
+represented in the context tree of the model:
+
+```{r}
+find_sequence(model_5, c("low", "high"))
+```
+
+and a `ctx_node` object otherwise. Such a node can be a context or not:
+
+```{r}
+node_typical <- find_sequence(model_5, "typical")
+node_typical
+is_context(node_typical)
+node_th <- find_sequence(model_5, c("typical", "high"))
+node_th
+is_context(node_th)
+```
+
+The sequence represented by a node is obtained with `as_sequence()`. Its order
+(temporal or reverse) is the one used to create the node (by `find_sequence()`
+or `contexts()`), as reported by `is_reversed()`, and can be switched with
+`rev()` or overridden with the `reverse` parameter of `as_sequence()`:
+
+```{r}
+as_sequence(node_th)
+is_reversed(node_th)
+node_th_rev <- rev(node_th)
+node_th_rev
+as_sequence(node_th_rev)
+as_sequence(node_th_rev, reverse = FALSE)
+```
+
+The context tree can be traversed with `parent()`, which removes the oldest
+state of the sequence (it returns `NULL` for the root of the tree, the empty
+sequence), and `children()`, which returns a list with one element per state
+(`NULL` when the corresponding extension of the sequence is not in the tree):
+
+```{r}
+parent(node_th)
+parent(parent(node_th))
+children(node_th)
+```
+
+The `counts()` function supports the `local` parameter, as `contexts()`:
+
+```{r}
+counts(node_th)
+counts(node_th, local = TRUE)
+```
+
+The positions of the node in the time series are given by `positions()`. As
+the state that follows a context at position $t$ is $x_{t+1}$, the counts can
+be recovered from the positions and the original series (a final occurrence at
+the end of the series would give a missing value, ignored by `table()`):
+
+```{r}
+pos_th <- positions(node_th)
+head(pos_th)
+table(factor(dts_data(week_5)[pos_th + 1], levels = power_levels))
+```
+
+Finally, `cutoff()` and `metrics()` give, for a single context, the
+information reported by the corresponding parameters of `contexts()`. Notice
+that `cutoff()` uses by default the quantile scale and modifies slightly the
+value to ensure that the context is pruned when the value is used in
+`prune()` (use `raw = TRUE` to get the exact value, see `cutoff.ctx_node()`):
+
+```{r}
+cutoff(node_th)
+cutoff(node_th, scale = "native", raw = TRUE)
+metrics(node_th)
+```
+
+`metrics()` can only be applied to contexts:
+
+```{r}
+try(metrics(node_typical))
+```
+
+### Nodes of a VLMC with covariates
+
+For a COVLMC, `find_sequence()` and `contexts()` return `ctx_node_covlmc`
+objects. In addition to the functions described above, `model()` gives the
+model of a context, either as its coefficients (by default) or as the full
+model, while `covariate_memory()` gives the number of past values of the
+covariates used by this model (as the `hsize` column of `contexts()`):
+
+```{r}
+node_low <- find_sequence(elec_model, "low")
+node_low
+model(node_low)
+model(node_low, type = "full")
+covariate_memory(node_low)
+metrics(node_low)
+```
+
+Both functions return `NULL` for a node that is not a context:
+
+```{r}
+node_tt <- find_sequence(elec_model, c("typical", "typical"))
+is_context(node_tt)
+model(node_tt)
+covariate_memory(node_tt)
+```
+
+`is_merged()` tells whether a context is merged with other contexts and
+`merged_with()` returns them (as a list with one element per state, in the
+same way as `children()`: the merged contexts differ only in their oldest
+state):
+
+```{r}
+ctxs_merged <- contexts(elec_model_merged)
+sapply(ctxs_merged, is_merged)
+node_lt <- find_sequence(elec_model_merged, c("low", "typical"))
+merged_with(node_lt)
+identical(model(node_lt), model(merged_with(node_lt)$high))
+merged_with(find_sequence(elec_model_merged, "low"))
+```
+
+## Worked examples
+
+### Predictable contexts and when they occur
+
+Using the node functions, we can easily compute summary information about the
+contexts of a VLMC. The following function gives, for a context, its length,
+the most probable next state with its probability and the number of time steps
+at which the context is used by the model:
+
+```{r}
+context_summary <- function(node) {
+  freqs <- counts(node)
+  probs <- unlist(freqs[, -1]) / freqs$total
+  data.frame(
+    context = paste(as_sequence(node), collapse = ", "),
+    length = length(as_sequence(node)),
+    next_state = names(probs)[which.max(probs)],
+    probability = max(probs),
+    usage = counts(node, frequency = "total", local = TRUE)
+  )
+}
+summary_5 <- do.call(rbind, lapply(contexts(model_5), context_summary))
+```
+
+We look for the contexts whose next state is almost deterministic (with a
+probability of at least 0.9) and that are actually used, ordered by
+decreasing length:
+
+```{r}
+predictable <- summary_5[summary_5$probability >= 0.9 & summary_5$usage > 0, ]
+predictable[order(predictable$length, decreasing = TRUE), ]
+```
+
+Long sequences of the `low` level are likely to be followed by another `low`
+observation. The positions of the corresponding contexts can be related to
+other information available in the data set, for instance the hour of the
+day. Let us consider the longest context made only of `low` states:
+
+```{r}
+all_low <- function(node) all(as_sequence(node) == "low")
+low_ctxs <- Filter(all_low, contexts(model_5))
+low_lengths <- sapply(low_ctxs, function(node) length(as_sequence(node)))
+longest_low <- low_ctxs[[which.max(low_lengths)]]
+longest_low
+pc_5 <- powerconsumption[powerconsumption$week == 5, ]
+table(hour = pc_5$hour[positions(longest_low)])
+```
+
+As expected, those long periods of low consumption happen mostly during the
+night and the early morning.
+
+### Contexts that use the covariates
+
+In a COVLMC, the dependency of the transition probabilities on the covariates
+is context specific. The contexts that actually use the covariates are
+obtained as follows:
+
+```{r}
+uses_covariate <- function(node) covariate_memory(node) > 0
+uses_cov <- Filter(uses_covariate, contexts(elec_model))
+uses_cov
+```
+
+To understand the effect of the covariate, we can for instance compare the
+empirical distribution of the next state during the day and during the night,
+using the positions of each context (the value of the covariate at the
+position of a context is the most recent one available to its model):
+
+```{r}
+next_state_by_day <- function(node) {
+  pos <- positions(node)
+  ## remove a possible final occurrence
+  pos <- pos[pos < length(elec_dts)]
+  prop.table(table(
+    day = elec_cov$day[pos],
+    next_state = factor(dts_data(elec_dts)[pos + 1], levels = power_levels)
+  ), margin = 1)
+}
+next_state_by_day(uses_cov[[1]])
+```
+
+After a `low` observation, the next observation is more likely to stay `low`
+at night than during the day. The comparison with a context whose model does
+not use the covariate shows smaller differences:
+
+```{r}
+next_state_by_day(find_sequence(elec_model, "high"))
+```
+
+Finally, the predictive metrics of the contexts that use the covariates show
+that their AUC is larger than 0.5, the value obtained by a context whose
+predictions do not depend on the covariates (see the `auc` column above):
+
+```{r}
+sapply(uses_cov, function(node) unlist(metrics(node)[c("accuracy", "auc")]))
+```
