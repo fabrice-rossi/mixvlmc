@@ -174,3 +174,73 @@ test_that("draw handles degenerate cases LaTeX", {
     ))
   }
 })
+
+test_that("latex draw represents all the coefficients of multinomial models", {
+  withr::local_seed(2)
+  n <- 600
+  cov <- data.frame(y = stats::rnorm(n), z = stats::rnorm(n))
+  x <- integer(n)
+  for (t in 2:n) {
+    lp <- c(0, 0.8 * cov$y[t - 1] + 0.5 * cov$z[t - 1], -0.5 * cov$y[t - 1])
+    if (x[t - 1] == 0) {
+      lp <- lp + c(0, 1, -1)
+    }
+    x[t] <- sample(0:2, 1, prob = exp(lp))
+  }
+  model <- covlmc(x, cov, min_size = 5)
+  expect_gt(covariate_depth(model), 0)
+  for (orientation in c("vertical", "horizontal")) {
+    res <- paste(format(draw(model, "latex",
+      control = draw_control(tab_orientation = orientation)
+    )), collapse = "\n")
+    ## one model per context, each with both covariates
+    expect_equal(
+      lengths(regmatches(res, gregexpr("text{z}_{t-1}", res, fixed = TRUE))),
+      context_number(model)
+    )
+    expect_equal(
+      lengths(regmatches(res, gregexpr("text{y}_{t-1}", res, fixed = TRUE))),
+      context_number(model)
+    )
+  }
+})
+
+test_that("latex draw supports unused levels of factors with vglm", {
+  ## the covariate can take the value "c" only after state 0 and state 2
+  ## never follows state 1
+  withr::local_seed(0)
+  n <- 2000
+  x <- integer(n)
+  z <- character(n)
+  for (t in 1:n) {
+    z[t] <- if (x[t] == 0L) sample(c("a", "b", "c"), 1) else sample(c("a", "b"), 1)
+    if (t < n) {
+      p <- switch(z[t],
+        a = c(0.7, 0.2, 0.1),
+        b = c(0.1, 0.7, 0.2),
+        c = c(0.2, 0.1, 0.7)
+      )
+      if (x[t] == 1L) {
+        p[3] <- 0
+      }
+      x[t + 1] <- sample(0:2, 1, prob = p)
+    }
+  }
+  cov <- data.frame(z = factor(z))
+  withr::local_options(mixvlmc.predictive = "glm")
+  model <- covlmc(x, cov, min_size = 5)
+  for (orientation in c("vertical", "horizontal")) {
+    expect_no_error(res <- format(draw(model, "latex",
+      control = draw_control(tab_orientation = orientation)
+    )))
+    res <- paste(res, collapse = "\n")
+    ## the unused level is represented in all the models
+    expect_equal(
+      lengths(regmatches(res, gregexpr("text{z[c]}_{t-1}", res, fixed = TRUE))),
+      context_number(model)
+    )
+  }
+  ## the title of a model spans its columns (state 2 never follows state 1)
+  res <- paste(format(draw(model, "latex")), collapse = "\n")
+  expect_match(res, "\\multicolumn{2}{c}{\\textbf{1}}", fixed = TRUE)
+})

@@ -18,6 +18,55 @@ covlmc_model_covar_names <- function(cov_names, cov_desc, cov_logical) {
   result
 }
 
+## base names and suffixes of the parameters of one time step of the
+## covariates, as used in the names of the coefficients of the models
+## (e.g. z_1b for the level b of the factor z at time step 1)
+covlmc_model_covar_parts <- function(cov_names, cov_desc, cov_logical) {
+  base <- character()
+  suffix <- character()
+  for (v in cov_names) {
+    vlevels <- cov_desc[[v]]
+    if (is.null(vlevels)) {
+      base <- c(base, v)
+      suffix <- c(suffix, "")
+    } else if (cov_logical[[v]]) {
+      base <- c(base, v)
+      suffix <- c(suffix, "TRUE")
+    } else {
+      base <- c(base, rep(v, length(vlevels) - 1))
+      suffix <- c(suffix, vlevels[-1])
+    }
+  }
+  list(base = base, suffix = suffix)
+}
+
+## VGAM::vglm() ignores the levels of factors absent from the data of a
+## context: the corresponding coefficients are completed with zeros, as with
+## stats::glm() and nnet::multinom(), so that each coefficient matches its
+## variable
+complete_covlmc_coefficients <- function(coefficients, var_names, hsize, parts) {
+  if (is.matrix(coefficients) && !is.null(var_names)) {
+    full_names <- c(
+      "(I)",
+      stringr::str_c(
+        rep(parts$base, times = hsize), "_",
+        rep(seq_len(hsize), each = length(parts$base)),
+        rep(parts$suffix, times = hsize)
+      )
+    )
+    if (ncol(coefficients) < length(full_names)) {
+      pos <- match(var_names, full_names)
+      if (anyNA(pos) || length(pos) != ncol(coefficients)) {
+        stop("internal error: unexpected coefficient names in a covlmc model")
+      }
+      res <- matrix(0, nrow = nrow(coefficients), ncol = length(full_names))
+      res[, pos] <- coefficients
+      coefficients <- res
+    }
+  }
+  coefficients
+}
+
 draw_latex_covlmc_model <- function(coefficients, hsize,
                                     covar_names, vals, lev,
                                     control, model, model_probs) {
@@ -96,7 +145,8 @@ draw_latex_covlmc_model <- function(coefficients, hsize,
           } else {
             tab <- ""
           }
-          for (k in 1:(length(lev) - 1)) {
+          ## one row per variable (the intercept and then the covariates)
+          for (k in seq_len(ncol(coefficients))) {
             values <- add_fontsize(signif(coefficients[, k], control$digits), control)
             values <- stringr::str_c(values, collapse = "&")
             if (k == 1) {
@@ -141,21 +191,28 @@ covlmc_node2latex <- function(label, node, vals, covars, control) {
         ")"
       )
     }
+    coefficients <- node$model$coefficients
+    if (node$model$hsize > 0) {
+      coefficients <- complete_covlmc_coefficients(
+        coefficients, node$model$var_names, node$model$hsize, covars$parts
+      )
+    }
     model <- draw_latex_covlmc_model(
-      node$model$coefficients,
+      coefficients,
       node$model$hsize,
-      covars, vals, model_levels,
+      covars$latex, vals, model_levels,
       control, node$model[["model"]], model_probs
     )
     if (!is.null(model)) {
       if (node$model$hsize > 0) {
         if (control$tab_orientation == "horizontal") {
-          nb <- node$model$hsize * length(covars) + 1
+          nb <- node$model$hsize * length(covars$latex) + 1
           if (isTRUE(control$with_state)) {
             nb <- nb + 1
           }
         } else {
-          nb <- length(vals)
+          ## the variables and one column per state but the reference one
+          nb <- length(model_levels)
         }
         the_node <- stringr::str_glue("\\multicolumn{{{nb}}{{c}}{{{the_node}}}\\\\\\hline",
           "{xc}, align={al}",
@@ -225,10 +282,14 @@ format_latex_covlmc <- function(ct, vals, control, node2latex) {
     ct$cov_logical
   )
   covar_names <- xtable::sanitize(covar_names, "latex")
+  covars <- list(
+    latex = covar_names,
+    parts = covlmc_model_covar_parts(ct$cov_names, ct$cov_desc, ct$cov_logical)
+  )
   ## then compute
   c(
     start_forest(control),
-    rec_draw_latex_covlmc(ct, "$\\epsilon$", covar_names),
+    rec_draw_latex_covlmc(ct, "$\\epsilon$", covars),
     end_forest(control)
   )
 }

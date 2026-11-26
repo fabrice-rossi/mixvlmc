@@ -553,6 +553,7 @@
       [\multicolumn{3}{c}{\textbf{(0,0.48]}}\\\hline
       {{{\small (0,0.48]}}}&\textbf{{\small (0.48,1.63]}}&\textbf{{\small (1.63,7.54]}}\\{\small (I)}&{\small 0.12}&{\small -0.37}\\
       {\small $\text{day\_night}_{t-1}$}&{\small -16}&{\small -16}\\
+      {\small $\text{day\_night}_{t-2}$}&{\small 17}&{\small 15}\\
       , align=ccc]
       [\multicolumn{3}{c}{\textbf{(0.48,1.63], (1.63,7.54]}}\\\hline
       {{{\small (0,0.48]}}}&\textbf{{\small (0.48,1.63]}}&\textbf{{\small (1.63,7.54]}}\\{\small (I)}&{\small 2}&{\small -0.31}\\
@@ -579,6 +580,7 @@
       [\multicolumn{3}{c}{\textbf{(0,0.48]}}\\\hline
       {{{\small (0,0.48]}}}&\textbf{{\small (0.48,1.63]}}&\textbf{{\small (1.63,7.54]}}\\{\small (I)}&{\small 0.12}&{\small -0.37}\\
       {\small $\text{day\_night}_{t-1}$}&{\small -16}&{\small -16}\\
+      {\small $\text{day\_night}_{t-2}$}&{\small 17}&{\small 15}\\
       , align=ccc]
       [\multicolumn{3}{c}{\textbf{(0.48,1.63], (1.63,7.54]}}\\\hline
       {{{\small (0,0.48]}}}&\textbf{{\small (0.48,1.63]}}&\textbf{{\small (1.63,7.54]}}\\{\small (I)}&{\small 2}&{\small -0.31}\\
@@ -1145,6 +1147,7 @@
       [\multicolumn{3}{c}{\textbf{(0,0.48]}}\\\hline
       {{{\small (0,0.48]}}}&\textbf{{\small (0.48,1.63]}}&\textbf{{\small (1.63,7.54]}}\\{\small (I)}&{\small 0.12}&{\small -0.37}\\
       {\small $\text{day\_night}_{t-1}$}&{\small -9.1}&{\small -9.4}\\
+      {\small $\text{day\_night}_{t-2}$}&{\small 9.6}&{\small 8.5}\\
       , align=ccc]
       [\multicolumn{3}{c}{\textbf{(0.48,1.63], (1.63,7.54]}}\\\hline
       {{{\small (0,0.48]}}}&\textbf{{\small (0.48,1.63]}}&\textbf{{\small (1.63,7.54]}}\\{\small (I)}&{\small 2}&{\small -0.31}\\
@@ -1171,6 +1174,7 @@
       [\multicolumn{3}{c}{\textbf{(0,0.48]}}\\\hline
       {{{\small (0,0.48]}}}&\textbf{{\small (0.48,1.63]}}&\textbf{{\small (1.63,7.54]}}\\{\small (I)}&{\small 0.12}&{\small -0.37}\\
       {\small $\text{day\_night}_{t-1}$}&{\small -9.1}&{\small -9.4}\\
+      {\small $\text{day\_night}_{t-2}$}&{\small 9.6}&{\small 8.5}\\
       , align=ccc]
       [\multicolumn{3}{c}{\textbf{(0.48,1.63], (1.63,7.54]}}\\\hline
       {{{\small (0,0.48]}}}&\textbf{{\small (0.48,1.63]}}&\textbf{{\small (1.63,7.54]}}\\{\small (I)}&{\small 2}&{\small -0.31}\\
