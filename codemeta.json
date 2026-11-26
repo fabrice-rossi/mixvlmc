@@ -11,7 +11,7 @@
   "codeRepository": "https://github.com/fabrice-rossi/mixvlmc",
   "issueTracker": "https://github.com/fabrice-rossi/mixvlmc/issues",
   "license": "https://spdx.org/licenses/GPL-3.0",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "programmingLanguage": {
     "@type": "ComputerLanguage",
     "name": "R",
