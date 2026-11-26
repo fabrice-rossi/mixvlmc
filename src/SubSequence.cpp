@@ -44,26 +44,9 @@ SubSequence::SubSequence(std::vector<int> _ctx,
   }
 }
 
-int SubSequence::count(int val) const {
-  auto count = p_counts->find(val);
-  if(count != p_counts->end()) {
-    return count->second;
-  } else {
-    return 0;
-  }
-}
-
-IntegerVector SubSequence::counts(int max) const {
-  return map_to_counts(p_counts, max);
-}
-
 void SubSequence::insert_counts(std::vector<Rcpp::IntegerVector> table,
                                 int row) const {
   insert_any_counts(table, row, p_counts);
-}
-
-IntegerVector SubSequence::local_counts(int max) const {
-  return map_to_counts(l_counts, max);
 }
 
 void SubSequence::insert_local_counts(std::vector<Rcpp::IntegerVector> table,

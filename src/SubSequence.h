@@ -32,13 +32,7 @@ class SubSequence {
               const EdgeNode* node,
               const ExtractionContent& ext);
 
-  int count(int val) const;
-
-  Rcpp::IntegerVector counts(int max) const;
-
   void insert_counts(std::vector<Rcpp::IntegerVector> table, int row) const;
-
-  Rcpp::IntegerVector local_counts(int max) const;
 
   void insert_local_counts(std::vector<Rcpp::IntegerVector>, int row) const;
 
