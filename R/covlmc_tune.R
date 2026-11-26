@@ -83,9 +83,10 @@
 #'   `trimming="none"` turns off trimming, which is discouraged except for
 #'   small data sets.
 #'
-#'   In parallel processing contexts (e.g. using [foreach::%dopar%]), the memory
-#'   occupation of the results can become very large as models tend to keep
-#'   environments attached to the formulas. In this situation, it is highly
+#'   In parallel processing contexts (e.g. using [foreach::%dopar%]), the
+#'   results are serialised to be sent back to the main process: as the
+#'   logistic models keep the data used to fit them (including in the
+#'   environments attached to their formulas), this can be costly. It is highly
 #'   recommended to trim all saved models, including the best one and the
 #'   initial one. This can be done via the `best_trimming` parameter whose
 #'   possible values are identical to the ones of `trimming`.

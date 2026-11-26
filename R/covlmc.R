@@ -693,7 +693,8 @@ assert_pseudo_obs <- function(pseudo_obs) {
 #'   coefficients. Similarly, levels of factor covariates absent from the data
 #'   of a context are ignored: [VGAM::vglm()] reports no coefficient for them
 #'   while [stats::glm()] and [nnet::multinom()] report a zero coefficient (for
-#'   instance in [draw.covlmc()]).
+#'   instance in the text format of [draw.covlmc()]; the LaTeX format shows
+#'   zero coefficients for all the engines).
 #'
 #'   As a consequence of the last point, the number of parameters of a COVLMC,
 #'   used by [stats::AIC()] and [stats::BIC()] (see [loglikelihood.covlmc()]),

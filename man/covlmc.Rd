@@ -104,7 +104,8 @@ model of this context, which gives them a zero probability and has fewer
 coefficients. Similarly, levels of factor covariates absent from the data
 of a context are ignored: \code{\link[VGAM:vglm]{VGAM::vglm()}} reports no coefficient for them
 while \code{\link[stats:glm]{stats::glm()}} and \code{\link[nnet:multinom]{nnet::multinom()}} report a zero coefficient (for
-instance in \code{\link[=draw.covlmc]{draw.covlmc()}}).
+instance in the text format of \code{\link[=draw.covlmc]{draw.covlmc()}}; the LaTeX format shows
+zero coefficients for all the engines).
 }
 
 As a consequence of the last point, the number of parameters of a COVLMC,
