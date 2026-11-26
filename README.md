@@ -293,14 +293,14 @@ elec_covlmc_tune <- tune_covlmc(elec_dts, elec_cov)
 print(autoplot(elec_covlmc_tune))
 ```
 
-<img src="man/figures/README-elec_tune_process-1.png" alt="Six panels plotting the AIC, the BIC, the number of contexts, the covariate depth, the depth and the log likelihood against the cut off on the quantile scale. Both criteria drop sharply after the smallest cut offs; the BIC is minimal at a small cut off where the covariate depth is still zero, and the covariate depth only grows for larger cut offs." width="100%" />
+<img src="man/figures/README-elec_tune_process-1.png" alt="Six panels plotting the AIC, the BIC, the number of contexts, the covariate depth, the depth and the log likelihood against the cut off on the quantile scale. Both criteria drop sharply after the smallest cut offs; the BIC is minimal at a small cut off where the covariate depth is one, and the covariate depth grows with the cut off." width="100%" />
 
 ``` r
 best_elec_covlmc <- as_covlmc(elec_covlmc_tune)
 draw(best_elec_covlmc, model = "full")
 #> ▪
-#> ├─ low ([ (I)   
-#> │         -1.188 ])
+#> ├─ low ([ (I)    • day_1TRUE
+#> │         -1.558 • 1.006     ])
 #> ├─ typical
 #> │  ├─ low ([ (I)   
 #> │  │         0.3365
@@ -316,21 +316,25 @@ draw(best_elec_covlmc, model = "full")
 #>            5.481 ])
 ```
 
-As in the VLMC case, the optimal model remains rather simple. In fact,
-the BIC does not retain the covariate: each context is associated with a
-constant model (the `(I)` intercepts), so that the model is a VLMC. It
-differs slightly from the one obtained with `tune_vlmc()`:
+As in the VLMC case, the optimal model remains rather simple:
 
-- the *low* and *high* contexts are equivalent to the VLMC contexts
-  (notice that the *low* context does not switch to a *high* context,
-  hence the single row of parameters);
+- the *high* context does not use the covariate and is equivalent to the
+  VLMC context;
+- the *low* context is more interesting: it never switches to a *high*
+  context, hence the single row of parameters (the logistic model
+  ignores the *high* state), but it uses the covariate. The coefficients
+  are given with respect to the first state, *low*: the positive
+  `day_1TRUE` coefficient means that, as expected, the probability of
+  switching from *low* to *typical* is larger during the day (about 37%
+  of the transitions against 17% at night);
 - the *typical* context is split according to the three possible
   previous states, while the VLMC only distinguishes a *low* previous
   state.
 
-The BIC is rather conservative. The AIC selects a model with the same
-context tree in which the *low* and *high* contexts use the day
-covariate:
+The selection is a close call: the BIC of the model obtained with the
+next smaller cut off, which does not use the covariate, is almost
+identical. The AIC selects a model with the same context tree in which
+the *high* context also uses the day covariate:
 
 ``` r
 best_elec_covlmc_aic <- as_covlmc(tune_covlmc(elec_dts, elec_cov, criterion = "AIC"))
@@ -353,19 +357,12 @@ draw(best_elec_covlmc_aic, model = "full")
 #>            19.38 • -14.88    ])
 ```
 
-The coefficients of the logistic models are given with respect to the
-first state, *low*:
-
-- in the *low* context, the positive `day_1TRUE` coefficient means that,
-  as expected, the probability of switching from *low* to *typical* is
-  larger during the day (about 37% of the transitions against 17% at
-  night);
-- the large coefficients of the *high* context are the consequence of a
-  single transition from *high* to *low*, observed during the day. As
-  this transition is never observed at night, its estimated probability
-  at night is pushed towards zero. The meaningful effect lies between
-  *typical* and *high*: the chain leaves *high* for *typical* more often
-  during the day (about 21% of the transitions against 12% at night).
+The large coefficients of the *high* context are the consequence of a
+single transition from *high* to *low*, observed during the day. As this
+transition is never observed at night, its estimated probability at
+night is pushed towards zero. The meaningful effect lies between
+*typical* and *high*: the chain leaves *high* for *typical* more often
+during the day (about 21% of the transitions against 12% at night).
 
 ### Sampling
 
