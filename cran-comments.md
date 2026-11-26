@@ -1,6 +1,15 @@
+## Resubmission
+
+This is a resubmission of mixvlmc 0.3.0, which did not pass the incoming checks
+because of the overall check time on Windows (r-devel-windows-x86_64: "Overall
+checktime 11 min > 10 min"). In this version (0.3.1), the slowest tests (mostly
+exhaustive comparisons with slow reference implementations and between the two
+backends of the package) are skipped on CRAN. The overall check time on the
+R-hub Windows (R devel) platform went from 11 min to 8 min.
+
 ## Update of an existing package
 
-This is an update of mixvlmc (0.2.2 -> 0.3.0). It introduces a class for
+This is an update of mixvlmc (0.2.2 -> 0.3.1). It introduces a class for
 discrete time series, a new representation of context trees with a LaTeX
 output integrated with knitr, and fixes numerous bugs (see NEWS.md).
 
