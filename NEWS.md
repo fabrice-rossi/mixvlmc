@@ -1,3 +1,5 @@
+# mixvlmc (development version)
+
 # mixvlmc 0.3.1
 This release introduces a class for discrete time series, a new
 representation of context trees with a LaTeX output integrated with knitr, and
