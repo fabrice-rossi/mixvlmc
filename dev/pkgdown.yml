@@ -1,16 +1,19 @@
-pandoc: 3.1.11
-pkgdown: 2.0.9
+pandoc: 3.8.3
+pkgdown: 2.2.1
 pkgdown_sha: ~
 articles:
   context-trees: context-trees.html
+  articles/covlmc-engines: covlmc-engines.html
   covlmc: covlmc.html
-  implementation: implementation.html
+  articles/drawing: drawing.html
+  dts-and-contexts: dts-and-contexts.html
+  articles/implementation: implementation.html
   likelihood: likelihood.html
+  model-selection: model-selection.html
   prediction: prediction.html
   sampling: sampling.html
   variable-length-markov-chains: variable-length-markov-chains.html
-last_built: 2024-05-07T12:01Z
+last_built: 2026-11-27T19:54Z
 urls:
   reference: https://fabrice-rossi.github.io/mixvlmc/reference
   article: https://fabrice-rossi.github.io/mixvlmc/articles
-
