@@ -378,7 +378,7 @@ CAC_metrics
 #>   Stay 453  625  467 
 #>   Up   36   65   91  
 #>  Accuracy: 0.4067 
-#>  AUC: 0.6451
+#>  AUC: 0.5507
 ```
 
 When the state space contains three or more states, we report the
